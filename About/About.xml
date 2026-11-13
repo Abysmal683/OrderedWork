@@ -3,11 +3,11 @@
   <name>Ordered Work (Core)</name>
   <author>nightmare123487</author>
   <packageId>nightmare123487.OrderedWork</packageId>
-  <modVersion>0.2.0-alpha.1</modVersion>
+  <modVersion>0.2.0-alpha.2</modVersion>
   <supportedVersions>
     <li>1.7</li>
   </supportedVersions>
-  <description>Technical spike (0.2.0-alpha.1). Ordered-work framework that orders work types and work givers, splits a work type into a new one, and merges givers into an existing work type. It never deletes work types or givers. Split work types copy work tags, skills, life-stage availability and mech availability, so traits and incapacities keep working. This build adds a pure Core dense-rank library, a console test harness, and a Mod Settings test button that writes dense rank 1..N to free colonists and logs the result. There is no visual Work Control UI yet; the dense-rank test only logs. Changes apply on restart. Do not use in a main save; back up your save first.</description>
+  <description>Technical spike (0.2.0-alpha.2). Ordered-work framework that orders work types and work givers, splits a work type into a new one, and merges givers into an existing work type. It never deletes work types or givers. Split work types copy work tags, skills, life-stage availability and mech availability, so traits and incapacities keep working. This build adds a pure Core dense-rank library, a console test harness, and a Mod Settings test button that writes dense rank 1..N to free colonists and logs the result. There is no visual Work Control UI yet; the dense-rank test only logs. Changes apply on restart. Do not use in a main save; back up your save first.</description>
   <loadAfter>
     <li>brrainz.harmony</li>
     <li>Ludeon.RimWorld</li>

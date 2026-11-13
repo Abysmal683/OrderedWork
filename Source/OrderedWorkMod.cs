@@ -145,7 +145,11 @@ namespace OrderedWork
 
             list.Gap(10f);
             list.Label("Technical spike: writes dense rank 1..N to free colonists and logs the result.");
-            if (list.ButtonText("Test dense rank on colonists (log)"))
+            if (Find.CurrentMap == null)
+            {
+                list.Label("Load a colony to run the dense-rank test.");
+            }
+            else if (list.ButtonText("Test dense rank on colonists (log)"))
             {
                 ApplyTestDenseRank();
             }
@@ -158,69 +162,83 @@ namespace OrderedWork
 
         private void ApplyTestDenseRank()
         {
-            if (Find.CurrentMap == null)
+            try
             {
-                Log.Warning("[Ordered Work] No map loaded.");
-                return;
+                if (Find.CurrentMap == null)
+                {
+                    Log.Warning("[Ordered Work] No map loaded.");
+                    return;
+                }
+
+                List<string> available = DefDatabase<WorkTypeDef>.AllDefsListForReading
+                    .Where(w => w.visible)
+                    .Select(w => w.defName)
+                    .ToList();
+
+                List<string> order = DenseRank.NormalizeOrder(Settings.workTypeOrder, available);
+                if (order.Count == 0)
+                {
+                    Log.Warning("[Ordered Work] No visible work types available for the dense rank test.");
+                    return;
+                }
+
+                Dictionary<string, int> ranks = DenseRank.BuildRanks(order, available);
+                int max = Math.Max(4, order.Count);
+
+                FieldInfo prioritiesField = typeof(Pawn_WorkSettings).GetField(
+                    "priorities",
+                    BindingFlags.Instance | BindingFlags.NonPublic);
+                bool loggedDirectMode = false;
+
+                int colonists = 0;
+                foreach (Pawn pawn in Find.CurrentMap.mapPawns.FreeColonists)
+                {
+                    Pawn_WorkSettings ws = pawn.workSettings;
+                    if (ws == null)
+                    {
+                        continue;
+                    }
+
+                    DefMap<WorkTypeDef, int> priorities = prioritiesField != null
+                        ? prioritiesField.GetValue(ws) as DefMap<WorkTypeDef, int>
+                        : null;
+
+                    foreach (WorkTypeDef wt in DefDatabase<WorkTypeDef>.AllDefsListForReading)
+                    {
+                        int rank;
+                        int value = ranks.TryGetValue(wt.defName, out rank) ? rank : 0;
+                        if (priorities != null)
+                        {
+                            priorities[wt] = value;
+                        }
+                        else
+                        {
+                            ws.SetPriority(wt, value);
+                        }
+                    }
+
+                    if (priorities != null && !loggedDirectMode)
+                    {
+                        Log.Message("[Ordered Work] Dense rank test using direct priorities map (bypasses the SetPriority clamp).");
+                        loggedDirectMode = true;
+                    }
+
+                    ws.Notify_UseWorkPrioritiesChanged();
+
+                    WorkTypeDef firstWorkType = DefDatabase<WorkTypeDef>.GetNamedSilentFail(order[0]);
+                    WorkTypeDef lastWorkType = DefDatabase<WorkTypeDef>.GetNamedSilentFail(order[order.Count - 1]);
+                    string firstPriority = firstWorkType != null ? ws.GetPriority(firstWorkType).ToString() : "n/a";
+                    string lastPriority = lastWorkType != null ? ws.GetPriority(lastWorkType).ToString() : "n/a";
+                    Log.Message("[Ordered Work] Dense rank test " + pawn.LabelShort + ": max=" + max + ", count=" + order.Count + ", first=" + order[0] + "=" + firstPriority + ", last=" + order[order.Count - 1] + "=" + lastPriority);
+                    colonists++;
+                }
+
+                Log.Message("[Ordered Work] Dense rank test applied to " + colonists + " colonist(s).");
             }
-
-            List<string> available = DefDatabase<WorkTypeDef>.AllDefsListForReading
-                .Where(w => w.visible)
-                .Select(w => w.defName)
-                .ToList();
-
-            List<string> order = DenseRank.NormalizeOrder(Settings.workTypeOrder, available);
-            if (order.Count == 0)
+            catch (Exception ex)
             {
-                Log.Warning("[Ordered Work] No visible work types available for the dense rank test.");
-                return;
+                Log.Error("[Ordered Work] Dense rank test failed: " + ex);
             }
-
-            Dictionary<string, int> ranks = DenseRank.BuildRanks(order, available);
-            int max = Math.Max(4, order.Count);
-
-            FieldInfo lowestPriorityField = typeof(Pawn_WorkSettings).GetField(
-                "LowestPriority",
-                BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
-            bool warnedMissingField = false;
-
-            int colonists = 0;
-            foreach (Pawn pawn in Find.CurrentMap.mapPawns.FreeColonists)
-            {
-                Pawn_WorkSettings ws = pawn.workSettings;
-                if (ws == null)
-                {
-                    continue;
-                }
-
-                if (lowestPriorityField != null)
-                {
-                    object target = lowestPriorityField.IsStatic ? null : ws;
-                    lowestPriorityField.SetValue(target, max);
-                }
-                else if (!warnedMissingField)
-                {
-                    Log.Warning("[Ordered Work] Could not find Pawn_WorkSettings.LowestPriority; priorities above 4 may not be honored.");
-                    warnedMissingField = true;
-                }
-
-                foreach (WorkTypeDef wt in DefDatabase<WorkTypeDef>.AllDefsListForReading)
-                {
-                    int rank;
-                    ws.SetPriority(wt, ranks.TryGetValue(wt.defName, out rank) ? rank : 0);
-                }
-
-                ws.Notify_UseWorkPrioritiesChanged();
-
-                WorkTypeDef firstWorkType = DefDatabase<WorkTypeDef>.GetNamedSilentFail(order[0]);
-                WorkTypeDef lastWorkType = DefDatabase<WorkTypeDef>.GetNamedSilentFail(order[order.Count - 1]);
-                string firstPriority = firstWorkType != null ? ws.GetPriority(firstWorkType).ToString() : "n/a";
-                string lastPriority = lastWorkType != null ? ws.GetPriority(lastWorkType).ToString() : "n/a";
-                Log.Message("[Ordered Work] Dense rank test " + pawn.LabelShort + ": max=" + max + ", count=" + order.Count + ", first=" + order[0] + "=" + firstPriority + ", last=" + order[order.Count - 1] + "=" + lastPriority);
-                colonists++;
-            }
-
-            Log.Message("[Ordered Work] Dense rank test applied to " + colonists + " colonist(s).");
         }
 
         private void EnsureWorkTypeOrder()
