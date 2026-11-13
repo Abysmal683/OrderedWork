@@ -1,0 +1,10 @@
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.pdb
+*.cache
+Thumbs.db
+desktop.ini
+Assemblies/
