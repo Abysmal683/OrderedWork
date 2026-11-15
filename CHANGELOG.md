@@ -3,6 +3,25 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.2] - 2026-11-14
+
+### Fixed
+- `OrderedWorkGameComponent` now exposes a `(Game game)` constructor so RimWorld can instantiate it; the parameterless constructor caused `MissingMethodException: Constructor on type ... not found` in `Player.log`. The `GetOrCreate` fallback also uses `new OrderedWorkGameComponent(Current.Game)`.
+
+### Changed
+- Work Control layout now mirrors the vanilla Work tab: one row per free colonist, a fixed pawn name column on the left and a WorkType card lane on the right.
+- Replaced the single-pawn selector with all free colonists shown as rows.
+- One shared horizontal scroll moves every row's lane together; one outer vertical scroll covers all rows. Compact cards (~190×80) with full wrapped WorkType names.
+- Header now labels the pawn and work-order columns; the former per-pawn result table is no longer drawn.
+
+### Added
+- Each card shows the best relevant skill level for that pawn/WorkType, or `—` when there is no relevant skill.
+- Passion marker hook: temporary `**` (major) / `*` (minor) text behind a single method so a future icon can replace it.
+- Card tooltip lists each relevant skill and level; incapable cards show a generic `Incapaz` label and tooltip.
+
+### Removed
+- Read-only result table from the main Work Control view (deferred to a future collapsible panel).
+
 ## [0.3.0-alpha.1] - 2026-11-14
 
 ### Added

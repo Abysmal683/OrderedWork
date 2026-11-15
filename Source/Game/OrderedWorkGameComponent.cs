@@ -12,7 +12,10 @@ namespace OrderedWork.Data
     {
         public List<PawnWorkOrder> entries = new List<PawnWorkOrder>();
 
-        public OrderedWorkGameComponent()
+        // RimWorld instantiates GameComponents with Activator.CreateInstance(type, game),
+        // so the subclass must expose a (Game) constructor. Verse.GameComponent itself only
+        // has a protected parameterless constructor, so it is called implicitly here.
+        public OrderedWorkGameComponent(Game game) : base()
         {
         }
 
@@ -106,7 +109,7 @@ namespace OrderedWork.Data
 
             try
             {
-                component = new OrderedWorkGameComponent();
+                component = new OrderedWorkGameComponent(Current.Game);
                 Current.Game.components.Add(component);
                 return component;
             }

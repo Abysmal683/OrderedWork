@@ -1,6 +1,6 @@
-# Work Control — Milestone 0.3.0-alpha.1 Checklist
+# Work Control — Milestone 0.3.0-alpha.2 Checklist
 
-Status: in progress — version 0.3.0-alpha.1. Code written; in-game checks pending.
+Status: in progress — version 0.3.0-alpha.2. Row-lane layout and GameComponent constructor iteration written; in-game checks pending.
 Goal: first usable Work Control tab with a horizontal lane that assigns WorkTypes and updates the vanilla Work tab.
 
 ## Scope in
@@ -19,7 +19,7 @@ Goal: first usable Work Control tab with a horizontal lane that assigns WorkType
 - Horizontal scroll/slide for the lane; compact cards; long names do not overflow.
 - Per-pawn order persisted in a `GameComponent`; default order from `naturalPriority`; missing defs skipped.
 - Direct `Pawn_WorkSettings.priorities` DefMap write; `Notify_UseWorkPrioritiesChanged`; vanilla Work tab updates.
-- Read-only result table below the lane for verification.
+- Result table removed for this iteration (future collapsible toggle).
 - Version `0.3.0-alpha.1`, changelog, tests, Git branch/commit.
 
 ## Scope out (this milestone)
@@ -50,9 +50,11 @@ Goal: first usable Work Control tab with a horizontal lane that assigns WorkType
 ## Main layout: Work-tab rows as lanes
 
 - Keep the Work-tab shell: rows = pawns, one row per pawn.
+- Two parallel columns: pawn name/title fixed on the left; the WorkType lane on the right.
 - Replace the check-cell row with a **horizontal lane of movable WorkType cards** in that pawn’s priority order.
-- One **shared horizontal scroll** for all rows (so the whole grid moves together and the lane position is preserved); one outer vertical scroll for pawn rows + result table.
-- No fixed check columns; cards are the cells. The header is a legend/control area, not a fixed column grid.
+- Cards show the relevant skill level; a passion marker/icon is prepared (placeholder for now).
+- One **shared horizontal scroll** for all rows (so the whole grid moves together and the lane position is preserved); one outer vertical scroll for pawn rows.
+- Result table removed for this iteration (future collapsible toggle).
 - States: Active/assigned, Off/not assigned, Incapable (grey + reason; not addable).
 - Future: a “Sort by WorkType” button aligns/highlights one WorkType across rows without hiding the others, so the player can compare priority/skill for that WorkType.
 - Future setting: both Work tabs or only the mod’s Work Control.
@@ -66,6 +68,9 @@ Goal: first usable Work Control tab with a horizontal lane that assigns WorkType
 - [ ] Remove/off sets that WorkType to 0.
 - [ ] Drag reorders the lane; leftmost = highest.
 - [ ] Horizontal lane scroll shows full names and does not overflow.
+- [ ] Two parallel columns: pawn name left, lane right; one shared HScroll.
+- [ ] Cards show the relevant skill level and a passion placeholder/icon hook.
+- [ ] Result table is removed/collapsed, not taking main space.
 - [ ] Outer vertical scroll moves the pawn list + lane; horizontal lane position is preserved when switching pawns.
 - [ ] Dense rank is unique 1..N; numbers hidden in the lane.
 - [ ] Applying writes the direct `priorities` map, calls `Notify`, and the vanilla Work tab reflects the values.
@@ -73,7 +78,7 @@ Goal: first usable Work Control tab with a horizontal lane that assigns WorkType
 - [ ] Save/load preserves the per-pawn order.
 - [ ] Missing/removed defs are skipped without exceptions.
 - [ ] No NPC/mech/animals are modified.
-- [ ] Result table is read-only.
+- [ ] Result table is removed/collapsed, not taking main space.
 - [ ] No IMGUI scroll-pairing or exception errors.
 
 ## Technical checks

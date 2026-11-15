@@ -8,29 +8,30 @@ using Verse;
 namespace OrderedWork.UI
 {
     /// <summary>
-    /// Full-screen "Work Control" tab. Shows a pawn selector, a horizontal WorkType lane
-    /// and a read-only result table, all inside one outer vertical scroll view.
-    /// Edits write straight into the pawn's work priorities.
+    /// Full-screen "Work Control" tab. The shell mirrors the vanilla Work tab: one row per
+    /// free colonist, a fixed pawn column on the left and a horizontal lane of WorkType
+    /// cards on the right. A single scroll view supplies the outer vertical scroll and the
+    /// shared horizontal scroll, so moving it moves every lane together.
     /// </summary>
     public class MainTabWindow_WorkControl : MainTabWindow
     {
         private const float Pad = 12f;
-        private const float TitleHeight = 34f;
-        private const float PawnRowHeight = 30f;
-        private const float PawnRowGap = 4f;
-        private const float LaneHeight = 140f;
-        private const float CardWidth = 220f;
-        private const float CardHeight = 100f;
-        private const float CardGap = 8f;
-        private const float TableRowHeight = 24f;
+        private const float TitleHeight = 30f;
+        private const float HeaderHeight = 24f;
+        private const float RowHeight = 100f;
+        private const float CardWidth = 190f;
+        private const float CardHeight = 80f;
+        private const float CardGap = 6f;
+        private const float LeftColumnMin = 180f;
+        private const float LeftColumnMax = 280f;
 
-        private Pawn selectedPawn;
-        private Vector2 outerScroll;
-        private Vector2 laneScroll;
+        private Vector2 gridScroll;
 
         private bool dragging;
+        private Pawn dragPawn;
         private int dragSourceIndex = -1;
         private int dragTargetIndex = -1;
+        private int dragCount;
 
         public override void DoWindowContents(Rect inRect)
         {
@@ -49,47 +50,59 @@ namespace OrderedWork.UI
                 return;
             }
 
-            // Initial selection must not apply or write anything.
-            if (selectedPawn == null || !colonists.Contains(selectedPawn))
+            List<WorkTypeDef> available = WorkOrderService.GetAvailableWorkTypes();
+
+            float leftWidth = Mathf.Clamp(inRect.width * 0.22f, LeftColumnMin, LeftColumnMax);
+            float titleY = Pad;
+            float headerY = titleY + TitleHeight + 2f;
+            float bodyTop = headerY + HeaderHeight + 6f;
+            float bodyHeight = Mathf.Max(60f, inRect.yMax - Pad - bodyTop);
+            Rect bodyRect = new Rect(Pad, bodyTop, inRect.width - Pad * 2f, bodyHeight);
+            Rect laneViewport = new Rect(bodyRect.x + leftWidth, bodyRect.y, bodyRect.width - leftWidth, bodyRect.height);
+
+            int maxLane = 0;
+            foreach (Pawn pawn in colonists)
             {
-                selectedPawn = colonists[0];
+                maxLane = Mathf.Max(maxLane, BuildLane(pawn).types.Count);
             }
 
-            List<WorkTypeDef> available = WorkOrderService.GetAvailableWorkTypes();
-            int orderCount = WorkOrderService.GetOrder(selectedPawn).Count;
+            float laneContentWidth = Mathf.Max(laneViewport.width, (maxLane + 1) * (CardWidth + CardGap) + CardGap);
+            float rowsHeight = colonists.Count * RowHeight;
+            float contentHeight = Mathf.Max(laneViewport.height, rowsHeight);
+            Rect laneContent = new Rect(0f, 0f, laneContentWidth, contentHeight);
 
-            float pawnListTop = Pad + TitleHeight;
-            float pawnListHeight = colonists.Count * (PawnRowHeight + PawnRowGap);
-            float laneTop = pawnListTop + pawnListHeight + Pad + TableRowHeight;
-            float tableTop = laneTop + LaneHeight + Pad + TableRowHeight;
-            float tableHeight = TableRowHeight + orderCount * TableRowHeight + Pad;
-            float contentHeight = Mathf.Max(inRect.height, tableTop + tableHeight);
-            float contentWidth = inRect.width - 24f;
+            Text.Font = GameFont.Medium;
+            Widgets.Label(new Rect(Pad, titleY, inRect.width - Pad * 2f, TitleHeight), "Work Control");
+            Text.Font = GameFont.Small;
+            Widgets.Label(new Rect(bodyRect.x, headerY, leftWidth - 8f, HeaderHeight), "Pawn");
+            Widgets.Label(new Rect(laneViewport.x, headerY, laneViewport.width, HeaderHeight),
+                "Work order (left = highest). Drag to reorder, × remove, + add.");
 
-            Rect contentRect = new Rect(0f, 0f, contentWidth, contentHeight);
-            Widgets.BeginScrollView(inRect, ref outerScroll, contentRect);
+            Widgets.BeginScrollView(laneViewport, ref gridScroll, laneContent);
             try
             {
-                Text.Font = GameFont.Medium;
-                Widgets.Label(new Rect(Pad, Pad, contentWidth - Pad * 2f, TitleHeight),
-                    "Work Control — " + selectedPawn.LabelShort);
-                Text.Font = GameFont.Small;
+                HandleDrop();
 
-                DrawPawnList(colonists, pawnListTop, contentWidth - Pad * 2f);
+                for (int i = 0; i < colonists.Count; i++)
+                {
+                    Pawn pawn = colonists[i];
+                    float rowY = i * RowHeight;
 
-                Rect laneLabelRect = new Rect(Pad, laneTop - TableRowHeight, contentWidth - Pad * 2f, 20f);
-                Widgets.Label(laneLabelRect, "Order (left = highest). Drag to reorder, × to remove.");
-                DrawLane(new Rect(Pad, laneTop, contentWidth - Pad * 2f, LaneHeight), available);
+                    Color rowColor = (i % 2 == 0)
+                        ? new Color(0.14f, 0.15f, 0.17f, 0.6f)
+                        : new Color(0.16f, 0.17f, 0.19f, 0.6f);
+                    Widgets.DrawBoxSolid(new Rect(0f, rowY, laneContentWidth, RowHeight), rowColor);
 
-                Rect tableLabelRect = new Rect(Pad, tableTop - TableRowHeight, contentWidth - Pad * 2f, 20f);
-                Widgets.Label(tableLabelRect, "Result (read-only)");
-                DrawResultTable(new Rect(Pad, tableTop, contentWidth - Pad * 2f, tableHeight));
+                    DrawRowLane(pawn, rowY, available);
+                }
             }
             finally
             {
                 Widgets.EndScrollView();
                 Text.Font = GameFont.Small;
             }
+
+            DrawPawnColumn(colonists, bodyRect, leftWidth);
         }
 
         private void DrawCentered(Rect inRect, string message)
@@ -100,141 +113,102 @@ namespace OrderedWork.UI
             Text.Anchor = previous;
         }
 
-        private void DrawPawnList(List<Pawn> colonists, float top, float width)
+        private void DrawPawnColumn(List<Pawn> colonists, Rect bodyRect, float leftWidth)
         {
-            float y = top;
-            for (int i = 0; i < colonists.Count; i++)
-            {
-                Pawn pawn = colonists[i];
-                Rect rowRect = new Rect(Pad, y, Mathf.Min(420f, width), PawnRowHeight);
-
-                if (pawn == selectedPawn)
-                {
-                    Widgets.DrawHighlightSelected(rowRect);
-                }
-
-                string label = pawn.Name != null ? pawn.NameFullColored : pawn.LabelShort;
-                if (Widgets.ButtonText(rowRect, label) && pawn != selectedPawn)
-                {
-                    // Keep laneScroll where it is when switching pawns.
-                    selectedPawn = pawn;
-                }
-                y += PawnRowHeight + PawnRowGap;
-            }
-        }
-
-        private void DrawLane(Rect laneRect, List<WorkTypeDef> available)
-        {
-            List<WorkTypeDef> laneTypes = new List<WorkTypeDef>();
-            List<string> laneIds = new List<string>();
-            foreach (string id in WorkOrderService.GetOrder(selectedPawn))
-            {
-                WorkTypeDef workType = DefDatabase<WorkTypeDef>.GetNamedSilentFail(id);
-                if (workType != null)
-                {
-                    laneTypes.Add(workType);
-                    laneIds.Add(id);
-                }
-            }
-
-            float contentWidth = Mathf.Max(laneRect.width, (laneTypes.Count + 1) * (CardWidth + CardGap) + CardGap);
-            Rect viewRect = new Rect(0f, 0f, contentWidth, CardHeight + CardGap * 2f);
-
-            Widgets.BeginScrollView(laneRect, ref laneScroll, viewRect);
+            GUI.BeginGroup(bodyRect);
             try
             {
-                HandleDrag(laneIds, laneTypes.Count);
-
-                int removeIndex = -1;
-                for (int i = 0; i < laneTypes.Count; i++)
+                for (int i = 0; i < colonists.Count; i++)
                 {
-                    Rect cardRect = new Rect(CardGap + i * (CardWidth + CardGap), CardGap, CardWidth, CardHeight);
-                    DrawCard(cardRect, laneTypes[i], i, ref removeIndex);
-                }
+                    float y = i * RowHeight - gridScroll.y;
+                    if (y + RowHeight < 0f || y > bodyRect.height)
+                    {
+                        continue;
+                    }
 
-                Rect addRect = new Rect(CardGap + laneTypes.Count * (CardWidth + CardGap), CardGap, CardWidth, CardHeight);
-                if (Widgets.ButtonText(addRect, "+"))
-                {
-                    OpenAddMenu(available, laneIds);
-                }
-
-                if (removeIndex >= 0 && removeIndex < laneIds.Count)
-                {
-                    List<string> reduced = new List<string>(laneIds);
-                    reduced.RemoveAt(removeIndex);
-                    WorkOrderService.SaveAndApply(selectedPawn, reduced);
+                    TextAnchor previous = Text.Anchor;
+                    Text.Anchor = TextAnchor.MiddleLeft;
+                    Widgets.Label(new Rect(6f, y, leftWidth - 14f, RowHeight), PawnLabel(colonists[i]));
+                    Text.Anchor = previous;
                 }
             }
             finally
             {
-                Widgets.EndScrollView();
+                GUI.EndGroup();
             }
         }
 
-        private void HandleDrag(List<string> laneIds, int count)
+        private void DrawRowLane(Pawn pawn, float rowY, List<WorkTypeDef> available)
         {
-            if (!dragging)
+            LaneData lane = BuildLane(pawn);
+            float cardY = rowY + (RowHeight - CardHeight) / 2f;
+            int removeIndex = -1;
+
+            for (int i = 0; i < lane.types.Count; i++)
             {
-                return;
+                Rect cardRect = new Rect(CardGap + i * (CardWidth + CardGap), cardY, CardWidth, CardHeight);
+                DrawCard(pawn, cardRect, lane.types[i], lane.ids, i, ref removeIndex);
             }
 
-            dragTargetIndex = IndexAtX(Event.current.mousePosition.x, count);
-
-            if (Event.current.type == EventType.MouseUp)
+            Rect addRect = new Rect(CardGap + lane.types.Count * (CardWidth + CardGap), cardY, CardWidth, CardHeight);
+            if (Widgets.ButtonText(addRect, "+"))
             {
-                int from = dragSourceIndex;
-                int to = dragTargetIndex;
-                dragging = false;
-                dragSourceIndex = -1;
-                dragTargetIndex = -1;
+                OpenAddMenu(pawn, lane.ids, available);
+            }
 
-                if (from >= 0 && to >= 0 && from != to && from < laneIds.Count && to < laneIds.Count)
-                {
-                    List<string> reordered = new List<string>(laneIds);
-                    string moved = reordered[from];
-                    reordered.RemoveAt(from);
-                    reordered.Insert(Mathf.Clamp(to, 0, reordered.Count), moved);
-                    WorkOrderService.SaveAndApply(selectedPawn, reordered);
-                }
-                Event.current.Use();
+            if (removeIndex >= 0 && removeIndex < lane.ids.Count)
+            {
+                List<string> reduced = new List<string>(lane.ids);
+                reduced.RemoveAt(removeIndex);
+                WorkOrderService.SaveAndApply(pawn, reduced);
             }
         }
 
-        private void DrawCard(Rect cardRect, WorkTypeDef workType, int index, ref int removeIndex)
+        private void DrawCard(Pawn pawn, Rect cardRect, WorkTypeDef workType, List<string> laneIds, int index, ref int removeIndex)
         {
-            bool incapable = WorkOrderService.IsIncapable(selectedPawn, workType);
+            bool incapable = WorkOrderService.IsIncapable(pawn, workType);
 
-            Widgets.DrawBoxSolid(cardRect, new Color(0.18f, 0.2f, 0.23f, 0.95f));
+            Widgets.DrawBoxSolid(cardRect, new Color(0.19f, 0.21f, 0.24f, 0.95f));
 
-            if (dragging && index == dragTargetIndex)
+            if (dragging && pawn == dragPawn && index == dragTargetIndex)
             {
                 Widgets.DrawHighlight(cardRect);
                 Widgets.DrawBox(cardRect, 2);
             }
 
-            Rect removeRect = new Rect(cardRect.xMax - 24f, cardRect.y + 4f, 20f, 20f);
-            Rect bodyRect = new Rect(cardRect.x, cardRect.y + 26f, cardRect.width, cardRect.height - 30f);
+            Rect removeRect = new Rect(cardRect.xMax - 22f, cardRect.y + 3f, 18f, 18f);
+            Rect bodyRect = new Rect(cardRect.x, cardRect.y + 22f, cardRect.width, cardRect.height - 26f);
 
-            Color previous = GUI.color;
+            Color previousColor = GUI.color;
             if (incapable)
             {
                 GUI.color = new Color(0.6f, 0.6f, 0.6f, 1f);
             }
 
-            Rect labelRect = new Rect(cardRect.x + 6f, cardRect.y + 6f, cardRect.width - 32f, cardRect.height - 12f);
+            Rect labelRect = new Rect(cardRect.x + 6f, cardRect.y + 4f, cardRect.width - 30f, 44f);
             bool previousWrap = Text.WordWrap;
             Text.WordWrap = true;
             Widgets.Label(labelRect, workType.labelShort);
             Text.WordWrap = previousWrap;
-            GUI.color = previous;
+
+            GameFont previousFont = Text.Font;
+            Text.Font = GameFont.Tiny;
+            Widgets.Label(new Rect(cardRect.x + 6f, cardRect.yMax - 24f, cardRect.width - 12f, 20f),
+                CardInfo(pawn, workType, incapable));
+            Text.Font = previousFont;
+            GUI.color = previousColor;
+
+            if (Mouse.IsOver(cardRect))
+            {
+                TooltipHandler.TipRegion(cardRect, CardTooltip(pawn, workType, incapable));
+            }
 
             if (Widgets.ButtonText(removeRect, "×"))
             {
                 removeIndex = index;
             }
 
-            // Card body is a proper IMGUI control; drag start is read from the raw event
-            // so the remove button never begins a drag.
+            // The remove button must never start a drag, and incapable cards are not draggable.
             bool overRemove = removeRect.Contains(Event.current.mousePosition);
             if (!incapable
                 && !overRemove
@@ -243,18 +217,56 @@ namespace OrderedWork.UI
                 && bodyRect.Contains(Event.current.mousePosition))
             {
                 dragging = true;
+                dragPawn = pawn;
                 dragSourceIndex = index;
                 dragTargetIndex = index;
+                dragCount = laneIds.Count;
                 Event.current.Use();
             }
 
             if (Widgets.ButtonInvisible(bodyRect))
             {
-                // Click only: reordering is handled by the drag events above.
+                // Click only; reordering is driven by the drag events above.
             }
         }
 
-        private void OpenAddMenu(List<WorkTypeDef> available, List<string> currentOrder)
+        private void HandleDrop()
+        {
+            if (!dragging)
+            {
+                return;
+            }
+
+            if (Event.current.type != EventType.MouseUp)
+            {
+                dragTargetIndex = IndexAtX(Event.current.mousePosition.x, dragCount);
+                return;
+            }
+
+            int from = dragSourceIndex;
+            int to = IndexAtX(Event.current.mousePosition.x, dragCount);
+            Pawn pawn = dragPawn;
+
+            dragging = false;
+            dragPawn = null;
+            dragSourceIndex = -1;
+            dragTargetIndex = -1;
+
+            if (pawn != null && from >= 0 && to >= 0 && from != to)
+            {
+                List<string> ids = BuildLane(pawn).ids;
+                if (from < ids.Count && to < ids.Count)
+                {
+                    string moved = ids[from];
+                    ids.RemoveAt(from);
+                    ids.Insert(Mathf.Clamp(to, 0, ids.Count), moved);
+                    WorkOrderService.SaveAndApply(pawn, ids);
+                }
+            }
+            Event.current.Use();
+        }
+
+        private void OpenAddMenu(Pawn pawn, List<string> currentOrder, List<WorkTypeDef> available)
         {
             HashSet<string> inOrder = new HashSet<string>(currentOrder);
             List<FloatMenuOption> options = new List<FloatMenuOption>();
@@ -265,7 +277,7 @@ namespace OrderedWork.UI
                 {
                     continue;
                 }
-                if (WorkOrderService.IsIncapable(selectedPawn, workType))
+                if (WorkOrderService.IsIncapable(pawn, workType))
                 {
                     continue;
                 }
@@ -273,15 +285,11 @@ namespace OrderedWork.UI
                 WorkTypeDef local = workType;
                 options.Add(new FloatMenuOption(local.labelShort, delegate
                 {
-                    if (selectedPawn == null)
-                    {
-                        return;
-                    }
-                    List<string> updated = WorkOrderService.GetOrder(selectedPawn);
+                    List<string> updated = WorkOrderService.GetOrder(pawn);
                     if (!updated.Contains(local.defName))
                     {
                         updated.Add(local.defName);
-                        WorkOrderService.SaveAndApply(selectedPawn, updated);
+                        WorkOrderService.SaveAndApply(pawn, updated);
                     }
                 }));
             }
@@ -294,44 +302,111 @@ namespace OrderedWork.UI
             Find.WindowStack.Add(new FloatMenu(options));
         }
 
-        private void DrawResultTable(Rect rect)
+        private static string CardInfo(Pawn pawn, WorkTypeDef workType, bool incapable)
         {
-            float rankWidth = 70f;
-            float statusWidth = 140f;
-            float labelWidth = Mathf.Max(100f, rect.width - rankWidth - statusWidth);
-
-            Widgets.Label(new Rect(rect.x, rect.y, rankWidth, TableRowHeight), "Rank");
-            Widgets.Label(new Rect(rect.x + rankWidth, rect.y, labelWidth, TableRowHeight), "Work type");
-            Widgets.Label(new Rect(rect.x + rankWidth + labelWidth, rect.y, statusWidth, TableRowHeight), "Status");
-
-            float y = rect.y + TableRowHeight;
-            int rank = 0;
-            foreach (string id in WorkOrderService.GetOrder(selectedPawn))
+            if (incapable)
             {
-                WorkTypeDef workType = DefDatabase<WorkTypeDef>.GetNamedSilentFail(id);
-                if (workType == null)
+                return "Incapaz";
+            }
+            Passion passion;
+            int level = BestSkillLevel(pawn, workType, out passion);
+            string levelText = level >= 0 ? "Lv " + level : "—";
+            return levelText + PassionMarker(passion);
+        }
+
+        private static string CardTooltip(Pawn pawn, WorkTypeDef workType, bool incapable)
+        {
+            string text = workType.labelShort;
+            if (workType.relevantSkills != null && workType.relevantSkills.Count > 0)
+            {
+                foreach (SkillDef skill in workType.relevantSkills)
+                {
+                    if (skill == null)
+                    {
+                        continue;
+                    }
+                    SkillRecord record = pawn.skills != null ? pawn.skills.GetSkill(skill) : null;
+                    string level = record != null ? record.Level.ToString() : "—";
+                    text += "\n" + skill.label + ": " + level + PassionMarker(record != null ? record.passion : Passion.None);
+                }
+            }
+            else
+            {
+                text += "\nNo relevant skill";
+            }
+
+            if (incapable)
+            {
+                text += "\nIncapaz: this colonist cannot do this work.";
+            }
+            return text;
+        }
+
+        private static int BestSkillLevel(Pawn pawn, WorkTypeDef workType, out Passion passion)
+        {
+            passion = Passion.None;
+            if (pawn == null || pawn.skills == null || workType == null || workType.relevantSkills == null)
+            {
+                return -1;
+            }
+
+            int best = -1;
+            foreach (SkillDef skill in workType.relevantSkills)
+            {
+                if (skill == null)
                 {
                     continue;
                 }
-
-                bool incapable = WorkOrderService.IsIncapable(selectedPawn, workType);
-                string rankText = "—";
-                string status = "Incapable";
-                if (!incapable)
+                SkillRecord record = pawn.skills.GetSkill(skill);
+                if (record == null)
                 {
-                    rank++;
-                    rankText = rank.ToString();
-                    status = "Active";
+                    continue;
                 }
-
-                Widgets.Label(new Rect(rect.x, y, rankWidth, TableRowHeight), rankText);
-                Widgets.Label(new Rect(rect.x + rankWidth, y, labelWidth, TableRowHeight), workType.labelShort);
-                Widgets.Label(new Rect(rect.x + rankWidth + labelWidth, y, statusWidth, TableRowHeight), status);
-                y += TableRowHeight;
+                if (record.Level > best)
+                {
+                    best = record.Level;
+                    passion = record.passion;
+                }
             }
+            return best;
+        }
 
-            Widgets.Label(new Rect(rect.x, y, rect.width, TableRowHeight),
-                "Removed types are off (priority 0).");
+        /// <summary>
+        /// Temporary text marker for a future passion icon. Major = "**", minor = "*".
+        /// Replace this method with an icon draw when art is available.
+        /// </summary>
+        private static string PassionMarker(Passion passion)
+        {
+            if (passion == Passion.Major)
+            {
+                return " **";
+            }
+            if (passion == Passion.Minor)
+            {
+                return " *";
+            }
+            return "";
+        }
+
+        private static string PawnLabel(Pawn pawn)
+        {
+            string label = pawn.NameFullColored;
+            return string.IsNullOrEmpty(label) ? pawn.LabelShort : label;
+        }
+
+        private static LaneData BuildLane(Pawn pawn)
+        {
+            LaneData lane = new LaneData();
+            foreach (string id in WorkOrderService.GetOrder(pawn))
+            {
+                WorkTypeDef workType = DefDatabase<WorkTypeDef>.GetNamedSilentFail(id);
+                if (workType != null)
+                {
+                    lane.types.Add(workType);
+                    lane.ids.Add(id);
+                }
+            }
+            return lane;
         }
 
         private static int IndexAtX(float x, int count)
@@ -342,6 +417,12 @@ namespace OrderedWork.UI
             }
             int index = Mathf.FloorToInt((x - CardGap) / (CardWidth + CardGap));
             return Mathf.Clamp(index, 0, count - 1);
+        }
+
+        private sealed class LaneData
+        {
+            public readonly List<WorkTypeDef> types = new List<WorkTypeDef>();
+            public readonly List<string> ids = new List<string>();
         }
     }
 }

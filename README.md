@@ -1,6 +1,6 @@
-# Ordered Work (Core) 0.3.0-alpha.1
+# Ordered Work (Core) 0.3.0-alpha.2
 
-> Status: **0.3.0-alpha.1**. This build adds the first full-screen **Work Control** tab: a per-pawn horizontal WorkType lane with add/remove/drag, dense rank and a read-only result table, writing directly to `Pawn_WorkSettings` so the vanilla Work tab updates. Profiles, schedules, equipment, Overview, lane colors/stats, death parking and compatibility detection are **not implemented yet**. **Do not use it in a main save.**
+> Status: **0.3.0-alpha.2**. The **Work Control** tab now uses the vanilla Work-tab shell: one row per free colonist, a fixed pawn column on the left, a horizontal lane of WorkType cards on the right, one shared horizontal scroll for every row, and skill level + passion marker on each card. The per-pawn result table is removed. It still writes directly to `Pawn_WorkSettings` so the vanilla Work tab updates. Profiles, schedules, equipment, Overview, first-run recommendation/copy, vanilla-edit synchronization, death/resurrection reapply and compatibility detection are **not implemented yet**. **Do not use it in a main save.**
 
 Basic RimWorld 1.7 work-management framework.
 
@@ -24,15 +24,16 @@ Basic RimWorld 1.7 work-management framework.
 2. Enable it after work mods (Job Splitter, Some More Jobs, Compact Work Tab, etc.).
 3. Back up the save before enabling.
 
-## Work Control tab (0.3.0-alpha.1)
+## Work Control tab (0.3.0-alpha.2)
 - Open the new **Work Control** bottom tab (between Work and Schedule). It does **not** replace the vanilla Work tab.
-- Choose a colonist from the list at the top (player free colonists only).
-- The horizontal lane shows that colonist's WorkTypes with full names, left = highest. Drag a card to reorder; the `×` on a card removes it (off, priority 0); the `+` card opens a picker of WorkTypes not already in the lane.
-- Incapable WorkTypes are grey and cannot start a drag; they can still be removed.
-- The horizontal lane scroll position is kept when you switch pawns. The pawn list, lane and result table are all inside one outer vertical scroll.
-- The first change you make writes dense rank 1..N directly into `Pawn_WorkSettings.priorities` and calls `Notify_UseWorkPrioritiesChanged`, so the vanilla Work tab reflects the order. Merely selecting a pawn never writes.
+- Layout mirrors the Work tab: one row per player free colonist. The pawn name is a fixed left column; the rest of the row is the colonist's horizontal WorkType lane.
+- One **shared horizontal scroll** moves every lane together; one outer vertical scroll moves all pawn rows. The horizontal position is kept across redraws.
+- Cards show the best relevant skill level (`WorkTypeDef.relevantSkills`, highest level; `—` when none) and a temporary passion marker (`**` major, `*` minor). The marker is isolated in one method so a future icon can replace it.
+- Drag a card to reorder within that pawn's lane (left = highest). The `×` on a card removes it (off, priority 0). The `+` card opens a picker of WorkTypes not in that lane.
+- Incapable WorkTypes are grey, labelled `Incapaz`, cannot be added or dragged, and can still be removed.
+- The first change writes dense rank 1..N directly into `Pawn_WorkSettings.priorities` and calls `Notify_UseWorkPrioritiesChanged`, so the vanilla Work tab reflects the order. Merely opening the tab never writes.
 - Each pawn's order is saved per colony in a `GameComponent`; save/load preserves it.
-- The table below the lane is read-only: rank, WorkType and status (Active/Incapable). Removed types are off.
+- The per-pawn result table from 0.3.0-alpha.1 is removed from the main view.
 
 ## Use
 1. Open `Options -> Mod Settings -> Ordered Work`.
@@ -49,12 +50,13 @@ Basic RimWorld 1.7 work-management framework.
 - Expected log shape: `[Ordered Work] Dense rank test <pawn>: max=<max>, count=<count>, first=<defName>=<priority>, last=<defName>=<priority>`. Compare `last` with its assigned rank (e.g. 23): if it survives, direct-map mode bypasses the vanilla 4 cap; if it reads 4, the value was clamped downstream.
 - **Do not use this build in a main save**; test in a throwaway colony.
 
-## Limitations (0.3.0-alpha.1)
+## Limitations (0.3.0-alpha.2)
 - No profiles, schedules or equipment yet.
-- No death parking yet; only basic cleanup of null/dead pawns in the saved order list.
-- Incapable WorkTypes are shown grey and are never assigned.
-- One selected pawn at a time; no multi-pawn editing and no Overview comparison yet.
-- Reading the lane uses the stored order or the default `naturalPriority` order; it never applies priorities until you edit.
+- No first-run copy or skill recommendation: a pawn without a stored order shows the default `naturalPriority` order until you edit it, and editing writes the full lane at once.
+- No vanilla Work-tab synchronization hook; edits made in the vanilla Work tab are not pulled back into the lane.
+- No death/resurrection reapply yet; only basic cleanup of null/dead pawns in the saved order list.
+- The "Sort by WorkType" header button is not implemented yet.
+- Incapable WorkTypes are shown grey with a generic `Incapaz` label; a precise disability reason is not derived yet.
 - If another mod replaces the Work tab, this mod does not replace it; it writes the same vanilla priorities.
 - Not safe for a main save.
 
