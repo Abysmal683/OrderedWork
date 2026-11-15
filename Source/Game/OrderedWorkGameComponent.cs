@@ -1,0 +1,120 @@
+using System;
+using System.Collections.Generic;
+using Verse;
+
+namespace OrderedWork.Data
+{
+    /// <summary>
+    /// Save-scoped store of per-pawn work orders. Kept small: one entry per pawn
+    /// that the player has actually edited.
+    /// </summary>
+    public class OrderedWorkGameComponent : GameComponent
+    {
+        public List<PawnWorkOrder> entries = new List<PawnWorkOrder>();
+
+        public OrderedWorkGameComponent()
+        {
+        }
+
+        public override void ExposeData()
+        {
+            Scribe_Collections.Look(ref entries, "entries", LookMode.Deep);
+
+            if (Scribe.mode == LoadSaveMode.LoadingVars && entries == null)
+            {
+                entries = new List<PawnWorkOrder>();
+            }
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                Cleanup();
+            }
+        }
+
+        public PawnWorkOrder GetEntry(Pawn pawn)
+        {
+            if (pawn == null || entries == null)
+            {
+                return null;
+            }
+            for (int i = 0; i < entries.Count; i++)
+            {
+                PawnWorkOrder entry = entries[i];
+                if (entry != null && entry.pawn == pawn)
+                {
+                    return entry;
+                }
+            }
+            return null;
+        }
+
+        public List<string> GetOrder(Pawn pawn)
+        {
+            PawnWorkOrder entry = GetEntry(pawn);
+            return entry != null ? entry.order : null;
+        }
+
+        public void SetOrder(Pawn pawn, List<string> order)
+        {
+            if (pawn == null)
+            {
+                return;
+            }
+            if (entries == null)
+            {
+                entries = new List<PawnWorkOrder>();
+            }
+
+            PawnWorkOrder entry = GetEntry(pawn);
+            if (entry == null)
+            {
+                entry = new PawnWorkOrder { pawn = pawn };
+                entries.Add(entry);
+            }
+            entry.order = order != null ? new List<string>(order) : new List<string>();
+        }
+
+        /// <summary>Drops null entries and entries whose pawn died or was destroyed.</summary>
+        public void Cleanup()
+        {
+            if (entries == null)
+            {
+                return;
+            }
+            entries.RemoveAll(e =>
+                e == null ||
+                e.pawn == null ||
+                e.pawn.Destroyed ||
+                e.pawn.Dead);
+        }
+
+        /// <summary>
+        /// Returns the live component, creating one if the game did not auto-register it.
+        /// Returns null (and logs) only when no game is loaded or creation fails.
+        /// </summary>
+        public static OrderedWorkGameComponent GetOrCreate()
+        {
+            if (Current.Game == null)
+            {
+                return null;
+            }
+
+            OrderedWorkGameComponent component = Current.Game.GetComponent<OrderedWorkGameComponent>();
+            if (component != null)
+            {
+                return component;
+            }
+
+            try
+            {
+                component = new OrderedWorkGameComponent();
+                Current.Game.components.Add(component);
+                return component;
+            }
+            catch (Exception ex)
+            {
+                Log.Error("[Ordered Work] Could not create OrderedWorkGameComponent: " + ex);
+                return null;
+            }
+        }
+    }
+}

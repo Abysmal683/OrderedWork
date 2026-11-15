@@ -1,6 +1,6 @@
 # Work Control — Milestone 0.3.0-alpha.1 Checklist
 
-Status: planned, no code yet.
+Status: in progress — version 0.3.0-alpha.1. Code written; in-game checks pending.
 Goal: first usable Work Control tab with a horizontal lane that assigns WorkTypes and updates the vanilla Work tab.
 
 ## Scope in
@@ -14,6 +14,8 @@ Goal: first usable Work Control tab with a horizontal lane that assigns WorkType
   - drag/reorder;
   - dense rank 1..N;
   - grey = incapable.
+- Horizontal scroll/slide for the lane; **full names** in this version.
+- A second (outer) vertical scroll encloses the pawn list + WorkType lane so the whole block scrolls down; the horizontal lane scroll position is preserved when switching pawns.
 - Horizontal scroll/slide for the lane; compact cards; long names do not overflow.
 - Per-pawn order persisted in a `GameComponent`; default order from `naturalPriority`; missing defs skipped.
 - Direct `Pawn_WorkSettings.priorities` DefMap write; `Notify_UseWorkPrioritiesChanged`; vanilla Work tab updates.
@@ -36,6 +38,8 @@ Goal: first usable Work Control tab with a horizontal lane that assigns WorkType
 - [ ] `+` opens a picker of available WorkTypes; selecting adds it.
 - [ ] Remove/off sets that WorkType to 0.
 - [ ] Drag reorders the lane; leftmost = highest.
+- [ ] Horizontal lane scroll shows full names and does not overflow.
+- [ ] Outer vertical scroll moves the pawn list + lane; horizontal lane position is preserved when switching pawns.
 - [ ] Dense rank is unique 1..N; numbers hidden in the lane.
 - [ ] Applying writes the direct `priorities` map, calls `Notify`, and the vanilla Work tab reflects the values.
 - [ ] Values >4 are visible in the vanilla Work tab (as in the spike).

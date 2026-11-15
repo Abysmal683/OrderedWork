@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <MainButtonDef>
+    <defName>WorkControl</defName>
+    <label>work control</label>
+    <description>Order each colonist's work with a horizontal lane.</description>
+    <tabWindowClass>OrderedWork.UI.MainTabWindow_WorkControl</tabWindowClass>
+    <order>15</order>
+    <closesWorldView>true</closesWorldView>
+  </MainButtonDef>
+</Defs>

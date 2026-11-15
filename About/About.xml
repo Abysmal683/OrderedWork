@@ -3,11 +3,11 @@
   <name>Ordered Work (Core)</name>
   <author>nightmare123487</author>
   <packageId>nightmare123487.OrderedWork</packageId>
-  <modVersion>0.2.0-alpha.2</modVersion>
+  <modVersion>0.3.0-alpha.1</modVersion>
   <supportedVersions>
     <li>1.7</li>
   </supportedVersions>
-  <description>Technical spike (0.2.0-alpha.2). Ordered-work framework that orders work types and work givers, splits a work type into a new one, and merges givers into an existing work type. It never deletes work types or givers. Split work types copy work tags, skills, life-stage availability and mech availability, so traits and incapacities keep working. This build adds a pure Core dense-rank library, a console test harness, and a Mod Settings test button that writes dense rank 1..N to free colonists and logs the result. There is no visual Work Control UI yet; the dense-rank test only logs. Changes apply on restart. Do not use in a main save; back up your save first.</description>
+  <description>Work Control (0.3.0-alpha.1). Adds a full-screen "Work Control" bottom tab with a pawn selector (player free colonists only), a horizontal scrollable lane of full WorkType names, add/remove/drag reordering, grey incapable types and a read-only result table. The lane and table sit inside a second outer vertical scroll, and the horizontal lane position is preserved when switching pawns. The first edit writes dense rank 1..N straight into each pawn's Pawn_WorkSettings priorities and calls Notify_UseWorkPrioritiesChanged, so the vanilla Work tab updates; per-pawn order is saved in a GameComponent. It also keeps the earlier work-type/giver ordering, split and merge tools, which never delete work types or givers. No profiles, schedules or equipment yet. Changes to the def-layer settings apply on restart. Do not use in a main save; back up your save first.</description>
   <loadAfter>
     <li>brrainz.harmony</li>
     <li>Ludeon.RimWorld</li>
