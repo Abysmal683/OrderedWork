@@ -776,5 +776,151 @@ Design implication:
 - Global layer: applies to all pawns; load-time/restart; no runtime per-pawn changes.
 - Future: **prefabs/presets** to save/apply a global layout for users who do not want to tune it manually.
 
+## Latest refinements: lane primary, table secondary, outfits, zones, schedule boosts
+
+- **Primary input is the horizontal lane**, not the matrix. A pawn’s WorkTypes are cards/chips ordered left→right with add/drag; each level is unique (dense rank 1..N). The table below is a **read-only result view** (debug/verification), not the primary editor.
+- **Global order becomes secondary**: it is the default/base for new or unmanaged pawns and for users who like natural priority; the per-pawn lane overrides it. WorkGivers inside a WorkType keep their global `priorityInType`; the lane orders WorkTypes, not Jobs. This is a plan for which job-provider groups to try first, not a direct Job ordering.
+- **WorkType-level outfit/tool metadata**:
+  - Each WorkType card may reference a **recommended outfit/loadout** and a **recommended tool/weapon**.
+  - These are metadata/recommendations first, because a pawn wears one outfit at a time and can carry one primary weapon; multiple WorkTypes can conflict.
+  - The **Profile/Role** owns the actual outfit/loadout and area; WorkType cards show recommendations and conflicts.
+  - Do not auto-switch outfits per job by default; it is slow and produces churn. Optional explicit apply later.
+  - Medicine/drug policies are deferred to the Medical Hub, not this mod.
+- **Zones**:
+  - Vanilla has one allowed area per pawn; a zone is a constraint, not a priority.
+  - Support easy area assignment at Profile/Role/pawn level; WorkType cards may show a recommended area (e.g., hunting zone) but do not auto-apply per WorkType.
+  - Warn when the current area can block all jobs of the active WorkTypes (avoid loop/idle surprises).
+- **Schedule as a boost layer, not a second full worktab**:
+  - Two **views** in the same Work Control: **Global** (overall lane order) and **Schedule** (24-hour boost windows).
+  - A Schedule window lists one or more WorkTypes to **prioritize**, not to limit. They are prepended to the effective order; if they have no jobs, the pawn falls back to the global order.
+  - Multiple WorkTypes per window; no single-job lock. Boosts apply only to active/visible WorkTypes (off WorkTypes stay off unless the user enables them).
+  - Vanilla timetable still decides Work/Joy/Sleep; schedule boosts apply during Work hours. Effective order is recompiled per window with dense ranks and no duplicates.
+  - This enables “smart schedules” (e.g., 8–12 Smithing/Crafting, 12–18 Hauling/Cleaning) without locking the pawn to one job.
+
+## Latest refinements v4: auto-equip stations, zones, per-WorkType windows
+
+### Correction: there is no vanilla mannequin equip station
+
+- No `Mannequin`/`ArmorRack` ThingDef exists in vanilla `Data`.
+- `VFEM2_MannequinStand` is from **Vanilla Furniture Expanded - Medieval 2**; it is a tailoring linkable (work speed/cost bonus), not an equip/return station.
+- **Armor Racks** (Khamenman) is the mod with owner assignment and Equip/Transfer commands; its page says 1.7 is not updated. Do not assume it as a hard dependency.
+
+### Auto-equip rules
+
+- Per-pawn, per-WorkType rule:
+  - `enabled`, `outfit/loadoutRef`, `tool/weaponRef`, `stationRef`/room, optional time window.
+  - Per-pawn override beats global/default; useful for mechanitor, king, specialist.
+- Trigger on **WorkType change**, not on every job: if the pawn starts working a different WorkType and its current outfit/tool differs, go to the assigned station, equip the expected set, and later return the previous set. Cooldown; skip if drafted, emergency, downed, or station inaccessible.
+- Provider abstraction:
+  - **Own Work Locker/Outfit Station** (recommended for control): stores one outfit + tool, assigned to a pawn/room; custom equip/return jobs; no dropping.
+  - **Armor Racks** integration if a 1.7-compatible version exists.
+  - Generic shelf/stockpile fallback; no quick swap.
+- Mannequin visual can be used for our own station; do not rely on vanilla.
+- Medicine/drug policies stay in the Medical Hub.
+
+### Zones
+
+- Remove the WorkType zone recommendation.
+- One allowed area per pawn; easy assignment at pawn/profile level.
+- Add a **bulk/emergency zone tab** to change many pawns at once; no per-WorkType auto.
+- Warn when the area can block the active WorkTypes (loop/idle risk).
+
+### Per-WorkType time windows (replaces the schedule matrix)
+
+- Keep the global lane as the pawn’s base order.
+- In the advanced per-pawn detail, each WorkType can have one or more **start/end windows** where it gains priority.
+- If a window is active and that WorkType has jobs, it jumps ahead; if several windows overlap, the **global lane order** decides.
+- If the boosted WorkType has no job, the pawn falls back to normal global order; nothing is limited.
+- No separate 24h matrix; a regular Schedule view shows the vanilla Work/Joy/Sleep timetable, and the advanced detail edits WorkType windows.
+
+## Latest refinements v5: Outfit Stand, room/workplace, advanced pawn tab
+
+### Outfit Stand is Odyssey DLC (not base vanilla)
+
+- `Building_OutfitStand` is from **Odyssey**. It stores one outfit (apparel + weapons) and can swap gear slots with a pawn.
+- Jobs: `UseOutfitStand` (`JobDriver_UseOutfitStand`) and `PutApparelOnOutfitStand` (`JobDriver_PutApparelOnOutfitStand`).
+- API/fields: `innerContainer`, `settings`, `allowRemovingItems`, `AddApparel`, `RemoveApparel`, `GetGizmos`, `GetFloatMenuOptionToEquipWeapon`.
+- Swapping takes time based on equip delay; it swaps all overlapping slots, so it can be used to toggle between work and off-duty outfits.
+- Kid outfit stand exists for Biotech children.
+- If Odyssey is absent, fall back to Armor Racks (if 1.7) or a generic shelf; no base-game mannequin.
+
+### Auto-equip with Outfit Stand rules
+
+- Per-pawn, per-WorkType: `outfit`, `tool/weapon`, `stand/room`, `enabled`, `special window`.
+- Trigger on **WorkType change**, not every job. If the expected outfit/tool differs and a reachable stand has it, create `UseOutfitStand`; after the work period/WorkType change, use the stand again to swap back.
+- Time budget: aim for equipped and working in **under 0.5 in-game hours**. If path + equip would exceed the configured limit, skip and log; keep the pawn working.
+- Do not swap while drafted, in emergency, downed, or when the stand is unreachable. Cooldown; no dropping.
+- Multiple outfits per pawn are the hard case: one stand toggles between two outfits; one stand per WorkType leaves outfits distributed across stands. Recommendation: **one work outfit per pawn/role (one stand) in v1**; per-WorkType outfit recommendations; multi-stand/locker later.
+- Specialists/mechanitor/king: per-pawn override.
+- Medicine/drugs remain in the Medical Hub.
+
+### Room/workplace assignment
+
+- Related mods: **AssignedWorkbenches** (Set Owner on benches, assigned pawns only), **Personal Doors/Locks** (room access), **Do Your Research** (specific bench), **Better Workbench Management** (bills).
+- A room/workplace assignment is useful but can become noise and hard restrictions (loops, blocked paths).
+- Recommendation: **defer**. Use the outfit stand placed near the work room/station; if a preferred-room feature is added later, make it a **soft priority hint**, not a hard restriction, and do not duplicate AssignedWorkbenches/Personal Doors.
+
+### Advanced per-pawn tab content
+
+- WorkTypes list; inside each:
+  - outfit + tool rule;
+  - special priority time windows;
+  - general schedule (vanilla Work/Joy/Sleep + modded assignments);
+  - key info of the selected WorkType (skills, speed, capacities, task count, derived recipe skills/requirements);
+  - general restricted zone;
+  - optional room/workplace preference.
+- The lane remains the quick view; the advanced tab is the detail editor.
+- Below the lane, the result table stays read-only.
+
+## Latest refinements v6: emergency equipment, stand ownership, lane visuals, multi-pawn jobs
+
+### Equipment and emergency
+
+- Future: Simple Sidearms-like weapon/outfit switching when the pawn is not properly equipped, or when an emergency starts.
+- Security/Response may trigger the emergency path: pawns with an indicator grab nearby armor/gear to improve survival; the WorkType outfit priority is still respected for activatable/specialist cases.
+- Keep the normal work path non-clunky: order is a mid-game improvement, not a requirement from minute one; the mod must let the colony work normally while order is added.
+
+### Outfit stand per workstation
+
+- One outfit stand per **workstation/room**, linked to the pawn who works there; the pawn does not search random stands.
+- Ownership:
+  - the outfit + stand belong to one pawn;
+  - while worn, the outfit is temporarily owned by that pawn;
+  - if an emergency interrupts, the pawn recovers its outfit from the stand/location where it was left.
+- This avoids theft and searching, and keeps a predictable swap location.
+- Trigger on WorkType change; stand near the workstation; target under 0.5 in-game hours equipped and working; skip if the path/equip exceeds the limit.
+- Room assignment as a separate feature is discarded; assigned workbenches/rooms decide who works where.
+
+### Lane visual options
+
+- Quality/passion indicator:
+  - show the relevant skill’s **passion flame**; with multi-passion mods, show the passion that represents the pawn for that task;
+  - quality stars only where the WorkType produces quality items, labeled as an estimate; otherwise passion/skill.
+- Compact mode: icon + full name on hover/tooltip; horizontal slide/scroll for long names so the lane never overflows.
+- Skill level: setting to always show the level, or show on hover like vanilla.
+- These are view-only options; cached; no data change.
+
+### Schedules
+
+- Per-WorkType start/end priority windows remain; global order is the tie-breaker; fallback to normal when no jobs.
+- Unique workbenches per pawn can add noise; keep this optional and let assigned benches decide.
+- With many colonists, the schedule can help prioritize or save a shift, but it must not force or lock work.
+
+### Multi-pawn jobs
+
+- Vanilla work is **single-pawn**: WorkGiver → Job → JobDriver. Group activities use **Lord/LordJob/LordToil** (rituals, parties, sieges, group duties); `JobDriver` can target another pawn but still has one actor.
+- Multi-pawn work mods patch reservations/WorkGivers or create extra helper jobs; examples researched:
+  - **MultiConstruction** (3562530209) — multiple builders/repairers on one blueprint; diminishing returns; author warns it may be broken.
+  - **MultiHunter** (3560890077) — multiple hunters on one animal; overwrites reservation; taming/training side effects reported.
+  - **Team Builders** (3570660265) — Call Builders/Min Builders; does not work with MultiConstruction.
+  - **Bulk Load For Transporters** (3559292908) — multi-pawn loading; requires Pick Up And Haul.
+  - **Colony Groups** / **WorkGroups** — grouping/role assignment, not native multi-actor jobs.
+- Integration strategy: compatibility/detection first; do not reimplement their reservation model; mark team-capable WorkTypes/roles; coordinate schedules and outfit stations; use their APIs or Lord jobs; test minimal profiles for reservation conflicts and job spam.
+- Multi-pawn is a later module; it must not destabilize the single-pawn lane.
+
+
+
+
+
 
 
