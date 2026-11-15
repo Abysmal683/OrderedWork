@@ -17,6 +17,9 @@ namespace OrderedWork.Services
     public static class WorkOrderService
     {
         private const BindingFlags PrivateInstance = BindingFlags.Instance | BindingFlags.NonPublic;
+        private const int PostSpawnCaptureSuppressionTicks = 120;
+
+        private static readonly string[] RecommendationPins = { "Patient", "PatientBedRest", "Firefighter" };
 
         private static List<WorkTypeDef> cachedAvailable;
         private static FieldInfo cachedPrioritiesField;
@@ -29,6 +32,9 @@ namespace OrderedWork.Services
 
         /// <summary>True while a pawn is spawning, so the vanilla hook ignores setup writes.</summary>
         public static bool IsSpawning { get; set; }
+
+        /// <summary>True while Pawn_WorkSettings initializes, so the vanilla hook ignores it.</summary>
+        public static bool IsInitializing { get; set; }
 
         /// <summary>Visible WorkTypeDefs, cached; ordered by naturalPriority descending.</summary>
         public static List<WorkTypeDef> GetAvailableWorkTypes()
@@ -56,17 +62,63 @@ namespace OrderedWork.Services
         }
 
         /// <summary>
-        /// Skill recommendation: capable visible WorkTypes by best relevant skill descending,
-        /// then naturalPriority descending. Used for new colonies and new colonists.
+        /// Skill recommendation. Patient, PatientBedRest and Firefighter are pinned first
+        /// (when capable, in that order), then the remaining capable WorkTypes are scored:
+        /// no relevant skill = 0; level 0 with no/minor/major passion = -3 / 1 / 3;
+        /// level &gt;= 1 = level * 2 + (minor 2 / major 4). Descending score, then
+        /// naturalPriority descending. Used for new colonies and new colonists only.
         /// </summary>
         public static List<string> GetRecommendation(Pawn pawn)
         {
-            return GetAvailableWorkTypes()
-                .Where(w => !IsIncapable(pawn, w))
-                .OrderByDescending(w => BestSkillLevel(pawn, w, out _))
+            List<string> pins = new List<string>();
+            foreach (string defName in RecommendationPins)
+            {
+                WorkTypeDef pinned = DefDatabase<WorkTypeDef>.GetNamedSilentFail(defName);
+                if (pinned != null && pinned.visible && !IsIncapable(pawn, pinned) && !pins.Contains(pinned.defName))
+                {
+                    pins.Add(pinned.defName);
+                }
+            }
+
+            List<WorkTypeDef> scored = new List<WorkTypeDef>();
+            foreach (WorkTypeDef workType in GetAvailableWorkTypes())
+            {
+                if (workType == null || IsIncapable(pawn, workType) || pins.Contains(workType.defName))
+                {
+                    continue;
+                }
+                scored.Add(workType);
+            }
+
+            List<string> result = new List<string>(pins);
+            result.AddRange(scored
+                .OrderByDescending(w => RecommendationScore(pawn, w))
                 .ThenByDescending(w => w.naturalPriority)
-                .Select(w => w.defName)
-                .ToList();
+                .Select(w => w.defName));
+            return result;
+        }
+
+        private static int RecommendationScore(Pawn pawn, WorkTypeDef workType)
+        {
+            int level = BestSkillLevel(pawn, workType, out Passion passion);
+            if (level < 0)
+            {
+                // No relevant skill at all.
+                return 0;
+            }
+            if (level == 0)
+            {
+                if (passion == Passion.Major)
+                {
+                    return 3;
+                }
+                if (passion == Passion.Minor)
+                {
+                    return 1;
+                }
+                return -3;
+            }
+            return level * 2 + (passion == Passion.Major ? 4 : passion == Passion.Minor ? 2 : 0);
         }
 
         /// <summary>
@@ -260,7 +312,7 @@ namespace OrderedWork.Services
         /// </summary>
         public static void OnVanillaPriorityChanged(Pawn_WorkSettings settings)
         {
-            if (IsApplying || IsSpawning)
+            if (IsApplying || IsSpawning || IsInitializing)
             {
                 return;
             }
@@ -279,6 +331,14 @@ namespace OrderedWork.Services
 
                 OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
                 if (component == null || !component.initialized)
+                {
+                    return;
+                }
+
+                // Ignore the settling window right after spawn/resurrection, where the
+                // vanilla Work tab may still be partially initialized.
+                PawnWorkOrder entry = component.GetEntry(pawn);
+                if (entry != null && CurrentTick < entry.captureSuppressedUntilTick)
                 {
                     return;
                 }
@@ -315,15 +375,26 @@ namespace OrderedWork.Services
                 }
 
                 PawnWorkOrder entry = component.GetEntry(pawn);
+                int suppressUntil = CurrentTick + PostSpawnCaptureSuppressionTicks;
                 if (entry != null)
                 {
+                    // Reapply the stored order exactly once and suppress vanilla capture
+                    // while the Work tab settles, so a partial state cannot overwrite it.
+                    entry.captureSuppressedUntilTick = suppressUntil;
                     Apply(pawn, Normalize(pawn, entry.order));
+                    Log.Message("[Ordered Work] Reapplied stored order after spawn for " + pawn.LabelShort + ".");
                 }
                 else
                 {
                     List<string> recommendation = GetRecommendation(pawn);
                     component.SetOrder(pawn, recommendation);
+                    PawnWorkOrder created = component.GetEntry(pawn);
+                    if (created != null)
+                    {
+                        created.captureSuppressedUntilTick = suppressUntil;
+                    }
                     Apply(pawn, recommendation);
+                    Log.Message("[Ordered Work] Applied recommendation after spawn for " + pawn.LabelShort + ".");
                 }
             }
             catch (Exception ex)
@@ -357,6 +428,11 @@ namespace OrderedWork.Services
 
                 List<string> recommendation = GetRecommendation(pawn);
                 component.SetOrder(pawn, recommendation);
+                PawnWorkOrder created = component.GetEntry(pawn);
+                if (created != null)
+                {
+                    created.captureSuppressedUntilTick = CurrentTick + PostSpawnCaptureSuppressionTicks;
+                }
                 Apply(pawn, recommendation);
             }
             catch (Exception ex)
@@ -407,6 +483,7 @@ namespace OrderedWork.Services
             }
 
             int best = -1;
+            Passion bestPassion = Passion.None;
             foreach (SkillDef skill in workType.relevantSkills)
             {
                 if (skill == null)
@@ -421,10 +498,28 @@ namespace OrderedWork.Services
                 if (record.Level > best)
                 {
                     best = record.Level;
-                    passion = record.passion;
+                    bestPassion = record.passion;
+                }
+                else if (record.Level == best && PassionRank(record.passion) > PassionRank(bestPassion))
+                {
+                    bestPassion = record.passion;
                 }
             }
+            passion = bestPassion;
             return best;
+        }
+
+        private static int PassionRank(Passion passion)
+        {
+            if (passion == Passion.Major)
+            {
+                return 2;
+            }
+            if (passion == Passion.Minor)
+            {
+                return 1;
+            }
+            return 0;
         }
 
         /// <summary>
@@ -492,6 +587,11 @@ namespace OrderedWork.Services
         private static bool IsManagedFreeColonist(Pawn pawn)
         {
             return pawn != null && !pawn.Dead && !pawn.Destroyed && pawn.IsFreeColonist;
+        }
+
+        private static int CurrentTick
+        {
+            get { return Find.TickManager != null ? Find.TickManager.TicksGame : 0; }
         }
 
         private static Pawn GetOwningPawn(Pawn_WorkSettings settings)

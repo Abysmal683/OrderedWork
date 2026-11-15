@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using OrderedWork.Services;
 using Verse;
 
 namespace OrderedWork.Data
@@ -33,6 +34,19 @@ namespace OrderedWork.Data
             {
                 Cleanup();
             }
+        }
+
+        /// <summary>
+        /// Initializes the colony as soon as a map exists, even if the vanilla Work tab is
+        /// opened first. Idempotent: EnsureColonyInitialized returns once initialized is set.
+        /// </summary>
+        public override void GameComponentTick()
+        {
+            if (initialized || Find.CurrentMap == null)
+            {
+                return;
+            }
+            WorkOrderService.EnsureColonyInitialized();
         }
 
         public PawnWorkOrder GetEntry(Pawn pawn)

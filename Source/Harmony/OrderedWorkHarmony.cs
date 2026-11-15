@@ -36,6 +36,36 @@ namespace OrderedWork.Patches
         }
     }
 
+    [HarmonyPatch(typeof(Pawn_WorkSettings), nameof(Pawn_WorkSettings.EnableAndInitialize))]
+    internal static class Patch_PawnWorkSettings_EnableAndInitialize
+    {
+        private static void Prefix(out bool __state)
+        {
+            __state = WorkOrderService.IsInitializing;
+            WorkOrderService.IsInitializing = true;
+        }
+
+        private static void Postfix(bool __state)
+        {
+            WorkOrderService.IsInitializing = __state;
+        }
+    }
+
+    [HarmonyPatch(typeof(Pawn_WorkSettings), nameof(Pawn_WorkSettings.EnableAndInitializeIfNotAlreadyInitialized))]
+    internal static class Patch_PawnWorkSettings_EnableAndInitializeIfNeeded
+    {
+        private static void Prefix(out bool __state)
+        {
+            __state = WorkOrderService.IsInitializing;
+            WorkOrderService.IsInitializing = true;
+        }
+
+        private static void Postfix(bool __state)
+        {
+            WorkOrderService.IsInitializing = __state;
+        }
+    }
+
     [HarmonyPatch(typeof(Pawn), nameof(Pawn.SpawnSetup))]
     internal static class Patch_Pawn_SpawnSetup
     {

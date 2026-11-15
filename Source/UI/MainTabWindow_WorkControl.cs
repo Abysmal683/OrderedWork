@@ -18,9 +18,9 @@ namespace OrderedWork.UI
         private const float Pad = 12f;
         private const float TitleHeight = 30f;
         private const float HeaderHeight = 24f;
-        private const float RowHeight = 100f;
+        private const float RowHeight = 86f;
         private const float CardWidth = 190f;
-        private const float CardHeight = 80f;
+        private const float CardHeight = 64f;
         private const float CardGap = 6f;
         private const float LeftColumnMin = 180f;
         private const float LeftColumnMax = 280f;
@@ -188,19 +188,19 @@ namespace OrderedWork.UI
                 Widgets.DrawBox(cardRect, 2);
             }
 
-            Rect removeRect = new Rect(cardRect.xMax - 22f, cardRect.y + 3f, 18f, 18f);
-            Rect bodyRect = new Rect(cardRect.x, cardRect.y + 22f, cardRect.width, cardRect.height - 26f);
+            Rect removeRect = new Rect(cardRect.xMax - 20f, cardRect.y + 2f, 18f, 18f);
+            Rect bodyRect = new Rect(cardRect.x, cardRect.y + 20f, cardRect.width, cardRect.height - 22f);
 
             // Line 1: the WorkType name on a single line, ellipsized. Full name is in the tooltip.
             bool previousWrap = Text.WordWrap;
             Text.WordWrap = false;
-            Widgets.LabelEllipses(new Rect(cardRect.x + 6f, cardRect.y + 16f, cardRect.width - 30f, 22f), workType.labelShort);
+            Widgets.LabelEllipses(new Rect(cardRect.x + 6f, cardRect.y + 10f, cardRect.width - 28f, 22f), workType.labelShort);
             Text.WordWrap = previousWrap;
 
             // Line 2: best relevant skill level plus the passion marker.
             GameFont previousFont = Text.Font;
             Text.Font = GameFont.Tiny;
-            Widgets.Label(new Rect(cardRect.x + 6f, cardRect.y + 40f, cardRect.width - 12f, 18f),
+            Widgets.Label(new Rect(cardRect.x + 6f, cardRect.y + 34f, cardRect.width - 12f, 18f),
                 CardInfo(pawn, workType));
             Text.Font = previousFont;
 
@@ -282,13 +282,20 @@ namespace OrderedWork.UI
                 {
                     continue;
                 }
+
+                int level = WorkOrderService.BestSkillLevel(pawn, workType, out _);
+                string levelText = level >= 0 ? level.ToString() : "-";
+                string label = workType.labelShort + " [" + levelText + "]";
+
                 if (WorkOrderService.IsIncapable(pawn, workType))
                 {
+                    // Shown but disabled: incapable types can never be added to the lane.
+                    options.Add(new FloatMenuOption(label + " - Incapaz", null));
                     continue;
                 }
 
                 WorkTypeDef local = workType;
-                options.Add(new FloatMenuOption(local.labelShort, delegate
+                options.Add(new FloatMenuOption(label, delegate
                 {
                     List<string> updated = WorkOrderService.GetOrder(pawn);
                     if (!updated.Contains(local.defName))
