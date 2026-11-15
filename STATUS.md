@@ -28,8 +28,8 @@ Version: `0.3.0-alpha.4`, installed. Build 0/0, 7/7 tests. Git `c15f8ef`, tag `v
 ## Requested changes (not implemented)
 
 1. **Margins**: reduce internal content margin to 2–4 px per side; keep compact.
-2. **View modes**: discard “Simple”; use Draw / Manual / Both (clarify “3”).
-   - Default at new game: likely Both (Manual/Draw available).
+2. **View modes**: discard “Simple”; use Draw / Manual / Both.
+   - Default at new game: **Both** (Manual/Draw available).
    - Button in Work Control to open the vanilla Work tab.
 3. **Pawn selection**: selected row border; double-click selects pawn and jumps camera; search box above matrix by pawn name (not the jobs search).
 4. **Result table**: discarded; the manual Work tab is better.
@@ -39,18 +39,20 @@ Version: `0.3.0-alpha.4`, installed. Build 0/0, 7/7 tests. Git `c15f8ef`, tag `v
    - Requires clean-room Harmony transpilers/prefixes; technical spike; test with manual Work tab and hook.
 6. **Passion icons**: use `WidgetsWork.PassionWorkboxMinorIcon`/`MajorIcon` instead of `*`/`**`.
 
-## Open questions
+## Clarifications (saved)
 
-1. Confirm modes: Draw / Manual / Both? Default Both or Draw at new game?
-2. “Remove lowpriority”: allow manual 1..N in the vanilla Work tab, or only make our Work Control interactive?
-3. Search box filters rows or only highlights matches?
-4. Double-click selects and jumps camera, or only selects?
-5. Priority max for manual Work tab: dynamic N, fixed 9/99, or configurable?
+1. **Modes**: proceed with the three: **Draw / Manual / Both**. Default on new game: **Both** (Draw + Manual available).
+2. **Low priority**: the patch must cover the **vanilla Work tab** too, allowing manual 1..N there. Dynamic maximum if technically safe; fallback to fixed 99 only if dynamic causes serious problems.
+3. **Search + row marking**: the search box highlights matching pawn rows only; it must **not select** them.
+4. **Double click**: selects the pawn and **moves the camera** to the pawn.
+5. **Result table**: discarded.
+6. **Passion icons**: use the vanilla `WidgetsWork` minor/major icons.
 
 ## Next implementation order
 
-1. Margins + selection border + search.
-2. View mode + button to Work tab.
-3. Vanilla Work tab low-priority patch spike.
+1. Margins + selection border + highlight-only search.
+2. Modes + button to Work tab.
+3. Vanilla Work tab low-priority patch spike (dynamic max, fallback 99).
 4. Passion icons.
 5. Re-test both tabs, manual >4, hook, resurrection, save/load.
+
