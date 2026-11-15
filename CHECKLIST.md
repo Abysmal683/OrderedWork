@@ -38,10 +38,24 @@ Goal: first usable Work Control tab with a horizontal lane that assigns WorkType
 - First initialization in a **new/default colony**: generate the skill recommendation and apply it once.
 - Any **new colonist after initialization** (including a recruited enemy): generate the skill recommendation and apply it once.
 - After initialization, the player’s lane edits are the source of truth; the stored order is saved.
-- Add isolated buttons for the selected pawn: **Generate recommendation** and **Sync from Work tab**. They must not affect other pawns.
+- Add an isolated **Generate recommendation** button for the selected pawn; it must not affect other pawns.
+- Do **not** add a “Sync from Work tab” button. Capture vanilla Work-tab changes automatically:
+  - Harmony postfix on `Pawn_WorkSettings.SetPriority`/`Notify_UseWorkPrioritiesChanged` for managed pawns;
+  - rebuild the stored order from the current priorities, with an `isApplying` guard to ignore our own writes;
+  - future setting: both UIs or only ours.
 - On death/resurrection, reapply the stored order after the pawn spawns (Harmony postfix on spawn/resurrect). Work Control already shows the stored order; the vanilla Work tab must be re-synced too.
 - UI states: **Active/assigned** (rank), **Off/not assigned** (priority 0, dim), **Incapable** (grey, tooltip reason; not addable).
 - No automatic refill with all WorkTypes after the first initialization or after removing entries; an empty stored order means “all off.”
+
+## Main layout: Work-tab rows as lanes
+
+- Keep the Work-tab shell: rows = pawns, one row per pawn.
+- Replace the check-cell row with a **horizontal lane of movable WorkType cards** in that pawn’s priority order.
+- One **shared horizontal scroll** for all rows (so the whole grid moves together and the lane position is preserved); one outer vertical scroll for pawn rows + result table.
+- No fixed check columns; cards are the cells. The header is a legend/control area, not a fixed column grid.
+- States: Active/assigned, Off/not assigned, Incapable (grey + reason; not addable).
+- Future: a “Sort by WorkType” button aligns/highlights one WorkType across rows without hiding the others, so the player can compare priority/skill for that WorkType.
+- Future setting: both Work tabs or only the mod’s Work Control.
 
 ## Functional checks
 
