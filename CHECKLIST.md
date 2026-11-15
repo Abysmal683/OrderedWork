@@ -30,6 +30,19 @@ Goal: first usable Work Control tab with a horizontal lane that assigns WorkType
 - Replacing the vanilla Work tab.
 - Per-giver per-pawn priorities.
 
+## Loading and synchronization semantics
+
+- Fix `OrderedWorkGameComponent` so RimWorld can instantiate it with a `Game` constructor; the current parameterless constructor fails at runtime (`MissingMethodException`).
+- Add an `initialized` flag to the GameComponent.
+- First initialization in an **existing colony**: copy the current Work-tab priorities into the per-pawn order for existing free colonists; sort active types by priority (1 highest) then `naturalPriority`; do not auto-recommend. Do not write vanilla until the first edit (or a “Sync & apply” button) to avoid silently changing an established colony.
+- First initialization in a **new/default colony**: generate the skill recommendation and apply it once.
+- Any **new colonist after initialization** (including a recruited enemy): generate the skill recommendation and apply it once.
+- After initialization, the player’s lane edits are the source of truth; the stored order is saved.
+- Add isolated buttons for the selected pawn: **Generate recommendation** and **Sync from Work tab**. They must not affect other pawns.
+- On death/resurrection, reapply the stored order after the pawn spawns (Harmony postfix on spawn/resurrect). Work Control already shows the stored order; the vanilla Work tab must be re-synced too.
+- UI states: **Active/assigned** (rank), **Off/not assigned** (priority 0, dim), **Incapable** (grey, tooltip reason; not addable).
+- No automatic refill with all WorkTypes after the first initialization or after removing entries; an empty stored order means “all off.”
+
 ## Functional checks
 
 - [ ] New bottom tab appears; full-screen; vanilla Work tab still exists.
