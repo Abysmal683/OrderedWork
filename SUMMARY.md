@@ -159,3 +159,11 @@ Part of a three-mod suite (standalone-first, optional integration): Work Control
 - 1.7 compatibility of the 1.6 multi-pawn mods; which to support first.
 - Mining: use Forced Tools as reference/provider, or add our own tool rules.
 - Whether room/workplace assignment ever returns as a soft preference.
+
+## 16. Final alpha.4 decision (close)
+
+- **New game default: Draw automatic** — recommendation with Patient/PatientBedRest/Firefighter pins, applied once.
+- Existing colony: copy vanilla Work-tab order; no auto-write.
+- Future setting: view mode **Draw** / **Manual/Vanilla** / **Both**; keep the vanilla Work tab, do not remove it.
+- Alpha.4 user test passed: game-start initialization, pins, + picker levels, incapable filtering, resurrection reapply.
+- Next session: view-mode setting, row selection/double-click/search, collapsible optional result table.

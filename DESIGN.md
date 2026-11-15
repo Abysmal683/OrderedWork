@@ -918,6 +918,15 @@ Design implication:
 - Integration strategy: compatibility/detection first; do not reimplement their reservation model; mark team-capable WorkTypes/roles; coordinate schedules and outfit stations; use their APIs or Lord jobs; test minimal profiles for reservation conflicts and job spam.
 - Multi-pawn is a later module; it must not destabilize the single-pawn lane.
 
+## Final alpha.4 decision — new game default and view mode
+
+- New game/default colony: **Draw automatic** — generate the skill recommendation (with Patient/PatientBedRest/Firefighter pins) and apply it once.
+- Existing colony on first install: copy the vanilla Work-tab order; do not auto-write.
+- The view mode can later be switched to **Manual/Vanilla**; the player can keep the vanilla Work tab, with Work Control as a view/optional editor.
+- Future mode setting: Draw (default for new games) / Manual / Both; do not remove the vanilla Work tab.
+- Alpha.4 user test: initialization at game start, pins, + picker levels, incapable filtering, and resurrection reapply passed.
+- Close for today: next session starts with the view-mode setting, then row selection/double-click/search and the collapsible/optional result table.
+
 
 
 
