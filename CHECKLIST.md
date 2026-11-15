@@ -1,6 +1,6 @@
-# Work Control — Milestone 0.3.0-alpha.2 Checklist
+# Work Control — Milestone 0.3.0-alpha.3 Checklist
 
-Status: in progress — version 0.3.0-alpha.2. Row-lane layout and GameComponent constructor iteration written; in-game checks pending.
+Status: in progress — version 0.3.0-alpha.3. Two-line cards, incapable filtering, one-time initialization, vanilla capture hook and spawn/resurrection reapply written; in-game checks pending.
 Goal: first usable Work Control tab with a horizontal lane that assigns WorkTypes and updates the vanilla Work tab.
 
 ## Scope in

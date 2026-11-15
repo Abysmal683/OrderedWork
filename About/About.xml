@@ -3,11 +3,11 @@
   <name>Ordered Work (Core)</name>
   <author>nightmare123487</author>
   <packageId>nightmare123487.OrderedWork</packageId>
-  <modVersion>0.3.0-alpha.2</modVersion>
+  <modVersion>0.3.0-alpha.3</modVersion>
   <supportedVersions>
     <li>1.7</li>
   </supportedVersions>
-  <description>Work Control (0.3.0-alpha.2). Adds a full-screen "Work Control" bottom tab laid out like the vanilla Work tab: one row per free colonist, a fixed pawn name column on the left and a horizontal lane of movable WorkType cards on the right. There is one shared horizontal scroll for all rows, so moving it moves every lane together, and one outer vertical scroll over all pawn rows. Cards show the best relevant skill level and a temporary passion marker, wrap full WorkType names, and offer add (+), remove (x) and drag reorder; incapable types are grey and cannot be added or dragged. The first edit writes dense rank 1..N straight into each pawn's Pawn_WorkSettings priorities and calls Notify_UseWorkPrioritiesChanged, so the vanilla Work tab updates; per-pawn order is saved in a GameComponent. The previous per-pawn result table is removed. It also keeps the earlier work-type/giver ordering, split and merge tools, which never delete work types or givers. No profiles, schedules or equipment yet. Changes to the def-layer settings apply on restart. Do not use in a main save; back up your save first.</description>
+  <description>Work Control (0.3.0-alpha.3). Adds a full-screen "Work Control" bottom tab laid out like the vanilla Work tab: one row per free colonist, a fixed pawn name column and a horizontal lane of movable WorkType cards, with one shared horizontal scroll and one outer vertical scroll. Each card has exactly two lines: the WorkType name on one line (ellipsized, full name in tooltip) and the best relevant skill level plus a temporary passion marker. Incapable WorkTypes are filtered out of the lane, the default order and the add picker, so they never appear or become draggable. On the first open the mod initializes once: an existing colony copies its current vanilla Work-tab priorities without writing, while a new/default colony gets a skill-based recommendation applied once; later new colonists and resurrected colonists are handled automatically. A Harmony hook captures edits made in the vanilla Work tab and rebuilds the stored per-pawn order. The first edit writes dense rank 1..N straight into each pawn's Pawn_WorkSettings priorities and calls Notify_UseWorkPrioritiesChanged. No profiles, schedules or equipment yet. Do not use in a main save; back up your save first.</description>
   <loadAfter>
     <li>brrainz.harmony</li>
     <li>Ludeon.RimWorld</li>

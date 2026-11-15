@@ -11,6 +11,7 @@ namespace OrderedWork.Data
     public class OrderedWorkGameComponent : GameComponent
     {
         public List<PawnWorkOrder> entries = new List<PawnWorkOrder>();
+        public bool initialized;
 
         // RimWorld instantiates GameComponents with Activator.CreateInstance(type, game),
         // so the subclass must expose a (Game) constructor. Verse.GameComponent itself only
@@ -22,6 +23,7 @@ namespace OrderedWork.Data
         public override void ExposeData()
         {
             Scribe_Collections.Look(ref entries, "entries", LookMode.Deep);
+            Scribe_Values.Look(ref initialized, "initialized", false);
 
             if (Scribe.mode == LoadSaveMode.LoadingVars && entries == null)
             {
@@ -76,7 +78,10 @@ namespace OrderedWork.Data
             entry.order = order != null ? new List<string>(order) : new List<string>();
         }
 
-        /// <summary>Drops null entries and entries whose pawn died or was destroyed.</summary>
+        /// <summary>
+        /// Drops null entries and entries whose pawn was destroyed. Dead (but not destroyed)
+        /// pawns keep their order so a resurrection can reapply it.
+        /// </summary>
         public void Cleanup()
         {
             if (entries == null)
@@ -86,8 +91,7 @@ namespace OrderedWork.Data
             entries.RemoveAll(e =>
                 e == null ||
                 e.pawn == null ||
-                e.pawn.Destroyed ||
-                e.pawn.Dead);
+                e.pawn.Destroyed);
         }
 
         /// <summary>

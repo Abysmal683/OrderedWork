@@ -50,6 +50,8 @@ namespace OrderedWork.UI
                 return;
             }
 
+            WorkOrderService.EnsureColonyInitialized();
+
             List<WorkTypeDef> available = WorkOrderService.GetAvailableWorkTypes();
 
             float leftWidth = Mathf.Clamp(inRect.width * 0.22f, LeftColumnMin, LeftColumnMax);
@@ -126,10 +128,22 @@ namespace OrderedWork.UI
                         continue;
                     }
 
+                    Pawn pawn = colonists[i];
+
                     TextAnchor previous = Text.Anchor;
                     Text.Anchor = TextAnchor.MiddleLeft;
-                    Widgets.Label(new Rect(6f, y, leftWidth - 14f, RowHeight), PawnLabel(colonists[i]));
+                    Widgets.Label(new Rect(6f, y, leftWidth - 44f, RowHeight), PawnLabel(pawn));
                     Text.Anchor = previous;
+
+                    Rect recommendRect = new Rect(leftWidth - 34f, y + (RowHeight - 24f) / 2f, 26f, 24f);
+                    if (Widgets.ButtonText(recommendRect, "R"))
+                    {
+                        WorkOrderService.GenerateAndApplyRecommendation(pawn);
+                    }
+                    if (Mouse.IsOver(recommendRect))
+                    {
+                        TooltipHandler.TipRegion(recommendRect, "Generate recommendation");
+                    }
                 }
             }
             finally
@@ -166,8 +180,6 @@ namespace OrderedWork.UI
 
         private void DrawCard(Pawn pawn, Rect cardRect, WorkTypeDef workType, List<string> laneIds, int index, ref int removeIndex)
         {
-            bool incapable = WorkOrderService.IsIncapable(pawn, workType);
-
             Widgets.DrawBoxSolid(cardRect, new Color(0.19f, 0.21f, 0.24f, 0.95f));
 
             if (dragging && pawn == dragPawn && index == dragTargetIndex)
@@ -179,28 +191,22 @@ namespace OrderedWork.UI
             Rect removeRect = new Rect(cardRect.xMax - 22f, cardRect.y + 3f, 18f, 18f);
             Rect bodyRect = new Rect(cardRect.x, cardRect.y + 22f, cardRect.width, cardRect.height - 26f);
 
-            Color previousColor = GUI.color;
-            if (incapable)
-            {
-                GUI.color = new Color(0.6f, 0.6f, 0.6f, 1f);
-            }
-
-            Rect labelRect = new Rect(cardRect.x + 6f, cardRect.y + 4f, cardRect.width - 30f, 44f);
+            // Line 1: the WorkType name on a single line, ellipsized. Full name is in the tooltip.
             bool previousWrap = Text.WordWrap;
-            Text.WordWrap = true;
-            Widgets.Label(labelRect, workType.labelShort);
+            Text.WordWrap = false;
+            Widgets.LabelEllipses(new Rect(cardRect.x + 6f, cardRect.y + 16f, cardRect.width - 30f, 22f), workType.labelShort);
             Text.WordWrap = previousWrap;
 
+            // Line 2: best relevant skill level plus the passion marker.
             GameFont previousFont = Text.Font;
             Text.Font = GameFont.Tiny;
-            Widgets.Label(new Rect(cardRect.x + 6f, cardRect.yMax - 24f, cardRect.width - 12f, 20f),
-                CardInfo(pawn, workType, incapable));
+            Widgets.Label(new Rect(cardRect.x + 6f, cardRect.y + 40f, cardRect.width - 12f, 18f),
+                CardInfo(pawn, workType));
             Text.Font = previousFont;
-            GUI.color = previousColor;
 
             if (Mouse.IsOver(cardRect))
             {
-                TooltipHandler.TipRegion(cardRect, CardTooltip(pawn, workType, incapable));
+                TooltipHandler.TipRegion(cardRect, CardTooltip(pawn, workType));
             }
 
             if (Widgets.ButtonText(removeRect, "×"))
@@ -208,10 +214,9 @@ namespace OrderedWork.UI
                 removeIndex = index;
             }
 
-            // The remove button must never start a drag, and incapable cards are not draggable.
+            // The remove button must never start a drag.
             bool overRemove = removeRect.Contains(Event.current.mousePosition);
-            if (!incapable
-                && !overRemove
+            if (!overRemove
                 && Event.current.type == EventType.MouseDown
                 && Event.current.button == 0
                 && bodyRect.Contains(Event.current.mousePosition))
@@ -302,19 +307,15 @@ namespace OrderedWork.UI
             Find.WindowStack.Add(new FloatMenu(options));
         }
 
-        private static string CardInfo(Pawn pawn, WorkTypeDef workType, bool incapable)
+        private static string CardInfo(Pawn pawn, WorkTypeDef workType)
         {
-            if (incapable)
-            {
-                return "Incapaz";
-            }
             Passion passion;
-            int level = BestSkillLevel(pawn, workType, out passion);
+            int level = WorkOrderService.BestSkillLevel(pawn, workType, out passion);
             string levelText = level >= 0 ? "Lv " + level : "—";
             return levelText + PassionMarker(passion);
         }
 
-        private static string CardTooltip(Pawn pawn, WorkTypeDef workType, bool incapable)
+        private static string CardTooltip(Pawn pawn, WorkTypeDef workType)
         {
             string text = workType.labelShort;
             if (workType.relevantSkills != null && workType.relevantSkills.Count > 0)
@@ -334,41 +335,7 @@ namespace OrderedWork.UI
             {
                 text += "\nNo relevant skill";
             }
-
-            if (incapable)
-            {
-                text += "\nIncapaz: this colonist cannot do this work.";
-            }
             return text;
-        }
-
-        private static int BestSkillLevel(Pawn pawn, WorkTypeDef workType, out Passion passion)
-        {
-            passion = Passion.None;
-            if (pawn == null || pawn.skills == null || workType == null || workType.relevantSkills == null)
-            {
-                return -1;
-            }
-
-            int best = -1;
-            foreach (SkillDef skill in workType.relevantSkills)
-            {
-                if (skill == null)
-                {
-                    continue;
-                }
-                SkillRecord record = pawn.skills.GetSkill(skill);
-                if (record == null)
-                {
-                    continue;
-                }
-                if (record.Level > best)
-                {
-                    best = record.Level;
-                    passion = record.passion;
-                }
-            }
-            return best;
         }
 
         /// <summary>
