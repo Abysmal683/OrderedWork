@@ -143,7 +143,11 @@ namespace OrderedWork.Services
 
             if (component != null && component.initialized)
             {
-                return GetRecommendation(pawn);
+                // Manual mode never shows an un-applied recommendation: use the current
+                // vanilla order instead. Draw/Both keep the recommendation fallback.
+                return IsManual(component)
+                    ? Normalize(pawn, ReadVanillaOrder(pawn))
+                    : GetRecommendation(pawn);
             }
             return GetDefaultOrder(pawn);
         }
@@ -279,7 +283,10 @@ namespace OrderedWork.Services
                     return;
                 }
 
-                bool existingColony = colonists.Any(HasNonDefaultPriorities);
+                // Manual mode never auto-recommends: it behaves like an existing colony
+                // (copy the vanilla order, no write). Draw/Both keep the current behavior.
+                bool manualMode = IsManual(component);
+                bool existingColony = manualMode || colonists.Any(HasNonDefaultPriorities);
 
                 foreach (Pawn pawn in colonists)
                 {
@@ -298,7 +305,7 @@ namespace OrderedWork.Services
 
                 component.initialized = true;
                 Log.Message("[Ordered Work] Colony initialized (" +
-                    (existingColony ? "existing" : "new") + "): " + colonists.Count + " colonist(s).");
+                    (manualMode ? "manual-copy" : existingColony ? "existing" : "new") + "): " + colonists.Count + " colonist(s).");
             }
             catch (Exception ex)
             {
@@ -384,6 +391,17 @@ namespace OrderedWork.Services
                     Apply(pawn, Normalize(pawn, entry.order));
                     Log.Message("[Ordered Work] Reapplied stored order after spawn for " + pawn.LabelShort + ".");
                 }
+                else if (IsManual(component))
+                {
+                    // Manual mode: capture the vanilla order but do not write priorities.
+                    component.SetOrder(pawn, Normalize(pawn, ReadVanillaOrder(pawn)));
+                    PawnWorkOrder created = component.GetEntry(pawn);
+                    if (created != null)
+                    {
+                        created.captureSuppressedUntilTick = suppressUntil;
+                    }
+                    Log.Message("[Ordered Work] Copied vanilla order after spawn for " + pawn.LabelShort + " (manual mode).");
+                }
                 else
                 {
                     List<string> recommendation = GetRecommendation(pawn);
@@ -423,6 +441,17 @@ namespace OrderedWork.Services
                 OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
                 if (component == null || !component.initialized || component.GetEntry(pawn) != null)
                 {
+                    return;
+                }
+
+                if (IsManual(component))
+                {
+                    component.SetOrder(pawn, Normalize(pawn, ReadVanillaOrder(pawn)));
+                    PawnWorkOrder copied = component.GetEntry(pawn);
+                    if (copied != null)
+                    {
+                        copied.captureSuppressedUntilTick = CurrentTick + PostSpawnCaptureSuppressionTicks;
+                    }
                     return;
                 }
 
@@ -587,6 +616,11 @@ namespace OrderedWork.Services
         private static bool IsManagedFreeColonist(Pawn pawn)
         {
             return pawn != null && !pawn.Dead && !pawn.Destroyed && pawn.IsFreeColonist;
+        }
+
+        private static bool IsManual(OrderedWorkGameComponent component)
+        {
+            return component != null && component.viewMode == WorkViewMode.Manual;
         }
 
         private static int CurrentTick

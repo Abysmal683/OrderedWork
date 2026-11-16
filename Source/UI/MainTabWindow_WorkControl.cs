@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using OrderedWork.Data;
 using OrderedWork.Services;
 using RimWorld;
 using UnityEngine;
@@ -15,17 +17,21 @@ namespace OrderedWork.UI
     /// </summary>
     public class MainTabWindow_WorkControl : MainTabWindow
     {
-        private const float Pad = 12f;
-        private const float TitleHeight = 30f;
-        private const float HeaderHeight = 24f;
-        private const float RowHeight = 86f;
+        private const float Pad = 4f;
+        private const float TitleHeight = 28f;
+        private const float SearchHeight = 24f;
+        private const float HeaderHeight = 18f;
+        private const float RowHeight = 78f;
         private const float CardWidth = 190f;
-        private const float CardHeight = 64f;
+        private const float CardHeight = 60f;
         private const float CardGap = 6f;
-        private const float LeftColumnMin = 180f;
-        private const float LeftColumnMax = 280f;
+        private const float LeftColumnMin = 160f;
+        private const float LeftColumnMax = 260f;
+        private const float PassionIconSize = 12f;
 
         private Vector2 gridScroll;
+        private Pawn selectedPawn;
+        private string searchText = "";
 
         private bool dragging;
         private Pawn dragPawn;
@@ -51,14 +57,19 @@ namespace OrderedWork.UI
             }
 
             WorkOrderService.EnsureColonyInitialized();
+            if (selectedPawn != null && (selectedPawn.Destroyed || !colonists.Contains(selectedPawn)))
+            {
+                selectedPawn = null;
+            }
 
             List<WorkTypeDef> available = WorkOrderService.GetAvailableWorkTypes();
 
             float leftWidth = Mathf.Clamp(inRect.width * 0.22f, LeftColumnMin, LeftColumnMax);
             float titleY = Pad;
-            float headerY = titleY + TitleHeight + 2f;
-            float bodyTop = headerY + HeaderHeight + 6f;
-            float bodyHeight = Mathf.Max(60f, inRect.yMax - Pad - bodyTop);
+            float searchY = titleY + TitleHeight;
+            float headerY = searchY + SearchHeight + 2f;
+            float bodyTop = headerY + HeaderHeight + 2f;
+            float bodyHeight = Mathf.Max(40f, inRect.yMax - Pad - bodyTop);
             Rect bodyRect = new Rect(Pad, bodyTop, inRect.width - Pad * 2f, bodyHeight);
             Rect laneViewport = new Rect(bodyRect.x + leftWidth, bodyRect.y, bodyRect.width - leftWidth, bodyRect.height);
 
@@ -73,10 +84,21 @@ namespace OrderedWork.UI
             float contentHeight = Mathf.Max(laneViewport.height, rowsHeight);
             Rect laneContent = new Rect(0f, 0f, laneContentWidth, contentHeight);
 
+            // Title + top controls.
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(Pad, titleY, inRect.width - Pad * 2f, TitleHeight), "Work Control");
+            Widgets.Label(new Rect(Pad, titleY, Mathf.Max(100f, inRect.width - 300f), TitleHeight), "Work Control");
             Text.Font = GameFont.Small;
-            Widgets.Label(new Rect(bodyRect.x, headerY, leftWidth - 8f, HeaderHeight), "Pawn");
+
+            Rect openRect = new Rect(inRect.xMax - Pad - 116f, titleY + 2f, 116f, 24f);
+            Rect modeRect = new Rect(openRect.x - 4f - 150f, titleY + 2f, 150f, 24f);
+            DrawTopControls(modeRect, openRect);
+
+            // Search row (pawn names only; highlighting never selects or filters).
+            Widgets.Label(new Rect(Pad, searchY, 88f, SearchHeight), "Search pawns");
+            searchText = Widgets.TextField(new Rect(Pad + 92f, searchY, 240f, SearchHeight - 2f), searchText ?? "");
+
+            // Column header.
+            Widgets.Label(new Rect(bodyRect.x, headerY, leftWidth - 6f, HeaderHeight), "Pawn");
             Widgets.Label(new Rect(laneViewport.x, headerY, laneViewport.width, HeaderHeight),
                 "Work order (left = highest). Drag to reorder, × remove, + add.");
 
@@ -89,11 +111,13 @@ namespace OrderedWork.UI
                 {
                     Pawn pawn = colonists[i];
                     float rowY = i * RowHeight;
+                    Rect rowRect = new Rect(0f, rowY, laneContentWidth, RowHeight);
 
                     Color rowColor = (i % 2 == 0)
                         ? new Color(0.14f, 0.15f, 0.17f, 0.6f)
                         : new Color(0.16f, 0.17f, 0.19f, 0.6f);
-                    Widgets.DrawBoxSolid(new Rect(0f, rowY, laneContentWidth, RowHeight), rowColor);
+                    Widgets.DrawBoxSolid(rowRect, rowColor);
+                    DrawRowState(rowRect, pawn);
 
                     DrawRowLane(pawn, rowY, available);
                 }
@@ -105,6 +129,44 @@ namespace OrderedWork.UI
             }
 
             DrawPawnColumn(colonists, bodyRect, leftWidth);
+        }
+
+        private void DrawTopControls(Rect modeRect, Rect openRect)
+        {
+            OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
+            if (component != null)
+            {
+                if (Widgets.ButtonText(modeRect, "Mode: " + component.viewMode))
+                {
+                    component.viewMode = NextViewMode(component.viewMode);
+                }
+                if (Mouse.IsOver(modeRect))
+                {
+                    TooltipHandler.TipRegion(modeRect, "Click to cycle Draw / Manual / Both");
+                }
+            }
+
+            if (Widgets.ButtonText(openRect, "Open Work tab"))
+            {
+                MainButtonDef workTab = DefDatabase<MainButtonDef>.GetNamedSilentFail("Work");
+                if (workTab != null)
+                {
+                    Find.MainTabsRoot.ToggleTab(workTab, true);
+                }
+            }
+        }
+
+        private void DrawRowState(Rect rowRect, Pawn pawn)
+        {
+            if (selectedPawn == pawn)
+            {
+                Widgets.DrawHighlightSelected(rowRect);
+                Widgets.DrawBox(rowRect, 2);
+            }
+            else if (IsSearchMatch(pawn))
+            {
+                Widgets.DrawHighlight(rowRect);
+            }
         }
 
         private void DrawCentered(Rect inRect, string message)
@@ -129,13 +191,38 @@ namespace OrderedWork.UI
                     }
 
                     Pawn pawn = colonists[i];
+                    Rect rowRect = new Rect(0f, y, leftWidth, RowHeight);
+
+                    Color rowColor = (i % 2 == 0)
+                        ? new Color(0.14f, 0.15f, 0.17f, 0.6f)
+                        : new Color(0.16f, 0.17f, 0.19f, 0.6f);
+                    Widgets.DrawBoxSolid(rowRect, rowColor);
+                    DrawRowState(rowRect, pawn);
 
                     TextAnchor previous = Text.Anchor;
                     Text.Anchor = TextAnchor.MiddleLeft;
-                    Widgets.Label(new Rect(6f, y, leftWidth - 44f, RowHeight), PawnLabel(pawn));
+                    Widgets.Label(new Rect(4f, y, leftWidth - 40f, RowHeight), PawnLabel(pawn));
                     Text.Anchor = previous;
 
-                    Rect recommendRect = new Rect(leftWidth - 34f, y + (RowHeight - 24f) / 2f, 26f, 24f);
+                    // Selection is visual only; double-click selects in game and pans the camera.
+                    Rect nameRect = new Rect(0f, y, leftWidth - 30f, RowHeight);
+                    if (Event.current.type == EventType.MouseDown
+                        && Event.current.button == 0
+                        && nameRect.Contains(Event.current.mousePosition))
+                    {
+                        selectedPawn = pawn;
+                        if (Event.current.clickCount == 2)
+                        {
+                            Find.Selector.Select(pawn, true, false);
+                            if (pawn.Spawned && pawn.Map != null)
+                            {
+                                CameraJumper.TryJump(pawn.Position, pawn.Map);
+                            }
+                        }
+                        Event.current.Use();
+                    }
+
+                    Rect recommendRect = new Rect(leftWidth - 28f, y + (RowHeight - 22f) / 2f, 24f, 22f);
                     if (Widgets.ButtonText(recommendRect, "R"))
                     {
                         WorkOrderService.GenerateAndApplyRecommendation(pawn);
@@ -188,21 +275,25 @@ namespace OrderedWork.UI
                 Widgets.DrawBox(cardRect, 2);
             }
 
-            Rect removeRect = new Rect(cardRect.xMax - 20f, cardRect.y + 2f, 18f, 18f);
-            Rect bodyRect = new Rect(cardRect.x, cardRect.y + 20f, cardRect.width, cardRect.height - 22f);
+            Rect removeRect = new Rect(cardRect.xMax - 18f, cardRect.y + 2f, 16f, 16f);
+            Rect bodyRect = new Rect(cardRect.x, cardRect.y + 18f, cardRect.width, cardRect.height - 20f);
 
             // Line 1: the WorkType name on a single line, ellipsized. Full name is in the tooltip.
             bool previousWrap = Text.WordWrap;
             Text.WordWrap = false;
-            Widgets.LabelEllipses(new Rect(cardRect.x + 6f, cardRect.y + 10f, cardRect.width - 28f, 22f), workType.labelShort);
+            Widgets.LabelEllipses(new Rect(cardRect.x + 4f, cardRect.y + 7f, cardRect.width - 24f, 20f), workType.labelShort);
             Text.WordWrap = previousWrap;
 
-            // Line 2: best relevant skill level plus the passion marker.
+            // Line 2: best relevant skill level plus the vanilla passion icon.
+            Passion passion;
+            int level = WorkOrderService.BestSkillLevel(pawn, workType, out passion);
+
             GameFont previousFont = Text.Font;
             Text.Font = GameFont.Tiny;
-            Widgets.Label(new Rect(cardRect.x + 6f, cardRect.y + 34f, cardRect.width - 12f, 18f),
-                CardInfo(pawn, workType));
+            Widgets.Label(new Rect(cardRect.x + 4f, cardRect.y + 30f, 34f, 16f), level >= 0 ? "Lv " + level : "—");
             Text.Font = previousFont;
+
+            DrawPassionIcon(new Rect(cardRect.x + 38f, cardRect.y + 31f, PassionIconSize, PassionIconSize), passion);
 
             if (Mouse.IsOver(cardRect))
             {
@@ -221,6 +312,7 @@ namespace OrderedWork.UI
                 && Event.current.button == 0
                 && bodyRect.Contains(Event.current.mousePosition))
             {
+                selectedPawn = pawn;
                 dragging = true;
                 dragPawn = pawn;
                 dragSourceIndex = index;
@@ -232,6 +324,24 @@ namespace OrderedWork.UI
             if (Widgets.ButtonInvisible(bodyRect))
             {
                 // Click only; reordering is driven by the drag events above.
+            }
+        }
+
+        private static void DrawPassionIcon(Rect rect, Passion passion)
+        {
+            Texture2D icon = null;
+            if (passion == Passion.Major)
+            {
+                icon = WidgetsWork.PassionWorkboxMajorIcon;
+            }
+            else if (passion == Passion.Minor)
+            {
+                icon = WidgetsWork.PassionWorkboxMinorIcon;
+            }
+
+            if (icon != null)
+            {
+                GUI.DrawTexture(rect, icon);
             }
         }
 
@@ -314,14 +424,6 @@ namespace OrderedWork.UI
             Find.WindowStack.Add(new FloatMenu(options));
         }
 
-        private static string CardInfo(Pawn pawn, WorkTypeDef workType)
-        {
-            Passion passion;
-            int level = WorkOrderService.BestSkillLevel(pawn, workType, out passion);
-            string levelText = level >= 0 ? "Lv " + level : "—";
-            return levelText + PassionMarker(passion);
-        }
-
         private static string CardTooltip(Pawn pawn, WorkTypeDef workType)
         {
             string text = workType.labelShort;
@@ -335,7 +437,7 @@ namespace OrderedWork.UI
                     }
                     SkillRecord record = pawn.skills != null ? pawn.skills.GetSkill(skill) : null;
                     string level = record != null ? record.Level.ToString() : "—";
-                    text += "\n" + skill.label + ": " + level + PassionMarker(record != null ? record.passion : Passion.None);
+                    text += "\n" + skill.label + ": " + level;
                 }
             }
             else
@@ -345,21 +447,28 @@ namespace OrderedWork.UI
             return text;
         }
 
-        /// <summary>
-        /// Temporary text marker for a future passion icon. Major = "**", minor = "*".
-        /// Replace this method with an icon draw when art is available.
-        /// </summary>
-        private static string PassionMarker(Passion passion)
+        private bool IsSearchMatch(Pawn pawn)
         {
-            if (passion == Passion.Major)
+            if (string.IsNullOrWhiteSpace(searchText))
             {
-                return " **";
+                return false;
             }
-            if (passion == Passion.Minor)
+            string name = pawn.Label;
+            return !string.IsNullOrEmpty(name)
+                && name.IndexOf(searchText.Trim(), StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        private static WorkViewMode NextViewMode(WorkViewMode mode)
+        {
+            switch (mode)
             {
-                return " *";
+                case WorkViewMode.Draw:
+                    return WorkViewMode.Manual;
+                case WorkViewMode.Manual:
+                    return WorkViewMode.Both;
+                default:
+                    return WorkViewMode.Draw;
             }
-            return "";
         }
 
         private static string PawnLabel(Pawn pawn)

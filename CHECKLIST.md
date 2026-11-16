@@ -1,6 +1,6 @@
-# Work Control — Milestone 0.3.0-alpha.4 Checklist
+# Work Control — Milestone 0.3.0-alpha.5 Checklist
 
-Status: in progress — version 0.3.0-alpha.4. Compact cards, + picker levels/incapable, pinned/scored recommendations, game-start initialization and respawn capture guards written; in-game checks pending.
+Status: in progress — version 0.3.0-alpha.5. UI polish written: compact margins/cards, search highlight, row selection and double-click camera, Draw/Manual/Both view mode, Open Work tab button, vanilla passion icons. Vanilla low-priority-cap patch deferred.
 Goal: first usable Work Control tab with a horizontal lane that assigns WorkTypes and updates the vanilla Work tab.
 
 ## Scope in

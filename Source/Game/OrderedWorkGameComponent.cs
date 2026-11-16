@@ -5,6 +5,14 @@ using Verse;
 
 namespace OrderedWork.Data
 {
+    /// <summary>How Work Control and the vanilla Work tab share the job of setting up orders.</summary>
+    public enum WorkViewMode
+    {
+        Draw,
+        Manual,
+        Both
+    }
+
     /// <summary>
     /// Save-scoped store of per-pawn work orders. Kept small: one entry per pawn
     /// that the player has actually edited.
@@ -13,6 +21,7 @@ namespace OrderedWork.Data
     {
         public List<PawnWorkOrder> entries = new List<PawnWorkOrder>();
         public bool initialized;
+        public WorkViewMode viewMode = WorkViewMode.Both;
 
         // RimWorld instantiates GameComponents with Activator.CreateInstance(type, game),
         // so the subclass must expose a (Game) constructor. Verse.GameComponent itself only
@@ -25,6 +34,7 @@ namespace OrderedWork.Data
         {
             Scribe_Collections.Look(ref entries, "entries", LookMode.Deep);
             Scribe_Values.Look(ref initialized, "initialized", false);
+            Scribe_Values.Look(ref viewMode, "viewMode", WorkViewMode.Both);
 
             if (Scribe.mode == LoadSaveMode.LoadingVars && entries == null)
             {
