@@ -63,12 +63,29 @@ Version: `0.3.0-alpha.4`, installed. Build 0/0, 7/7 tests. Git `c15f8ef`, tag `v
 - Resurrection log: stored order was reapplied (`Hunting=3`); a later `Hunting=4` came from an explicit `GenerateAndApplyRecommendation` (R), not from resurrection.
 - No `[Ordered Work]` exceptions in the latest log.
 
-## Open questions for next design
+## Resolved clarifications (saved)
 
-1. Right-click priority: current semantics are left=increment, right=decrement; from 0 right does nothing. What should right-click do: jump to max, open a priority menu, or something else?
-2. Check view: should “Check” be a redirect to the vanilla Work tab (no duplicate logic) with a clean return button, or an embedded copy of the check grid inside Work Control?
-3. Drag palette: where does it live, what does it list, does the drag card show passion/level of the pawn under the cursor, how should the invalid “Incapaz” case render?
-4. Click behavior: does double-click close/minimize Work Control after moving the camera? Shift multi-select: what do Recommend / Mode / Details do with multiple rows (Details only first)?
-5. Portrait: add the vanilla pawn portrait in the fixed name column; size/placement?
+1. **Resurrection**: not a bug. The log shows `Hunting=3` preserved; the later `Hunting=4` was the explicit Recommend test.
+2. **Right-click**: must allow starting at the maximum from 0. Interpreted as: right-click jumps/sets max (e.g. 23); left-click starts at 1. If “min” was literal, correct later.
+3. **Drag palette**:
+   - lists all WorkTypes;
+   - validity (can/cannot) is shown when dragging over a colonist row;
+   - the dragged card shows passion/level for the pawn under the cursor/ghost;
+   - drop adds at the exact ghost position;
+   - incapable drop = alert only, nothing added;
+   - if the WorkType already exists, it moves/reorders to the ghost position; if the ghost is next to the target, no change;
+   - with multi-select, the same WorkType can be added/moved at the same position on all selected pawns.
+4. **Click / multi-select**:
+   - single click is enough to select a row;
+   - double click selects the pawn, moves the camera, and minimizes Work Control;
+   - Shift multi-select;
+   - Recommend applies to all selected;
+   - Details applies only to the first selected;
+   - WorkControl and vanilla Work tab selection should share the same hook/state in both directions.
+5. **Rename**: top `R` → `Recommend`.
+6. **Portrait**: add the pawn portrait in the fixed name column (size/placement pending).
+7. **Check/Draw**: one tab, maximum compatibility, no duplicated work; Check should use the vanilla Work tab/return button rather than reimplementing the grid.
+8. **Search filter** is accepted.
+
 
 
