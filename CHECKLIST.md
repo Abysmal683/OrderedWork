@@ -1,6 +1,6 @@
-# Work Control — Milestone 0.3.0-alpha.6 Checklist
+# Work Control — Milestone 0.3.0-alpha.7 Checklist
 
-Status: in progress — version 0.3.0-alpha.6. UI-only iteration written: flexible pawn-name search now filters rows (`No pawns match`), flat single-line cards (~190×30) with icon → level → name → ×, and refined single-click / double-click selection (clear + select + camera unless already selected). Mode semantics and the vanilla low-priority-cap patch are unchanged/deferred.
+Status: in progress — version 0.3.0-alpha.7. Vanilla Work-tab manual priority >4 written: clean-room `WidgetsWork.DrawWorkBoxFor` prefix with dynamic max (max(4, visible capable), cap 99, fallback 99), left-click cycle 0..max, distinct >4 box/tooltip, and `SetPriority` normalisation + Notify + existing capture. Work Control UI and Draw/Manual/Both semantics unchanged. Runtime checks still pending.
 Goal: first usable Work Control tab with a horizontal lane that assigns WorkTypes and updates the vanilla Work tab.
 
 ## Scope in

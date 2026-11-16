@@ -3,11 +3,11 @@
   <name>Ordered Work (Core)</name>
   <author>nightmare123487</author>
   <packageId>nightmare123487.OrderedWork</packageId>
-  <modVersion>0.3.0-alpha.6</modVersion>
+  <modVersion>0.3.0-alpha.7</modVersion>
   <supportedVersions>
     <li>1.7</li>
   </supportedVersions>
-  <description>Work Control (0.3.0-alpha.6). Adds a full-screen "Work Control" bottom tab laid out like the vanilla Work tab: one row per free colonist, a fixed pawn name column and a shared horizontal lane of flat single-line WorkType cards, with one outer vertical scroll. Cards are ~190x30 and show one line in a fixed order: passion icon, best skill level, WorkType name (ellipsized, full name in tooltip) and a delete x. When a WorkType has no relevant skill, only the name and delete x are shown. The pawn-name search box matches flexibly against short/full/colored names, title and first/nick/last components, and filters the rows (showing "No pawns match" when empty); it never selects pawns or changes orders. A single click selects a row visually only; a double-click selects the pawn in game (unless already selected) and moves the camera. Draw/Manual/Both view modes and the Open Work tab button are unchanged. Incapable WorkTypes stay out of the lane and stored order; the + picker lists remaining types with levels and shows incapable ones disabled as Incapaz. The colony initializes once at game start; resurrection and new colonists are handled, with capture guards that prevent partial vanilla states from overwriting stored orders. No profiles, schedules or equipment yet. Do not use in a main save; back up your save first.</description>
+  <description>Work Control (0.3.0-alpha.7). The vanilla Work tab can now be edited manually above priority 4. A clean-room Harmony prefix replaces the capable priority cell: left-click cycles 0..max (max = max(4, visible capable WorkTypes), capped at 99, falling back to 99 if the dynamic count fails), right-click decrements, and values above 4 are drawn as a distinct blue box with a cyan number and a tooltip. Priorities 0..4 still use the vanilla priority colours. SetPriority is normalised to the dynamic range and now notifies once; the existing vanilla capture rebuilds the stored per-pawn order, while our own Apply is excluded through the IsApplying guard. The Work Control tab is unchanged: rows of free colonists, flat single-line cards with passion icon, level, name and delete, flexible filtering search, Draw/Manual/Both modes, pinned/scored recommendations, game-start initialization and respawn guards. No profiles, schedules or equipment yet. Do not use in a main save; back up your save first.</description>
   <loadAfter>
     <li>brrainz.harmony</li>
     <li>Ludeon.RimWorld</li>

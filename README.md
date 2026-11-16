@@ -1,6 +1,6 @@
-# Ordered Work (Core) 0.3.0-alpha.6
+# Ordered Work (Core) 0.3.0-alpha.7
 
-> Status: **0.3.0-alpha.6**. UI-only iteration for **Work Control**: flat single-line cards (~190×30) with the fixed order passion icon → level → WorkType name → delete, a flexible pawn-name search that **filters** rows (highlight is gone), and refined selection/double-click behavior. The Draw/Manual/Both mode semantics and the vanilla low-priority-cap patch are unchanged/deferred. Profiles, schedules, equipment and Overview remain **not implemented**. **Do not use it in a main save.**
+> Status: **0.3.0-alpha.7**. The vanilla Work tab now accepts **manual priorities above 4**: a clean-room Harmony cell override cycles 0..dynamic-max (max(4, visible capable WorkTypes), capped at 99, fallback 99), draws >4 distinctly and keeps the existing capture/stored-order path in sync. The Work Control UI, Draw/Manual/Both modes and all earlier behavior are unchanged. Profiles, schedules, equipment and Overview remain **not implemented**. **Do not use it in a main save.**
 
 Basic RimWorld 1.7 work-management framework.
 
@@ -24,7 +24,7 @@ Basic RimWorld 1.7 work-management framework.
 2. Enable it after work mods (Job Splitter, Some More Jobs, Compact Work Tab, etc.).
 3. Back up the save before enabling.
 
-## Work Control tab (0.3.0-alpha.6)
+## Work Control tab (0.3.0-alpha.7)
 - Open the new **Work Control** bottom tab (between Work and Schedule). It does **not** replace the vanilla Work tab.
 - Layout mirrors the Work tab: one row per player free colonist. The pawn name is a fixed left column; the rest of the row is the colonist's horizontal WorkType lane. Outer/internal margins are ~4 px.
 - One **shared horizontal scroll** moves every lane together; one outer vertical scroll moves all pawn rows. The horizontal position is kept across redraws.
@@ -43,6 +43,18 @@ Basic RimWorld 1.7 work-management framework.
 - Each pawn's order is saved per colony in a `GameComponent`; save/load preserves it.
 - No result table and no Sync button.
 
+## Vanilla Work tab: manual priorities above 4 (0.3.0-alpha.7)
+- The vanilla Work tab's priority cell for a capable **free colonist** is replaced by a clean-room cell:
+  - **Left-click** cycles `0 → 1 → … → max → 0`.
+  - **Right-click** decrements (stops at `0`).
+- `max = max(4, number of visible WorkTypes the pawn is capable of)`, capped at `99`. If the dynamic count fails, it falls back to `99` (logged once).
+- Priorities **0–4** keep the vanilla priority colours (the box is tinted and the number uses `WidgetsWork.ColorOfPriority`); `0` is an empty cell like vanilla.
+- Priorities **>4** use a distinct blue box, a cyan number and a border, plus a higher-priority tooltip: `Priority N of max (above vanilla 4)`.
+- `Pawn_WorkSettings.SetPriority` is normalised to `0..max` (it is not clamped to 4) and notifies once. The existing `SetPriority` capture rebuilds the stored per-pawn order; our own `Apply` is excluded by the `IsApplying` guard, so there is no recursion.
+- Incapable cells and non-free-colonist pawns are left to vanilla (0..4 cells), preserving other UI mods' behavior as much as possible.
+- If the expected `WidgetsWork` API or patch path is unavailable, the prefix logs once and returns to vanilla drawing.
+- **Known limitation:** other mods that also prefix `WidgetsWork.DrawWorkBoxFor` (e.g. Compact Work Tab) may win the Harmony order; in that case the vanilla cell may stay capped at 4. The rest of the mod keeps working.
+
 ## Use
 1. Open `Options -> Mod Settings -> Ordered Work`.
 2. Reorder work types and givers with Up/Down.
@@ -58,14 +70,15 @@ Basic RimWorld 1.7 work-management framework.
 - Expected log shape: `[Ordered Work] Dense rank test <pawn>: max=<max>, count=<count>, first=<defName>=<priority>, last=<defName>=<priority>`. Compare `last` with its assigned rank (e.g. 23): if it survives, direct-map mode bypasses the vanilla 4 cap; if it reads 4, the value was clamped downstream.
 - **Do not use this build in a main save**; test in a throwaway colony.
 
-## Limitations (0.3.0-alpha.6)
+## Limitations (0.3.0-alpha.7)
 - No profiles, schedules or equipment yet.
-- The vanilla Work-tab low-priority cap patch (manual 1..N in the vanilla tab) is **not implemented**; it is deferred to the next spike.
-- Mode semantics are unchanged from alpha.5: Manual copies the vanilla order at initialization and for new colonists; resurrection still reapplies the stored order in all modes.
-- Selection and the search term are UI-only and are not persisted; a non-empty search filters the drawn rows.
+- Mode semantics are unchanged: Manual copies the vanilla order at initialization and for new colonists; resurrection still reapplies the stored order in all modes.
+- The >4 vanilla cell applies only to capable free colonists; incapable cells and non-free-colonist pawns keep vanilla 0..4 behavior.
+- If another mod also prefixes `WidgetsWork.DrawWorkBoxFor` (e.g. Compact Work Tab), Harmony ordering may let that mod win, leaving the cell capped at 4; the rest of the mod keeps working.
+- The dynamic max falls back to 99 when the count fails; the fallback is logged.
+- Selection and the search term are UI-only and not persisted; a non-empty search filters the drawn rows.
 - Initialization only scans the current map's free colonists; a colony initialized on one map does not backfill colonists on another map until they spawn.
 - The vanilla capture hook covers `SetPriority`; a mod that changes priorities by writing the private map directly will not be captured.
-- Work Control is the source of truth for the lane; the vanilla Work tab may not visibly reflect every lane edit yet (known limitation, not regressed further).
 - The "Sort by WorkType" header button is not implemented yet.
 - If another mod replaces the Work tab, this mod does not replace it; it writes the same vanilla priorities.
 - Not safe for a main save.

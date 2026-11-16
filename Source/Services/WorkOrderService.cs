@@ -22,6 +22,9 @@ namespace OrderedWork.Services
         private static readonly string[] RecommendationPins = { "Patient", "PatientBedRest", "Firefighter" };
 
         private static List<WorkTypeDef> cachedAvailable;
+        private static readonly Dictionary<Pawn, int> manualMaxCache = new Dictionary<Pawn, int>();
+        private static int manualMaxCacheTick = int.MinValue;
+        private static int manualMaxForAll = -1;
         private static FieldInfo cachedPrioritiesField;
         private static bool prioritiesFieldResolved;
         private static FieldInfo cachedWorkSettingsPawnField;
@@ -47,6 +50,70 @@ namespace OrderedWork.Services
                     .ToList();
             }
             return cachedAvailable;
+        }
+
+        /// <summary>
+        /// Highest priority value the vanilla Work tab may cycle to. Dynamic when safe:
+        /// max(4, visible capable WorkTypes), capped at 99. Falls back to 99 on failure.
+        /// Cached per pawn per game tick, because the Work tab asks once per cell per frame.
+        /// Pass a pawn to scope the count to its capable types; pass null for all visible.
+        /// </summary>
+        public static int GetManualMaxPriority(Pawn pawn = null)
+        {
+            int tick = CurrentTick;
+            if (tick != manualMaxCacheTick)
+            {
+                manualMaxCache.Clear();
+                manualMaxCacheTick = tick;
+                manualMaxForAll = -1;
+            }
+
+            if (pawn == null)
+            {
+                if (manualMaxForAll < 0)
+                {
+                    manualMaxForAll = ComputeManualMaxPriority(null);
+                }
+                return manualMaxForAll;
+            }
+
+            int cached;
+            if (manualMaxCache.TryGetValue(pawn, out cached))
+            {
+                return cached;
+            }
+
+            int max = ComputeManualMaxPriority(pawn);
+            manualMaxCache[pawn] = max;
+            return max;
+        }
+
+        private static int ComputeManualMaxPriority(Pawn pawn)
+        {
+            try
+            {
+                int count = 0;
+                foreach (WorkTypeDef workType in GetAvailableWorkTypes())
+                {
+                    if (workType == null)
+                    {
+                        continue;
+                    }
+                    if (pawn != null && IsIncapable(pawn, workType))
+                    {
+                        continue;
+                    }
+                    count++;
+                }
+
+                int max = Math.Max(4, count);
+                return max > 99 ? 99 : max;
+            }
+            catch (Exception ex)
+            {
+                Log.Error("[Ordered Work] GetManualMaxPriority failed; using 99: " + ex);
+                return 99;
+            }
         }
 
         /// <summary>

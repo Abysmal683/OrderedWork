@@ -19,20 +19,12 @@ namespace OrderedWork.Patches
             {
                 HarmonyLib.Harmony harmony = new HarmonyLib.Harmony("nightmare123487.OrderedWork");
                 harmony.PatchAll(typeof(OrderedWorkHarmony).Assembly);
+                Log.Message("[Ordered Work] Harmony patches applied (manual Work-tab priority above 4 enabled).");
             }
             catch (Exception ex)
             {
                 Log.Error("[Ordered Work] Harmony initialization failed: " + ex);
             }
-        }
-    }
-
-    [HarmonyPatch(typeof(Pawn_WorkSettings), nameof(Pawn_WorkSettings.SetPriority))]
-    internal static class Patch_PawnWorkSettings_SetPriority
-    {
-        private static void Postfix(Pawn_WorkSettings __instance)
-        {
-            WorkOrderService.OnVanillaPriorityChanged(__instance);
         }
     }
 
