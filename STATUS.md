@@ -56,3 +56,19 @@ Version: `0.3.0-alpha.4`, installed. Build 0/0, 7/7 tests. Git `c15f8ef`, tag `v
 4. Passion icons.
 5. Re-test both tabs, manual >4, hook, resurrection, save/load.
 
+## Alpha.7/8 audit (current)
+
+- alpha.7: vanilla Work-tab priority cap removed; dynamic max with 99 fallback; >4 cell/tooltip; capture hook. Build/tests pass; installed; tag `v0.3.0-alpha.7`.
+- alpha.8: top `R`/`Details` based on selected row; read-only Details window. Build/tests pass; installed; tag `v0.3.0-alpha.8`.
+- Resurrection log: stored order was reapplied (`Hunting=3`); a later `Hunting=4` came from an explicit `GenerateAndApplyRecommendation` (R), not from resurrection.
+- No `[Ordered Work]` exceptions in the latest log.
+
+## Open questions for next design
+
+1. Right-click priority: current semantics are left=increment, right=decrement; from 0 right does nothing. What should right-click do: jump to max, open a priority menu, or something else?
+2. Check view: should “Check” be a redirect to the vanilla Work tab (no duplicate logic) with a clean return button, or an embedded copy of the check grid inside Work Control?
+3. Drag palette: where does it live, what does it list, does the drag card show passion/level of the pawn under the cursor, how should the invalid “Incapaz” case render?
+4. Click behavior: does double-click close/minimize Work Control after moving the camera? Shift multi-select: what do Recommend / Mode / Details do with multiple rows (Details only first)?
+5. Portrait: add the vanilla pawn portrait in the fixed name column; size/placement?
+
+
