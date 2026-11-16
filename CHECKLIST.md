@@ -1,6 +1,6 @@
-# Work Control — Milestone 0.3.0-alpha.8 Checklist
+# Work Control — Milestone 0.3.0-alpha.9 Checklist
 
-Status: in progress — version 0.3.0-alpha.8. UI selection actions written: per-row R removed, top-bar R acting only on the selected row (disabled otherwise), and a top-bar Details button opening a read-only `Dialog_WorkControlDetails` (name/title, top skills/passions, WorkType order with rank/skill/status, close button). No Harmony/priority/mode/search changes. Runtime checks still pending.
+Status: in progress — version 0.3.0-alpha.9. Interaction/view iteration written: right-click 0→max, top-bar Recommend (all selected), pawn portraits, View: Numeric / View: Draw redirect buttons, Find.Selector-driven single/shift/double-click selection, and the Mod Settings `Auto recommend new colony` toggle. Harmony/priority patches otherwise kept; runtime checks pending.
 Goal: first usable Work Control tab with a horizontal lane that assigns WorkTypes and updates the vanilla Work tab.
 
 ## Scope in

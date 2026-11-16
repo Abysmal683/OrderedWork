@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OrderedWork.Data;
 using OrderedWork.Services;
 using RimWorld;
 using UnityEngine;
@@ -30,7 +29,6 @@ namespace OrderedWork.UI
         private const float PassionIconSize = 12f;
 
         private Vector2 gridScroll;
-        private Pawn selectedPawn;
         private string searchText = "";
 
         private bool dragging;
@@ -57,10 +55,6 @@ namespace OrderedWork.UI
             }
 
             WorkOrderService.EnsureColonyInitialized();
-            if (selectedPawn != null && (selectedPawn.Destroyed || !allColonists.Contains(selectedPawn)))
-            {
-                selectedPawn = null;
-            }
 
             float leftWidth = Mathf.Clamp(inRect.width * 0.22f, LeftColumnMin, LeftColumnMax);
             float titleY = Pad;
@@ -73,14 +67,13 @@ namespace OrderedWork.UI
 
             // Title + top controls.
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(Pad, titleY, Mathf.Max(100f, inRect.width - 420f), TitleHeight), "Work Control");
+            Widgets.Label(new Rect(Pad, titleY, Mathf.Max(100f, inRect.width - 330f), TitleHeight), "Work Control");
             Text.Font = GameFont.Small;
 
-            Rect openRect = new Rect(inRect.xMax - Pad - 116f, titleY + 2f, 116f, 24f);
-            Rect modeRect = new Rect(openRect.x - 4f - 150f, titleY + 2f, 150f, 24f);
-            Rect detailsRect = new Rect(modeRect.x - 4f - 80f, titleY + 2f, 80f, 24f);
-            Rect recommendRect = new Rect(detailsRect.x - 4f - 28f, titleY + 2f, 28f, 24f);
-            DrawTopControls(recommendRect, detailsRect, modeRect, openRect);
+            Rect viewRect = new Rect(inRect.xMax - Pad - 120f, titleY + 2f, 120f, 24f);
+            Rect detailsRect = new Rect(viewRect.x - 4f - 80f, titleY + 2f, 80f, 24f);
+            Rect recommendRect = new Rect(detailsRect.x - 4f - 98f, titleY + 2f, 98f, 24f);
+            DrawTopControls(recommendRect, detailsRect, viewRect);
 
             // Search row (pawn names only). The filter never selects or edits anything.
             Widgets.Label(new Rect(Pad, searchY, 88f, SearchHeight), "Search pawns");
@@ -142,43 +135,33 @@ namespace OrderedWork.UI
             DrawPawnColumn(colonists, bodyRect, leftWidth);
         }
 
-        private void DrawTopControls(Rect recommendRect, Rect detailsRect, Rect modeRect, Rect openRect)
+        private void DrawTopControls(Rect recommendRect, Rect detailsRect, Rect viewRect)
         {
-            bool hasSelection = selectedPawn != null;
+            List<Pawn> selected = GetSelectedColonists();
+            bool hasSelection = selected.Count > 0;
 
-            // Top-bar recommendation: only the selected Work Control row, never a guess.
-            if (Widgets.ButtonText(recommendRect, "R", true, true, hasSelection))
+            if (Widgets.ButtonText(recommendRect, "Recommend", true, true, hasSelection))
             {
-                WorkOrderService.GenerateAndApplyRecommendation(selectedPawn);
+                for (int i = 0; i < selected.Count; i++)
+                {
+                    WorkOrderService.GenerateAndApplyRecommendation(selected[i]);
+                }
             }
             if (Mouse.IsOver(recommendRect))
             {
-                TooltipHandler.TipRegion(recommendRect, "Generate recommendation for selected pawn");
+                TooltipHandler.TipRegion(recommendRect, "Generate recommendation for selected pawn(s)");
             }
 
             if (Widgets.ButtonText(detailsRect, "Details", true, true, hasSelection))
             {
-                Find.WindowStack.Add(new Dialog_WorkControlDetails(selectedPawn));
+                Find.WindowStack.Add(new Dialog_WorkControlDetails(selected[0]));
             }
             if (Mouse.IsOver(detailsRect))
             {
-                TooltipHandler.TipRegion(detailsRect, "More details for selected pawn");
+                TooltipHandler.TipRegion(detailsRect, "More details for the first selected pawn");
             }
 
-            OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
-            if (component != null)
-            {
-                if (Widgets.ButtonText(modeRect, "Mode: " + component.viewMode))
-                {
-                    component.viewMode = NextViewMode(component.viewMode);
-                }
-                if (Mouse.IsOver(modeRect))
-                {
-                    TooltipHandler.TipRegion(modeRect, "Click to cycle Draw / Manual / Both");
-                }
-            }
-
-            if (Widgets.ButtonText(openRect, "Open Work tab"))
+            if (Widgets.ButtonText(viewRect, "View: Numeric"))
             {
                 MainButtonDef workTab = DefDatabase<MainButtonDef>.GetNamedSilentFail("Work");
                 if (workTab != null)
@@ -186,11 +169,26 @@ namespace OrderedWork.UI
                     Find.MainTabsRoot.ToggleTab(workTab, true);
                 }
             }
+            if (Mouse.IsOver(viewRect))
+            {
+                TooltipHandler.TipRegion(viewRect, "Open the vanilla Work tab (Numeric view)");
+            }
+        }
+
+        private static List<Pawn> GetSelectedColonists()
+        {
+            if (Find.Selector == null)
+            {
+                return new List<Pawn>();
+            }
+            return Find.Selector.SelectedPawns
+                .Where(p => p != null && !p.Destroyed && p.IsFreeColonist)
+                .ToList();
         }
 
         private void DrawRowState(Rect rowRect, Pawn pawn)
         {
-            if (selectedPawn == pawn)
+            if (Find.Selector != null && Find.Selector.IsSelected(pawn))
             {
                 Widgets.DrawHighlightSelected(rowRect);
                 Widgets.DrawBox(rowRect, 2);
@@ -227,20 +225,47 @@ namespace OrderedWork.UI
                     Widgets.DrawBoxSolid(rowRect, rowColor);
                     DrawRowState(rowRect, pawn);
 
+                    float portraitSize = Mathf.Min(32f, RowHeight - 6f);
+                    Rect portraitRect = new Rect(4f, y + (RowHeight - portraitSize) / 2f, portraitSize, portraitSize);
+                    RenderTexture portrait = PortraitsCache.Get(pawn, new Vector2(portraitSize, portraitSize), Rot4.South);
+                    if (portrait != null)
+                    {
+                        GUI.DrawTexture(portraitRect, portrait);
+                    }
+
+                    float textX = portraitRect.xMax + 6f;
+                    float textWidth = Mathf.Max(20f, leftWidth - textX - 4f);
+                    string title = pawn.story != null ? pawn.story.Title : null;
+
                     TextAnchor previous = Text.Anchor;
                     Text.Anchor = TextAnchor.MiddleLeft;
-                    Widgets.Label(new Rect(4f, y, leftWidth - 8f, RowHeight), PawnLabel(pawn));
+                    if (!string.IsNullOrEmpty(title))
+                    {
+                        Widgets.Label(new Rect(textX, y, textWidth, RowHeight / 2f), PawnLabel(pawn));
+
+                        GameFont previousFont = Text.Font;
+                        Color previousColor = GUI.color;
+                        Text.Font = GameFont.Tiny;
+                        GUI.color = new Color(0.75f, 0.75f, 0.75f);
+                        Widgets.Label(new Rect(textX, y + RowHeight / 2f, textWidth, RowHeight / 2f), title);
+                        GUI.color = previousColor;
+                        Text.Font = previousFont;
+                    }
+                    else
+                    {
+                        Widgets.Label(new Rect(textX, y, textWidth, RowHeight), PawnLabel(pawn));
+                    }
                     Text.Anchor = previous;
 
-                    // Single click selects visually. Double-click selects in game (unless
-                    // already selected) and pans the camera; neither changes priorities.
+                    // Selection is game-driven: single click selects, shift-click toggles,
+                    // double-click selects/pans and closes the tab. Nothing edits orders.
                     Rect nameRect = new Rect(0f, y, leftWidth, RowHeight);
                     if (Event.current.type == EventType.MouseDown
                         && Event.current.button == 0
                         && nameRect.Contains(Event.current.mousePosition))
                     {
-                        selectedPawn = pawn;
-                        if (Event.current.clickCount == 2 && !Find.Selector.IsSelected(pawn))
+                        bool shift = Event.current.shift;
+                        if (Event.current.clickCount == 2)
                         {
                             Find.Selector.ClearSelection();
                             Find.Selector.Select(pawn, true, false);
@@ -248,6 +273,23 @@ namespace OrderedWork.UI
                             {
                                 CameraJumper.TryJump(pawn.Position, pawn.Map);
                             }
+                            Find.MainTabsRoot.EscapeCurrentTab(true);
+                        }
+                        else if (shift)
+                        {
+                            if (Find.Selector.IsSelected(pawn))
+                            {
+                                Find.Selector.Deselect(pawn);
+                            }
+                            else
+                            {
+                                Find.Selector.Select(pawn, true, false);
+                            }
+                        }
+                        else
+                        {
+                            Find.Selector.ClearSelection();
+                            Find.Selector.Select(pawn, true, false);
                         }
                         Event.current.Use();
                     }
@@ -346,7 +388,6 @@ namespace OrderedWork.UI
                 && Event.current.button == 0
                 && bodyRect.Contains(Event.current.mousePosition))
             {
-                selectedPawn = pawn;
                 dragging = true;
                 dragPawn = pawn;
                 dragSourceIndex = index;
@@ -517,19 +558,6 @@ namespace OrderedWork.UI
                 blob += "\n" + singleName.Name;
             }
             return blob;
-        }
-
-        private static WorkViewMode NextViewMode(WorkViewMode mode)
-        {
-            switch (mode)
-            {
-                case WorkViewMode.Draw:
-                    return WorkViewMode.Manual;
-                case WorkViewMode.Manual:
-                    return WorkViewMode.Both;
-                default:
-                    return WorkViewMode.Draw;
-            }
         }
 
         private static string PawnLabel(Pawn pawn)

@@ -21,6 +21,8 @@ namespace OrderedWork.Data
     {
         public List<PawnWorkOrder> entries = new List<PawnWorkOrder>();
         public bool initialized;
+        // Legacy: the old Draw/Manual/Both cycle. Kept and scribed so old saves load
+        // harmlessly; initialization behavior now follows OrderedWorkSettings.autoRecommendNewColony.
         public WorkViewMode viewMode = WorkViewMode.Both;
 
         // RimWorld instantiates GameComponents with Activator.CreateInstance(type, game),

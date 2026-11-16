@@ -43,6 +43,12 @@ namespace OrderedWork
             list.Label("Split copies work tags, skills, life stages and mech availability.");
             list.Gap(6f);
 
+            list.CheckboxLabeled(
+                "Auto recommend new colony",
+                ref Settings.autoRecommendNewColony,
+                "On: new/default colonies and new pawns get a skill recommendation applied. Off: copy the current vanilla order instead; the top Recommend button still works.");
+            list.Gap(6f);
+
             list.Label("Work type order (top = first):");
             for (int i = 0; i < Settings.workTypeOrder.Count; i++)
             {

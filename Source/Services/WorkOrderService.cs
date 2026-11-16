@@ -210,11 +210,11 @@ namespace OrderedWork.Services
 
             if (component != null && component.initialized)
             {
-                // Manual mode never shows an un-applied recommendation: use the current
-                // vanilla order instead. Draw/Both keep the recommendation fallback.
-                return IsManual(component)
-                    ? Normalize(pawn, ReadVanillaOrder(pawn))
-                    : GetRecommendation(pawn);
+                // With auto-recommend off, never show an un-applied recommendation:
+                // fall back to the current vanilla order instead.
+                return AutoRecommendNewColony
+                    ? GetRecommendation(pawn)
+                    : Normalize(pawn, ReadVanillaOrder(pawn));
             }
             return GetDefaultOrder(pawn);
         }
@@ -350,10 +350,10 @@ namespace OrderedWork.Services
                     return;
                 }
 
-                // Manual mode never auto-recommends: it behaves like an existing colony
-                // (copy the vanilla order, no write). Draw/Both keep the current behavior.
-                bool manualMode = IsManual(component);
-                bool existingColony = manualMode || colonists.Any(HasNonDefaultPriorities);
+                // Auto recommend off behaves like an existing colony (copy the vanilla
+                // order, no write). On keeps the current new/default recommendation.
+                bool autoRecommend = AutoRecommendNewColony;
+                bool existingColony = !autoRecommend || colonists.Any(HasNonDefaultPriorities);
 
                 foreach (Pawn pawn in colonists)
                 {
@@ -372,7 +372,7 @@ namespace OrderedWork.Services
 
                 component.initialized = true;
                 Log.Message("[Ordered Work] Colony initialized (" +
-                    (manualMode ? "manual-copy" : existingColony ? "existing" : "new") + "): " + colonists.Count + " colonist(s).");
+                    (!autoRecommend ? "copy" : existingColony ? "existing" : "new") + "): " + colonists.Count + " colonist(s).");
             }
             catch (Exception ex)
             {
@@ -458,16 +458,16 @@ namespace OrderedWork.Services
                     Apply(pawn, Normalize(pawn, entry.order));
                     Log.Message("[Ordered Work] Reapplied stored order after spawn for " + pawn.LabelShort + ".");
                 }
-                else if (IsManual(component))
+                else if (!AutoRecommendNewColony)
                 {
-                    // Manual mode: capture the vanilla order but do not write priorities.
+                    // Auto recommend off: capture the vanilla order but do not write.
                     component.SetOrder(pawn, Normalize(pawn, ReadVanillaOrder(pawn)));
                     PawnWorkOrder created = component.GetEntry(pawn);
                     if (created != null)
                     {
                         created.captureSuppressedUntilTick = suppressUntil;
                     }
-                    Log.Message("[Ordered Work] Copied vanilla order after spawn for " + pawn.LabelShort + " (manual mode).");
+                    Log.Message("[Ordered Work] Copied vanilla order after spawn for " + pawn.LabelShort + " (auto-recommend off).");
                 }
                 else
                 {
@@ -511,7 +511,7 @@ namespace OrderedWork.Services
                     return;
                 }
 
-                if (IsManual(component))
+                if (!AutoRecommendNewColony)
                 {
                     component.SetOrder(pawn, Normalize(pawn, ReadVanillaOrder(pawn)));
                     PawnWorkOrder copied = component.GetEntry(pawn);
@@ -685,9 +685,13 @@ namespace OrderedWork.Services
             return pawn != null && !pawn.Dead && !pawn.Destroyed && pawn.IsFreeColonist;
         }
 
-        private static bool IsManual(OrderedWorkGameComponent component)
+        private static bool AutoRecommendNewColony
         {
-            return component != null && component.viewMode == WorkViewMode.Manual;
+            get
+            {
+                OrderedWorkSettings settings = OrderedWorkMod.Settings;
+                return settings == null || settings.autoRecommendNewColony;
+            }
         }
 
         private static int CurrentTick

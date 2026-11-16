@@ -3,6 +3,23 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.9] - 2026-11-16
+
+### Changed
+- Vanilla Work-tab right-click now jumps from priority `0` to `max`; otherwise it decrements by 1. Left-click still cycles `0 → 1 → … → max → 0`.
+- Renamed the top-bar `R` button to **Recommend**; it now applies the recommendation to **all selected free colonists**.
+- The fixed pawn column now draws each pawn's portrait (~32×32, scaled to row height) alongside name and title.
+- Replaced the Draw/Manual/Both cycle with a clear view control: **View: Numeric** in Work Control opens the vanilla Work tab, and the vanilla Work tab draws a **View: Draw** button that opens Work Control. Both use `Find.MainTabsRoot`; neither tab is hidden.
+- Initialization and new-pawn behavior now follow the Mod Settings checkbox **Auto recommend new colony** (default on). Off = copy the vanilla order with no automatic recommendation; on = current scored recommendation. The top Recommend button always works.
+
+### Added
+- Selection is now driven by `Find.Selector`: selected rows highlight, single click selects, shift-click toggles, and double-click selects, pans the camera and closes Work Control. Selection stays in sync with the vanilla tab.
+- Mod Settings checkbox `Auto recommend new colony`.
+- `WorkTabViewPatch` adds the vanilla Work tab's `View: Draw` return button.
+
+### Kept
+- Search filtering, flat single-line cards, shared horizontal scroll, outer vertical scroll, pins/scoring, incapacity filtering, Details window, hooks, respawn and the vanilla >4 priority patch.
+
 ## [0.3.0-alpha.8] - 2026-11-16
 
 ### Changed

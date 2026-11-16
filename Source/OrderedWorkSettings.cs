@@ -10,6 +10,7 @@ namespace OrderedWork
         public List<SplitEntry> splits = new List<SplitEntry>();
         public List<MergeEntry> merges = new List<MergeEntry>();
         public bool initialized;
+        public bool autoRecommendNewColony = true;
 
         public override void ExposeData()
         {
@@ -18,6 +19,7 @@ namespace OrderedWork
             Scribe_Collections.Look(ref splits, "splits", LookMode.Deep);
             Scribe_Collections.Look(ref merges, "merges", LookMode.Deep);
             Scribe_Values.Look(ref initialized, "initialized", false);
+            Scribe_Values.Look(ref autoRecommendNewColony, "autoRecommendNewColony", true);
 
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {

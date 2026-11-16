@@ -47,7 +47,7 @@ namespace OrderedWork.Patches
                     }
                     else if (Event.current.button == 1)
                     {
-                        priority = priority > 0 ? priority - 1 : 0;
+                        priority = priority <= 0 ? max : priority - 1;
                         pawn.workSettings.SetPriority(workType, priority);
                         Event.current.Use();
                     }

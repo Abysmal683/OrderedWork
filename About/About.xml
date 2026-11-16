@@ -3,11 +3,11 @@
   <name>Ordered Work (Core)</name>
   <author>nightmare123487</author>
   <packageId>nightmare123487.OrderedWork</packageId>
-  <modVersion>0.3.0-alpha.8</modVersion>
+  <modVersion>0.3.0-alpha.9</modVersion>
   <supportedVersions>
     <li>1.7</li>
   </supportedVersions>
-  <description>Work Control (0.3.0-alpha.8). UI selection actions: the per-row R button is gone and the recommendation is now a top-bar R button that acts only on the selected Work Control row (disabled when nothing is selected). A new top-bar Details button opens a read-only window for the selected pawn with its name/title, top skills with levels/passions, and the WorkType order with rank, best skill/passion and status (active/off/incapable). The window has a close X and a Close button and is the foundation for a future advanced tab. Everything else is unchanged: flat single-line cards, flexible filtering pawn search, row selection and double-click select/camera, shared horizontal scroll, outer vertical scroll, Draw/Manual/Both modes, Open Work tab, and the vanilla Work-tab manual priority above 4 with dynamic max and capture guards. No profiles, schedules, equipment or multi-pawn yet. Do not use in a main save; back up your save first.</description>
+  <description>Work Control (0.3.0-alpha.9). Interaction and view iteration. In the vanilla Work tab, left-click cycles priority 0..max and right-click now jumps from 0 to max (otherwise decrements), keeping the distinct above-4 cell and capture. Work Control draws each pawn's portrait plus name/title in the fixed column and uses Find.Selector as the selection source: rows highlight selected pawns, single click selects, shift-click toggles, double-click selects and pans and closes the tab; Recommend applies to every selected pawn and Details opens for the first selected one. The old Draw/Manual/Both mode cycle is replaced by a clear view control: View: Numeric opens the vanilla Work tab, and the vanilla Work tab gets a View: Draw return button; both use Find.MainTabsRoot. A Mod Settings checkbox "Auto recommend new colony" (default on) controls automatic recommendation; when off, new/default colonies and new pawns copy the vanilla order instead, while the Recommend button still works. Everything else is kept: flat single-line cards, filtering search, shared horizontal scroll, outer vertical scroll, pinned/scored recommendations, incapacity filtering, Details window, hooks, respawn and the vanilla above-4 priority patch. No profiles, schedules, equipment, drag palette or multi-pawn. Do not use in a main save; back up your save first.</description>
   <loadAfter>
     <li>brrainz.harmony</li>
     <li>Ludeon.RimWorld</li>
