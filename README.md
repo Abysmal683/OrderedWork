@@ -1,6 +1,6 @@
-# Ordered Work (Core) 0.3.0-alpha.7
+# Ordered Work (Core) 0.3.0-alpha.8
 
-> Status: **0.3.0-alpha.7**. The vanilla Work tab now accepts **manual priorities above 4**: a clean-room Harmony cell override cycles 0..dynamic-max (max(4, visible capable WorkTypes), capped at 99, fallback 99), draws >4 distinctly and keeps the existing capture/stored-order path in sync. The Work Control UI, Draw/Manual/Both modes and all earlier behavior are unchanged. Profiles, schedules, equipment and Overview remain **not implemented**. **Do not use it in a main save.**
+> Status: **0.3.0-alpha.8**. UI selection actions: the recommendation moved from a per-row `R` to a top-bar **R** that acts only on the selected Work Control row (disabled otherwise), and a new top-bar **Details** button opens a read-only pawn detail window (name/title, top skills with passions, WorkType order with rank/skill/status). Everything else is unchanged, including the vanilla Work-tab manual priority above 4. Profiles, schedules, equipment and Overview remain **not implemented**. **Do not use it in a main save.**
 
 Basic RimWorld 1.7 work-management framework.
 
@@ -24,7 +24,7 @@ Basic RimWorld 1.7 work-management framework.
 2. Enable it after work mods (Job Splitter, Some More Jobs, Compact Work Tab, etc.).
 3. Back up the save before enabling.
 
-## Work Control tab (0.3.0-alpha.7)
+## Work Control tab (0.3.0-alpha.8)
 - Open the new **Work Control** bottom tab (between Work and Schedule). It does **not** replace the vanilla Work tab.
 - Layout mirrors the Work tab: one row per player free colonist. The pawn name is a fixed left column; the rest of the row is the colonist's horizontal WorkType lane. Outer/internal margins are ~4 px.
 - One **shared horizontal scroll** moves every lane together; one outer vertical scroll moves all pawn rows. The horizontal position is kept across redraws.
@@ -35,7 +35,7 @@ Basic RimWorld 1.7 work-management framework.
 - **Open Work tab** (top right) switches to the vanilla Work tab (`Find.MainTabsRoot.ToggleTab`). It does not hide either tab.
 - Drag a card to reorder within that pawn's lane (left = highest). The `×` removes a card (off, priority 0). The `+` card opens the candidate picker.
 - **Incapable WorkTypes stay out of the lane** and out of default/stored/written orders. The `+` picker lists the remaining visible WorkTypes with levels (`-` when none) and shows incapable ones greyed out as `Incapaz` (not selectable).
-- The `R` button next to a pawn recomputes and applies the skill recommendation **for that pawn only**. Recommendations pin `Patient`, `PatientBedRest` and `Firefighter` first (when capable, in that order), then score the rest: no relevant skill `0`; level 0 no/minor/major passion `-3`/`1`/`3`; level ≥1 `level*2 + 2/4`; ties by `naturalPriority` descending.
+- The top-bar **R** button recomputes and applies the skill recommendation **for the selected row/pawn only**; it is disabled when no row is selected and never guesses a pawn. The top-bar **Details** button opens a read-only `Dialog_WorkControlDetails` window for the selected pawn: name/title, top skills with levels/passions, and the WorkType order with rank, best skill/passion and status (active/off/incapable). The window has a close X and a Close button and is the foundation for a future advanced tab. Recommendations pin `Patient`, `PatientBedRest` and `Firefighter` first (when capable, in that order), then score the rest: no relevant skill `0`; level 0 no/minor/major passion `-3`/`1`/`3`; level ≥1 `level*2 + 2/4`; ties by `naturalPriority` descending.
 - **Initialization runs at game start** (`GameComponentTick`), not when the tab opens. Existing colony copies the current Work-tab order without writing; Manual mode always copies; a new/default colony in Draw/Both applies the recommendation once.
 - A Harmony postfix on `Pawn_WorkSettings.SetPriority` captures genuine vanilla Work-tab edits and rebuilds the stored order, ignoring our writes, `EnableAndInitialize`, spawning and a 120-tick post-spawn window.
 - On spawn/resurrection the stored order is reapplied once; a new colonist with no stored order gets the recommendation applied. Dead-but-not-destroyed pawns keep their entries.
@@ -70,8 +70,10 @@ Basic RimWorld 1.7 work-management framework.
 - Expected log shape: `[Ordered Work] Dense rank test <pawn>: max=<max>, count=<count>, first=<defName>=<priority>, last=<defName>=<priority>`. Compare `last` with its assigned rank (e.g. 23): if it survives, direct-map mode bypasses the vanilla 4 cap; if it reads 4, the value was clamped downstream.
 - **Do not use this build in a main save**; test in a throwaway colony.
 
-## Limitations (0.3.0-alpha.7)
+## Limitations (0.3.0-alpha.8)
 - No profiles, schedules or equipment yet.
+- The top-bar R/Details buttons require a selected Work Control row; a filtered-out selection stays selected internally and is still the target (the Details window shows its name).
+- `Dialog_WorkControlDetails` is read-only and basic: name/title, top 8 skills, and the current WorkType order. Editing, profiles, schedules and equipment are future work.
 - Mode semantics are unchanged: Manual copies the vanilla order at initialization and for new colonists; resurrection still reapplies the stored order in all modes.
 - The >4 vanilla cell applies only to capable free colonists; incapable cells and non-free-colonist pawns keep vanilla 0..4 behavior.
 - If another mod also prefixes `WidgetsWork.DrawWorkBoxFor` (e.g. Compact Work Tab), Harmony ordering may let that mod win, leaving the cell capped at 4; the rest of the mod keeps working.

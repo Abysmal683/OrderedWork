@@ -73,12 +73,14 @@ namespace OrderedWork.UI
 
             // Title + top controls.
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(Pad, titleY, Mathf.Max(100f, inRect.width - 300f), TitleHeight), "Work Control");
+            Widgets.Label(new Rect(Pad, titleY, Mathf.Max(100f, inRect.width - 420f), TitleHeight), "Work Control");
             Text.Font = GameFont.Small;
 
             Rect openRect = new Rect(inRect.xMax - Pad - 116f, titleY + 2f, 116f, 24f);
             Rect modeRect = new Rect(openRect.x - 4f - 150f, titleY + 2f, 150f, 24f);
-            DrawTopControls(modeRect, openRect);
+            Rect detailsRect = new Rect(modeRect.x - 4f - 80f, titleY + 2f, 80f, 24f);
+            Rect recommendRect = new Rect(detailsRect.x - 4f - 28f, titleY + 2f, 28f, 24f);
+            DrawTopControls(recommendRect, detailsRect, modeRect, openRect);
 
             // Search row (pawn names only). The filter never selects or edits anything.
             Widgets.Label(new Rect(Pad, searchY, 88f, SearchHeight), "Search pawns");
@@ -140,8 +142,29 @@ namespace OrderedWork.UI
             DrawPawnColumn(colonists, bodyRect, leftWidth);
         }
 
-        private void DrawTopControls(Rect modeRect, Rect openRect)
+        private void DrawTopControls(Rect recommendRect, Rect detailsRect, Rect modeRect, Rect openRect)
         {
+            bool hasSelection = selectedPawn != null;
+
+            // Top-bar recommendation: only the selected Work Control row, never a guess.
+            if (Widgets.ButtonText(recommendRect, "R", true, true, hasSelection))
+            {
+                WorkOrderService.GenerateAndApplyRecommendation(selectedPawn);
+            }
+            if (Mouse.IsOver(recommendRect))
+            {
+                TooltipHandler.TipRegion(recommendRect, "Generate recommendation for selected pawn");
+            }
+
+            if (Widgets.ButtonText(detailsRect, "Details", true, true, hasSelection))
+            {
+                Find.WindowStack.Add(new Dialog_WorkControlDetails(selectedPawn));
+            }
+            if (Mouse.IsOver(detailsRect))
+            {
+                TooltipHandler.TipRegion(detailsRect, "More details for selected pawn");
+            }
+
             OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
             if (component != null)
             {
@@ -206,12 +229,12 @@ namespace OrderedWork.UI
 
                     TextAnchor previous = Text.Anchor;
                     Text.Anchor = TextAnchor.MiddleLeft;
-                    Widgets.Label(new Rect(4f, y, leftWidth - 40f, RowHeight), PawnLabel(pawn));
+                    Widgets.Label(new Rect(4f, y, leftWidth - 8f, RowHeight), PawnLabel(pawn));
                     Text.Anchor = previous;
 
                     // Single click selects visually. Double-click selects in game (unless
                     // already selected) and pans the camera; neither changes priorities.
-                    Rect nameRect = new Rect(0f, y, leftWidth - 30f, RowHeight);
+                    Rect nameRect = new Rect(0f, y, leftWidth, RowHeight);
                     if (Event.current.type == EventType.MouseDown
                         && Event.current.button == 0
                         && nameRect.Contains(Event.current.mousePosition))
@@ -227,16 +250,6 @@ namespace OrderedWork.UI
                             }
                         }
                         Event.current.Use();
-                    }
-
-                    Rect recommendRect = new Rect(leftWidth - 26f, y + (RowHeight - 20f) / 2f, 22f, 20f);
-                    if (Widgets.ButtonText(recommendRect, "R"))
-                    {
-                        WorkOrderService.GenerateAndApplyRecommendation(pawn);
-                    }
-                    if (Mouse.IsOver(recommendRect))
-                    {
-                        TooltipHandler.TipRegion(recommendRect, "Generate recommendation");
                     }
                 }
             }

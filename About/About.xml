@@ -3,11 +3,11 @@
   <name>Ordered Work (Core)</name>
   <author>nightmare123487</author>
   <packageId>nightmare123487.OrderedWork</packageId>
-  <modVersion>0.3.0-alpha.7</modVersion>
+  <modVersion>0.3.0-alpha.8</modVersion>
   <supportedVersions>
     <li>1.7</li>
   </supportedVersions>
-  <description>Work Control (0.3.0-alpha.7). The vanilla Work tab can now be edited manually above priority 4. A clean-room Harmony prefix replaces the capable priority cell: left-click cycles 0..max (max = max(4, visible capable WorkTypes), capped at 99, falling back to 99 if the dynamic count fails), right-click decrements, and values above 4 are drawn as a distinct blue box with a cyan number and a tooltip. Priorities 0..4 still use the vanilla priority colours. SetPriority is normalised to the dynamic range and now notifies once; the existing vanilla capture rebuilds the stored per-pawn order, while our own Apply is excluded through the IsApplying guard. The Work Control tab is unchanged: rows of free colonists, flat single-line cards with passion icon, level, name and delete, flexible filtering search, Draw/Manual/Both modes, pinned/scored recommendations, game-start initialization and respawn guards. No profiles, schedules or equipment yet. Do not use in a main save; back up your save first.</description>
+  <description>Work Control (0.3.0-alpha.8). UI selection actions: the per-row R button is gone and the recommendation is now a top-bar R button that acts only on the selected Work Control row (disabled when nothing is selected). A new top-bar Details button opens a read-only window for the selected pawn with its name/title, top skills with levels/passions, and the WorkType order with rank, best skill/passion and status (active/off/incapable). The window has a close X and a Close button and is the foundation for a future advanced tab. Everything else is unchanged: flat single-line cards, flexible filtering pawn search, row selection and double-click select/camera, shared horizontal scroll, outer vertical scroll, Draw/Manual/Both modes, Open Work tab, and the vanilla Work-tab manual priority above 4 with dynamic max and capture guards. No profiles, schedules, equipment or multi-pawn yet. Do not use in a main save; back up your save first.</description>
   <loadAfter>
     <li>brrainz.harmony</li>
     <li>Ludeon.RimWorld</li>

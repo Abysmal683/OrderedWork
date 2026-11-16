@@ -1,6 +1,6 @@
-# Work Control — Milestone 0.3.0-alpha.7 Checklist
+# Work Control — Milestone 0.3.0-alpha.8 Checklist
 
-Status: in progress — version 0.3.0-alpha.7. Vanilla Work-tab manual priority >4 written: clean-room `WidgetsWork.DrawWorkBoxFor` prefix with dynamic max (max(4, visible capable), cap 99, fallback 99), left-click cycle 0..max, distinct >4 box/tooltip, and `SetPriority` normalisation + Notify + existing capture. Work Control UI and Draw/Manual/Both semantics unchanged. Runtime checks still pending.
+Status: in progress — version 0.3.0-alpha.8. UI selection actions written: per-row R removed, top-bar R acting only on the selected row (disabled otherwise), and a top-bar Details button opening a read-only `Dialog_WorkControlDetails` (name/title, top skills/passions, WorkType order with rank/skill/status, close button). No Harmony/priority/mode/search changes. Runtime checks still pending.
 Goal: first usable Work Control tab with a horizontal lane that assigns WorkTypes and updates the vanilla Work tab.
 
 ## Scope in
