@@ -120,6 +120,21 @@ namespace OrderedWork.Services
             return passion == Passion.Major ? "Major" : passion == Passion.Minor ? "Minor" : "None";
         }
 
+        public static string DescriptionOf(Passion passion)
+        {
+            object def = GetVseDef(passion);
+            if (def == null)
+            {
+                return null;
+            }
+            string description = GetStringMember(def, "description");
+            if (string.IsNullOrEmpty(description))
+            {
+                description = GetStringMember(def, "Description");
+            }
+            return string.IsNullOrEmpty(description) ? null : description;
+        }
+
         private static PassionWeightEntry DefaultEntry(PassionInfo info)
         {
             string name = info.DefName ?? "";

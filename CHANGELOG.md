@@ -3,6 +3,21 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.88] - 2026-11-17
+
+### Changed — nested scroll input
+- Passion weights scroll only with Shift+wheel; a plain wheel scrolls the outer settings panel.
+- Split/Merge columns scroll only with Shift+wheel over the column.
+- Plain wheel over those sections is forwarded to the outer settings scroll.
+- Updated the column scrollbar tooltip.
+
+## [0.3.0-alpha.87] - 2026-11-17
+
+### Added — passion description tooltip
+- Hovering the passion icon/name shows the live `PassionDef.description` from VSE/Alpha.
+- Description text is read at runtime through reflection; no third-party text is copied into Ordered Work.
+- No tooltip is shown when the passion def does not expose a description.
+
 ## [0.3.0-alpha.86] - 2026-11-17
 
 ### Changed — passion weights view

@@ -161,7 +161,18 @@ namespace OrderedWork
             float viewHeight = Mathf.Min(registered.Count, VisiblePassionRows) * PassionRowHeight;
             Rect outRect = list.GetRect(viewHeight);
             Rect viewRect = new Rect(0f, 0f, outRect.width - 20f, registered.Count * PassionRowHeight);
+            bool wheelWithoutShift = Event.current.type == EventType.ScrollWheel
+                && !Event.current.shift
+                && !Input.GetKey(KeyCode.LeftShift)
+                && !Input.GetKey(KeyCode.RightShift);
+            float wheelDelta = Event.current.delta.y;
+            Vector2 scrollBefore = passionWeightScroll;
             Widgets.BeginScrollView(outRect, ref passionWeightScroll, viewRect);
+            if (wheelWithoutShift)
+            {
+                passionWeightScroll = scrollBefore;
+                ScrollSettingsOuter(wheelDelta);
+            }
             for (int i = 0; i < registered.Count; i++)
             {
                 PassionWeightCatalog.PassionInfo info = registered[i];
@@ -180,6 +191,11 @@ namespace OrderedWork
                     GUI.color = previous;
                 }
                 Widgets.Label(new Rect(row.x + 20f, row.y, 140f, 24f), info.Label);
+                string description = PassionWeightCatalog.DescriptionOf(info.Passion);
+                if (!string.IsNullOrEmpty(description))
+                {
+                    TooltipHandler.TipRegion(new Rect(row.x, row.y, 170f, 24f), description);
+                }
                 float fieldWidth = Mathf.Max(54f, (row.width - 170f - 24f) / 3f);
                 Widgets.TextFieldNumeric(new Rect(row.x + 174f, row.y, fieldWidth, 24f),
                     ref entry.level0Score, ref entry.level0Buffer, -20, 20);

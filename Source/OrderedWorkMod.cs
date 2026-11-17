@@ -37,6 +37,7 @@ namespace OrderedWork
         // Measured from Listing_Standard.CurHeight after each draw and reused next frame so
         // the outer settings scroll is only as tall as the current tab content.
         private float settingsContentHeight;
+        private float settingsViewportHeight;
 
         // Tab selection is intentionally UI-only; it is not scribed to settings.
         private int settingsTab = TabRules;
@@ -112,6 +113,7 @@ namespace OrderedWork
                 tabsRect.yMax + 4f,
                 inRect.width,
                 Mathf.Max(40f, inRect.height - tabsRect.height - 4f));
+            settingsViewportHeight = body.height;
 
             // Use the height measured after last frame's draw. Zero means "not measured yet",
             // so fall back to the body height and let this frame measure the real content.
@@ -136,6 +138,12 @@ namespace OrderedWork
             list.End();
             settingsContentHeight = list.CurHeight + 8f;
             Widgets.EndScrollView();
+        }
+
+        private void ScrollSettingsOuter(float delta)
+        {
+            float max = Mathf.Max(0f, settingsContentHeight - settingsViewportHeight);
+            scroll.y = Mathf.Clamp(scroll.y + delta * 20f, 0f, max);
         }
 
 
