@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.64] - 2026-11-16
+
+### Fixed
+- Profile fallback no longer overwrites `active-profile.txt`. A missing/invalid profile is resolved for the session but the requested selection is preserved, preventing “test switched back to vanilla”.
+- Added the mod version to the General settings panel.
+- Order reset now writes active + pending and refreshes the draft; reset logs and pending status are explicit.
+- Delete split no longer uses reciprocal cleanup, so it cannot modify its own list while enumerating; this was the source of the Collection-modified exception.
+- Restore keeps surplus-return and empty-split cleanup.
+
 ## [0.3.0-alpha.63] - 2026-11-16
 
 ### Fixed
