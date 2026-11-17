@@ -3,6 +3,12 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.58] - 2026-11-16
+
+### Fixed
+- Split and Merge now set their dirty flag when a giver is added, removed, or reordered in the destination. Cancel draft therefore enables together with Merge selected/all and disables again after cancel/save.
+- No change to Order buttons; those were handled in alpha.57.
+
 ## [0.3.0-alpha.57] - 2026-11-16
 
 ### Fixed

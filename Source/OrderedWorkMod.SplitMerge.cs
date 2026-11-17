@@ -741,13 +741,17 @@ namespace OrderedWork
             if (!draft.Contains(giverName))
             {
                 draft.Add(giverName);
+                if (mergeMode) mergeDirty = true; else splitDirty = true;
             }
         }
 
         private void RemoveDraftGiver(string giverName, bool mergeMode)
         {
             List<string> draft = mergeMode ? mergeDraft : splitDraft;
-            draft.Remove(giverName);
+            if (draft.Remove(giverName))
+            {
+                if (mergeMode) mergeDirty = true; else splitDirty = true;
+            }
         }
 
         private void EnsureSplitMergeDefaults()
