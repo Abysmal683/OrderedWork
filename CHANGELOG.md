@@ -3,6 +3,18 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.38] - 2026-11-16
+
+### Added
+- Startup now promotes the active profile's pending file, loads the active profile with requested→default→vanilla fallback, and applies the JSON profile to live defs.
+- `ApplyProfile` materializes split WorkTypes, applies profile order, giver ownership/priority, labels/descriptions and visibility, then rebuilds caches. Legacy lists are repopulated for the existing editor.
+- Active profile selection is now functional across restart.
+
+### Known limitations
+- Legacy `splits/merges` are still repopulated and used by the editor; full removal is the next pass.
+- Reference diff is not yet connected to reset UI.
+- Profile application is no longer hot-only: a restart promotes pending as designed. Hot editor actions can still mutate the current session.
+
 ## [0.3.0-alpha.37] - 2026-11-16
 
 ### Added

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Reflection;
+using OrderedWork.Config;
 using RimWorld;
 using Verse;
 
@@ -84,6 +86,97 @@ namespace OrderedWork
                     known.Add(giver.defName);
                 }
             }
+        }
+
+        /// <summary>
+        /// Applies the canonical JSON profile to live defs. The profile is final state, not an
+        /// operation log: every giver has exactly one owner, WorkTypes follow profile order, and
+        /// split entries are materialized first so ApplySplits can create their defs.
+        /// </summary>
+        private static void ApplyProfile(WorkConfigProfile profile, OrderedWorkSettings settings, OrderedWorkMod mod)
+        {
+            if (profile == null || profile.WorkTypes == null || profile.WorkTypes.Count == 0)
+            {
+                return;
+            }
+
+            settings.splits.Clear();
+            settings.merges.Clear();
+            settings.workTypeOrder.Clear();
+            settings.giverOrder.Clear();
+
+            List<KeyValuePair<string, WorkTypeConfig>> ordered = profile.WorkTypes
+                .Where(e => e.Value != null)
+                .OrderBy(e => e.Value.Order)
+                .ToList();
+
+            foreach (KeyValuePair<string, WorkTypeConfig> entry in ordered)
+            {
+                WorkTypeConfig wt = entry.Value;
+                if (!wt.Vanilla)
+                {
+                    settings.splits.Add(new SplitEntry
+                    {
+                        newDefName = entry.Key,
+                        label = wt.Label,
+                        description = wt.Description,
+                        baseWorkType = wt.Base,
+                        givers = wt.Givers != null
+                            ? wt.Givers.Where(g => g != null).Select(g => g.DefName).Distinct().ToList()
+                            : new List<string>()
+                    });
+                }
+            }
+
+            ApplySplits(settings, mod);
+
+            int workOrder = 0;
+            foreach (KeyValuePair<string, WorkTypeConfig> entry in ordered)
+            {
+                WorkTypeDef def = DefDatabase<WorkTypeDef>.GetNamedSilentFail(entry.Key);
+                if (def == null)
+                {
+                    continue;
+                }
+                WorkTypeConfig wt = entry.Value;
+                string label = string.IsNullOrWhiteSpace(wt.Label) ? def.defName : wt.Label;
+                def.labelShort = label;
+                def.pawnLabel = label;
+                def.gerundLabel = label;
+                if (!string.IsNullOrWhiteSpace(wt.Description))
+                {
+                    def.description = wt.Description;
+                }
+                def.visible = wt.Visible;
+                def.naturalPriority = 10000 - workOrder * 10;
+                settings.workTypeOrder.Add(entry.Key);
+
+                int giverOrder = 0;
+                if (wt.Givers != null)
+                {
+                    foreach (GiverConfig giverConfig in wt.Givers.Where(g => g != null).OrderBy(g => g.Order))
+                    {
+                        WorkGiverDef giver = DefDatabase<WorkGiverDef>.GetNamedSilentFail(giverConfig.DefName);
+                        if (giver == null)
+                        {
+                            continue;
+                        }
+                        giver.workType = def;
+                        giver.priorityInType = 10000 - giverOrder * 10;
+                        settings.giverOrder.Add(new GiverOrderEntry
+                        {
+                            workType = def.defName,
+                            giver = giver.defName,
+                            order = giverOrder
+                        });
+                        giverOrder++;
+                    }
+                }
+                workOrder++;
+            }
+
+            RebuildCaches();
+            OrderedWork.Services.WorkOrderService.InvalidateAvailableWorkTypes();
         }
 
         private static void ApplySplits(OrderedWorkSettings settings, OrderedWorkMod mod)
