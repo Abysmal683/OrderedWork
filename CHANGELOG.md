@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.48] - 2026-11-16
+
+### Fixed
+- Order mode now actually calls the two-column reference/current editor; the previous call was missing, so the old giver-only screen remained.
+- Order has separate Apply and Cancel actions; Apply saves active + pending and applies live.
+- Restore now removes reference givers from other profile WorkTypes before restoring the source, so a Patient←Medic merge cannot leave the giver only in Medic.
+- Delete split removes the giver from any other WorkType before returning it to the base.
+- Removed the leftover Rules confirmation button.
+
 ## [0.3.0-alpha.47] - 2026-11-16
 
 ### Added

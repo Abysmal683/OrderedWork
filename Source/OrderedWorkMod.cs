@@ -194,15 +194,6 @@ namespace OrderedWork
                 workRows.Add(row);
             }
             HandleReorderDrag(1, workRows, MoveWorkType);
-            if (list.ButtonText("Confirm WorkType order and write pending"))
-            {
-                PersistLivePending();
-                profileStatus = "WorkType order written to pending.";
-            }
-            if (!string.IsNullOrEmpty(profileStatus))
-            {
-                list.Label(profileStatus);
-            }
 
             list.Gap(14f);
             DrawSplitMergeEditor(list);
@@ -613,9 +604,16 @@ namespace OrderedWork
             }
             HandleReorderDrag(4, destinations, MoveOrderDraft);
 
-            if (list.ButtonText("Confirm WorkType order to pending"))
+            Rect orderButtons = list.GetRect(30f);
+            float half = (orderButtons.width - 8f) * 0.5f;
+            if (Widgets.ButtonText(new Rect(orderButtons.x, orderButtons.y, half, 28f), "Apply WorkType order"))
             {
                 ApplyOrderDraft(active.Profile);
+            }
+            if (Widgets.ButtonText(new Rect(orderButtons.x + half + 8f, orderButtons.y, half, 28f), "Cancel order draft"))
+            {
+                orderDraftInitialized = false;
+                orderDraft.Clear();
             }
             if (!string.IsNullOrEmpty(profileStatus))
             {
@@ -673,8 +671,10 @@ namespace OrderedWork
         private void DrawOrderEditor(Listing_Standard list)
         {
             EnsureSplitMergeDefaults();
+            DrawWorkTypeOrderDiff(list);
 
-            list.Label("Order mode reorders the WorkGivers of one work type. Top = first.");
+            list.Gap(12f);
+            list.Label("Giver order: reorders the WorkGivers of one work type. Top = first.");
             Rect selectorRect = list.GetRect(28f);
             DrawWorkTypeSelector(selectorRect, "Work type: ", selectedGiverType, "Select Work type", delegate(string defName)
             {
@@ -839,6 +839,26 @@ namespace OrderedWork
                 }
             }
             list.Label("Reset writes to pending; it does not mutate live defs until restart.");
+        }
+
+        private static void RemoveGiverFromOtherTypes(WorkConfigProfile profile, string giverDefName, string exceptDefName)
+        {
+            if (profile == null || profile.WorkTypes == null || string.IsNullOrEmpty(giverDefName))
+            {
+                return;
+            }
+            foreach (KeyValuePair<string, WorkTypeConfig> entry in profile.WorkTypes)
+            {
+                if (entry.Key == exceptDefName || entry.Value == null || entry.Value.Givers == null)
+                {
+                    continue;
+                }
+                entry.Value.Givers.RemoveAll(g => g != null && g.DefName == giverDefName);
+                for (int i = 0; i < entry.Value.Givers.Count; i++)
+                {
+                    entry.Value.Givers[i].Order = i;
+                }
+            }
         }
 
         private static WorkTypeConfig CloneWorkType(WorkTypeConfig source)
