@@ -110,6 +110,9 @@ namespace OrderedWork.UI
             float bodyTop = headerY + HeaderHeight + 2f;
             float bodyHeight = Mathf.Max(40f, inRect.yMax - Pad - bodyTop);
             Rect bodyRect = new Rect(Pad, bodyTop, inRect.width - Pad * 2f, bodyHeight);
+            Widgets.DrawBoxSolid(
+                new Rect(bodyRect.x + leftWidth - 1f, headerY, 2f, bodyRect.yMax - headerY),
+                new Color(0.32f, 0.36f, 0.40f, 1f));
             Rect paletteRect = new Rect(Pad, paletteY, inRect.width - Pad * 2f, PaletteHeight);
 
             // Title + top controls.
@@ -210,6 +213,12 @@ namespace OrderedWork.UI
 
             // Wheel works over both the fixed names and the lanes.
             WorkGridScrollView.HandleWheel(bodyRect, gridViewport, laneContent, ref gridScroll);
+            if (Event.current.type == EventType.ScrollWheel && Event.current.shift)
+            {
+                Log.Message("[OrderedWork][Scroll] shiftGeometry maxLane=" + maxLane
+                    + " content=" + laneContentWidth + " laneViewport=" + laneViewport.width
+                    + " scrollX=" + gridScroll.x);
+            }
 
             bool showVerticalScrollbar = !autoHide
                 || Mouse.IsOver(bodyRect)
@@ -291,7 +300,7 @@ namespace OrderedWork.UI
             {
                 resizingPanel = true;
                 resizeStartMouseY = current.mousePosition.y;
-                resizeStartHeight = inRect.height;
+                resizeStartHeight = windowRect.height;
                 Log.Message("[OrderedWork][Resize] down mouse=" + current.mousePosition + " height=" + inRect.height);
                 current.Use();
             }
@@ -322,10 +331,6 @@ namespace OrderedWork.UI
             x += 42f;
             searchText = Widgets.TextField(new Rect(x, searchY, 168f, SearchHeight - 2f), searchText ?? "");
             x += 174f;
-            Widgets.DrawBoxSolid(
-                new Rect(x, searchY + 1f, 2f, SearchHeight - 2f),
-                new Color(0.62f, 0.67f, 0.72f, 1f));
-            x += 10f;
 
             Rect workButton = new Rect(x, searchY, 190f, SearchHeight - 2f);
             x += 194f;

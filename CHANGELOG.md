@@ -3,6 +3,17 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.23] - 2026-11-16
+
+### Fixed
+- Resize now starts from the actual window height instead of the inner content height; this removes the 36 px margin mismatch and should make the grip move the panel. Drag/up logs include the requested height.
+- Removed the search-row Pawn/Work separator; the separator is now the vertical divider between the pawn column and the lane area, spanning header + body.
+- Shift-wheel diagnostics now log `maxLane`, content width, lane viewport and `scrollX` to distinguish a content-width issue from a wheel issue. The previous log already reached `maxX`; the remaining cut is being treated as lane padding.
+
+### Design
+- Config edits are treated as applying safely on restart; the split WorkType creation stays on the startup path.
+- Next minimal tool: hot-move WorkGivers for pawns with overrides, without creating/deleting WorkTypes.
+
 ## [0.3.0-alpha.22] - 2026-11-16
 
 ### Changed
