@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.34] - 2026-11-16
+
+### Added
+- Save foundation for the global JSON model: canonical `WorkTypes` map keyed by `defName`, giver arrays, `Mods` list, `active`/`pending` profile paths, `reference.json`, atomic writes, schema version and fallback resolution.
+- `Normalize` deduplicates only by `defName`; repeated `giverClass`/priority is preserved.
+- Fallback load order is requested profile → `default` → generated `vanilla`, with explicit flags in the load result.
+
+### Not wired yet
+- The existing Mod Settings still uses the old `OrderedWorkSettings` lists. JSON profile selection, pending promotion, reference-based reset and the compact `PawnWorkOrder` overrides are the next integration steps.
+
 ## [0.3.0-alpha.33] - 2026-11-16
 
 ### Added

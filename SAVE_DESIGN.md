@@ -1,6 +1,6 @@
 # Ordered Work — save/config design
 
-Status: design approved pending one scope decision. No JSON migration has been implemented yet.
+Status: foundation implemented in `Source/Config/WorkConfigStore.cs` and `WorkConfigModels.cs`; the live settings UI is not wired to it yet. The old settings lists remain active until the next integration pass.
 
 ## 1. Two separate scopes
 
