@@ -10,7 +10,6 @@ namespace OrderedWork
         // Captured before the first apply so Order -> Reset can restore def priorities.
         public List<GiverOrderEntry> originalGiverOrder = new List<GiverOrderEntry>();
         public List<SplitEntry> splits = new List<SplitEntry>();
-        public List<MergeEntry> merges = new List<MergeEntry>();
         public bool initialized;
         public bool autoRecommendNewColony = true;
         public bool autoHideScrollbars = true;
@@ -26,7 +25,6 @@ namespace OrderedWork
             Scribe_Collections.Look(ref giverOrder, "giverOrder", LookMode.Deep);
             Scribe_Collections.Look(ref originalGiverOrder, "originalGiverOrder", LookMode.Deep);
             Scribe_Collections.Look(ref splits, "splits", LookMode.Deep);
-            Scribe_Collections.Look(ref merges, "merges", LookMode.Deep);
             Scribe_Values.Look(ref initialized, "initialized", false);
             Scribe_Values.Look(ref autoRecommendNewColony, "autoRecommendNewColony", true);
             Scribe_Values.Look(ref autoHideScrollbars, "autoHideScrollbars", true);
@@ -42,7 +40,6 @@ namespace OrderedWork
                 if (giverOrder == null) giverOrder = new List<GiverOrderEntry>();
                 if (originalGiverOrder == null) originalGiverOrder = new List<GiverOrderEntry>();
                 if (splits == null) splits = new List<SplitEntry>();
-                if (merges == null) merges = new List<MergeEntry>();
                 if (workTypeColors == null) workTypeColors = new List<WorkTypeColorEntry>();
             }
         }
@@ -78,42 +75,6 @@ namespace OrderedWork
             Scribe_Values.Look(ref baseWorkType, "baseWorkType");
             Scribe_Collections.Look(ref givers, "givers", LookMode.Value);
             if (Scribe.mode == LoadSaveMode.LoadingVars && givers == null) givers = new List<string>();
-        }
-    }
-
-    public class GiverOrigin : IExposable
-    {
-        public string giver;
-        public string workType;
-
-        public void ExposeData()
-        {
-            Scribe_Values.Look(ref giver, "giver");
-            Scribe_Values.Look(ref workType, "workType");
-        }
-    }
-
-    public class MergeEntry : IExposable
-    {
-        public List<string> givers = new List<string>();
-        // Source WorkType captured before the hot move, so a single merge can be reset
-        // without restarting. Old saves have no origins and still use restart semantics.
-        public List<GiverOrigin> origins = new List<GiverOrigin>();
-        public string targetWorkType;
-        // Final destination order after applying the merge: existing target givers first
-        // (fixed), then the incoming givers in the order chosen in the editor. Empty for
-        // old saves, which keeps the previous behavior.
-        public List<string> targetOrder = new List<string>();
-
-        public void ExposeData()
-        {
-            Scribe_Collections.Look(ref givers, "givers", LookMode.Value);
-            Scribe_Collections.Look(ref origins, "origins", LookMode.Deep);
-            Scribe_Values.Look(ref targetWorkType, "targetWorkType");
-            Scribe_Collections.Look(ref targetOrder, "targetOrder", LookMode.Value);
-            if (Scribe.mode == LoadSaveMode.LoadingVars && givers == null) givers = new List<string>();
-            if (Scribe.mode == LoadSaveMode.LoadingVars && origins == null) origins = new List<GiverOrigin>();
-            if (Scribe.mode == LoadSaveMode.LoadingVars && targetOrder == null) targetOrder = new List<string>();
         }
     }
 

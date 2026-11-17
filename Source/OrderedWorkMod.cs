@@ -208,7 +208,6 @@ namespace OrderedWork
                 .ToList();
             Settings.giverOrder.Clear();
             Settings.splits.Clear();
-            Settings.merges.Clear();
             Settings.workTypeColors.Clear();
             Settings.autoRecommendNewColony = true;
             Settings.autoHideScrollbars = true;

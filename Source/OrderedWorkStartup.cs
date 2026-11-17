@@ -26,7 +26,6 @@ namespace OrderedWork
                 CaptureOriginalGiverOrder(settings);
                 ApplySplits(settings, mod);
                 CaptureOriginalGiverOrder(settings);
-                ApplyMerges(settings);
                 ApplyOrder(settings);
                 RebuildCaches();
             }
@@ -52,7 +51,6 @@ namespace OrderedWork
                 CaptureOriginalGiverOrder(settings);
                 ApplySplits(settings, mod);
                 CaptureOriginalGiverOrder(settings);
-                ApplyMerges(settings);
                 ApplyOrder(settings);
                 RebuildCaches();
                 OrderedWork.Services.WorkOrderService.InvalidateAvailableWorkTypes();
@@ -106,8 +104,7 @@ namespace OrderedWork
             }
 
             settings.splits.Clear();
-            settings.merges.Clear();
-            settings.workTypeOrder.Clear();
+                settings.workTypeOrder.Clear();
             settings.giverOrder.Clear();
 
             List<KeyValuePair<string, WorkTypeConfig>> ordered = profile.WorkTypes
@@ -290,93 +287,6 @@ namespace OrderedWork
                 if (trait.requiredWorkTypes != null && trait.requiredWorkTypes.Contains(baseDef) && !trait.requiredWorkTypes.Contains(newDef))
                 {
                     trait.requiredWorkTypes.Add(newDef);
-                }
-            }
-        }
-
-        private static void ApplyMerges(OrderedWorkSettings settings)
-        {
-            // Pass 1: move giver ownership into each target work type.
-            foreach (MergeEntry merge in settings.merges)
-            {
-                if (merge == null || string.IsNullOrWhiteSpace(merge.targetWorkType))
-                {
-                    continue;
-                }
-                WorkTypeDef target = DefDatabase<WorkTypeDef>.GetNamedSilentFail(merge.targetWorkType);
-                if (target == null)
-                {
-                    continue;
-                }
-                foreach (string giverName in merge.givers)
-                {
-                    WorkGiverDef giver = DefDatabase<WorkGiverDef>.GetNamedSilentFail(giverName);
-                    if (giver != null)
-                    {
-                        giver.workType = target;
-                    }
-                }
-            }
-
-            // Pass 2: honor a saved target order. Existing target givers stay first, then the
-            // incoming givers in their editor order. Old saves have no targetOrder and keep
-            // the previous behavior (ApplyOrder decides the final order).
-            List<string> targets = settings.merges
-                .Where(m => m != null && !string.IsNullOrWhiteSpace(m.targetWorkType))
-                .Select(m => m.targetWorkType)
-                .Distinct()
-                .ToList();
-
-            foreach (string targetName in targets)
-            {
-                WorkTypeDef target = DefDatabase<WorkTypeDef>.GetNamedSilentFail(targetName);
-                if (target == null)
-                {
-                    continue;
-                }
-
-                List<WorkGiverDef> targetGivers = DefDatabase<WorkGiverDef>.AllDefsListForReading
-                    .Where(g => g != null && g.workType == target)
-                    .ToList();
-                if (targetGivers.Count == 0)
-                {
-                    continue;
-                }
-
-                List<WorkGiverDef> ordered = new List<WorkGiverDef>();
-                bool hasExplicitOrder = false;
-                foreach (MergeEntry merge in settings.merges)
-                {
-                    if (merge == null || merge.targetWorkType != targetName || merge.targetOrder == null || merge.targetOrder.Count == 0)
-                    {
-                        continue;
-                    }
-                    hasExplicitOrder = true;
-                    foreach (string giverName in merge.targetOrder)
-                    {
-                        WorkGiverDef giver = targetGivers.FirstOrDefault(g => g.defName == giverName);
-                        if (giver != null && !ordered.Contains(giver))
-                        {
-                            ordered.Add(giver);
-                        }
-                    }
-                }
-
-                if (!hasExplicitOrder)
-                {
-                    continue;
-                }
-
-                foreach (WorkGiverDef giver in targetGivers.OrderByDescending(g => g.priorityInType))
-                {
-                    if (!ordered.Contains(giver))
-                    {
-                        ordered.Add(giver);
-                    }
-                }
-                for (int i = 0; i < ordered.Count; i++)
-                {
-                    ordered[i].priorityInType = 10000 - i * 10;
                 }
             }
         }
