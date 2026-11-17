@@ -462,7 +462,6 @@ namespace OrderedWork
                     splitDraftScroll = 0f;
                 });
 
-            DrawSavedSplits(list);
             HandleSplitMergeDrag();
         }
 
@@ -554,7 +553,6 @@ namespace OrderedWork
                 DrawInlineWarning(list, "Merge all: " + allWarning);
             }
 
-            DrawSavedMerges(list);
             HandleSplitMergeDrag();
         }
 
@@ -1383,54 +1381,6 @@ namespace OrderedWork
                 }));
         }
 
-        private void DrawSavedSplits(Listing_Standard list)
-        {
-            list.Gap(8f);
-            list.Label("Saved splits (informational; reset is in Order):");
-            if (Settings.splits.Count == 0)
-            {
-                list.Label("None.");
-                return;
-            }
-            for (int i = 0; i < Settings.splits.Count; i++)
-            {
-                SplitEntry split = Settings.splits[i];
-                if (split == null)
-                {
-                    continue;
-                }
-                string label = string.IsNullOrEmpty(split.label) ? split.newDefName : split.label;
-                string givers = split.givers != null ? string.Join(", ", split.givers) : "";
-                if (split.givers == null || split.givers.Count == 0)
-                {
-                    Color previous = GUI.color;
-                    GUI.color = new Color(1f, 0.55f, 0.40f, 1f);
-                    list.Label("WARNING: empty split. Reset it from Order.");
-                    GUI.color = previous;
-                }
-                list.Label("Saved: " + label + " [" + split.newDefName + "] from " + split.baseWorkType + " - " + givers);
-            }
-        }
-        private void DrawSavedMerges(Listing_Standard list)
-        {
-            list.Gap(8f);
-            list.Label("Saved merges (informational; reset is in Order):");
-            if (Settings.merges.Count == 0)
-            {
-                list.Label("None.");
-                return;
-            }
-            for (int i = 0; i < Settings.merges.Count; i++)
-            {
-                MergeEntry merge = Settings.merges[i];
-                if (merge == null)
-                {
-                    continue;
-                }
-                string givers = merge.givers != null ? string.Join(", ", merge.givers) : "";
-                list.Label("Saved: [" + givers + "] -> " + merge.targetWorkType);
-            }
-        }
         private void SaveSplit()
         {
             if (!string.IsNullOrEmpty(SplitValidationWarning()))

@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.41] - 2026-11-16
+
+### Changed
+- Removed the old informational saved-split/saved-merge lists from the Split and Merge sheets. Reset/change management lives only in Order.
+- Test files confirm `reset_test` active, `reference`/`reset_test`/`reset_test.pending` aligned after reset; `default` keeps its split independently.
+
+### Remaining legacy
+- `OrderedWorkSettings.splits/merges/giverOrder/workTypeOrder` still feed the old editor and startup bridge. The next pass is the profile-backed editor, not a blind deletion.
+
 ## [0.3.0-alpha.40] - 2026-11-16
 
 ### Fixed
