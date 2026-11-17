@@ -681,6 +681,30 @@ namespace OrderedWork
                 {
                     if (isSplit)
                     {
+                        WorkTypeConfig removed = display.WorkTypes[defName];
+                        if (removed != null && !string.IsNullOrEmpty(removed.Base)
+                            && display.WorkTypes.TryGetValue(removed.Base, out WorkTypeConfig baseType)
+                            && baseType != null)
+                        {
+                            // Deleting a split returns its givers to the base so the base
+                            // change disappears from the diff as well.
+                            if (baseType.Givers == null)
+                            {
+                                baseType.Givers = new List<GiverConfig>();
+                            }
+                            foreach (GiverConfig giver in removed.Givers ?? new List<GiverConfig>())
+                            {
+                                if (giver != null && !baseType.Givers.Any(g => g.DefName == giver.DefName))
+                                {
+                                    baseType.Givers.Add(new GiverConfig
+                                    {
+                                        DefName = giver.DefName,
+                                        Order = baseType.Givers.Count,
+                                        Mod = giver.Mod
+                                    });
+                                }
+                            }
+                        }
                         display.WorkTypes.Remove(defName);
                     }
                     else

@@ -3,6 +3,18 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.45] - 2026-11-16
+
+### Fixed
+- Delete split now returns its givers to the base WorkType in the profile, so the base's related diff disappears instead of leaving two coupled reset entries.
+- Hot profile apply after reset now hides `OrderedWork_*` defs removed from the profile.
+- Active-profile fallback now persists `default`/`vanilla` selection when the requested profile is missing.
+- All `OrderedWork` JSON profile/pending/reference/active files were deleted for a clean regeneration.
+
+### Known test state
+- Next RimWorld start should regenerate `reference.json` from fresh defs before applying the active profile.
+- Order drag persistence still needs verification; the pending write hook exists but the UI does not yet show a dedicated pending-updated status.
+
 ## [0.3.0-alpha.44] - 2026-11-16
 
 ### Fixed
