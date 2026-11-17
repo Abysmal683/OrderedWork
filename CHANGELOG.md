@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.17] - 2026-11-16
+
+### Fixed
+- Palette order now follows the user's saved `workTypeOrder` (the same order used by the Work tab), so the first column starts Patient, Doctor, Firefighter instead of naturalPriority order; column-major fill is unchanged.
+- Shift+wheel now reads both `Event.current.shift` and the physical left/right Shift keys, and accepts `delta.x` as well as `delta.y`, so horizontal scrolling works on systems where Unity does not report the shift modifier.
+- Keeping the mouse over either scrollbar now keeps both bars visible; auto-hide no longer drops the vertical bar when moving from the body to the horizontal bar (or the reverse).
+- Lane tooltip and Details header now say `Priority` instead of `Rank`.
+- Combo re-anchoring is re-applied in `PostOpen`; `[OrderedWork][Combo]` logs the anchor/window/screen geometry for the remaining placement report.
+
 ## [0.3.0-alpha.16] - 2026-11-16
 
 ### Fixed

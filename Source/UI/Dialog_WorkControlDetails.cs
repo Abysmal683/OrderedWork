@@ -104,7 +104,7 @@ namespace OrderedWork.UI
                     float skillWidth = 90f;
                     float nameWidth = scrollContent.width - rankWidth - statusWidth - skillWidth - 12f;
 
-                    Widgets.Label(new Rect(0f, y, rankWidth, 18f), "Rank");
+                    Widgets.Label(new Rect(0f, y, rankWidth, 18f), "Priority");
                     Widgets.Label(new Rect(rankWidth, y, nameWidth, 18f), "Work type");
                     Widgets.Label(new Rect(rankWidth + nameWidth, y, skillWidth, 18f), "Skill");
                     Widgets.Label(new Rect(rankWidth + nameWidth + skillWidth, y, statusWidth, 18f), "Status");

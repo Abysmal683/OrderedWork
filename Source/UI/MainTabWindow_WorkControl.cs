@@ -104,7 +104,9 @@ namespace OrderedWork.UI
             DrawTopControls(recommendRect, detailsRect, viewRect);
 
             List<WorkTypeDef> available = WorkOrderService.GetAvailableWorkTypes();
-            List<WorkTypeDef> paletteTypes = available.Where(MatchesPaletteFilter).ToList();
+            List<WorkTypeDef> paletteTypes = GetPaletteOrder(available)
+                .Where(MatchesPaletteFilter)
+                .ToList();
             if (OrderedWorkMod.Settings != null && OrderedWorkMod.Settings.paletteStressTest)
             {
                 paletteTypes.AddRange(WorkTypePaletteView.BuildDebugPaletteTypes(60));
@@ -193,11 +195,13 @@ namespace OrderedWork.UI
             bool showVerticalScrollbar = !autoHide
                 || Mouse.IsOver(bodyRect)
                 || Mouse.IsOver(vTrack)
+                || Mouse.IsOver(hTrack)
                 || WorkGridScrollView.IsDragging
                 || WorkGridScrollView.RecentlyScrolled;
             bool showHorizontalScrollbar = !autoHide
                 || Mouse.IsOver(bodyRect)
                 || Mouse.IsOver(hTrack)
+                || Mouse.IsOver(vTrack)
                 || WorkGridScrollView.IsDragging
                 || WorkGridScrollView.RecentlyScrolled;
 
@@ -705,6 +709,53 @@ namespace OrderedWork.UI
                 .ToList();
         }
 
+        /// <summary>
+        /// Palette order follows the user's Work-type order (the same list shown in Mod
+        /// Settings and used by the Work tab), not naturalPriority. Unknown/hidden ids are
+        /// skipped, and any visible type missing from the list is appended at the end.
+        /// </summary>
+        private static List<WorkTypeDef> GetPaletteOrder(List<WorkTypeDef> available)
+        {
+            if (available == null || available.Count == 0)
+            {
+                return new List<WorkTypeDef>();
+            }
+            if (OrderedWorkMod.Settings == null
+                || OrderedWorkMod.Settings.workTypeOrder == null
+                || OrderedWorkMod.Settings.workTypeOrder.Count == 0)
+            {
+                return available;
+            }
+
+            Dictionary<string, WorkTypeDef> byName = new Dictionary<string, WorkTypeDef>(StringComparer.Ordinal);
+            foreach (WorkTypeDef type in available)
+            {
+                if (type != null && !string.IsNullOrEmpty(type.defName))
+                {
+                    byName[type.defName] = type;
+                }
+            }
+
+            List<WorkTypeDef> ordered = new List<WorkTypeDef>();
+            HashSet<string> added = new HashSet<string>(StringComparer.Ordinal);
+            foreach (string id in OrderedWorkMod.Settings.workTypeOrder)
+            {
+                WorkTypeDef type;
+                if (!string.IsNullOrEmpty(id) && byName.TryGetValue(id, out type) && added.Add(id))
+                {
+                    ordered.Add(type);
+                }
+            }
+            foreach (WorkTypeDef type in available)
+            {
+                if (type != null && added.Add(type.defName))
+                {
+                    ordered.Add(type);
+                }
+            }
+            return ordered;
+        }
+
         private static List<Pawn> GetColonistsInDisplayOrder()
         {
             Map map = Find.CurrentMap;
@@ -1165,7 +1216,7 @@ namespace OrderedWork.UI
             builder.AppendLine("Level: " + (bestSkill != null ? bestSkill.Level.ToString() : "—"));
 
             int rank = WorkOrderService.GetOrder(pawn).IndexOf(workType.defName) + 1;
-            builder.AppendLine("Rank: " + (rank > 0 ? rank.ToString() : "Off"));
+            builder.AppendLine("Priority: " + (rank > 0 ? rank.ToString() : "Off"));
 
             AppendPawnSpecificOverrides(pawn, workType, builder);
             return builder.ToString();

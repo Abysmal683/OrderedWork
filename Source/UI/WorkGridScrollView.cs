@@ -42,15 +42,22 @@ namespace OrderedWork.UI
             }
 
             // Shift+wheel is the quick horizontal access; normal wheel remains vertical.
-            if (Event.current.shift)
+            bool shift = Event.current.shift
+                || Input.GetKey(KeyCode.LeftShift)
+                || Input.GetKey(KeyCode.RightShift);
+            float delta = Mathf.Abs(Event.current.delta.y) > 0.001f
+                ? Event.current.delta.y
+                : Event.current.delta.x;
+
+            if (shift)
             {
                 float maxX = Mathf.Max(0f, content.width - viewport.width);
-                if (maxX <= 0f)
+                if (maxX <= 0f || Mathf.Abs(delta) <= 0.001f)
                 {
                     return false;
                 }
 
-                scroll.x = Mathf.Clamp(scroll.x + Event.current.delta.y * 20f, 0f, maxX);
+                scroll.x = Mathf.Clamp(scroll.x + delta * 20f, 0f, maxX);
             }
             else
             {
@@ -60,7 +67,7 @@ namespace OrderedWork.UI
                     return false;
                 }
 
-                scroll.y = Mathf.Clamp(scroll.y + Event.current.delta.y * 20f, 0f, maxY);
+                scroll.y = Mathf.Clamp(scroll.y + delta * 20f, 0f, maxY);
             }
 
             lastScrollTime = Time.realtimeSinceStartup;
