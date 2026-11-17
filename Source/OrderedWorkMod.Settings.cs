@@ -16,6 +16,17 @@ namespace OrderedWork
 {
     public partial class OrderedWorkMod : Mod
     {
+        private void EnsureProfileNameInitialized()
+        {
+            if (profileNameInitialized)
+            {
+                return;
+            }
+            activeProfileName = WorkConfigStore.LoadSelectedProfileName();
+            newProfileName = activeProfileName;
+            profileNameInitialized = true;
+        }
+
         private void DrawSettingsTabs(Rect rect)
         {
             float width = Mathf.Min(180f, (rect.width - 8f) * 0.5f);

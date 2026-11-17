@@ -106,6 +106,7 @@ namespace OrderedWork
 
         public override void DoSettingsWindowContents(Rect inRect)
         {
+            EnsureProfileNameInitialized();
             EnsureWorkTypeOrder();
 
             Rect tabsRect = new Rect(inRect.x, inRect.y, inRect.width, 28f);

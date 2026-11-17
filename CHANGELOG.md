@@ -3,7 +3,11 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [0.3.0-alpha.70] - 2026-11-16
+## [0.3.0-alpha.71] - 2026-11-16
+
+### Fixed
+- Active profile name is initialized at Mod Settings entry and by Order/Merge/Reset, not only when General was opened. This was why reset/merge logged profile=default while test_1 was selected and changes landed in the wrong profile.
+- Merge editor and SaveMerge use the active profile/pending; live giver ownership is reconciled from profile + reference.
 
 ### Fixed
 - Merge editor now reads the profile/pending giver lists instead of live WorkGiverDefs.
