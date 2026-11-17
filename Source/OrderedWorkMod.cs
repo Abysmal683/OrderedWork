@@ -643,13 +643,20 @@ namespace OrderedWork
             list.Gap(14f);
             list.Label("Reset changes against reference.json:");
             WorkConfigLoadResult active = WorkConfigStore.LoadActiveWithFallback(activeProfileName);
+            WorkConfigProfile pending = WorkConfigStore.LoadPending(activeProfileName);
             WorkConfigProfile reference = WorkConfigStore.LoadReference();
             if (active == null || active.Profile == null || reference == null)
             {
                 list.Label("No active profile/reference available.");
                 return;
             }
-            List<string> modified = WorkConfigDiff.GetModifiedDefNames(active.Profile, reference);
+            WorkConfigProfile display = pending ?? (active != null ? active.Profile : null);
+            if (display == null)
+            {
+                list.Label("No pending/active profile available.");
+                return;
+            }
+            List<string> modified = WorkConfigDiff.GetModifiedDefNames(display, reference);
             if (modified.Count == 0)
             {
                 list.Label("No modified WorkTypes.");
@@ -659,7 +666,7 @@ namespace OrderedWork
             foreach (string defName in modified)
             {
                 WorkTypeConfig current;
-                active.Profile.WorkTypes.TryGetValue(defName, out current);
+                display.WorkTypes.TryGetValue(defName, out current);
                 WorkTypeConfig original;
                 reference.WorkTypes.TryGetValue(defName, out original);
                 bool isSplit = original == null;
@@ -670,13 +677,13 @@ namespace OrderedWork
                 {
                     if (isSplit)
                     {
-                        active.Profile.WorkTypes.Remove(defName);
+                        display.WorkTypes.Remove(defName);
                     }
                     else
                     {
-                        active.Profile.WorkTypes[defName] = CloneWorkType(original);
+                        display.WorkTypes[defName] = CloneWorkType(original);
                     }
-                    if (WorkConfigStore.SavePending(active.Profile))
+                    if (WorkConfigStore.SavePending(display))
                     {
                         profileStatus = "Reset written to pending. Restart to apply.";
                     }

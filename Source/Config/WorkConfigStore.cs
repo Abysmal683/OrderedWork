@@ -114,6 +114,11 @@ namespace OrderedWork.Config
             }
         }
 
+        public static WorkConfigProfile LoadPending(string profile)
+        {
+            return TryLoad(PendingPath(profile));
+        }
+
         public static bool SavePending(WorkConfigProfile profile)
         {
             if (profile == null)

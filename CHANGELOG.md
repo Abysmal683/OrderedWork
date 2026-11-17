@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.40] - 2026-11-16
+
+### Fixed
+- Reset list reads the pending profile when it exists, so Restore/Delete feedback is visible next frame instead of looking inert.
+- `WorkConfigStore.LoadPending` added.
+- Profile reset writes pending and reflects it in the reset list; activation still requires restart.
+
+### Known test fixture caveat
+- The current `reference.json` came from the no-split test profile, not a guaranteed vanilla capture. Patient/Warden/Handling/Cooking/Hunting Restore entries can be false positives until a true pre-apply vanilla reference is captured.
+
 ## [0.3.0-alpha.39] - 2026-11-16
 
 ### Changed
