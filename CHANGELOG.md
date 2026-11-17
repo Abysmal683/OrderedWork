@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.61] - 2026-11-16
+
+### Fixed
+- Delete split now affects only the selected split: it removes that split, returns its givers to its base at the end, and does not touch other splits/givers.
+- Restore now returns surplus givers (present in the target but absent from its reference) to their reference WorkType, appended at the end of that WorkType's list.
+- Removing a giver from a split during restore deletes the split if it becomes empty, with a `[Reset] removed empty split` log.
+- Order baseline/dirty/visible-button fixes from alpha.60 remain.
+
 ## [0.3.0-alpha.60] - 2026-11-16
 
 ### Fixed
