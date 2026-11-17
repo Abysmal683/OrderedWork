@@ -1,6 +1,6 @@
-# Work Control — Milestone 0.3.0-alpha.9 Checklist
+# Work Control — Milestone 0.3.0-alpha.10 Checklist
 
-Status: in progress — version 0.3.0-alpha.9. Interaction/view iteration written: right-click 0→max, top-bar Recommend (all selected), pawn portraits, View: Numeric / View: Draw redirect buttons, Find.Selector-driven single/shift/double-click selection, and the Mod Settings `Auto recommend new colony` toggle. Harmony/priority patches otherwise kept; runtime checks pending.
+Status: in progress — version 0.3.0-alpha.10. Interaction/drag-palette iteration written: simple-mode deferral, manual >4 direct-map writes (no invalid-priority log), fixed `Rect rect` return button (applies to Compact Work Tab), compact WorkType palette with drag/ghost/reorder/multi-select and grouped incapable messages, portrait with ellipsized name/title + age/health + row tooltip. Runtime checks pending.
 Goal: first usable Work Control tab with a horizontal lane that assigns WorkTypes and updates the vanilla Work tab.
 
 ## Scope in

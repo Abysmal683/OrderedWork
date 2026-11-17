@@ -117,6 +117,31 @@ namespace OrderedWork.Services
         }
 
         /// <summary>
+        /// Writes a priority straight into the private map, bypassing
+        /// Pawn_WorkSettings.SetPriority (which logs for values above the vanilla cap).
+        /// Returns false when the private map is unavailable.
+        /// </summary>
+        public static bool TrySetPriorityDirect(Pawn_WorkSettings settings, WorkTypeDef workType, int priority)
+        {
+            if (settings == null || workType == null)
+            {
+                return false;
+            }
+            Pawn pawn = GetOwningPawn(settings);
+            if (pawn != null && IsIncapable(pawn, workType))
+            {
+                return false;
+            }
+            DefMap<WorkTypeDef, int> map = GetPrioritiesMap(settings);
+            if (map == null)
+            {
+                return false;
+            }
+            map[workType] = priority;
+            return true;
+        }
+
+        /// <summary>
         /// Default order for a pawn: visible, capable WorkTypes by naturalPriority descending.
         /// Incapable types are always excluded so they never appear in the lane.
         /// </summary>

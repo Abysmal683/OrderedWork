@@ -24,6 +24,10 @@ namespace OrderedWork.Patches
                 {
                     return true; // let vanilla handle
                 }
+                if (!Find.PlaySettings.useWorkPriorities)
+                {
+                    return true; // simple mode: vanilla checkboxes, no numeric cells
+                }
                 if (!pawn.IsFreeColonist)
                 {
                     return true; // managed pawns only, as elsewhere in the mod
@@ -121,9 +125,9 @@ namespace OrderedWork.Patches
     [HarmonyPatch(typeof(Pawn_WorkSettings), nameof(Pawn_WorkSettings.SetPriority))]
     internal static class Patch_WorkPriority_SetPriority
     {
-        // SetPriority itself does not clamp, but normalize any caller to the dynamic range
-        // so out-of-range values cannot reach WidgetsWork or saved orders.
-        private static void Prefix(ref int priority)
+        // SetPriority logs for values above the vanilla cap, so for >4 we write the private
+        // map directly and skip the original. The postfix below still notifies and captures.
+        private static bool Prefix(Pawn_WorkSettings __instance, WorkTypeDef w, ref int priority)
         {
             int max = WorkOrderService.GetManualMaxPriority();
             if (priority < 0)
@@ -134,6 +138,21 @@ namespace OrderedWork.Patches
             {
                 priority = max;
             }
+
+            if (priority <= 4)
+            {
+                return true; // vanilla handles 0..4
+            }
+
+            if (WorkOrderService.TrySetPriorityDirect(__instance, w, priority))
+            {
+                // Harmless if the postfix also runs; capture is idempotent.
+                __instance.Notify_UseWorkPrioritiesChanged();
+                WorkOrderService.OnVanillaPriorityChanged(__instance);
+                return false;
+            }
+
+            return true; // private map unavailable: let vanilla handle (may log)
         }
 
         private static void Postfix(Pawn_WorkSettings __instance)

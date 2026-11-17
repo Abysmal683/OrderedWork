@@ -19,6 +19,7 @@ namespace OrderedWork.UI
         private const float Pad = 4f;
         private const float TitleHeight = 28f;
         private const float SearchHeight = 24f;
+        private const float PaletteHeight = 48f;
         private const float HeaderHeight = 18f;
         private const float RowHeight = 42f;
         private const float CardWidth = 190f;
@@ -29,7 +30,13 @@ namespace OrderedWork.UI
         private const float PassionIconSize = 12f;
 
         private Vector2 gridScroll;
+        private Vector2 paletteScroll;
         private string searchText = "";
+
+        private bool draggingPalette;
+        private WorkTypeDef paletteWorkType;
+        private Pawn paletteHoverPawn;
+        private int paletteDropIndex;
 
         private bool dragging;
         private Pawn dragPawn;
@@ -59,11 +66,13 @@ namespace OrderedWork.UI
             float leftWidth = Mathf.Clamp(inRect.width * 0.22f, LeftColumnMin, LeftColumnMax);
             float titleY = Pad;
             float searchY = titleY + TitleHeight;
-            float headerY = searchY + SearchHeight + 2f;
+            float paletteY = searchY + SearchHeight + 2f;
+            float headerY = paletteY + PaletteHeight + 2f;
             float bodyTop = headerY + HeaderHeight + 2f;
             float bodyHeight = Mathf.Max(40f, inRect.yMax - Pad - bodyTop);
             Rect bodyRect = new Rect(Pad, bodyTop, inRect.width - Pad * 2f, bodyHeight);
             Rect laneViewport = new Rect(bodyRect.x + leftWidth, bodyRect.y, bodyRect.width - leftWidth, bodyRect.height);
+            Rect paletteRect = new Rect(Pad, paletteY, inRect.width - Pad * 2f, PaletteHeight);
 
             // Title + top controls.
             Text.Font = GameFont.Medium;
@@ -81,6 +90,11 @@ namespace OrderedWork.UI
 
             bool filtering = !string.IsNullOrWhiteSpace(searchText);
             List<Pawn> colonists = filtering ? allColonists.Where(IsSearchMatch).ToList() : allColonists;
+            List<WorkTypeDef> available = WorkOrderService.GetAvailableWorkTypes();
+
+            // WorkType drag palette (single row; horizontal scroll).
+            WorkTypePaletteView.DrawPalette(paletteRect, ref paletteScroll, available, paletteWorkType, BeginPaletteDrag);
+            UpdatePaletteDrag(bodyRect, laneViewport, colonists);
 
             // Column header.
             Widgets.Label(new Rect(bodyRect.x, headerY, leftWidth - 6f, HeaderHeight), "Pawn");
@@ -89,11 +103,12 @@ namespace OrderedWork.UI
 
             if (colonists.Count == 0)
             {
+                draggingPalette = false;
+                paletteWorkType = null;
+                paletteHoverPawn = null;
                 DrawCentered(bodyRect, "No pawns match");
                 return;
             }
-
-            List<WorkTypeDef> available = WorkOrderService.GetAvailableWorkTypes();
 
             int maxLane = 0;
             foreach (Pawn pawn in colonists)
@@ -122,8 +137,20 @@ namespace OrderedWork.UI
                         : new Color(0.16f, 0.17f, 0.19f, 0.55f);
                     Widgets.DrawBoxSolid(rowRect, rowColor);
                     DrawRowState(rowRect, pawn);
+                    if (draggingPalette && paletteHoverPawn == pawn)
+                    {
+                        Widgets.DrawHighlight(rowRect);
+                    }
 
                     DrawRowLane(pawn, rowY, available);
+
+                    if (draggingPalette && paletteHoverPawn == pawn)
+                    {
+                        float markerX = CardGap + paletteDropIndex * (CardWidth + CardGap) - CardGap / 2f;
+                        Widgets.DrawBoxSolid(
+                            new Rect(markerX - 1f, rowY + (RowHeight - CardHeight) / 2f, 2f, CardHeight),
+                            new Color(0.30f, 0.90f, 1f, 0.95f));
+                    }
                 }
             }
             finally
@@ -133,6 +160,58 @@ namespace OrderedWork.UI
             }
 
             DrawPawnColumn(colonists, bodyRect, leftWidth);
+
+            if (draggingPalette && paletteWorkType != null)
+            {
+                bool incapable = paletteHoverPawn != null && WorkOrderService.IsIncapable(paletteHoverPawn, paletteWorkType);
+                WorkTypePaletteView.DrawDragCard(Event.current.mousePosition, paletteWorkType, paletteHoverPawn, incapable);
+            }
+        }
+
+        private void BeginPaletteDrag(WorkTypeDef type)
+        {
+            draggingPalette = true;
+            paletteWorkType = type;
+            paletteHoverPawn = null;
+            paletteDropIndex = 0;
+        }
+
+        private void UpdatePaletteDrag(Rect bodyRect, Rect laneViewport, List<Pawn> colonists)
+        {
+            if (!draggingPalette || paletteWorkType == null)
+            {
+                return;
+            }
+
+            Vector2 mouse = Event.current.mousePosition;
+            paletteHoverPawn = null;
+            paletteDropIndex = 0;
+
+            if (bodyRect.Contains(mouse))
+            {
+                float contentY = mouse.y - laneViewport.y + gridScroll.y;
+                int row = Mathf.FloorToInt(contentY / RowHeight);
+                if (row >= 0 && row < colonists.Count)
+                {
+                    paletteHoverPawn = colonists[row];
+                    int laneCount = BuildLane(paletteHoverPawn).types.Count;
+                    float contentX = mouse.x - laneViewport.x + gridScroll.x;
+                    float slot = (contentX - CardGap) / (CardWidth + CardGap);
+                    paletteDropIndex = Mathf.Clamp(Mathf.RoundToInt(slot), 0, laneCount);
+                }
+            }
+
+            if (Event.current.type == EventType.MouseUp)
+            {
+                if (paletteHoverPawn != null)
+                {
+                    WorkTypePaletteView.ApplyDrop(paletteWorkType, paletteHoverPawn, paletteDropIndex, GetSelectedColonists());
+                }
+                draggingPalette = false;
+                paletteWorkType = null;
+                paletteHoverPawn = null;
+                Event.current.Use();
+            }
         }
 
         private void DrawTopControls(Rect recommendRect, Rect detailsRect, Rect viewRect)
@@ -233,29 +312,56 @@ namespace OrderedWork.UI
                         GUI.DrawTexture(portraitRect, portrait);
                     }
 
+                    float infoWidth = leftWidth >= 170f ? 50f : 0f;
                     float textX = portraitRect.xMax + 6f;
-                    float textWidth = Mathf.Max(20f, leftWidth - textX - 4f);
+                    float textWidth = Mathf.Max(16f, leftWidth - textX - infoWidth - 4f);
                     string title = pawn.story != null ? pawn.story.Title : null;
 
                     TextAnchor previous = Text.Anchor;
                     Text.Anchor = TextAnchor.MiddleLeft;
+                    bool previousWrap = Text.WordWrap;
+                    Text.WordWrap = false;
+
                     if (!string.IsNullOrEmpty(title))
                     {
-                        Widgets.Label(new Rect(textX, y, textWidth, RowHeight / 2f), PawnLabel(pawn));
+                        Widgets.LabelEllipses(new Rect(textX, y, textWidth, RowHeight / 2f), PawnLabel(pawn));
 
                         GameFont previousFont = Text.Font;
                         Color previousColor = GUI.color;
                         Text.Font = GameFont.Tiny;
                         GUI.color = new Color(0.75f, 0.75f, 0.75f);
-                        Widgets.Label(new Rect(textX, y + RowHeight / 2f, textWidth, RowHeight / 2f), title);
+                        Widgets.LabelEllipses(new Rect(textX, y + RowHeight / 2f, textWidth, RowHeight / 2f), title);
                         GUI.color = previousColor;
                         Text.Font = previousFont;
                     }
                     else
                     {
-                        Widgets.Label(new Rect(textX, y, textWidth, RowHeight), PawnLabel(pawn));
+                        Widgets.LabelEllipses(new Rect(textX, y, textWidth, RowHeight), PawnLabel(pawn));
                     }
+                    Text.WordWrap = previousWrap;
                     Text.Anchor = previous;
+
+                    if (infoWidth > 0f)
+                    {
+                        GameFont previousInfoFont = Text.Font;
+                        Color previousInfoColor = GUI.color;
+                        TextAnchor previousInfoAnchor = Text.Anchor;
+                        Text.Font = GameFont.Tiny;
+                        Text.Anchor = TextAnchor.MiddleRight;
+                        GUI.color = new Color(0.72f, 0.72f, 0.72f);
+                        Rect infoRect = new Rect(leftWidth - infoWidth - 2f, y, infoWidth, RowHeight);
+                        Widgets.Label(new Rect(infoRect.x, y, infoRect.width, RowHeight / 2f),
+                            pawn.ageTracker != null ? pawn.ageTracker.AgeBiologicalYears + "y" : "");
+                        Widgets.Label(new Rect(infoRect.x, y + RowHeight / 2f, infoRect.width, RowHeight / 2f), HealthShort(pawn));
+                        GUI.color = previousInfoColor;
+                        Text.Anchor = previousInfoAnchor;
+                        Text.Font = previousInfoFont;
+                    }
+
+                    if (Mouse.IsOver(rowRect))
+                    {
+                        TooltipHandler.TipRegion(rowRect, PawnTooltip(pawn));
+                    }
 
                     // Selection is game-driven: single click selects, shift-click toggles,
                     // double-click selects/pans and closes the tab. Nothing edits orders.
@@ -558,6 +664,46 @@ namespace OrderedWork.UI
                 blob += "\n" + singleName.Name;
             }
             return blob;
+        }
+
+        private static string HealthShort(Pawn pawn)
+        {
+            if (pawn == null || pawn.health == null)
+            {
+                return "";
+            }
+            if (pawn.health.State == PawnHealthState.Dead)
+            {
+                return "Dead";
+            }
+            if (pawn.health.State == PawnHealthState.Down)
+            {
+                return "Down";
+            }
+            float percent = pawn.health.summaryHealth != null
+                ? pawn.health.summaryHealth.SummaryHealthPercent
+                : 1f;
+            return percent < 0.999f ? Mathf.RoundToInt(percent * 100f) + "%" : "OK";
+        }
+
+        private static string PawnTooltip(Pawn pawn)
+        {
+            string text = pawn.Name != null ? pawn.Name.ToStringFull : pawn.LabelShort;
+            if (pawn.ageTracker != null)
+            {
+                text += "\nAge: " + pawn.ageTracker.AgeBiologicalYears + "y";
+            }
+            if (pawn.story != null && !string.IsNullOrEmpty(pawn.story.Title))
+            {
+                text += "\nTitle: " + pawn.story.Title;
+            }
+            string health = HealthShort(pawn);
+            if (!string.IsNullOrEmpty(health))
+            {
+                text += "\nHealth: " + health;
+            }
+            text += "\nWork types: " + WorkOrderService.GetOrder(pawn).Count;
+            return text;
         }
 
         private static string PawnLabel(Pawn pawn)

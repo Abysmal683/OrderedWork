@@ -12,7 +12,7 @@ namespace OrderedWork.Patches
     [HarmonyPatch(typeof(MainTabWindow_Work), nameof(MainTabWindow_Work.DoWindowContents))]
     internal static class Patch_WorkTab_ViewDrawButton
     {
-        private static void Postfix(Rect inRect)
+        private static void Postfix(Rect rect)
         {
             MainButtonDef workControl = DefDatabase<MainButtonDef>.GetNamedSilentFail("WorkControl");
             if (workControl == null)
@@ -20,7 +20,7 @@ namespace OrderedWork.Patches
                 return;
             }
 
-            Rect buttonRect = new Rect(inRect.xMax - 134f, inRect.y + 6f, 124f, 28f);
+            Rect buttonRect = new Rect(rect.xMax - 134f, rect.y + 6f, 124f, 28f);
             if (Widgets.ButtonText(buttonRect, "View: Draw"))
             {
                 Find.MainTabsRoot.ToggleTab(workControl, true);

@@ -3,6 +3,25 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.10] - 2026-11-16
+
+### Fixed
+- Simple Work-tab mode (`Find.PlaySettings.useWorkPriorities == false`) now defers to vanilla: checkboxes work and no numeric cells appear. Manual mode keeps the 0..max numeric cells.
+- Removed "Trying to set work to invalid priority" log spam: `SetPriority` above 4 is intercepted, written straight into the private priorities map, notified and captured; the original method (and its log) is skipped. Simple-mode 0–4 still uses vanilla.
+- `View: Draw` return button postfix now uses the real `DoWindowContents(Rect rect)` parameter name (the old `inRect` caused a Harmony initialization failure). Compact Work Tab uses the same `MainTabWindow_Work`, so the button appears there too.
+
+### Added
+- Single compact **WorkType palette row** above the matrix (all visible types, horizontal scroll) with drag-to-lane:
+  - floating drag card shows the hovered pawn's passion/level, or red `Incapaz`;
+  - ghost insertion marker at the exact drop slot;
+  - valid drops add at the slot; existing WorkTypes move/reorder; adjacent ghost is a no-op;
+  - multi-selection applies the same WorkType/position to every selected pawn;
+  - incapable pawns are skipped and reported with one grouped message.
+- Portable pawn column: ellipsized name/title, compact right-side age/health, and a row tooltip with full name, age, title, health and active WorkType count.
+
+### Kept
+- Selection via `Find.Selector`, Recommend/Details, View: Numeric/Draw redirects, search filtering, flat cards, pins/scoring, incapacity filtering, hooks, respawn and save/load.
+
 ## [0.3.0-alpha.9] - 2026-11-16
 
 ### Changed

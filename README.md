@@ -1,6 +1,6 @@
-# Ordered Work (Core) 0.3.0-alpha.9
+# Ordered Work (Core) 0.3.0-alpha.10
 
-> Status: **0.3.0-alpha.9**. Interaction/view iteration: vanilla Work-tab right-click now jumps from 0 to max; the top bar button is **Recommend** and acts on all selected pawns; rows show the pawn **portrait** plus name/title; selection is driven by `Find.Selector` (single click selects, shift-click toggles, double-click selects/pans/closes); the Draw/Manual/Both cycle is replaced by **View: Numeric** in Work Control and a **View: Draw** return button in the vanilla Work tab; and a Mod Settings checkbox **Auto recommend new colony** controls automatic recommendations. Everything else, including the above-4 vanilla priority patch, is kept. Profiles, schedules, equipment, drag palette and multi-pawn remain **not implemented**. **Do not use it in a main save.**
+> Status: **0.3.0-alpha.10**. Interaction/drag-palette iteration. The vanilla Work tab respects simple mode (vanilla checkboxes) and keeps numeric >4 cells only in manual mode; >4 writes go straight into the private map so the "invalid priority" log spam is gone. The `View: Draw` return button is fixed (`Rect rect`) and also appears with Compact Work Tab (same window). Work Control gains a compact **WorkType palette row** with drag-to-lane, ghost insertion, reorder, incapable grouping and multi-selection application; the pawn column now has an ellipsized name/title, compact age/health and a full row tooltip. Selection, Recommend/Details, View redirects, search, pins/scoring, hooks, respawn and save/load are kept. Profiles, schedules, equipment and multi-pawn remain **not implemented**. **Do not use it in a main save.**
 
 Basic RimWorld 1.7 work-management framework.
 
@@ -24,11 +24,12 @@ Basic RimWorld 1.7 work-management framework.
 2. Enable it after work mods (Job Splitter, Some More Jobs, Compact Work Tab, etc.).
 3. Back up the save before enabling.
 
-## Work Control tab (0.3.0-alpha.9)
+## Work Control tab (0.3.0-alpha.10)
 - Open the new **Work Control** bottom tab (between Work and Schedule). It does **not** replace the vanilla Work tab.
-- Layout mirrors the Work tab: one row per player free colonist. The fixed left column shows the pawn **portrait** (about 32×32, scaled to row height) plus name and title; the rest of the row is the colonist's horizontal WorkType lane. Outer/internal margins are ~4 px.
+- Layout mirrors the Work tab: one row per player free colonist. The fixed left column shows the pawn **portrait** (about 32×32, scaled to row height), an **ellipsized** name/title, and compact right-side age/health when the column has room. Hovering the row shows a tooltip with the full name, age, title, health and active WorkType count. The rest of the row is the colonist's horizontal WorkType lane. Outer/internal margins are ~4 px.
 - One **shared horizontal scroll** moves every lane together; one outer vertical scroll moves all pawn rows. The horizontal position is kept across redraws.
 - Cards are **flat single-line** rows (~190×30) with a fixed order: **passion icon → best relevant skill level → WorkType name → `×`**. The name is ellipsized and the full name is in the tooltip. If the WorkType has **no relevant skill**, only the name and `×` are drawn (no level/passion placeholders). The vanilla `WidgetsWork` minor/major passion textures are used.
+- **WorkType palette** (one compact row above the matrix, horizontal scroll): drag a WorkType onto a pawn row. The floating drag card shows that pawn's passion/level (or red `Incapaz`); a ghost marker shows the exact insertion slot. A valid drop adds the WorkType there, or moves an existing one; an adjacent ghost is a no-op. With a multi-selection, the same WorkType/position is applied to every selected pawn; capable pawns update, incapable ones are skipped and one grouped message is shown. The WorkType is never duplicated.
 - **Search pawns** (above the matrix) matches flexibly against `LabelShort`, full/short name, colored name, title and first/nick/last name components. A non-empty search **filters the rows** (matching pawns only) and shows `No pawns match` when nothing matches. It never selects pawns, changes orders or changes priorities.
 - **Selection is `Find.Selector`-driven.** Rows highlight the pawns currently selected in game (none selected → no highlight). **Single click** selects the pawn (no camera move, no close); **shift-click** toggles it in/out; **double-click** selects the pawn, moves the camera and closes Work Control. Selection is shared with the vanilla tab, so opening either tab in either order keeps the same selection.
 - The top-bar **Recommend** button recomputes and applies the skill recommendation to **every selected pawn** (disabled when nothing is selected). The top-bar **Details** button opens the read-only `Dialog_WorkControlDetails` for the **first selected pawn**: name/title, top skills with levels/passions, and the WorkType order with rank, best skill/passion and status. Recommendations pin `Patient`, `PatientBedRest` and `Firefighter` first (when capable, in that order), then score the rest: no relevant skill `0`; level 0 no/minor/major passion `-3`/`1`/`3`; level ≥1 `level*2 + 2/4`; ties by `naturalPriority` descending.
@@ -43,18 +44,20 @@ Basic RimWorld 1.7 work-management framework.
 - Each pawn's order is saved per colony in a `GameComponent`; save/load preserves it.
 - No result table and no Sync button.
 
-## Vanilla Work tab: manual priorities above 4 (0.3.0-alpha.9)
-- The vanilla Work tab's priority cell for a capable **free colonist** is replaced by a clean-room cell:
+## Vanilla Work tab: simple/manual priorities (0.3.0-alpha.10)
+- **Simple mode** (`Find.PlaySettings.useWorkPriorities == false`): our numeric prefix defers completely to vanilla, so checkboxes work (remove = 0, add = default).
+- **Manual mode** (`useWorkPriorities == true`): the capable free-colonist cell is replaced by a clean-room numeric cell:
   - **Left-click** cycles `0 → 1 → … → max → 0`.
   - **Right-click** jumps from `0` to `max`; otherwise decrements by 1.
 - `max = max(4, number of visible WorkTypes the pawn is capable of)`, capped at `99`. If the dynamic count fails, it falls back to `99` (logged once).
 - Priorities **0–4** keep the vanilla priority colours (the box is tinted and the number uses `WidgetsWork.ColorOfPriority`); `0` is an empty cell like vanilla.
 - Priorities **>4** use a distinct blue box, a cyan number and a border, plus a higher-priority tooltip: `Priority N of max (above vanilla 4)`.
-- `Pawn_WorkSettings.SetPriority` is normalised to `0..max` (it is not clamped to 4) and notifies once. The existing `SetPriority` capture rebuilds the stored per-pawn order; our own `Apply` is excluded by the `IsApplying` guard, so there is no recursion.
-- Incapable cells and non-free-colonist pawns are left to vanilla (0..4 cells), preserving other UI mods' behavior as much as possible.
-- The vanilla Work tab now also draws a **View: Draw** return button (top-right) that opens Work Control.
+- `Pawn_WorkSettings.SetPriority` is normalised to `0..max`. Values **above 4** are written straight into the private priorities map and notified/captured, so the original method (and its "invalid priority" log) is skipped; 0–4 still use vanilla. Our own `Apply` is excluded by the `IsApplying` guard, so there is no recursion.
+- Incapable cells and non-free-colonist pawns are left to vanilla, preserving other UI mods' behavior as much as possible.
+- The vanilla Work tab draws a **View: Draw** return button (top-right) that opens Work Control. The postfix uses the real `DoWindowContents(Rect rect)` parameter name.
+- **Compact Work Tab** (`Mlie.CompactWorkTab`) patches the work-priority column (`DoCell`/`DoHeader`/`GetMinHeaderHeight`/`RemainingSpace`), not the Work window. It therefore uses the same `MainTabWindow_Work`, and the return button appears there from the same patch; no separate window patch is needed.
 - If the expected `WidgetsWork` API or patch path is unavailable, the prefix logs once and returns to vanilla drawing.
-- **Known limitation:** other mods that also prefix `WidgetsWork.DrawWorkBoxFor` (e.g. Compact Work Tab) may win the Harmony order; in that case the vanilla cell may stay capped at 4. The rest of the mod keeps working.
+- **Known limitation:** other mods that also prefix `WidgetsWork.DrawWorkBoxFor` may win the Harmony order; in that case the numeric cell may stay vanilla. The rest of the mod keeps working.
 
 ## Use
 1. Open `Options -> Mod Settings -> Ordered Work`.
@@ -71,14 +74,16 @@ Basic RimWorld 1.7 work-management framework.
 - Expected log shape: `[Ordered Work] Dense rank test <pawn>: max=<max>, count=<count>, first=<defName>=<priority>, last=<defName>=<priority>`. Compare `last` with its assigned rank (e.g. 23): if it survives, direct-map mode bypasses the vanilla 4 cap; if it reads 4, the value was clamped downstream.
 - **Do not use this build in a main save**; test in a throwaway colony.
 
-## Limitations (0.3.0-alpha.9)
-- No profiles, schedules, equipment, drag palette or multi-pawn yet.
-- Selection is `Find.Selector`-driven; shift-drag/marquee multi-select is not implemented (shift-click toggles). Row selection is via the pawn name/portrait column; lane cards remain editing controls.
-- The vanilla **View: Draw** button is an overlay at the top-right of the vanilla Work tab and may cover part of the last column header.
+## Limitations (0.3.0-alpha.10)
+- No profiles, schedules, equipment or multi-pawn yet.
+- The drag palette supports drag-to-lane but not shift-drag marquee row selection; shift-click toggles rows.
+- The palette drop applies the same insertion index to every selected pawn; lanes of different lengths clamp the index.
+- Selection is `Find.Selector`-driven; row selection is via the pawn name/portrait column, while lane cards remain editing controls.
+- The vanilla **View: Draw** button is an overlay at the top-right of the vanilla Work tab and may cover part of the last column header (usually the remaining-space filler).
 - **Auto recommend new colony** is a global Mod Settings toggle. The old per-save `viewMode` field is kept only so old saves load harmlessly; it no longer drives behavior.
 - `Dialog_WorkControlDetails` is read-only and basic: name/title, top 8 skills, and the current WorkType order. Editing, profiles, schedules and equipment are future work.
-- The >4 vanilla cell applies only to capable free colonists; incapable cells and non-free-colonist pawns keep vanilla 0..4 behavior.
-- If another mod also prefixes `WidgetsWork.DrawWorkBoxFor` (e.g. Compact Work Tab), Harmony ordering may let that mod win, leaving the cell capped at 4; the rest of the mod keeps working.
+- The >4 cell applies only in manual mode (`useWorkPriorities`) and only to capable free colonists; simple mode and incapable/non-free-colonist pawns stay vanilla.
+- If another mod also prefixes `WidgetsWork.DrawWorkBoxFor`, Harmony ordering may let that mod win, leaving the cell vanilla; the rest of the mod keeps working.
 - The dynamic max falls back to 99 when the count fails; the fallback is logged.
 - The search term is UI-only and not persisted; a non-empty search filters the drawn rows.
 - Initialization only scans the current map's free colonists; a colony initialized on one map does not backfill colonists on another map until they spawn.
