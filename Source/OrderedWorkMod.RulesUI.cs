@@ -16,8 +16,6 @@ namespace OrderedWork
 {
     public partial class OrderedWorkMod : Mod
     {
-        private const int VisiblePassionRows = 10;
-        private const float PassionRowHeight = 26f;
         private Vector2 passionWeightScroll;
 
         private void EnsureProfileNameInitialized()
@@ -143,7 +141,7 @@ namespace OrderedWork
                 "Default pins: Patient, PatientBedRest, Firefighter. Pins are global and applied in this order before scoring.");
 
             list.Gap(10f);
-            DrawPassionWeights(list);
+            PassionWeightsView.Draw(list, Settings, ref passionWeightScroll);
 
             list.Gap(14f);
             DrawSplitMergeEditor(list);
@@ -151,68 +149,6 @@ namespace OrderedWork
             list.Gap(10f);
             list.Label("No work type or giver is ever deleted. Back up your save before applying.");
             list.Label("Split/Merge changes take effect after a restart.");
-        }
-
-        private void DrawPassionWeights(Listing_Standard list)
-        {
-            list.Label("Recommendation passion weights (global). Level 0 / per level / min level:");
-            PassionWeightCatalog.EnsureDefaults(Settings);
-            List<PassionWeightCatalog.PassionInfo> registered = PassionWeightCatalog.Registered;
-            float viewHeight = Mathf.Min(registered.Count, VisiblePassionRows) * PassionRowHeight;
-            Rect outRect = list.GetRect(viewHeight);
-            float barWidth = WorkGridScrollView.Thickness;
-            Rect viewport = new Rect(outRect.x, outRect.y, outRect.width - barWidth - 2f, outRect.height);
-            Rect content = new Rect(0f, 0f, viewport.width, registered.Count * PassionRowHeight);
-            Rect track = new Rect(viewport.xMax + 2f, outRect.y, barWidth, outRect.height);
-            float maxScroll = Mathf.Max(0f, content.height - viewport.height);
-            passionWeightScroll.y = Mathf.Clamp(passionWeightScroll.y, 0f, maxScroll);
-            WorkGridScrollView.HandleVertical(track, viewport, content, ref passionWeightScroll);
-            GUI.BeginGroup(viewport);
-            for (int i = 0; i < registered.Count; i++)
-            {
-                PassionWeightCatalog.PassionInfo info = registered[i];
-                PassionWeightEntry entry = PassionWeightCatalog.Find(Settings, info.Passion);
-                if (entry == null)
-                {
-                    continue;
-                }
-                Rect row = new Rect(0f, i * PassionRowHeight - passionWeightScroll.y, viewport.width, 24f);
-                WorkTypePaletteView.PassionVisual visual = WorkTypePaletteView.ResolvePassionVisual(info.Passion);
-                if (visual.Texture != null)
-                {
-                    Color previous = GUI.color;
-                    GUI.color = visual.Tint;
-                    GUI.DrawTexture(new Rect(row.x, row.y + 5f, 16f, 16f), visual.Texture);
-                    GUI.color = previous;
-                }
-                Widgets.Label(new Rect(row.x + 20f, row.y, 140f, 24f), info.Label);
-                string description = PassionWeightCatalog.DescriptionOf(info.Passion);
-                float learnRate = PassionWeightCatalog.LearnRateOf(info.Passion);
-                if (learnRate > 0f)
-                {
-                    string rateLine = "Learn rate: x" + learnRate.ToString("0.##");
-                    description = string.IsNullOrEmpty(description)
-                        ? rateLine
-                        : description + "\n\n" + rateLine;
-                }
-                if (!string.IsNullOrEmpty(description))
-                {
-                    TooltipHandler.TipRegion(new Rect(row.x, row.y, 170f, 24f), description);
-                }
-                float fieldWidth = Mathf.Max(54f, (row.width - 170f - 24f) / 3f);
-                Widgets.TextFieldNumeric(new Rect(row.x + 174f, row.y, fieldWidth, 24f),
-                    ref entry.level0Score, ref entry.level0Buffer, -20, 20);
-                Widgets.TextFieldNumeric(new Rect(row.x + 178f + fieldWidth, row.y, fieldWidth, 24f),
-                    ref entry.perLevelBonus, ref entry.perLevelBuffer, -20, 20);
-                Widgets.TextFieldNumeric(new Rect(row.x + 182f + fieldWidth * 2f, row.y, fieldWidth, 24f),
-                    ref entry.minLevel, ref entry.minLevelBuffer, 0, 20);
-            }
-            GUI.EndGroup();
-            WorkGridScrollView.DrawVertical(track, viewport, content, ref passionWeightScroll);
-            if (list.ButtonText("Reset recommendation weights"))
-            {
-                PassionWeightCatalog.ResetToDefaults(Settings);
-            }
         }
 
         private void DrawProfilePanel(Listing_Standard list)

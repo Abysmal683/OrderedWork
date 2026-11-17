@@ -193,7 +193,7 @@ They are read live by the recommendation service, so changing pins or passion we
 
 ## Passion-mod compatibility
 
-`Source/Services/PassionWeightCatalog.cs` enumerates VSE `PassionManager.AllPassions` through reflection. Vanilla `None/Minor/Major` are the fallback when VSE is absent. Mods that register `PassionDef` through VSE (including Alpha Skills) expose their passions and labels automatically. A `DefDatabase<VSE.Passions.PassionDef>` scan is the fallback when a mod does not populate `AllPassions`; entries are deduplicated by `defName`.
+`Source/Services/PassionSource.cs` enumerates VSE `PassionManager.AllPassions` through reflection. Vanilla `None/Minor/Major` are the fallback when VSE is absent. Mods that register `PassionDef` through VSE (including Alpha Skills) expose their passions and labels automatically. A `DefDatabase<VSE.Passions.PassionDef>` scan is the fallback when a mod does not populate `AllPassions`; entries are deduplicated by `defName`. `PassionWeightPolicy` owns defaults, migration and reset; `PassionWeightsView` owns the table; `RecommendationScorer` owns scoring.
 
 - Weights are keyed by `defName`, never by enum numeric value.
 - Unknown custom passions default to `Level 0 = 0`, `Per level = 0`, `Min level = 0`.

@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.93] - 2026-11-17
+
+### Refactor — passion pipeline
+- Split `PassionWeightCatalog` into `PassionSource`, `PassionWeightPolicy`, `PassionWeightsView` and `RecommendationScorer`.
+- `PassionSource` owns VSE/Alpha discovery and runtime metadata.
+- `PassionWeightPolicy` owns defaults, one-time migration and reset.
+- `PassionWeightsView` owns the 10-row table, sprites, tooltips, scrollbar and reset button.
+- `RecommendationScorer` owns `BestSkillLevel` and pure score calculation.
+- No behavior change intended; the failed Shift+wheel path stays removed.
+
 ## [0.3.0-alpha.92] - 2026-11-17
 
 ### Cleanup — reverted shift+wheel attempt

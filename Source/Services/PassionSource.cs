@@ -4,16 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using RimWorld;
-using UnityEngine;
 using Verse;
 
 namespace OrderedWork.Services
 {
     /// <summary>
-    /// Enumerates vanilla, VSE and Alpha Skills PassionDefs through public reflection and
-    /// provides stable defaults keyed by defName. No third-party code or assets are copied.
+    /// Read-only adapter over the passion registry exposed by VSE/Alpha Skills.
+    /// The source is discovered at runtime; no third-party code or text is copied.
     /// </summary>
-    public static class PassionWeightCatalog
+    public static class PassionSource
     {
         public sealed class PassionInfo
         {
@@ -32,70 +31,6 @@ namespace OrderedWork.Services
                 EnsureInitialized();
                 return registered;
             }
-        }
-
-        private const int DefaultsVersion = 2;
-
-        public static void EnsureDefaults(OrderedWorkSettings settings)
-        {
-            if (settings == null)
-            {
-                return;
-            }
-            if (settings.passionWeights == null)
-            {
-                settings.passionWeights = new List<PassionWeightEntry>();
-            }
-            bool migrate = settings.passionDefaultsVersion < DefaultsVersion;
-            foreach (PassionInfo info in Registered)
-            {
-                PassionWeightEntry entry = settings.passionWeights
-                    .FirstOrDefault(e => e != null && e.defName == info.DefName);
-                if (entry == null)
-                {
-                    settings.passionWeights.Add(DefaultEntry(info));
-                    continue;
-                }
-                if (migrate
-                    && !IsVanillaName(info.DefName)
-                    && IsLegacyNeutral(entry))
-                {
-                    ApplyWeights(entry, DefaultEntry(info));
-                }
-            }
-            settings.passionDefaultsVersion = DefaultsVersion;
-        }
-
-        public static void ResetToDefaults(OrderedWorkSettings settings)
-        {
-            if (settings == null)
-            {
-                return;
-            }
-            settings.passionWeights = Registered.Select(DefaultEntry).ToList();
-            settings.passionDefaultsVersion = DefaultsVersion;
-        }
-
-        public static PassionWeightEntry Find(OrderedWorkSettings settings, Passion passion)
-        {
-            if (settings == null)
-            {
-                return null;
-            }
-            EnsureDefaults(settings);
-            string defName = DefNameOf(passion);
-            PassionWeightEntry entry = settings.passionWeights
-                .FirstOrDefault(e => e != null && e.defName == defName);
-            if (entry == null)
-            {
-                PassionInfo info = Registered.FirstOrDefault(p => p.DefName == defName);
-                if (info != null)
-                {
-                    entry = DefaultEntry(info);
-                    settings.passionWeights.Add(entry);
-                }
-            }
-            return entry;
         }
 
         public static string DefNameOf(Passion passion)
@@ -167,61 +102,6 @@ namespace OrderedWork.Services
             {
                 return 0f;
             }
-        }
-
-        private static PassionWeightEntry DefaultEntry(PassionInfo info)
-        {
-            string name = info.DefName ?? "";
-            if (name == "Major")
-            {
-                return new PassionWeightEntry { defName = name, level0Score = 3, perLevelBonus = 4, minLevel = 0 };
-            }
-            if (name == "Minor")
-            {
-                return new PassionWeightEntry { defName = name, level0Score = 1, perLevelBonus = 2, minLevel = 0 };
-            }
-            if (name == "None"
-                || name.IndexOf("Disabled", StringComparison.OrdinalIgnoreCase) >= 0
-                || name.IndexOf("Desinterested", StringComparison.OrdinalIgnoreCase) >= 0
-                || name.IndexOf("Disinterested", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                return new PassionWeightEntry { defName = name, level0Score = -3, perLevelBonus = 0, minLevel = 0 };
-            }
-
-            float learnRate = LearnRateOf(info.Passion);
-            if (learnRate > 0f)
-            {
-                int level0 = Mathf.Clamp(Mathf.RoundToInt(learnRate * 4f - 3f), -20, 20);
-                int perLevel = Mathf.Clamp(Mathf.RoundToInt(learnRate * 4f - 2f), -20, 20);
-                return new PassionWeightEntry
-                {
-                    defName = name,
-                    level0Score = level0,
-                    perLevelBonus = perLevel,
-                    minLevel = 0
-                };
-            }
-            return new PassionWeightEntry { defName = name, level0Score = 0, perLevelBonus = 0, minLevel = 0 };
-        }
-
-        private static bool IsVanillaName(string defName)
-        {
-            return defName == "None" || defName == "Minor" || defName == "Major";
-        }
-
-        private static bool IsLegacyNeutral(PassionWeightEntry entry)
-        {
-            return entry != null
-                && entry.level0Score == 0
-                && entry.perLevelBonus == 0
-                && entry.minLevel == 0;
-        }
-
-        private static void ApplyWeights(PassionWeightEntry target, PassionWeightEntry source)
-        {
-            target.level0Score = source.level0Score;
-            target.perLevelBonus = source.perLevelBonus;
-            target.minLevel = source.minLevel;
         }
 
         private static void EnsureInitialized()
@@ -335,38 +215,21 @@ namespace OrderedWork.Services
             foreach (string name in names)
             {
                 FieldInfo field = defType.GetField(name, BindingFlags.Public | BindingFlags.Instance);
-                if (field != null && field.FieldType == typeof(int))
+                if (field != null)
                 {
-                    index = (int)field.GetValue(def);
+                    index = Convert.ToInt32(field.GetValue(def));
                     return true;
                 }
                 PropertyInfo property = defType.GetProperty(name, BindingFlags.Public | BindingFlags.Instance);
-                if (property != null && property.PropertyType == typeof(int))
+                if (property != null)
                 {
-                    index = (int)property.GetValue(def, null);
+                    index = Convert.ToInt32(property.GetValue(def, null));
                     return true;
                 }
             }
             return false;
         }
 
-        private static string GetStringMember(object instance, string name)
-        {
-            if (instance == null)
-            {
-                return null;
-            }
-            object value = GetMember<object>(instance, name);
-            if (value is string text)
-            {
-                return text;
-            }
-            if (value is TaggedString tagged)
-            {
-                return tagged.ToString();
-            }
-            return value?.ToString();
-        }
         private static object GetVseDef(Passion passion)
         {
             Type managerType = FindType("VSE.Passions.PassionManager");
@@ -411,6 +274,24 @@ namespace OrderedWork.Services
             }
             FieldInfo field = type.GetField(name, BindingFlags.Public | BindingFlags.Instance);
             return field != null ? (T)field.GetValue(instance) : default;
+        }
+
+        private static string GetStringMember(object instance, string name)
+        {
+            if (instance == null)
+            {
+                return null;
+            }
+            object value = GetMember<object>(instance, name);
+            if (value is string text)
+            {
+                return text;
+            }
+            if (value is TaggedString tagged)
+            {
+                return tagged.ToString();
+            }
+            return value?.ToString();
         }
     }
 }
