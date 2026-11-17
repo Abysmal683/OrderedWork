@@ -85,6 +85,9 @@ namespace OrderedWork
         private string activeProfileName = "default";
         private List<string> orderDraft = new List<string>();
         private bool orderDraftInitialized;
+        private List<string> giverOrderDraft = new List<string>();
+        private string giverOrderDraftType = "";
+        private bool giverOrderDraftInitialized;
         private string newProfileName = "";
         private bool profileNameInitialized;
         private string profileStatus = "";
@@ -666,6 +669,113 @@ namespace OrderedWork
             profileStatus = "WorkType order written to pending and applied.";
             OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
             orderDraftInitialized = false;
+        }
+
+        private void DrawGiverOrderDiff(Listing_Standard list)
+        {
+            WorkConfigLoadResult active = WorkConfigStore.LoadActiveWithFallback(activeProfileName);
+            WorkConfigProfile reference = WorkConfigStore.LoadReference();
+            if (active == null || active.Profile == null || string.IsNullOrEmpty(selectedGiverType))
+            {
+                list.Label("Choose a WorkType below to compare its giver order.");
+                return;
+            }
+            WorkTypeConfig current;
+            if (!active.Profile.WorkTypes.TryGetValue(selectedGiverType, out current) || current == null)
+            {
+                list.Label("Selected WorkType is not in the active profile.");
+                return;
+            }
+            if (!giverOrderDraftInitialized || giverOrderDraftType != selectedGiverType)
+            {
+                giverOrderDraft = (current.Givers ?? new List<GiverConfig>())
+                    .Where(g => g != null).OrderBy(g => g.Order).Select(g => g.DefName).ToList();
+                giverOrderDraftType = selectedGiverType;
+                giverOrderDraftInitialized = true;
+            }
+
+            WorkTypeConfig referenceType = null;
+            if (reference != null)
+            {
+                reference.WorkTypes.TryGetValue(selectedGiverType, out referenceType);
+            }
+            List<string> referenceGivers = referenceType != null && referenceType.Givers != null
+                ? referenceType.Givers.OrderBy(g => g.Order).Select(g => g.DefName).ToList()
+                : giverOrderDraft.ToList();
+
+            string workLabel = DefDatabase<WorkTypeDef>.GetNamedSilentFail(selectedGiverType)?.labelShort ?? selectedGiverType;
+            list.Label("Giver order — " + workLabel + ": origin = reference, destination = draft.");
+            int rowCount = Mathf.Max(referenceGivers.Count, giverOrderDraft.Count);
+            Rect columns = list.GetRect(Mathf.Max(120f, 28f + rowCount * SplitMergeRowHeight));
+            float columnWidth = (columns.width - 12f) * 0.5f;
+            Rect left = new Rect(columns.x, columns.y, columnWidth, columns.height);
+            Rect right = new Rect(columns.x + columnWidth + 12f, columns.y, columnWidth, columns.height);
+            Widgets.Label(new Rect(left.x, left.y, left.width, 22f), "Origin (reference)");
+            Widgets.Label(new Rect(right.x, right.y, right.width, 22f), "Destination (current)");
+
+            for (int i = 0; i < referenceGivers.Count; i++)
+            {
+                Rect row = new Rect(left.x, left.y + 24f + i * SplitMergeRowHeight, left.width, SplitMergeRowHeight - 2f);
+                Widgets.DrawBoxSolid(row, new Color(0.20f, 0.25f, 0.30f, 0.45f));
+                Widgets.LabelEllipses(new Rect(row.x + 4f, row.y, row.width - 8f, row.height), (i + 1) + ". " + referenceGivers[i]);
+            }
+
+            List<Rect> rows = new List<Rect>();
+            for (int i = 0; i < giverOrderDraft.Count; i++)
+            {
+                Rect row = new Rect(right.x, right.y + 24f + i * SplitMergeRowHeight, right.width, SplitMergeRowHeight - 2f);
+                DrawReorderRow(row, (i + 1) + ". " + giverOrderDraft[i], 5, i, null);
+                rows.Add(row);
+            }
+            HandleReorderDrag(5, rows, MoveGiverOrderDraft);
+
+            Rect buttons = list.GetRect(30f);
+            float half = (buttons.width - 8f) * 0.5f;
+            if (Widgets.ButtonText(new Rect(buttons.x, buttons.y, half, 28f), "Apply giver order"))
+            {
+                ApplyGiverOrderDraft(active.Profile);
+            }
+            if (Widgets.ButtonText(new Rect(buttons.x + half + 8f, buttons.y, half, 28f), "Cancel giver order"))
+            {
+                giverOrderDraftInitialized = false;
+                giverOrderDraft.Clear();
+            }
+        }
+
+        private void MoveGiverOrderDraft(int from, int to)
+        {
+            if (from < 0 || from >= giverOrderDraft.Count || to < 0 || to >= giverOrderDraft.Count || from == to)
+            {
+                return;
+            }
+            string item = giverOrderDraft[from];
+            giverOrderDraft.RemoveAt(from);
+            giverOrderDraft.Insert(to, item);
+        }
+
+        private void ApplyGiverOrderDraft(WorkConfigProfile profile)
+        {
+            if (profile == null || string.IsNullOrEmpty(selectedGiverType)
+                || !profile.WorkTypes.TryGetValue(selectedGiverType, out WorkTypeConfig current)
+                || current == null)
+            {
+                return;
+            }
+            current.Givers = current.Givers ?? new List<GiverConfig>();
+            for (int i = 0; i < giverOrderDraft.Count; i++)
+            {
+                GiverConfig giver = current.Givers.FirstOrDefault(g => g != null && g.DefName == giverOrderDraft[i]);
+                if (giver != null)
+                {
+                    giver.Order = i;
+                }
+            }
+            current.Givers = current.Givers.OrderBy(g => g.Order).ToList();
+            WorkConfigStore.SaveProfile(profile, true);
+            WorkConfigStore.SavePending(profile);
+            OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
+            profileStatus = "Giver order for " + selectedGiverType + " applied.";
+            giverOrderDraftInitialized = false;
         }
 
         private void DrawOrderEditor(Listing_Standard list)

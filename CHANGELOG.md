@@ -3,7 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [0.3.0-alpha.48] - 2026-11-16
+## [0.3.0-alpha.49] - 2026-11-16
+
+### Changed
+- Order mode now compares givers of the selected WorkType (origin = reference, destination = draft), not WorkType order. Apply/Cancel added.
+- WorkType order remains in Rules.
+- Restore removes a reference giver from every other profile WorkType before restoring the source.
+- Delete split removes the giver from other profile types before returning it to the base.
+- Removed the duplicate old giver-order list from Order.
+
+
 
 ### Fixed
 - Order mode now actually calls the two-column reference/current editor; the previous call was missing, so the old giver-only screen remained.
