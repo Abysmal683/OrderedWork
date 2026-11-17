@@ -87,5 +87,37 @@ Version: `0.3.0-alpha.4`, installed. Build 0/0, 7/7 tests. Git `c15f8ef`, tag `v
 7. **Check/Draw**: one tab, maximum compatibility, no duplicated work; Check should use the vanilla Work tab/return button rather than reimplementing the grid.
 8. **Search filter** is accepted.
 
+## Alpha.9 test findings
+
+- Working: right-click 0→max, portrait/name, single/shift/double click, camera, Recommend, Details, View: Numeric, multi-selection, auto-recommend Mod Settings.
+- Broken: **simple Work-tab mode** lost checks and shows 3 because the numeric WorkBox prefix runs in simple mode too.
+- Broken/missing: **return button in Work tab** absent. Log:
+  `Harmony initialization failed: Parameter "inRect" not found in MainTabWindow_Work.DoWindowContents(Rect rect)`.
+- Log also shows `Trying to set work to invalid priority` messages from the >4 path; not fatal but noisy.
+- Portrait/name overflow needs max size/ellipsis and a hover tooltip with name, age, title, health.
+
+## Alpha.10 expected
+
+1. Fix simple vs manual Work tab:
+   - simple mode: defer to vanilla checks; remove check = 0; add check = default;
+   - manual mode: keep numeric >4 cells;
+   - suppress invalid-priority log noise where possible.
+2. Fix return button:
+   - correct `Rect rect` Harmony parameter;
+   - ensure `View: Draw` appears in vanilla Work tab and Compact Work Tab if it replaces/patches the tab.
+3. Portrait/name overflow:
+   - max visual width, ellipsis, right-side data compact;
+   - hover tooltip: full name, age, title, health status, relevant data.
+4. Drag palette:
+   - row before the matrix/buttons, after tab title and search;
+   - lists all WorkTypes; drag to pawn row;
+   - validity on hover; dragged card shows passion/level of pawn under cursor;
+   - ghost at exact drop position; invalid drop = grouped alert, nothing added;
+   - existing WorkType moves/reorders to ghost position;
+   - multi-select: same WorkType/position across all selected; existing at position stay; capable missing added; incapable skipped with grouped message.
+5. Optional: shift-drag marquee selection.
+6. Re-test both tabs, simple/manual, return button, drag palette, compact compatibility, save/load, respawn.
+
+
 
 
