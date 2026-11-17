@@ -3,7 +3,18 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [0.3.0-alpha.49] - 2026-11-16
+## [0.3.0-alpha.50] - 2026-11-16
+
+### Fixed
+- Order now renders only the giver reference/current two-column editor; the old WorkType diff call and duplicate giver list were removed.
+- Apply/Cancel giver order are disabled until the draft changes.
+- Restore reassigns the live giver owner as well as the profile entry.
+- Removed the unused WorkType-order diff method and draft fields.
+
+### Still not removed
+- `splits`, `merges`, `giverOrder`, `workTypeOrder` settings lists remain until the editor is fully profile-backed.
+
+
 
 ### Changed
 - Order mode now compares givers of the selected WorkType (origin = reference, destination = draft), not WorkType order. Apply/Cancel added.

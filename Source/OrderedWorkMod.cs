@@ -83,9 +83,8 @@ namespace OrderedWork
         private bool confirmResetAll;
         private bool confirmResetOrder;
         private string activeProfileName = "default";
-        private List<string> orderDraft = new List<string>();
-        private bool orderDraftInitialized;
         private List<string> giverOrderDraft = new List<string>();
+        private List<string> giverOrderInitial = new List<string>();
         private string giverOrderDraftType = "";
         private bool giverOrderDraftInitialized;
         private string newProfileName = "";
@@ -556,121 +555,6 @@ namespace OrderedWork
             HandleSplitMergeDrag();
         }
 
-        private void DrawWorkTypeOrderDiff(Listing_Standard list)
-        {
-            WorkConfigLoadResult active = WorkConfigStore.LoadActiveWithFallback(activeProfileName);
-            WorkConfigProfile reference = WorkConfigStore.LoadReference();
-            if (active == null || active.Profile == null)
-            {
-                list.Label("No active profile available for WorkType order.");
-                return;
-            }
-            if (!orderDraftInitialized || orderDraft == null || orderDraft.Count == 0)
-            {
-                orderDraft = active.Profile.WorkTypes
-                    .Where(e => e.Value != null)
-                    .OrderBy(e => e.Value.Order)
-                    .Select(e => e.Key)
-                    .ToList();
-                orderDraftInitialized = true;
-            }
-            List<string> referenceOrder = reference != null
-                ? reference.WorkTypes.Where(e => e.Value != null)
-                    .OrderBy(e => e.Value.Order).Select(e => e.Key).ToList()
-                : orderDraft.ToList();
-
-            list.Label("WorkType order — origin = reference, destination = draft. Drag destination rows.");
-            int rowCount = Mathf.Max(referenceOrder.Count, orderDraft.Count);
-            Rect columns = list.GetRect(Mathf.Max(120f, 28f + rowCount * SplitMergeRowHeight));
-            float columnWidth = (columns.width - 12f) * 0.5f;
-            Rect left = new Rect(columns.x, columns.y, columnWidth, columns.height);
-            Rect right = new Rect(columns.x + columnWidth + 12f, columns.y, columnWidth, columns.height);
-
-            Widgets.Label(new Rect(left.x, left.y, left.width, 22f), "Origin (reference)");
-            Widgets.Label(new Rect(right.x, right.y, right.width, 22f), "Destination (current)");
-
-            for (int i = 0; i < referenceOrder.Count; i++)
-            {
-                string label = DisplayWorkType(referenceOrder[i]);
-                Rect row = new Rect(left.x, left.y + 24f + i * SplitMergeRowHeight, left.width, SplitMergeRowHeight - 2f);
-                Widgets.DrawBoxSolid(row, new Color(0.20f, 0.25f, 0.30f, 0.45f));
-                Widgets.LabelEllipses(new Rect(row.x + 4f, row.y, row.width - 8f, row.height), (i + 1) + ". " + label);
-            }
-
-            List<Rect> destinations = new List<Rect>();
-            for (int i = 0; i < orderDraft.Count; i++)
-            {
-                string label = DisplayWorkType(orderDraft[i]);
-                Rect row = new Rect(right.x, right.y + 24f + i * SplitMergeRowHeight, right.width, SplitMergeRowHeight - 2f);
-                DrawReorderRow(row, (i + 1) + ". " + label, 4, i, null);
-                destinations.Add(row);
-            }
-            HandleReorderDrag(4, destinations, MoveOrderDraft);
-
-            Rect orderButtons = list.GetRect(30f);
-            float half = (orderButtons.width - 8f) * 0.5f;
-            if (Widgets.ButtonText(new Rect(orderButtons.x, orderButtons.y, half, 28f), "Apply WorkType order"))
-            {
-                ApplyOrderDraft(active.Profile);
-            }
-            if (Widgets.ButtonText(new Rect(orderButtons.x + half + 8f, orderButtons.y, half, 28f), "Cancel order draft"))
-            {
-                orderDraftInitialized = false;
-                orderDraft.Clear();
-            }
-            if (!string.IsNullOrEmpty(profileStatus))
-            {
-                list.Label(profileStatus);
-            }
-        }
-
-        private static string DisplayWorkType(string defName)
-        {
-            WorkTypeDef def = DefDatabase<WorkTypeDef>.GetNamedSilentFail(defName);
-            return def != null ? def.labelShort : defName;
-        }
-
-        private void MoveOrderDraft(int from, int to)
-        {
-            if (from < 0 || from >= orderDraft.Count || to < 0 || to >= orderDraft.Count || from == to)
-            {
-                return;
-            }
-            string item = orderDraft[from];
-            orderDraft.RemoveAt(from);
-            orderDraft.Insert(to, item);
-        }
-
-        private void ApplyOrderDraft(WorkConfigProfile profile)
-        {
-            if (profile == null || profile.WorkTypes == null)
-            {
-                return;
-            }
-            for (int i = 0; i < orderDraft.Count; i++)
-            {
-                WorkTypeConfig config;
-                if (profile.WorkTypes.TryGetValue(orderDraft[i], out config) && config != null)
-                {
-                    config.Order = i;
-                }
-            }
-            int next = orderDraft.Count;
-            foreach (WorkTypeConfig config in profile.WorkTypes.Values)
-            {
-                if (config != null && !orderDraft.Contains(config.Base ?? ""))
-                {
-                    // WorkTypes not present in the draft are appended in their existing order.
-                    config.Order = next++;
-                }
-            }
-            Settings.workTypeOrder = new List<string>(orderDraft);
-            WorkConfigStore.SavePending(profile);
-            profileStatus = "WorkType order written to pending and applied.";
-            OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
-            orderDraftInitialized = false;
-        }
-
         private void DrawGiverOrderDiff(Listing_Standard list)
         {
             WorkConfigLoadResult active = WorkConfigStore.LoadActiveWithFallback(activeProfileName);
@@ -781,42 +665,18 @@ namespace OrderedWork
         private void DrawOrderEditor(Listing_Standard list)
         {
             EnsureSplitMergeDefaults();
-            DrawWorkTypeOrderDiff(list);
-
-            list.Gap(12f);
-            list.Label("Giver order: reorders the WorkGivers of one work type. Top = first.");
+            list.Label("Giver order: choose a WorkType, then drag the destination list. Top = first.");
             Rect selectorRect = list.GetRect(28f);
             DrawWorkTypeSelector(selectorRect, "Work type: ", selectedGiverType, "Select Work type", delegate(string defName)
             {
                 selectedGiverType = defName;
+                giverOrderDraftInitialized = false;
                 confirmResetOrder = false;
             });
 
-            List<WorkGiverDef> givers = GiversForWorkType(selectedGiverType);
-            if (givers.Count == 0)
-            {
-                list.Label("This work type has no WorkGivers.");
-            }
-            else
-            {
-                List<Rect> giverRows = new List<Rect>();
-                for (int i = 0; i < givers.Count; i++)
-                {
-                    WorkGiverDef giver = givers[i];
-                    Rect row = list.GetRect(SplitMergeRowHeight);
-                    DrawReorderRow(row, (i + 1) + ". " + giver.defName, 2, i, GiverTooltip(giver));
-                    giverRows.Add(row);
-                }
-                HandleReorderDrag(2, giverRows, delegate(int from, int to)
-                {
-                    WorkGiverDef item = givers[from];
-                    givers.RemoveAt(from);
-                    givers.Insert(Mathf.Clamp(to, 0, givers.Count), item);
-                    CommitGiverOrder(selectedGiverType, givers);
-                });
-            }
-
+            DrawGiverOrderDiff(list);
             list.Gap(10f);
+
             string selectedLabel = DefDatabase<WorkTypeDef>.GetNamedSilentFail(selectedGiverType)?.labelShort ?? selectedGiverType;
             if (!confirmResetOrder)
             {
@@ -849,18 +709,11 @@ namespace OrderedWork
                     confirmResetOrder = false;
                 }
             }
-            list.Label("Reset order does not write WorkTypes or pawn priorities now; it only removes the saved override.");
+            list.Label("Reset order removes the saved override; restart restores the def order.");
             list.Gap(12f);
             DrawSavedSplitMetadata(list);
             DrawProfileResetChanges(list);
         }
-
-        /// <summary>
-        /// Unified reset surface: Split and Merge editors no longer own reset buttons.
-        /// Split entries are deleted (restoring their givers to the base); merge entries
-        /// restore their captured origins; order overrides are reset by the selected-type
-        /// control above.
-        /// </summary>
         private void PersistLivePending()
         {
             if (Settings == null || string.IsNullOrEmpty(activeProfileName))
