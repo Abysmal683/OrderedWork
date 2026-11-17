@@ -250,7 +250,6 @@ namespace OrderedWork
                                 {
                                     continue;
                                 }
-                                RemoveGiverFromOtherTypes(display, giver.DefName, removed.Base);
                                 WorkGiverDef live = DefDatabase<WorkGiverDef>.GetNamedSilentFail(giver.DefName);
                                 if (live != null && baseLive != null)
                                 {
@@ -289,8 +288,19 @@ namespace OrderedWork
                     }
                     if (WorkConfigStore.SavePending(display))
                     {
+                        WorkConfigStore.SaveProfile(display, true);
                         profileStatus = "Reset written to pending and applied now.";
+                        Log.Message("[OrderedWork][Reset] " + defName + " profile=" + display.Profile);
                         OrderedWorkStartup.ApplyProfileNow(display, Settings, this);
+                        giverOrderDraftInitialized = false;
+                        giverOrderDraft.Clear();
+                        giverOrderInitial.Clear();
+                        giverOrderDraftType = "";
+                        WorkTypeDef selectedAfterReset = DefDatabase<WorkTypeDef>.GetNamedSilentFail(selectedGiverType);
+                        if (selectedAfterReset == null || !selectedAfterReset.visible)
+                        {
+                            selectedGiverType = Settings.workTypeOrder.FirstOrDefault() ?? "";
+                        }
                     }
                     break;
                 }

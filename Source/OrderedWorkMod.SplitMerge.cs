@@ -847,6 +847,7 @@ namespace OrderedWork
             splitDescription = "";
             splitDraft.Clear();
             splitDraftScroll = 0f;
+            splitDirty = false;
         }
 
         private void SaveMerge(List<string> givers)
@@ -902,6 +903,7 @@ namespace OrderedWork
 
             mergeDraft.Clear();
             mergeTargetScroll = 0f;
+            mergeDirty = false;
         }
 
         private string BuildSplitDefName(string label)

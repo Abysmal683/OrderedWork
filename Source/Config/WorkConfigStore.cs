@@ -69,10 +69,6 @@ namespace OrderedWork.Config
             loaded = TryLoad(ProfilePath("default"));
             if (loaded != null)
             {
-                if (profile != "default")
-                {
-                    SaveSelectedProfileName("default");
-                }
                 return new WorkConfigLoadResult
                 {
                     Profile = loaded,
@@ -84,7 +80,6 @@ namespace OrderedWork.Config
 
             WorkConfigProfile vanilla = BuildReferenceProfile("vanilla");
             SaveProfile(vanilla, false);
-            SaveSelectedProfileName("vanilla");
             return new WorkConfigLoadResult
             {
                 Profile = vanilla,

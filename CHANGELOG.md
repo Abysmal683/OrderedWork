@@ -3,7 +3,32 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [0.3.0-alpha.64] - 2026-11-16
+## [0.3.0-alpha.68] - 2026-11-16
+
+### Fixed
+- Removed the last fallback writes to `active-profile.txt`; selecting test_1 no longer silently reverts to vanilla after restart.
+- Split/Merge Cancel dirty is cleared on Apply and on mode reset.
+- Reset saves active+pending, refreshes Order, clears the draft and falls back if the selected WorkType disappeared.
+- Delete split no longer calls reciprocal cleanup on its own giver list; exception path removed.
+- Version label appears once, in General.
+
+### Fixed
+- Removed the duplicate version label from the main window; General is the single source.
+- Split/Merge Cancel dirty is cleared after Apply as well as Cancel.
+- Reset now saves active+pending, clears the Order draft baseline and refreshes the selected WorkType.
+- Delete split no longer calls reciprocal cleanup; the Collection-modified exception path is removed.
+- Build/install verification now compares source and installed DLL SHA256.
+
+### Fixed
+- Mod version is drawn from the main settings window, not the partial Settings file, and is now present in the compiled DLL.
+- Verified source before build; the installed DLL is compared by SHA256 with the project DLL after copy.
+- Delete split source no longer calls `RemoveGiverFromOtherTypes` on its own list.
+- Profile fallback no longer overwrites `active-profile.txt`.
+
+### Fixed
+- Verified source before build: the old `RemoveGiverFromOtherTypes` Delete-split call was still present in the compiled file. Removed from source and confirmed by grep before build.
+- Restore/delete reset enumeration should no longer throw; Delete split only affects its objective.
+- Added `Mod version` to General; the installed DLL hash is verified against the project DLL after install.
 
 ### Fixed
 - Profile fallback no longer overwrites `active-profile.txt`. A missing/invalid profile is resolved for the session but the requested selection is preserved, preventing “test switched back to vanilla”.

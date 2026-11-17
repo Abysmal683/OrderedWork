@@ -173,6 +173,10 @@ namespace OrderedWork
         private void DrawGeneralTab(Listing_Standard list)
         {
             list.Label("Ordered Work (Core) - changes apply on restart.");
+            string version = Content != null && Content.ModMetaData != null
+                ? Content.ModMetaData.ModVersion
+                : "unknown";
+            list.Label("Mod version: " + version);
             list.Gap(6f);
 
             list.CheckboxLabeled(
