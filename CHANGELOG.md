@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.96] - 2026-11-17
+
+### Refactor — palette split
+- Split `WorkTypePaletteView` into core palette/drag, tooltip/rank and passion-visual partials.
+- Behavior unchanged; `DisplayName` remains in the core partial.
+- Work Control file sizes: core 307, tooltip 142, passion 415.
+
 ## [0.3.0-alpha.95] - 2026-11-17
 
 ### Adjusted — defaults for bad/slow passions
