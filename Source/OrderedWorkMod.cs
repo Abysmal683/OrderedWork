@@ -689,7 +689,8 @@ namespace OrderedWork
                     }
                     if (WorkConfigStore.SavePending(display))
                     {
-                        profileStatus = "Reset written to pending. Restart to apply.";
+                        profileStatus = "Reset written to pending and applied now.";
+                        OrderedWorkStartup.ApplyProfileNow(display, Settings, this);
                     }
                     break;
                 }

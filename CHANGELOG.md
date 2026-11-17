@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.44] - 2026-11-16
+
+### Fixed
+- Reset Restore/Delete now applies the changed profile to live defs immediately via `ApplyProfileNow`, so the effect is visible in-session; pending remains the restart-safe record.
+- `ApplyProfile` hides stale `OrderedWork_*` defs removed from the active profile.
+- Moved the test `reference.json` to `reference.old.json`; a fresh reference will be captured on the next RimWorld start before the active profile is applied.
+
+### Test notes
+- The fresh reference is only as clean as the def state at the next startup; do not save/apply another profile before that capture if a vanilla reference is required.
+
 ## [0.3.0-alpha.43] - 2026-11-16
 
 ### Fixed

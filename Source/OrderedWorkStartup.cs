@@ -93,6 +93,11 @@ namespace OrderedWork
         /// operation log: every giver has exactly one owner, WorkTypes follow profile order, and
         /// split entries are materialized first so ApplySplits can create their defs.
         /// </summary>
+        public static void ApplyProfileNow(WorkConfigProfile profile, OrderedWorkSettings settings, OrderedWorkMod mod)
+        {
+            ApplyProfile(profile, settings, mod);
+        }
+
         private static void ApplyProfile(WorkConfigProfile profile, OrderedWorkSettings settings, OrderedWorkMod mod)
         {
             if (profile == null || profile.WorkTypes == null || profile.WorkTypes.Count == 0)
@@ -175,6 +180,16 @@ namespace OrderedWork
                 workOrder++;
             }
 
+            HashSet<string> profileNames = new HashSet<string>(profile.WorkTypes.Keys, StringComparer.Ordinal);
+            foreach (WorkTypeDef stale in DefDatabase<WorkTypeDef>.AllDefsListForReading)
+            {
+                if (stale != null
+                    && stale.defName.StartsWith("OrderedWork_", StringComparison.Ordinal)
+                    && !profileNames.Contains(stale.defName))
+                {
+                    stale.visible = false;
+                }
+            }
             RebuildCaches();
             OrderedWork.Services.WorkOrderService.InvalidateAvailableWorkTypes();
         }
