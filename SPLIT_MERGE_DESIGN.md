@@ -1,6 +1,6 @@
 # Split / Merge editor — scope
 
-Status: design for the next isolated pass. The current v0.3.0-alpha.x settings UI still exposes the old text-field split/merge editor until this is implemented.
+Status: **Phase 1 implemented in Mod Settings (unreleased)**. The old text-field Split/Merge editor was replaced by the unified two-column editor; the settings window is split into `Rules` and `General` tabs. Setup still applies on restart; hot apply remains out of scope.
 
 ## Shared layout
 
@@ -45,4 +45,4 @@ One two-column editor is used for both Split and Merge:
 
 ## Open decision
 
-Merge WorkTypes currently means “move every giver from origin to target.” Confirm this before implementation so the aggressive action and the data model stay aligned.
+Confirmed: merge means “move giver ownership into the target WorkType.” `Merge selected` moves only the givers dragged to the destination; `Merge all` moves every giver of the origin. Neither WorkType is deleted, and the origin may end up with no givers. Drafts are UI-only; saved entries are applied by `OrderedWorkStartup` on restart.

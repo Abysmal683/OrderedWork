@@ -3,6 +3,21 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.26] - 2026-11-16
+
+### Added
+- Mod Settings now has two in-memory tabs: **Rules** (WorkType order, giver order, Split/Merge editor) and **General** (auto settings, palette stress test, dense-rank spike, reset). Tab selection is not saved.
+- New unified two-column Split/Merge editor replaces the old text-field Split/Merge inputs. Left column is always Origin; right column is explicitly labelled `Split destination` or `Merge destination`.
+- Split mode: origin WorkType dropdown, editable new name with a generated `defName` preview, drag Origin → Split to add, drag Split → Origin to remove, and `Add split` gated on a non-empty name, valid origin, and at least one origin giver in the draft.
+- Merge mode: origin and different-target selectors (origin excluded from the target list), `Merge selected` (draft givers only) and `Merge all` (every origin giver).
+- Saved split/merge entries are shown read-only below the editor and are never removed by `Cancel draft`.
+- Draft drag visuals: blue dragged row, blue/green valid-drop tint, hover highlight, `≡` handle, giver tooltips, and no tooltip while dragging. Disabled actions show a visible inline warning.
+- `Reset config mod all` also clears unsaved drafts; pawn 1..N priorities remain untouched.
+
+### Changed
+- Split/Merge drafts are UI-only and not scribed; saved `SplitEntry` / `MergeEntry` entries keep applying on restart. No hot split/merge.
+- `Add split` still produces the existing `SplitEntry` shape and safe sanitized defName (`OrderedWork_<name>_<n>`), with collision-safe suffixing.
+
 ## [0.3.0-alpha.25] - 2026-11-16
 
 ### Fixed

@@ -1,6 +1,6 @@
-# Ordered Work (Core) 0.3.0-alpha.25
+# Ordered Work (Core) 0.3.0-alpha.26
 
-> Status: **0.3.0-alpha.25**. Bug-fix and polish iteration for **Work Control**: the tab opens at half of the available height above the 35 px main-tab bar, with a top grip for a saved resize (minimum four pawn rows); the Work combo opens centered with a `Filter Work` title, shows `Any` only while a Work filter is active, excludes the already-selected WorkType and still shows at most 10 rows with a thin scrollbar. A three-state `Filter: Line` / `Filter: Palette` / `Filter: Both` control (default **Line**, disabled until a Work filter exists) scopes the Work filter, `Not` inverts it wherever it applies, Pawn search always filters only pawn rows, and WorkType identity is matched exactly (`Patient` does not match `PatientBedRest`). A `Clear` button resets all filters. Cards are 135 px wide with 14 px passion icons. Passion icons use a shared resolver: VSE/Alpha Skills `PassionDef.Icon` first, then `WorkBoxIcon` tinted by `PassionDef.color`, then vanilla colored textures, then vanilla gray work-box icons; tooltips use `Def.LabelCap`; no icon for `None`. Scrollbar input runs before the scroll view and drawing after it; palette and matrix horizontal drags use separate owners, so the palette cannot cancel the matrix drag. Colonist-bar order, hover-based drag targets, ghost/colors, simple/manual, return button, right-click max, selection, Recommend/Details, auto-recommend, save/load and resurrection are kept. Profiles, schedules, equipment and multi-pawn remain **not implemented**. **Do not use it in a main save.**
+> Status: **0.3.0-alpha.26**. Bug-fix and polish iteration for **Work Control**: the tab opens at half of the available height above the 35 px main-tab bar, with a top grip for a saved resize (minimum four pawn rows); the Work combo opens centered with a `Filter Work` title, shows `Any` only while a Work filter is active, excludes the already-selected WorkType and still shows at most 10 rows with a thin scrollbar. A three-state `Filter: Line` / `Filter: Palette` / `Filter: Both` control (default **Line**, disabled until a Work filter exists) scopes the Work filter, `Not` inverts it wherever it applies, Pawn search always filters only pawn rows, and WorkType identity is matched exactly (`Patient` does not match `PatientBedRest`). A `Clear` button resets all filters. Cards are 135 px wide with 14 px passion icons. Passion icons use a shared resolver: VSE/Alpha Skills `PassionDef.Icon` first, then `WorkBoxIcon` tinted by `PassionDef.color`, then vanilla colored textures, then vanilla gray work-box icons; tooltips use `Def.LabelCap`; no icon for `None`. Scrollbar input runs before the scroll view and drawing after it; palette and matrix horizontal drags use separate owners, so the palette cannot cancel the matrix drag. Colonist-bar order, hover-based drag targets, ghost/colors, simple/manual, return button, right-click max, selection, Recommend/Details, auto-recommend, save/load and resurrection are kept. Profiles, schedules, equipment and multi-pawn remain **not implemented**. **Do not use it in a main save.**
 
 Basic RimWorld 1.7 work-management framework.
 
@@ -26,7 +26,7 @@ Compatibility references and licensing posture: see [`CREDITS.md`](CREDITS.md). 
 2. Enable it after work mods (Job Splitter, Some More Jobs, Compact Work Tab, etc.).
 3. Back up the save before enabling.
 
-## Work Control tab (0.3.0-alpha.25)
+## Work Control tab (0.3.0-alpha.26)
 - Open the new **Work Control** bottom tab (between Work and Schedule). It does **not** replace the vanilla Work tab.
 - **Pawn order** follows `Find.ColonistBar.GetColonistsInOrder()` filtered to visible free colonists, with `Find.CurrentMap.mapPawns.FreeColonists` as fallback. A revived pawn returns to its stable colonist-bar position; rows follow the bar if it changes.
 - Layout mirrors the Work tab: one row per player free colonist. The fixed left column shows the pawn **portrait** (about 32×32, scaled to row height), an **ellipsized** name/title, and compact right-side age/health. Hovering the row shows a tooltip with the full name, age, title, health and active WorkType count. The rest of the row is the colonist's horizontal WorkType lane. Outer/internal margins are ~4 px.
@@ -66,10 +66,20 @@ Compatibility references and licensing posture: see [`CREDITS.md`](CREDITS.md). 
 
 ## Use
 1. Open `Options -> Mod Settings -> Ordered Work`.
-2. Reorder work types and givers by dragging the vertical rows (the `≡` handle).
-3. Split: fill a new label, the base work type defName, and a comma-separated list of giver defNames.
-4. Merge: fill a comma-separated list of giver defNames and the target work type defName.
-5. Restart RimWorld. Changes are applied at load time.
+2. Pick the **Rules** tab. Reorder work types and givers by dragging the vertical rows (the `≡` handle).
+3. Split: pick the origin work type, type a new name (the `defName` preview appears below it), drag origin givers into `Split destination`, and click `Add split`. Origin rows already in the draft are drawn gray in their original position; dragging a destination row back to the origin removes it.
+4. Merge: pick the origin and a different target (the origin is excluded from the target list). Drag givers into `Merge destination` and click `Merge selected`, or click `Merge all` to move every origin giver.
+5. `Cancel draft` clears only the unsaved draft. Saved split/merge entries are listed read-only below the editor and are never removed by it.
+6. The **General** tab holds `Auto recommend new colony`, `Auto-hide scrollbars`, `Palette stress test (debug)`, the dense-rank spike, and `Reset config mod all` (two-step confirmation; pawn 1..N priorities are untouched).
+7. Restart RimWorld. Changes are applied at load time.
+
+## Mod Settings — Rules and General (unreleased phase 1)
+- The settings window has two in-memory tabs: **Rules** (WorkType order, giver order, Split/Merge editor) and **General** (auto settings, palette stress test, dense-rank spike, reset). The tab selection is not persisted.
+- The Split/Merge editor is one shared two-column layout with a `Split mode` / `Merge mode` switch: left is always **Origin**, right is labelled `Split destination` or `Merge destination`, never inferred from fields.
+- Dragged rows are blue, valid drop rows get a blue/green tint, hovered rows highlight, and every giver row has a `≡` handle plus a tooltip (`defName` + WorkType). No tooltip is shown while a draft row is being dragged.
+- `Add split` is enabled only with a non-empty name, a valid origin, and at least one draft giver that belongs to that origin. `Merge selected` and `Merge all` require a target different from the origin. Disabled actions show an inline warning.
+- Drafts are UI-only (not scribed). Saved `SplitEntry` / `MergeEntry` entries remain scribed and still apply on restart; there is no hot split/merge.
+
 
 ## Technical spike: dense rank test (0.2.0-alpha.2)
 - Load a colony first. In `Options -> Mod Settings -> Ordered Work`, click **Test dense rank on colonists (log)**. With no map loaded the window shows `Load a colony to run the dense-rank test.` instead of the button.
@@ -79,7 +89,7 @@ Compatibility references and licensing posture: see [`CREDITS.md`](CREDITS.md). 
 - Expected log shape: `[Ordered Work] Dense rank test <pawn>: max=<max>, count=<count>, first=<defName>=<priority>, last=<defName>=<priority>`. Compare `last` with its assigned rank (e.g. 23): if it survives, direct-map mode bypasses the vanilla 4 cap; if it reads 4, the value was clamped downstream.
 - **Do not use this build in a main save**; test in a throwaway colony.
 
-## Limitations (0.3.0-alpha.25)
+## Limitations (0.3.0-alpha.26)
 - No profiles, schedules, equipment or multi-pawn yet.
 - Pawn order follows the colonist bar; if the bar is unavailable or returns no visible free colonists, the map's `FreeColonists` order is used. Dead pawns are filtered out.
 - Scrollbars are custom and 12 px thick; when auto-hidden they still reserve their gutters. The horizontal bar is above the matrix; the vertical is in the right gutter; they use separate drag state and show flags.
@@ -96,6 +106,7 @@ Compatibility references and licensing posture: see [`CREDITS.md`](CREDITS.md). 
 - If another mod also prefixes `WidgetsWork.DrawWorkBoxFor`, Harmony ordering may let that mod win, leaving the cell vanilla; the rest of the mod keeps working.
 - The dynamic max falls back to 99 when the count fails; the fallback is logged.
 - Pawn/Work filters are UI-only and not persisted.
+- Mod Settings tab selection and Split/Merge drafts are UI-only and not persisted; saved split/merge entries are still scribed and applied on restart. Split/Merge has no hot apply.
 - Initialization only scans the current map's free colonists; a colony initialized on one map does not backfill colonists on another map until they spawn.
 - The vanilla capture hook covers `SetPriority`; a mod that changes priorities by writing the private map directly will not be captured.
 - The "Sort by WorkType" header button is not implemented yet.
