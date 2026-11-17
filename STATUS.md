@@ -1,146 +1,38 @@
-# Ordered Work — Current Status (after alpha.4 test)
+# Ordered Work — Current Status
 
-Version: `0.3.0-alpha.4`, installed. Build 0/0, 7/7 tests. Git `c15f8ef`, tag `v0.3.0-alpha.4`.
+Version: `0.3.0-alpha.80` (cleanup target). Build 0/0; core tests 7/7.
 
-## Confirmed by user in game
+## Completed architecture
 
-- Work Control tab loads; basic lane visible; read/write works.
-- Both scrolls (shared horizontal lane + vertical rows) are acceptable.
-- Cards are more compact; picker works.
-- Recommendations and order apply correctly.
-- `R` per-row recommendation works.
-- GameComponent works; save/load works.
-- Vanilla Work-tab capture hook works (changes flow).
-- Respawn/resurrection reapplies stored order.
-- Recruited colonist gets a recommendation.
-- Score works: level with passion outranks other cases.
+- JSON profiles are the global source of truth: `WorkTypes` map keyed by `defName`, one owner per giver, `WorkTypeConfig.Order`.
+- `active`, `pending` and `reference` JSON; atomic writes and backups.
+- Startup promotes pending and applies the profile.
+- `WorkConfigDiff` computes modified WorkTypes against `reference`.
+- Legacy persisted lists are gone: `splits`, `merges`, `giverOrder`, `originalGiverOrder`, `workTypeOrder`.
+- Split and merge are final profile state, not operation history.
+- Work Control and Mod Settings are split into partial classes by responsibility.
 
-## Implemented in alpha.4 (now confirmed)
+## User-confirmed behavior
 
-- Two-line cards; reduced height.
-- Incapable WorkTypes filtered from lane/default/picker.
-- Pins: Patient, PatientBedRest, Firefighter.
-- Score: no-skill 0; level 0 none/minor/major -3/1/3; level>=1 level*2 + 2/4.
-- Init at GameComponentTick; existing copy, new recommend.
-- Hook capture with IsApplying/IsSpawning/IsInitializing + 120-tick spawn guard.
-- R button; result table removed.
+- Profile persistence and pending application.
+- Version displayed once.
+- Order Apply/Cancel dirty guards and reset.
+- Split create/restart/delete.
+- Merge/restore.
+- Unified reset, no duplicated reset button.
+- Palette, filters, cards, scrollbars, passion resolver.
 
-## Requested changes (not implemented)
+## Pending verification
 
-1. **Margins**: reduce internal content margin to 2–4 px per side; keep compact.
-2. **View modes**: discard “Simple”; use Draw / Manual / Both.
-   - Default at new game: **Both** (Manual/Draw available).
-   - Button in Work Control to open the vanilla Work tab.
-3. **Pawn selection**: selected row border; double-click selects pawn and jumps camera; search box above matrix by pawn name (not the jobs search).
-4. **Result table**: discarded; the manual Work tab is better.
-5. **Vanilla Work tab interactive**:
-   - Remove the 4-priority cap so manual changes can reach 1..N.
-   - `Pawn_WorkSettings.LowestPriority` is const; `WidgetsWork.DrawWorkBoxFor`/`PawnColumnWorker_WorkPriority` cycle/colors assume 0–4.
-   - Requires clean-room Harmony transpilers/prefixes; technical spike; test with manual Work tab and hook.
-6. **Passion icons**: use `WidgetsWork.PassionWorkboxMinorIcon`/`MajorIcon` instead of `*`/`**`.
+- Final profile-only split/merge/order path after `alpha.80`.
+- `test_1`/pending/reference alignment after a full create→restart→delete→restart cycle.
+- No startup/profile fallback anomalies.
+- No in-game exceptions; logs remain clean.
 
-## Clarifications (saved)
+## Next scope
 
-1. **Modes**: proceed with the three: **Draw / Manual / Both**. Default on new game: **Both** (Draw + Manual available).
-2. **Low priority**: the patch must cover the **vanilla Work tab** too, allowing manual 1..N there. Dynamic maximum if technically safe; fallback to fixed 99 only if dynamic causes serious problems.
-3. **Search + row marking**: the search box highlights matching pawn rows only; it must **not select** them.
-4. **Double click**: selects the pawn and **moves the camera** to the pawn.
-5. **Result table**: discarded.
-6. **Passion icons**: use the vanilla `WidgetsWork` minor/major icons.
-
-## Next implementation order
-
-1. Margins + selection border + highlight-only search.
-2. Modes + button to Work tab.
-3. Vanilla Work tab low-priority patch spike (dynamic max, fallback 99).
-4. Passion icons.
-5. Re-test both tabs, manual >4, hook, resurrection, save/load.
-
-## Alpha.7/8 audit (current)
-
-- alpha.7: vanilla Work-tab priority cap removed; dynamic max with 99 fallback; >4 cell/tooltip; capture hook. Build/tests pass; installed; tag `v0.3.0-alpha.7`.
-- alpha.8: top `R`/`Details` based on selected row; read-only Details window. Build/tests pass; installed; tag `v0.3.0-alpha.8`.
-- Resurrection log: stored order was reapplied (`Hunting=3`); a later `Hunting=4` came from an explicit `GenerateAndApplyRecommendation` (R), not from resurrection.
-- No `[Ordered Work]` exceptions in the latest log.
-
-## Resolved clarifications (saved)
-
-1. **Resurrection**: not a bug. The log shows `Hunting=3` preserved; the later `Hunting=4` was the explicit Recommend test.
-2. **Right-click**: must allow starting at the maximum from 0. Interpreted as: right-click jumps/sets max (e.g. 23); left-click starts at 1. If “min” was literal, correct later.
-3. **Drag palette**:
-   - lists all WorkTypes;
-   - validity (can/cannot) is shown when dragging over a colonist row;
-   - the dragged card shows passion/level for the pawn under the cursor/ghost;
-   - drop adds at the exact ghost position;
-   - incapable drop = alert only, nothing added;
-   - if the WorkType already exists, it moves/reorders to the ghost position; if the ghost is next to the target, no change;
-   - with multi-select, the same WorkType can be added/moved at the same position on all selected pawns.
-4. **Click / multi-select**:
-   - single click is enough to select a row;
-   - double click selects the pawn, moves the camera, and minimizes Work Control;
-   - Shift multi-select;
-   - Recommend applies to all selected;
-   - Details applies only to the first selected;
-   - WorkControl and vanilla Work tab selection should share the same hook/state in both directions.
-5. **Rename**: top `R` → `Recommend`.
-6. **Portrait**: add the pawn portrait in the fixed name column (size/placement pending).
-7. **Check/Draw**: one tab, maximum compatibility, no duplicated work; Check should use the vanilla Work tab/return button rather than reimplementing the grid.
-8. **Search filter** is accepted.
-
-## Alpha.9 test findings
-
-- Working: right-click 0→max, portrait/name, single/shift/double click, camera, Recommend, Details, View: Numeric, multi-selection, auto-recommend Mod Settings.
-- Broken: **simple Work-tab mode** lost checks and shows 3 because the numeric WorkBox prefix runs in simple mode too.
-- Broken/missing: **return button in Work tab** absent. Log:
-  `Harmony initialization failed: Parameter "inRect" not found in MainTabWindow_Work.DoWindowContents(Rect rect)`.
-- Log also shows `Trying to set work to invalid priority` messages from the >4 path; not fatal but noisy.
-- Portrait/name overflow needs max size/ellipsis and a hover tooltip with name, age, title, health.
-
-## Alpha.10 expected
-
-1. Fix simple vs manual Work tab:
-   - simple mode: defer to vanilla checks; remove check = 0; add check = default;
-   - manual mode: keep numeric >4 cells;
-   - suppress invalid-priority log noise where possible.
-2. Fix return button:
-   - correct `Rect rect` Harmony parameter;
-   - ensure `View: Draw` appears in vanilla Work tab and Compact Work Tab if it replaces/patches the tab.
-3. Portrait/name overflow:
-   - max visual width, ellipsis, right-side data compact;
-   - hover tooltip: full name, age, title, health status, relevant data.
-4. Drag palette:
-   - row before the matrix/buttons, after tab title and search;
-   - lists all WorkTypes; drag to pawn row;
-   - validity on hover; dragged card shows passion/level of pawn under cursor;
-   - ghost at exact drop position; invalid drop = grouped alert, nothing added;
-   - existing WorkType moves/reorders to ghost position;
-   - multi-select: same WorkType/position across all selected; existing at position stay; capable missing added; incapable skipped with grouped message.
-5. Optional: shift-drag marquee selection.
-6. Re-test both tabs, simple/manual, return button, drag palette, compact compatibility, save/load, respawn.
-
-## Alpha.10 test findings
-
-- Working: simple/manual modes, return button, portrait/hover, drag palette, invalid alert, ghost reorder, Recommend, search filter, regressions.
-- Log: no `[Ordered Work]` errors; many normal `Applied order` messages from palette multi-drop; no Harmony init failure.
-- Improvements requested:
-  - reduce portrait/name gap and ellipsis space;
-  - palette group in max 3 rows + horizontal slide, natural WorkType order;
-  - exact ghost placement/placeholder, tooltip suppressed while dragging, line ghost style matching palette;
-  - search row under palette with separate “search pawn” and “search work” (filter pawns with active WorkType);
-  - tighter fixed card width, hover full name, capitalization;
-  - tooltip: description, all WorkGivers, skill, pawn-specific override; palette ghost tooltip with description/global givers/compressed name/skill;
-  - prepare per-WorkType colors (future picker);
-  - clean componentized palette/ghost code.
-
-## Alpha.11 open questions
-
-1. Search work: single WorkType selector or text filtering multiple WorkTypes? Combined with search pawn by AND?
-2. Palette 3 rows: three horizontal rows of chips, or max three items per row? Natural order fill direction?
-3. Exact ghost insertion: before/after based on cursor half over target card? Placeholder empty vs translucent held card?
-4. “WorkGiverDef override linked to pawn”: should the lane tooltip show global WorkGivers plus the pawn’s current rank, or do you expect per-pawn per-WorkGiver overrides (not implemented yet)?
-5. Colors: only prepare data/default palette now, or also add a picker UI?
-
-
-
-
-
+1. Per-pawn WorkGiver overrides, normal list only.
+2. Profile-backed split metadata editing.
+3. Compact per-save pawn override storage.
+4. Optional palette-filter control, only if needed.
+5. Emergency/custom-job work only on explicit request.

@@ -300,7 +300,7 @@ namespace OrderedWork
 
         // Merge destination column: existing target givers are drawn first and are fixed; the
         // incoming origin givers follow and can be dragged/reordered. Their resulting order is
-        // saved as MergeEntry.targetOrder and applied after workType assignment on restart.
+        // saved in WorkTypeConfig.Givers and applied from the profile on restart.
         private void DrawMergeDestinationColumn(Rect area, List<string> existingNames, List<string> incomingNames, ref float scroll)
         {
             Widgets.DrawBoxSolid(area, new Color(0.10f, 0.10f, 0.12f, 0.45f));

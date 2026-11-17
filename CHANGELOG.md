@@ -3,7 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [0.3.0-alpha.79] - 2026-11-16
+## [0.3.0-alpha.80] - 2026-11-16
+
+### Refactor / cleanup
+- Split Work Control into core/search/rows/interaction partials.
+- Removed obsolete `WorkViewMode` and unused `OrderedWorkSettings.initialized`.
+- Updated CHECKLIST, STATUS and SUMMARY to the profile-backed architecture.
+- Final legacy inventory: no persisted split/merge/giver/WorkType order lists; profile WorkTypes/Givers/Order and reference only.
 
 ### Legacy removal — final split DTO
 - Removed `SplitEntry`; `EnsureSplitWorkTypes` now creates split WorkTypes directly from `WorkTypeConfig`.

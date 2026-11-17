@@ -1,6 +1,6 @@
 # Ordered Work — Consolidated Design Summary
 
-Status: `0.2.0-alpha.2` technical spike. Installed and active in the test install. No visual Work Control UI yet.
+Status: `0.3.0-alpha.80`; profile-backed Split/Merge/Order and Work Control UI implemented. Legacy work lists removed; final deep runtime test pending.
 
 ## 1. Vision
 

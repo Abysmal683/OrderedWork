@@ -5,7 +5,6 @@ namespace OrderedWork
 {
     public class OrderedWorkSettings : ModSettings
     {
-        public bool initialized;
         public bool autoRecommendNewColony = true;
         public bool autoHideScrollbars = true;
         public bool paletteStressTest;
@@ -16,7 +15,6 @@ namespace OrderedWork
 
         public override void ExposeData()
         {
-            Scribe_Values.Look(ref initialized, "initialized", false);
             Scribe_Values.Look(ref autoRecommendNewColony, "autoRecommendNewColony", true);
             Scribe_Values.Look(ref autoHideScrollbars, "autoHideScrollbars", true);
             Scribe_Values.Look(ref paletteStressTest, "paletteStressTest", false);
