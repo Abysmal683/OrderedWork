@@ -32,25 +32,6 @@ namespace OrderedWork
         }
     }
 
-    public class SplitEntry : IExposable
-    {
-        public string newDefName;
-        public string label;
-        public string description;
-        public string baseWorkType;
-        public List<string> givers = new List<string>();
-
-        public void ExposeData()
-        {
-            Scribe_Values.Look(ref newDefName, "newDefName");
-            Scribe_Values.Look(ref label, "label");
-            Scribe_Values.Look(ref description, "description");
-            Scribe_Values.Look(ref baseWorkType, "baseWorkType");
-            Scribe_Collections.Look(ref givers, "givers", LookMode.Value);
-            if (Scribe.mode == LoadSaveMode.LoadingVars && givers == null) givers = new List<string>();
-        }
-    }
-
     public class WorkTypeColorEntry : IExposable
     {
         public string defName;

@@ -3,7 +3,12 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [0.3.0-alpha.78] - 2026-11-16
+## [0.3.0-alpha.79] - 2026-11-16
+
+### Legacy removal — final split DTO
+- Removed `SplitEntry`; `EnsureSplitWorkTypes` now creates split WorkTypes directly from `WorkTypeConfig`.
+- Removed the last `SplitEntry` fallback and legacy comment.
+- No persisted legacy work lists remain: profile WorkTypes/Givers/Order and reference are the only source.
 
 ### Legacy removal — workTypeOrder
 - Removed `OrderedWorkSettings.workTypeOrder` and all persisted references.

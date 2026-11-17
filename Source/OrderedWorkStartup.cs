@@ -32,7 +32,6 @@ namespace OrderedWork
                     return;
                 }
 
-                ApplySplits(new List<SplitEntry>(), mod);
                 RebuildCaches();
             }
             catch (Exception exception)
@@ -58,32 +57,12 @@ namespace OrderedWork
                 return;
             }
 
-            List<SplitEntry> splitEntries = new List<SplitEntry>();
-
             List<KeyValuePair<string, WorkTypeConfig>> ordered = profile.WorkTypes
                 .Where(e => e.Value != null)
                 .OrderBy(e => e.Value.Order)
                 .ToList();
 
-            foreach (KeyValuePair<string, WorkTypeConfig> entry in ordered)
-            {
-                WorkTypeConfig wt = entry.Value;
-                if (!wt.Vanilla)
-                {
-                    splitEntries.Add(new SplitEntry
-                    {
-                        newDefName = entry.Key,
-                        label = wt.Label,
-                        description = wt.Description,
-                        baseWorkType = wt.Base,
-                        givers = wt.Givers != null
-                            ? wt.Givers.Where(g => g != null).Select(g => g.DefName).Distinct().ToList()
-                            : new List<string>()
-                    });
-                }
-            }
-
-            ApplySplits(splitEntries, mod);
+            EnsureSplitWorkTypes(ordered, mod);
 
             int workOrder = 0;
             foreach (KeyValuePair<string, WorkTypeConfig> entry in ordered)
@@ -137,35 +116,39 @@ namespace OrderedWork
             OrderedWork.Services.WorkOrderService.InvalidateAvailableWorkTypes();
         }
 
-        private static void ApplySplits(IEnumerable<SplitEntry> splitEntries, OrderedWorkMod mod)
+        private static void EnsureSplitWorkTypes(
+            IEnumerable<KeyValuePair<string, WorkTypeConfig>> ordered,
+            OrderedWorkMod mod)
         {
-            foreach (SplitEntry split in splitEntries)
+            foreach (KeyValuePair<string, WorkTypeConfig> entry in ordered)
             {
-                if (split == null || string.IsNullOrWhiteSpace(split.newDefName)
-                    || string.IsNullOrWhiteSpace(split.baseWorkType)
-                    || split.givers == null || split.givers.Count == 0)
+                WorkTypeConfig split = entry.Value;
+                if (split == null || split.Vanilla || string.IsNullOrWhiteSpace(entry.Key)
+                    || string.IsNullOrWhiteSpace(split.Base)
+                    || split.Givers == null || split.Givers.Count == 0)
                 {
                     continue;
                 }
-                if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(split.newDefName) != null)
+                if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(entry.Key) != null)
                 {
                     continue;
                 }
-                WorkTypeDef baseDef = DefDatabase<WorkTypeDef>.GetNamedSilentFail(split.baseWorkType);
+                WorkTypeDef baseDef = DefDatabase<WorkTypeDef>.GetNamedSilentFail(split.Base);
                 if (baseDef == null)
                 {
                     continue;
                 }
 
+                string label = string.IsNullOrWhiteSpace(split.Label) ? entry.Key : split.Label;
                 WorkTypeDef def = new WorkTypeDef
                 {
-                    defName = split.newDefName,
-                    labelShort = split.label ?? split.newDefName,
-                    pawnLabel = split.label ?? split.newDefName,
-                    gerundLabel = split.label ?? split.newDefName,
-                    description = string.IsNullOrWhiteSpace(split.description)
+                    defName = entry.Key,
+                    labelShort = label,
+                    pawnLabel = label,
+                    gerundLabel = label,
+                    description = string.IsNullOrWhiteSpace(split.Description)
                         ? "Split from " + baseDef.labelShort
-                        : split.description,
+                        : split.Description,
                     verb = baseDef.verb,
                     naturalPriority = baseDef.naturalPriority,
                     alwaysStartActive = baseDef.alwaysStartActive,
@@ -182,9 +165,9 @@ namespace OrderedWork
                 CopyLifeStageAndMech(def, baseDef);
                 CopyTraitWorkTypeReferences(def, baseDef);
 
-                foreach (string giverName in split.givers)
+                foreach (GiverConfig giverConfig in split.Givers.Where(g => g != null))
                 {
-                    WorkGiverDef giver = DefDatabase<WorkGiverDef>.GetNamedSilentFail(giverName);
+                    WorkGiverDef giver = DefDatabase<WorkGiverDef>.GetNamedSilentFail(giverConfig.DefName);
                     if (giver != null)
                     {
                         giver.workType = def;
@@ -193,7 +176,6 @@ namespace OrderedWork
                 def.PostLoad();
             }
         }
-
         private static void CopyLifeStageAndMech(WorkTypeDef newDef, WorkTypeDef baseDef)
         {
             foreach (ThingDef thingDef in DefDatabase<ThingDef>.AllDefsListForReading)
