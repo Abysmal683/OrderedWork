@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.59] - 2026-11-16
+
+### Fixed
+- Order source still had the conditional `changed && Widgets.ButtonText`; replaced with the same unconditional `DrawActionButton` used by Split/Merge. Buttons are now visible dark-disabled and hard non-clickable.
+- Order dirty is recomputed as `!draft.SequenceEqual(lastApplied)`, so returning to the last saved order disables Apply/Cancel again.
+- Order left side now uses the last-applied baseline; after Apply it refreshes to the new order.
+- Restore now removes the original giver from other profile WorkTypes and reassigns the live `WorkGiverDef.workType` before applying.
+- Delete split does the same reciprocal cleanup.
+- Added `[OrderedWork][Order] applied` and `[OrderedWork][Reset]` logs.
+
 ## [0.3.0-alpha.58] - 2026-11-16
 
 ### Fixed
