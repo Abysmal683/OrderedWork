@@ -13,8 +13,7 @@ namespace OrderedWork.UI
     /// </summary>
     public class Dialog_WorkControlDetails : Window
     {
-        private const float PassionIconSize = 14f;
-
+        
         private readonly Pawn pawn;
         private Vector2 scroll;
 
@@ -82,7 +81,7 @@ namespace OrderedWork.UI
                 {
                     foreach (SkillRecord skill in topSkills)
                     {
-                        WorkTypePaletteView.DrawPassionIcon(new Rect(4f, y + 4f, PassionIconSize, PassionIconSize), skill.passion);
+                        WorkTypePaletteView.DrawPassionIcon(new Rect(4f, y + 4f, WorkTypePaletteView.PassionIconSize, WorkTypePaletteView.PassionIconSize), skill.passion);
                         Widgets.Label(new Rect(20f, y, scrollContent.width - 20f, 20f),
                             skill.def.label + ": " + skill.Level);
                         y += 20f;
@@ -128,7 +127,7 @@ namespace OrderedWork.UI
 
                         Widgets.Label(new Rect(0f, y, rankWidth, 18f), (i + 1).ToString());
                         Widgets.Label(new Rect(rankWidth, y, nameWidth, 18f), WorkTypePaletteView.DisplayName(workType));
-                        WorkTypePaletteView.DrawPassionIcon(new Rect(rankWidth + nameWidth, y + 3f, PassionIconSize, PassionIconSize), passion);
+                        WorkTypePaletteView.DrawPassionIcon(new Rect(rankWidth + nameWidth, y + 3f, WorkTypePaletteView.PassionIconSize, WorkTypePaletteView.PassionIconSize), passion);
                         Widgets.Label(new Rect(rankWidth + nameWidth + 16f, y, skillWidth - 16f, 18f), levelText);
                         Widgets.Label(new Rect(rankWidth + nameWidth + skillWidth, y, statusWidth, 18f), status);
                         y += 20f;

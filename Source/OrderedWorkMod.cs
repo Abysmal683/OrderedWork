@@ -21,6 +21,11 @@ namespace OrderedWork
         private string mergeTarget = "";
         private string selectedGiverType = "";
 
+        private int dragKind;
+        private int dragIndex = -1;
+        private float dragStartMouseY;
+        private bool dragMoved;
+
         public OrderedWorkMod(ModContentPack content) : base(content)
         {
             Settings = GetSettings<OrderedWorkSettings>();
@@ -57,29 +62,18 @@ namespace OrderedWork
                 "Adds 60 visual-only WorkTypes to test the palette's own horizontal scrollbar. They cannot be dragged or assigned.");
             list.Gap(6f);
 
-            list.Label("Work type order (top = first):");
+            list.Label("Work type order (top = first). Drag rows to reorder:");
+            List<Rect> workRows = new List<Rect>();
             for (int i = 0; i < Settings.workTypeOrder.Count; i++)
             {
                 string defName = Settings.workTypeOrder[i];
                 WorkTypeDef wt = DefDatabase<WorkTypeDef>.GetNamedSilentFail(defName);
                 string label = wt != null ? wt.labelShort : defName;
                 Rect row = list.GetRect(24f);
-                Widgets.Label(new Rect(row.x, row.y, row.width - 130f, 24f), (i + 1) + ". " + label);
-                if (i > 0 && Widgets.ButtonText(new Rect(row.xMax - 125f, row.y, 60f, 24f), "Up"))
-                {
-                    string tmp = Settings.workTypeOrder[i - 1];
-                    Settings.workTypeOrder[i - 1] = Settings.workTypeOrder[i];
-                    Settings.workTypeOrder[i] = tmp;
-                    break;
-                }
-                if (i < Settings.workTypeOrder.Count - 1 && Widgets.ButtonText(new Rect(row.xMax - 60f, row.y, 60f, 24f), "Down"))
-                {
-                    string tmp = Settings.workTypeOrder[i + 1];
-                    Settings.workTypeOrder[i + 1] = Settings.workTypeOrder[i];
-                    Settings.workTypeOrder[i] = tmp;
-                    break;
-                }
+                DrawReorderRow(row, i + 1 + ". " + label, 1, i);
+                workRows.Add(row);
             }
+            HandleReorderDrag(1, workRows, MoveWorkType);
 
             list.Gap(10f);
             list.Label("Giver order (top = first) for one work type:");
@@ -102,22 +96,21 @@ namespace OrderedWork
                     .Where(g => g.workType != null && g.workType.defName == selectedGiverType)
                     .OrderByDescending(g => g.priorityInType)
                     .ToList();
+                List<Rect> giverRows = new List<Rect>();
                 for (int i = 0; i < givers.Count; i++)
                 {
                     WorkGiverDef giver = givers[i];
                     Rect row = list.GetRect(24f);
-                    Widgets.Label(new Rect(row.x, row.y, row.width - 130f, 24f), (i + 1) + ". " + giver.defName);
-                    if (i > 0 && Widgets.ButtonText(new Rect(row.xMax - 125f, row.y, 60f, 24f), "Up"))
-                    {
-                        MoveGiver(selectedGiverType, givers, i, -1);
-                        break;
-                    }
-                    if (i < givers.Count - 1 && Widgets.ButtonText(new Rect(row.xMax - 60f, row.y, 60f, 24f), "Down"))
-                    {
-                        MoveGiver(selectedGiverType, givers, i, 1);
-                        break;
-                    }
+                    DrawReorderRow(row, i + 1 + ". " + giver.defName, 2, i);
+                    giverRows.Add(row);
                 }
+                HandleReorderDrag(2, giverRows, (from, to) =>
+                {
+                    WorkGiverDef item = givers[from];
+                    givers.RemoveAt(from);
+                    givers.Insert(Mathf.Clamp(to, 0, givers.Count), item);
+                    CommitGiverOrder(selectedGiverType, givers);
+                });
             }
 
             list.Gap(10f);
@@ -172,6 +165,99 @@ namespace OrderedWork
             list.Label("No work type or giver is ever deleted. Back up your save before applying.");
             list.End();
             Widgets.EndScrollView();
+        }
+
+        private void DrawReorderRow(Rect row, string label, int kind, int index)
+        {
+            if ((dragKind == kind && dragIndex == index) || Mouse.IsOver(row))
+            {
+                Widgets.DrawHighlight(row);
+            }
+            Widgets.LabelEllipses(new Rect(row.x + 4f, row.y, row.width - 30f, row.height), label);
+            Widgets.Label(new Rect(row.xMax - 24f, row.y, 20f, row.height), "≡");
+        }
+
+        private void HandleReorderDrag(int kind, List<Rect> rows, Action<int, int> move)
+        {
+            Event current = Event.current;
+            if (current.type == EventType.MouseDown && current.button == 0)
+            {
+                for (int i = 0; i < rows.Count; i++)
+                {
+                    if (rows[i].Contains(current.mousePosition))
+                    {
+                        dragKind = kind;
+                        dragIndex = i;
+                        dragStartMouseY = current.mousePosition.y;
+                        dragMoved = false;
+                        current.Use();
+                        return;
+                    }
+                }
+            }
+
+            if (dragKind != kind || dragIndex < 0)
+            {
+                return;
+            }
+
+            if (current.type == EventType.MouseDrag)
+            {
+                if (!dragMoved && Mathf.Abs(current.mousePosition.y - dragStartMouseY) > 4f)
+                {
+                    dragMoved = true;
+                }
+                if (dragMoved)
+                {
+                    for (int i = 0; i < rows.Count; i++)
+                    {
+                        if (i != dragIndex && rows[i].Contains(current.mousePosition))
+                        {
+                            move(dragIndex, i);
+                            dragIndex = i;
+                            break;
+                        }
+                    }
+                    current.Use();
+                }
+            }
+            else if (current.type == EventType.MouseUp)
+            {
+                dragKind = 0;
+                dragIndex = -1;
+                current.Use();
+            }
+        }
+
+        private void MoveWorkType(int from, int to)
+        {
+            List<string> order = Settings.workTypeOrder;
+            if (from < 0 || from >= order.Count || to < 0 || to >= order.Count || from == to)
+            {
+                return;
+            }
+            string item = order[from];
+            order.RemoveAt(from);
+            order.Insert(to, item);
+        }
+
+        private void CommitGiverOrder(string workType, List<WorkGiverDef> givers)
+        {
+            for (int i = 0; i < givers.Count; i++)
+            {
+                givers[i].priorityInType = givers.Count - i;
+            }
+
+            Settings.giverOrder.RemoveAll(e => e.workType == workType);
+            for (int i = 0; i < givers.Count; i++)
+            {
+                Settings.giverOrder.Add(new GiverOrderEntry
+                {
+                    workType = workType,
+                    giver = givers[i].defName,
+                    order = i
+                });
+            }
         }
 
         private void ApplyTestDenseRank()

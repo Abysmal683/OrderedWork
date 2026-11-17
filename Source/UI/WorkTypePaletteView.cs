@@ -23,8 +23,14 @@ namespace OrderedWork.UI
         internal const float ChipGap = 3f;
         internal const int Rows = 3;
 
-        private const float PassionIconSize = 14f;
+        // Shared by lane cards, the drag card and Details; change once here.
+        internal const float PassionIconSize = 14f;
         private const float HeldCardWidth = 180f;
+
+        // Shared by the vanilla fallback and the VSE/Alpha gray-icon fallback.
+        private static readonly Color MinorPassionTint = new Color(1f, 0.86f, 0.30f, 1f);
+        private static readonly Color MajorPassionTint = new Color(1f, 0.55f, 0.12f, 1f);
+        private static readonly Color DisabledPassionTint = new Color(0.55f, 0.55f, 0.55f, 1f);
 
         /// <summary>Texture + tint for a passion icon; Texture is null when no icon should be drawn.</summary>
         internal struct PassionVisual
@@ -44,12 +50,23 @@ namespace OrderedWork.UI
                 && type.defName.StartsWith("OWDebugPalette_", StringComparison.Ordinal);
         }
 
+        private static List<WorkTypeDef> debugPaletteTypes;
+        private static int debugPaletteTypeCount;
+
         internal static List<WorkTypeDef> BuildDebugPaletteTypes(int count)
         {
-            List<WorkTypeDef> result = new List<WorkTypeDef>();
+            // Called every frame while the stress setting is on; build the visual-only
+            // defs once so the debug toggle cannot allocate 60 objects per repaint.
+            if (debugPaletteTypes != null && debugPaletteTypeCount == count)
+            {
+                return debugPaletteTypes;
+            }
+
+            debugPaletteTypes = new List<WorkTypeDef>();
+            debugPaletteTypeCount = count;
             for (int i = 1; i <= count; i++)
             {
-                result.Add(new WorkTypeDef
+                debugPaletteTypes.Add(new WorkTypeDef
                 {
                     defName = "OWDebugPalette_" + i,
                     label = "Debug Work " + i,
@@ -59,7 +76,7 @@ namespace OrderedWork.UI
                     visible = true
                 });
             }
-            return result;
+            return debugPaletteTypes;
         }
 
         internal static string DisplayName(WorkTypeDef type)
@@ -441,11 +458,11 @@ namespace OrderedWork.UI
         {
             if (passion == Passion.Major)
             {
-                return new Color(1f, 0.55f, 0.12f, 1f);
+                return MajorPassionTint;
             }
             if (passion == Passion.Minor)
             {
-                return new Color(1f, 0.86f, 0.30f, 1f);
+                return MinorPassionTint;
             }
             return Color.white;
         }
@@ -608,11 +625,11 @@ namespace OrderedWork.UI
             switch (colorName)
             {
                 case "Minor":
-                    return new Color(1f, 0.86f, 0.30f, 1f);
+                    return MinorPassionTint;
                 case "Major":
-                    return new Color(1f, 0.55f, 0.12f, 1f);
+                    return MajorPassionTint;
                 case "Disabled":
-                    return new Color(0.55f, 0.55f, 0.55f, 1f);
+                    return DisabledPassionTint;
                 case "Main":
                 default:
                     return Color.white;

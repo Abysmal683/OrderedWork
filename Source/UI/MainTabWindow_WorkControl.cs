@@ -28,7 +28,7 @@ namespace OrderedWork.UI
         private const float CardGap = 4f;
         private const float LeftColumnMin = 160f;
         private const float LeftColumnMax = 260f;
-        private const float PassionIconSize = 14f;
+        private const int DebugPaletteTypeCount = 60;
 
         private Vector2 gridScroll;
         private Vector2 paletteScroll;
@@ -109,7 +109,7 @@ namespace OrderedWork.UI
                 .ToList();
             if (OrderedWorkMod.Settings != null && OrderedWorkMod.Settings.paletteStressTest)
             {
-                paletteTypes.AddRange(WorkTypePaletteView.BuildDebugPaletteTypes(60));
+                paletteTypes.AddRange(WorkTypePaletteView.BuildDebugPaletteTypes(DebugPaletteTypeCount));
             }
             bool autoHide = OrderedWorkMod.Settings == null || OrderedWorkMod.Settings.autoHideScrollbars;
             bool showPaletteScrollbar = !autoHide
@@ -128,7 +128,7 @@ namespace OrderedWork.UI
                 BeginPaletteDrag);
 
             // Search row below the palette, above the matrix.
-            DrawSearchRow(searchY, inRect.x, inRect.y);
+            DrawSearchRow(searchY);
 
             bool filtering = !string.IsNullOrWhiteSpace(searchText) || ScopeFiltersLine;
             List<Pawn> colonists = allColonists
@@ -259,7 +259,7 @@ namespace OrderedWork.UI
             DrawHeldCard();
         }
 
-        private void DrawSearchRow(float searchY, float originX, float originY)
+        private void DrawSearchRow(float searchY)
         {
             float x = Pad;
             Widgets.Label(new Rect(x, searchY, 40f, SearchHeight), "Pawn");
@@ -274,9 +274,7 @@ namespace OrderedWork.UI
                 : (workFilter != null ? WorkTypePaletteView.DisplayName(workFilter) : workFilterText);
             if (Widgets.ButtonText(workButton, workLabel))
             {
-                Find.WindowStack.Add(new WorkTypeComboWindow(
-                    this,
-                    new Rect(originX + workButton.x, originY + workButton.y, workButton.width, workButton.height)));
+                Find.WindowStack.Add(new WorkTypeComboWindow(this));
             }
             if (Mouse.IsOver(workButton))
             {
@@ -443,19 +441,17 @@ namespace OrderedWork.UI
         {
             private const float RowHeight = 24f;
             private const int MaxVisibleRows = 10;
-            private const float BarWidth = 12f;
+            private const float BarWidth = WorkGridScrollView.Thickness;
 
             private readonly MainTabWindow_WorkControl owner;
-            private readonly Rect anchor;
             private Vector2 scroll;
             private bool draggingBar;
             private float barDragStartMouse;
             private float barDragStartScroll;
 
-            public WorkTypeComboWindow(MainTabWindow_WorkControl owner, Rect anchor)
+            public WorkTypeComboWindow(MainTabWindow_WorkControl owner)
             {
                 this.owner = owner;
-                this.anchor = anchor;
                 doCloseX = true;
                 closeOnClickedOutside = true;
                 absorbInputAroundWindow = true;
@@ -465,34 +461,6 @@ namespace OrderedWork.UI
             public override Vector2 InitialSize
             {
                 get { return new Vector2(260f, (MaxVisibleRows + 1) * RowHeight + 36f); }
-            }
-
-            protected override void SetInitialSizeAndPosition()
-            {
-                PlaceUnderAnchor();
-            }
-
-            public override void PostOpen()
-            {
-                base.PostOpen();
-                // WindowStack may adjust/round a window after PreOpen; re-apply the anchor once.
-                PlaceUnderAnchor();
-            }
-
-            private void PlaceUnderAnchor()
-            {
-                Vector2 size = InitialSize;
-                float x = Mathf.Clamp(anchor.x, 0f, Mathf.Max(0f, Verse.UI.screenWidth - size.x));
-                float y = anchor.yMax + 6f;
-                if (y + size.y > Verse.UI.screenHeight)
-                {
-                    // Not enough room below the Work button; open above it instead.
-                    y = anchor.y - size.y - 6f;
-                }
-                y = Mathf.Clamp(y, 0f, Mathf.Max(0f, Verse.UI.screenHeight - size.y));
-                windowRect = new Rect(x, y, size.x, size.y);
-                Log.Message("[OrderedWork][Combo] anchor=" + anchor + " window=" + windowRect
-                    + " screen=" + Verse.UI.screenWidth + "x" + Verse.UI.screenHeight);
             }
 
             public override void DoWindowContents(Rect inRect)
@@ -1030,9 +998,9 @@ namespace OrderedWork.UI
                 if (visual.Texture != null)
                 {
                     WorkTypePaletteView.DrawPassionIcon(
-                        new Rect(x, cardRect.y + (cardRect.height - PassionIconSize) / 2f, PassionIconSize, PassionIconSize),
+                        new Rect(x, cardRect.y + (cardRect.height - WorkTypePaletteView.PassionIconSize) / 2f, WorkTypePaletteView.PassionIconSize, WorkTypePaletteView.PassionIconSize),
                         visual);
-                    x += PassionIconSize + 2f;
+                    x += WorkTypePaletteView.PassionIconSize + 2f;
                 }
 
                 GameFont previousFont = Text.Font;

@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.18] - 2026-11-16
+
+### Changed
+- Work combo now uses RimWorld's natural centered `Window` position instead of a custom anchor; the `Filter Work` title remains. Removed the temporary `[OrderedWork][Combo]` placement log.
+- Mod Settings work-type order and per-work-type WorkGiver order are now **vertical drag-and-drop stacks** with a `≡` handle; the old Up/Down buttons are gone. Reordering givers rewrites `priorityInType` and the saved `giverOrder` entries.
+- Shared values with multiple dependents are centralized: `PassionIconSize` (lane/drag/Details), the three passion fallback tints, the dropdown bar width (same as the matrix scrollbar), and the debug palette count. Debug palette defs are cached instead of being rebuilt every frame.
+
 ## [0.3.0-alpha.17] - 2026-11-16
 
 ### Fixed
