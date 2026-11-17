@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.39] - 2026-11-16
+
+### Changed
+- Order reset now uses `WorkConfigDiff` against `reference.json`: modified WorkTypes are listed; vanilla entries use Restore, split entries use Delete. Reset writes the active profile to pending for the next restart.
+- Removed the legacy per-split/per-merge reset methods and their confirmation fields from the UI.
+- Created a `reset_test` profile and a `reference.json` generated from the closest available no-split capture for manual reset testing. The test profile is not selected automatically.
+
+### Remaining legacy
+- `OrderedWorkSettings.splits/merges/giverOrder/workTypeOrder` still feed the old editor and startup bridge; they are not the final source of truth yet.
+
 ## [0.3.0-alpha.38] - 2026-11-16
 
 ### Added
