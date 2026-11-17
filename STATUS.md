@@ -118,6 +118,29 @@ Version: `0.3.0-alpha.4`, installed. Build 0/0, 7/7 tests. Git `c15f8ef`, tag `v
 5. Optional: shift-drag marquee selection.
 6. Re-test both tabs, simple/manual, return button, drag palette, compact compatibility, save/load, respawn.
 
+## Alpha.10 test findings
+
+- Working: simple/manual modes, return button, portrait/hover, drag palette, invalid alert, ghost reorder, Recommend, search filter, regressions.
+- Log: no `[Ordered Work]` errors; many normal `Applied order` messages from palette multi-drop; no Harmony init failure.
+- Improvements requested:
+  - reduce portrait/name gap and ellipsis space;
+  - palette group in max 3 rows + horizontal slide, natural WorkType order;
+  - exact ghost placement/placeholder, tooltip suppressed while dragging, line ghost style matching palette;
+  - search row under palette with separate “search pawn” and “search work” (filter pawns with active WorkType);
+  - tighter fixed card width, hover full name, capitalization;
+  - tooltip: description, all WorkGivers, skill, pawn-specific override; palette ghost tooltip with description/global givers/compressed name/skill;
+  - prepare per-WorkType colors (future picker);
+  - clean componentized palette/ghost code.
+
+## Alpha.11 open questions
+
+1. Search work: single WorkType selector or text filtering multiple WorkTypes? Combined with search pawn by AND?
+2. Palette 3 rows: three horizontal rows of chips, or max three items per row? Natural order fill direction?
+3. Exact ghost insertion: before/after based on cursor half over target card? Placeholder empty vs translucent held card?
+4. “WorkGiverDef override linked to pawn”: should the lane tooltip show global WorkGivers plus the pawn’s current rank, or do you expect per-pawn per-WorkGiver overrides (not implemented yet)?
+5. Colors: only prepare data/default palette now, or also add a picker UI?
+
+
 
 
 
