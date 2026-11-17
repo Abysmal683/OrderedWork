@@ -3,6 +3,17 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.46] - 2026-11-16
+
+### Fixed
+- Split defName generation now checks hidden `DefDatabase` defs too, so reusing a name after delete cannot silently skip creating the new split.
+- Delete split returns givers to the base in the reference's original giver order, avoiding the “base remains changed” false reset.
+- Added an explicit Rules-wide `Confirm WorkType order and write pending` action for order edits.
+- All profile JSON was cleaned for a fresh startup reference; active fallback now persists default/vanilla resolution.
+
+### Note
+- Order editing still uses the drag list, not the requested origin/destination confirmation screen; the explicit confirm button is the interim guard. The two-column order comparison is the next UI pass.
+
 ## [0.3.0-alpha.45] - 2026-11-16
 
 ### Fixed

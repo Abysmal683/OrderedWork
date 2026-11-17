@@ -192,6 +192,15 @@ namespace OrderedWork
                 workRows.Add(row);
             }
             HandleReorderDrag(1, workRows, MoveWorkType);
+            if (list.ButtonText("Confirm WorkType order and write pending"))
+            {
+                PersistLivePending();
+                profileStatus = "WorkType order written to pending.";
+            }
+            if (!string.IsNullOrEmpty(profileStatus))
+            {
+                list.Label(profileStatus);
+            }
 
             list.Gap(14f);
             DrawSplitMergeEditor(list);
@@ -1506,7 +1515,8 @@ namespace OrderedWork
 
             int suffix = Settings.splits.Count + 1;
             string defName = "OrderedWork_" + baseName + "_" + suffix;
-            while (Settings.splits.Any(s => s != null && s.newDefName == defName))
+            while (Settings.splits.Any(s => s != null && s.newDefName == defName)
+                || DefDatabase<WorkTypeDef>.GetNamedSilentFail(defName) != null)
             {
                 suffix++;
                 defName = "OrderedWork_" + baseName + "_" + suffix;
