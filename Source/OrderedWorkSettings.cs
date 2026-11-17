@@ -16,6 +16,7 @@ namespace OrderedWork
         public bool autoHideScrollbars = true;
         public bool paletteStressTest;
         public bool keepDestroyedPawnOrders;
+        public bool allowEmptyOrigin;
         public float workControlHeight;
         public List<WorkTypeColorEntry> workTypeColors = new List<WorkTypeColorEntry>();
 
@@ -31,6 +32,7 @@ namespace OrderedWork
             Scribe_Values.Look(ref autoHideScrollbars, "autoHideScrollbars", true);
             Scribe_Values.Look(ref paletteStressTest, "paletteStressTest", false);
             Scribe_Values.Look(ref keepDestroyedPawnOrders, "keepDestroyedPawnOrders", false);
+            Scribe_Values.Look(ref allowEmptyOrigin, "allowEmptyOrigin", false);
             Scribe_Values.Look(ref workControlHeight, "workControlHeight", 0f);
             Scribe_Collections.Look(ref workTypeColors, "workTypeColors", LookMode.Deep);
 

@@ -82,12 +82,10 @@ namespace OrderedWork
         private bool dragMoved;
         private bool confirmResetAll;
         private bool confirmResetOrder;
-        private bool splitAllowEmptyOrigin;
         private string activeProfileName = "default";
         private string newProfileName = "";
         private bool profileNameInitialized;
         private string profileStatus = "";
-        private bool mergeAllowEmptyOrigin;
 
         public OrderedWorkMod(ModContentPack content) : base(content)
         {
@@ -176,6 +174,10 @@ namespace OrderedWork
 
             list.Label("Ordered Work (Core) - changes apply on restart.");
             list.Label("Split copies work tags, skills, life stages and mech availability.");
+            list.CheckboxLabeled(
+                "Allow empty origin (Rules-wide)",
+                ref Settings.allowEmptyOrigin,
+                "Applies to both Split and Merge. Vanilla origins hide; splits delete. Disable to require at least one giver left in the origin.");
             list.Gap(6f);
 
             list.Label("Work type order (top = first). Drag rows to reorder:");
@@ -443,10 +445,6 @@ namespace OrderedWork
 
             DrawGiverColumn(left, originNames, draftSet, true, false, ref splitOriginScroll, "(in split)", 1);
             DrawGiverColumn(right, splitDraft, draftSet, false, false, ref splitDraftScroll, null, 2);
-            list.CheckboxLabeled(
-                "Allow empty origin",
-                ref splitAllowEmptyOrigin,
-                "If the split takes every origin giver, the origin may be left empty. This is the explicit confirmation.");
 
             string warning = SplitValidationWarning();
             DrawSplitMergeActions(list, "Add split", warning,
@@ -513,10 +511,6 @@ namespace OrderedWork
 
             DrawGiverColumn(left, originNames, draftSet, true, true, ref mergeOriginScroll, "(in merge)", 1);
             DrawMergeDestinationColumn(right, existingTarget, mergeDraft, ref mergeTargetScroll);
-            list.CheckboxLabeled(
-                "Allow empty origin",
-                ref mergeAllowEmptyOrigin,
-                "Merge all/selected may empty the origin. This is the explicit confirmation; vanilla origins are hidden rather than deleted.");
 
             if (smDragSide == 2 && smDragMergeMode && smDragMoved && smMergeDropIndex >= 0)
             {
@@ -1160,7 +1154,7 @@ namespace OrderedWork
                 return "Drag at least one origin giver into Split destination.";
             }
             List<WorkGiverDef> originGivers = GiversForWorkType(splitOrigin);
-            if (!splitAllowEmptyOrigin && originGivers.Count > 0 && splitDraft.Count >= originGivers.Count)
+            if (!Settings.allowEmptyOrigin && originGivers.Count > 0 && splitDraft.Count >= originGivers.Count)
             {
                 return "This split would leave the origin empty. Leave at least one giver or enable 'Allow empty origin'.";
             }
@@ -1195,7 +1189,7 @@ namespace OrderedWork
                 {
                     return "Origin work type has no givers to move.";
                 }
-                if (!mergeAllowEmptyOrigin)
+                if (!Settings.allowEmptyOrigin)
                 {
                     return "Merge all would leave the origin empty. Enable 'Allow empty origin' to confirm.";
                 }
@@ -1205,7 +1199,7 @@ namespace OrderedWork
             {
                 return "Drag at least one origin giver into Merge destination.";
             }
-            if (!mergeAllowEmptyOrigin && mergeDraft.Count >= originGivers.Count)
+            if (!Settings.allowEmptyOrigin && mergeDraft.Count >= originGivers.Count)
             {
                 return "Merge selected would leave the origin empty. Enable 'Allow empty origin' to confirm.";
             }

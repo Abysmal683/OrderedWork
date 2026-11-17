@@ -3,7 +3,12 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [0.3.0-alpha.41] - 2026-11-16
+## [0.3.0-alpha.42] - 2026-11-16
+
+### Changed
+- `Allow empty origin` is now a single Rules-wide checkbox in the Rules tab, persisted in settings; the Split/Merge-local duplicates were removed. Both validators use the same setting.
+
+
 
 ### Changed
 - Removed the old informational saved-split/saved-merge lists from the Split and Merge sheets. Reset/change management lives only in Order.
