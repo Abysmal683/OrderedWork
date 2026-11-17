@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.33] - 2026-11-16
+
+### Added
+- Verified Core WorkGiver identity: no duplicate `defName`s; repeated giver classes and equal priorities are intentional and must not be deduplicated.
+- General setting `Keep orders for destroyed pawns`, default off. Cleanup still keeps dead-but-not-destroyed pawns for resurrection; destroyed entries are removed unless the setting is enabled for return-mod compatibility.
+- `SAVE_DESIGN.md` now documents giver identity, destroyed-pawn cleanup and the future global→per-save profile fallback.
+
 ## [0.3.0-alpha.32] - 2026-11-16
 
 ### Fixed

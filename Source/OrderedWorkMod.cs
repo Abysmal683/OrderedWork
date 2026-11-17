@@ -212,6 +212,10 @@ namespace OrderedWork
                 "Palette stress test (debug)",
                 ref Settings.paletteStressTest,
                 "Adds 60 visual-only WorkTypes to test the palette's own horizontal scrollbar. They cannot be dragged or assigned.");
+            list.CheckboxLabeled(
+                "Keep orders for destroyed pawns",
+                ref Settings.keepDestroyedPawnOrders,
+                "Off: remove the pawn entry when the game no longer remembers it. On: keep it for mods that can return fully deleted pawns.");
 
             list.Gap(12f);
             list.Label("Technical spike: writes dense rank 1..N to free colonists and logs the result.");

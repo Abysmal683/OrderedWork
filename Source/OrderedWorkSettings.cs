@@ -15,6 +15,7 @@ namespace OrderedWork
         public bool autoRecommendNewColony = true;
         public bool autoHideScrollbars = true;
         public bool paletteStressTest;
+        public bool keepDestroyedPawnOrders;
         public float workControlHeight;
         public List<WorkTypeColorEntry> workTypeColors = new List<WorkTypeColorEntry>();
 
@@ -29,6 +30,7 @@ namespace OrderedWork
             Scribe_Values.Look(ref autoRecommendNewColony, "autoRecommendNewColony", true);
             Scribe_Values.Look(ref autoHideScrollbars, "autoHideScrollbars", true);
             Scribe_Values.Look(ref paletteStressTest, "paletteStressTest", false);
+            Scribe_Values.Look(ref keepDestroyedPawnOrders, "keepDestroyedPawnOrders", false);
             Scribe_Values.Look(ref workControlHeight, "workControlHeight", 0f);
             Scribe_Collections.Look(ref workTypeColors, "workTypeColors", LookMode.Deep);
 

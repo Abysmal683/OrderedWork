@@ -114,10 +114,12 @@ namespace OrderedWork.Data
             {
                 return;
             }
+            bool keepDestroyed = OrderedWorkMod.Settings != null
+                && OrderedWorkMod.Settings.keepDestroyedPawnOrders;
             entries.RemoveAll(e =>
                 e == null ||
                 e.pawn == null ||
-                e.pawn.Destroyed);
+                (!keepDestroyed && e.pawn.Destroyed));
         }
 
         /// <summary>
