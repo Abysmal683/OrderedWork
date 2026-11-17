@@ -17,6 +17,7 @@ namespace OrderedWork.UI
 
         private static bool draggingVertical;
         private static bool draggingHorizontal;
+        private static object horizontalOwner;
         private static float dragStartMouseY;
         private static float dragStartScrollY;
         private static float dragStartMouseX;
@@ -114,12 +115,17 @@ namespace OrderedWork.UI
         }
 
         /// <summary>Consumes horizontal-bar input before the scroll view/content is drawn.</summary>
-        internal static void HandleHorizontal(Rect track, Rect viewport, Rect content, ref Vector2 scroll)
+        internal static void HandleHorizontal(Rect track, Rect viewport, Rect content, ref Vector2 scroll, object owner)
         {
             float max = Mathf.Max(0f, content.width - viewport.width);
             if (max <= 0f || track.width <= 0f)
             {
-                draggingHorizontal = false;
+                // A non-overflowing palette bar must not cancel the matrix bar's drag.
+                if (ReferenceEquals(horizontalOwner, owner))
+                {
+                    draggingHorizontal = false;
+                    horizontalOwner = null;
+                }
                 return;
             }
 
@@ -134,12 +140,13 @@ namespace OrderedWork.UI
             if (current.type == EventType.MouseDown && current.button == 0 && Mouse.IsOver(thumb))
             {
                 draggingHorizontal = true;
+                horizontalOwner = owner;
                 dragStartMouseX = current.mousePosition.x;
                 dragStartScrollX = scroll.x;
                 lastScrollTime = Time.realtimeSinceStartup;
                 current.Use();
             }
-            else if (draggingHorizontal && current.type == EventType.MouseDrag)
+            else if (draggingHorizontal && ReferenceEquals(horizontalOwner, owner) && current.type == EventType.MouseDrag)
             {
                 float delta = current.mousePosition.x - dragStartMouseX;
                 float travel = track.width - thumb.width;
@@ -147,9 +154,10 @@ namespace OrderedWork.UI
                 lastScrollTime = Time.realtimeSinceStartup;
                 current.Use();
             }
-            else if (draggingHorizontal && current.type == EventType.MouseUp)
+            else if (draggingHorizontal && ReferenceEquals(horizontalOwner, owner) && current.type == EventType.MouseUp)
             {
                 draggingHorizontal = false;
+                horizontalOwner = null;
                 current.Use();
             }
             else if (current.type == EventType.MouseDown && current.button == 0 && Mouse.IsOver(track) && !Mouse.IsOver(thumb))

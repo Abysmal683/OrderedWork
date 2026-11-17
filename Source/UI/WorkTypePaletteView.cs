@@ -22,7 +22,7 @@ namespace OrderedWork.UI
         internal const float ChipGap = 3f;
         internal const int Rows = 3;
 
-        private const float PassionIconSize = 12f;
+        private const float PassionIconSize = 14f;
         private const float HeldCardWidth = 180f;
 
         /// <summary>Texture + tint for a passion icon; Texture is null when no icon should be drawn.</summary>
@@ -69,7 +69,7 @@ namespace OrderedWork.UI
             // Handle the bar before the scroll view so the content cannot eat its MouseDown.
             if (showScrollbar)
             {
-                WorkGridScrollView.HandleHorizontal(hTrack, viewport, content, ref scroll);
+                WorkGridScrollView.HandleHorizontal(hTrack, viewport, content, ref scroll, typeof(WorkTypePaletteView));
             }
 
             Widgets.BeginScrollView(viewport, ref scroll, content, false);
@@ -642,14 +642,29 @@ namespace OrderedWork.UI
             {
                 return null;
             }
+
+            // PassionDef extends Verse.Def; the inherited LabelCap is the reliable source.
+            Def def = passionDef as Def;
+            if (def != null && !string.IsNullOrEmpty(def.LabelCap))
+            {
+                return def.LabelCap;
+            }
+
             try
             {
                 PropertyInfo property = labelCapProperty ?? passionDef.GetType().GetProperty("LabelCap");
-                if (property == null)
+                if (property != null)
                 {
-                    return null;
+                    string labelCap = property.GetValue(passionDef, null) as string;
+                    if (!string.IsNullOrEmpty(labelCap))
+                    {
+                        return labelCap;
+                    }
                 }
-                return property.GetValue(passionDef, null) as string;
+
+                FieldInfo labelField = passionDef.GetType().GetField("label", BindingFlags.Public | BindingFlags.Instance);
+                string label = labelField != null ? labelField.GetValue(passionDef) as string : null;
+                return string.IsNullOrEmpty(label) ? null : label.CapitalizeFirst();
             }
             catch (Exception)
             {

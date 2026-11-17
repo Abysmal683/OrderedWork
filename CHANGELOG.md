@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.15] - 2026-11-16
+
+### Fixed
+- The matrix horizontal bar now keeps its drag when the palette bar has no overflow: palette and matrix horizontal drags use separate owners, so the palette no longer cancels the matrix drag every frame.
+- The Work combo opens 6 px below its button with a `Filter Work` title; `Any` is shown only while a Work filter is active, and the selected WorkType remains excluded.
+- The `Filter: Line/Palette/Both` button is disabled until a Work filter is active; added a `Clear` button that resets Pawn search, Work filter, `Not`, and the filter scope.
+- VSE/Alpha Skills passion tooltips now use the inherited `Def.LabelCap` (with `label` fallback) instead of falling back to a numeric enum value; passion icons are 14 px.
+- Temporary scroll diagnostics now include the actual bar geometry and confirm the palette/matrix owner split.
+
 ## [0.3.0-alpha.14] - 2026-11-16
 
 ### Fixed

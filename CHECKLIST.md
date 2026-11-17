@@ -1,6 +1,6 @@
-# Work Control — Milestone 0.3.0-alpha.14 Checklist
+# Work Control — Milestone 0.3.0-alpha.15 Checklist
 
-Status: in progress — version 0.3.0-alpha.14. Bug-fix and polish iteration written: full-screen tab height, Work combo anchored under its button (clamped/flipped, selected WorkType excluded, `Any` first, 10 rows + thin bar), 3-state `Filter: Line/Palette/Both` scope (default Line) with exact WorkType matching, 135 px lane cards, shared natural + modded passion icon resolver (VSE/Alpha Skills soft reflection, vanilla fallback, `PassionDef.LabelCap` text), and scrollbar input split before the scroll view from drawing after it (`HandleVertical`/`HandleHorizontal` + temporary `[OrderedWork][Scroll]` MouseDown diagnostics). Build 0/0 and existing tests pass; runtime checks pending.
+Status: in progress — version 0.3.0-alpha.15. Bug-fix and polish iteration written: full-screen tab height, Work combo 6 px under its button with `Filter Work` title (clamped/flipped, selected WorkType excluded, `Any` only while filtering, 10 rows + thin bar), 3-state `Filter: Line/Palette/Both` scope (default Line, disabled until filtering) with exact WorkType matching and a `Clear` button, 135 px lane cards with 14 px passion icons, shared natural + modded passion icon resolver (VSE/Alpha Skills soft reflection, vanilla fallback, `Def.LabelCap` text), and scrollbar input split before the scroll view from drawing after it plus separate palette/matrix horizontal drag owners. Build 0/0 and existing tests pass; runtime checks pending.
 
 ## Alpha.14 fixed items
 

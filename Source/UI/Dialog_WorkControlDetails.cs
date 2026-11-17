@@ -13,7 +13,7 @@ namespace OrderedWork.UI
     /// </summary>
     public class Dialog_WorkControlDetails : Window
     {
-        private const float PassionIconSize = 12f;
+        private const float PassionIconSize = 14f;
 
         private readonly Pawn pawn;
         private Vector2 scroll;

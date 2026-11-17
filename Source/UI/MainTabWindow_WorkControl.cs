@@ -28,7 +28,7 @@ namespace OrderedWork.UI
         private const float CardGap = 4f;
         private const float LeftColumnMin = 160f;
         private const float LeftColumnMax = 260f;
-        private const float PassionIconSize = 12f;
+        private const float PassionIconSize = 14f;
 
         private Vector2 gridScroll;
         private Vector2 paletteScroll;
@@ -204,7 +204,7 @@ namespace OrderedWork.UI
             }
             if (showHorizontalScrollbar)
             {
-                WorkGridScrollView.HandleHorizontal(hTrack, laneViewport, laneContent, ref gridScroll);
+                WorkGridScrollView.HandleHorizontal(hTrack, laneViewport, laneContent, ref gridScroll, this);
             }
 
             Widgets.BeginScrollView(laneViewport, ref gridScroll, laneContent, false);
@@ -284,13 +284,37 @@ namespace OrderedWork.UI
             x += 68f;
 
             Rect scopeRect = new Rect(x, searchY, 118f, SearchHeight - 2f);
+            bool previousEnabled = GUI.enabled;
+            GUI.enabled = previousEnabled && WorkFilterActive;
             if (Widgets.ButtonText(scopeRect, "Filter: " + WorkFilterScopeLabel))
             {
                 workFilterScope = NextScope(workFilterScope);
             }
+            GUI.enabled = previousEnabled;
             if (Mouse.IsOver(scopeRect))
             {
                 TooltipHandler.TipRegion(scopeRect, "Where the Work filter applies: pawn rows, palette, or both");
+            }
+            x += 122f;
+
+            Rect clearRect = new Rect(x, searchY, 56f, SearchHeight - 2f);
+            bool canClear = !string.IsNullOrWhiteSpace(searchText)
+                || WorkFilterActive
+                || invertWorkFilter
+                || workFilterScope != WorkFilterScope.Line;
+            GUI.enabled = previousEnabled && canClear;
+            if (Widgets.ButtonText(clearRect, "Clear"))
+            {
+                searchText = "";
+                workFilterText = "";
+                workFilter = null;
+                invertWorkFilter = false;
+                workFilterScope = WorkFilterScope.Line;
+            }
+            GUI.enabled = previousEnabled;
+            if (Mouse.IsOver(clearRect))
+            {
+                TooltipHandler.TipRegion(clearRect, "Clear the Pawn and Work filters");
             }
         }
 
@@ -432,18 +456,18 @@ namespace OrderedWork.UI
 
             public override Vector2 InitialSize
             {
-                get { return new Vector2(260f, (MaxVisibleRows + 1) * RowHeight + 12f); }
+                get { return new Vector2(260f, (MaxVisibleRows + 1) * RowHeight + 36f); }
             }
 
             protected override void SetInitialSizeAndPosition()
             {
                 Vector2 size = InitialSize;
                 float x = Mathf.Clamp(anchor.x, 0f, Mathf.Max(0f, Verse.UI.screenWidth - size.x));
-                float y = anchor.yMax + 2f;
+                float y = anchor.yMax + 6f;
                 if (y + size.y > Verse.UI.screenHeight)
                 {
                     // Not enough room below the Work button; open above it instead.
-                    y = anchor.y - size.y - 2f;
+                    y = anchor.y - size.y - 6f;
                 }
                 y = Mathf.Clamp(y, 0f, Mathf.Max(0f, Verse.UI.screenHeight - size.y));
                 windowRect = new Rect(x, y, size.x, size.y);
@@ -451,30 +475,39 @@ namespace OrderedWork.UI
 
             public override void DoWindowContents(Rect inRect)
             {
-                // Any stays first; the currently selected WorkType is excluded from the list.
+                Widgets.Label(new Rect(0f, 0f, inRect.width, 22f), "Filter Work");
+
+                // Any only appears while a Work filter is active; the selected WorkType is excluded.
                 List<WorkTypeDef> matches = WorkOrderService.GetAvailableWorkTypes()
                     .Where(w => w != null && !owner.IsCurrentWorkFilter(w))
                     .ToList();
+                bool showAny = owner.WorkFilterActive;
 
-                Rect listOuter = new Rect(0f, 0f, inRect.width, inRect.height);
+                Rect listOuter = new Rect(0f, 24f, inRect.width, inRect.height - 24f);
                 Rect viewport = new Rect(listOuter.x, listOuter.y, listOuter.width - BarWidth, listOuter.height);
-                Rect content = new Rect(0f, 0f, viewport.width, Mathf.Max(viewport.height, (matches.Count + 1) * RowHeight));
+                int rows = matches.Count + (showAny ? 1 : 0);
+                Rect content = new Rect(0f, 0f, viewport.width, Mathf.Max(viewport.height, rows * RowHeight));
 
                 Widgets.BeginScrollView(viewport, ref scroll, content, false);
                 try
                 {
-                    Rect anyRect = new Rect(0f, 0f, viewport.width, RowHeight - 2f);
-                    if (Widgets.ButtonText(anyRect, "Any"))
+                    int rowIndex = 0;
+                    if (showAny)
                     {
-                        owner.workFilterText = "";
-                        owner.workFilter = null;
-                        Close(true);
+                        Rect anyRect = new Rect(0f, 0f, viewport.width, RowHeight - 2f);
+                        if (Widgets.ButtonText(anyRect, "Any"))
+                        {
+                            owner.workFilterText = "";
+                            owner.workFilter = null;
+                            Close(true);
+                        }
+                        rowIndex = 1;
                     }
 
                     for (int i = 0; i < matches.Count; i++)
                     {
                         WorkTypeDef workType = matches[i];
-                        Rect row = new Rect(0f, (i + 1) * RowHeight, viewport.width, RowHeight - 2f);
+                        Rect row = new Rect(0f, (i + rowIndex) * RowHeight, viewport.width, RowHeight - 2f);
                         if (Widgets.ButtonText(row, WorkTypePaletteView.DisplayName(workType)))
                         {
                             owner.workFilterText = workType.defName;
