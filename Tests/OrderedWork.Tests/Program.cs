@@ -25,6 +25,7 @@ namespace OrderedWork.Tests
             Run("RecommendationScorePolicy respects min level", TestScoreMinLevel);
             Run("RecommendationScorePolicy supports negative weights", TestScoreNegative);
             Run("RecommendationScorePolicy disables level-zero passion", TestScoreLevelZeroDisabled);
+            Run("RecommendationScorePolicy lets a bad slow passion grow", TestScoreBadSlowPassion);
 
             Console.WriteLine(failures == 0 ? "All tests passed." : failures + " test(s) failed.");
             return failures == 0 ? 0 : 1;
@@ -138,6 +139,13 @@ namespace OrderedWork.Tests
         {
             AssertEqual(-3, RecommendationScorePolicy.Score(0, true, 3, 4, 0, false));
             AssertEqual(10, RecommendationScorePolicy.Score(3, true, 3, 4, 0, false));
+        }
+
+        private static void TestScoreBadSlowPassion()
+        {
+            AssertEqual(-4, RecommendationScorePolicy.Score(0, true, -4, 1, 0, true));
+            AssertEqual(21, RecommendationScorePolicy.Score(10, true, -4, 1, 0, true));
+            AssertEqual(20, RecommendationScorePolicy.Score(10, false, -3, 0, 0, true));
         }
 
         private static void AssertSequence(IEnumerable<string> expected, IEnumerable<string> actual)

@@ -12,7 +12,7 @@ namespace OrderedWork.Services
     /// </summary>
     public static class PassionWeightPolicy
     {
-        private const int DefaultsVersion = 2;
+        private const int DefaultsVersion = 3;
 
         public static void EnsureDefaults(OrderedWorkSettings settings)
         {
@@ -123,6 +123,22 @@ namespace OrderedWork.Services
                 && entry.level0Score == 0
                 && entry.perLevelBonus == 0
                 && entry.minLevel == 0;
+        }
+
+        private static bool LooksLikePreviousDefault(PassionSource.PassionInfo info, PassionWeightEntry entry)
+        {
+            if (entry == null || entry.minLevel != 0)
+            {
+                return false;
+            }
+            float learnRate = PassionSource.LearnRateOf(info.Passion);
+            if (learnRate <= 0f)
+            {
+                return false;
+            }
+            int oldLevel0 = Mathf.Clamp(Mathf.RoundToInt(learnRate * 4f - 3f), -20, 20);
+            int oldPerLevel = Mathf.Clamp(Mathf.RoundToInt(learnRate * 4f - 2f), -20, 20);
+            return entry.level0Score == oldLevel0 && entry.perLevelBonus == oldPerLevel;
         }
 
         private static void ApplyWeights(PassionWeightEntry target, PassionWeightEntry source)

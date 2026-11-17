@@ -3,6 +3,17 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.95] - 2026-11-17
+
+### Adjusted — defaults for bad/slow passions
+- `learnRateFactor` remains the primary metric.
+- A custom passion below `None` (`learnRateFactor < 0.35`) or marked `isBad` starts at `-4` instead of `-2`.
+- Slow/bad customs get `perLevelBonus >= 1`, so they improve with level and can become competitive.
+- Vanilla `None/Minor/Major` defaults remain `-3/0/0`, `1/2/0`, `3/4/0`.
+- `PassionWeightPolicy` migration v3 updates only entries matching the previous automatic formula; player edits are preserved.
+- Added a test pinning the Apathy-style curve (`-4` at level 0, 21 at level 10 vs None 20).
+- Suite now 15/15.
+
 ## [0.3.0-alpha.94] - 2026-11-17
 
 ### Refactor — Work Control and order service

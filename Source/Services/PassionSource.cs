@@ -82,6 +82,28 @@ namespace OrderedWork.Services
             return string.IsNullOrEmpty(description) ? null : description;
         }
 
+        public static bool IsBadOf(Passion passion)
+        {
+            object def = GetVseDef(passion);
+            if (def == null)
+            {
+                return false;
+            }
+            object value = GetMember<object>(def, "isBad");
+            if (value == null)
+            {
+                return false;
+            }
+            try
+            {
+                return Convert.ToBoolean(value);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         public static float LearnRateOf(Passion passion)
         {
             object def = GetVseDef(passion);
