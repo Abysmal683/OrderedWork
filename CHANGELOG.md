@@ -3,7 +3,12 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [0.3.0-alpha.71] - 2026-11-16
+## [0.3.0-alpha.72] - 2026-11-16
+
+### Fixed
+- Added live-profile reconciliation: givers that exist only in live WorkGiverDefs (the Firefighter extra) are returned to their reference WorkType in the profile before Merge/Reset is rendered or saved.
+- Reset and Merge now operate on reconciled profile state, eliminating the one-step-behind UI.
+- This targets the order-dependent Restore Firefighter/Patient failure.
 
 ### Fixed
 - Active profile name is initialized at Mod Settings entry and by Order/Merge/Reset, not only when General was opened. This was why reset/merge logged profile=default while test_1 was selected and changes landed in the wrong profile.
