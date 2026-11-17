@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.57] - 2026-11-16
+
+### Fixed
+- Order Apply/Cancel finally use the same unconditional `DrawActionButton` pattern that Split/Merge already use. The previous conditional `changed && Widgets.ButtonText` removed the buttons entirely when unchanged.
+- Order buttons are now visible as dark disabled controls and are not clickable; dragging enables them.
+- Split/Merge disable behavior is unchanged and confirmed working by the user.
+
 ## [0.3.0-alpha.56] - 2026-11-16
 
 ### Fixed

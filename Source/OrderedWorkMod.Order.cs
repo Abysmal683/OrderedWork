@@ -79,11 +79,11 @@ namespace OrderedWork
             Rect buttons = list.GetRect(30f);
             float half = (buttons.width - 8f) * 0.5f;
             bool changed = giverOrderDirty;
-            if (changed && Widgets.ButtonText(new Rect(buttons.x, buttons.y, half, 28f), "Apply giver order"))
+            if (DrawActionButton(new Rect(buttons.x, buttons.y, half, 28f), "Apply giver order", changed))
             {
                 ApplyGiverOrderDraft(active.Profile);
             }
-            if (changed && Widgets.ButtonText(new Rect(buttons.x + half + 8f, buttons.y, half, 28f), "Cancel giver order"))
+            if (DrawActionButton(new Rect(buttons.x + half + 8f, buttons.y, half, 28f), "Cancel giver order", changed))
             {
                 giverOrderDraft = new List<string>(giverOrderInitial);
                 giverOrderDirty = false;
