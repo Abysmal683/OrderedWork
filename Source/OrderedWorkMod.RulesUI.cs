@@ -112,7 +112,8 @@ namespace OrderedWork
                 pinRows.Add(row);
             }
             HandleReorderDrag(6, pinRows, MoveRecommendationPin);
-            if (list.ButtonText("Add recommendation pin"))
+            Rect pinButtonRect = list.GetRect(24f);
+            if (Widgets.ButtonText(pinButtonRect, "Add recommendation pin"))
             {
                 List<WorkTypeDef> candidates = WorkConfigStore.GetOrderedVisibleWorkTypes(
                         WorkConfigStore.LoadEditingProfile(activeProfileName))
@@ -132,6 +133,33 @@ namespace OrderedWork
                             }
                         }));
                 }
+            }
+            TooltipHandler.TipRegion(
+                pinButtonRect,
+                "Default pins: Patient, PatientBedRest, Firefighter. Pins are global and applied in this order before scoring.");
+
+            list.Gap(10f);
+            list.Label("Recommendation passion weights (global). Level 0 / per level / min level:");
+            foreach (PassionWeightCatalog.PassionInfo info in PassionWeightCatalog.Registered)
+            {
+                PassionWeightEntry entry = PassionWeightCatalog.Find(Settings, info.Passion);
+                if (entry == null)
+                {
+                    continue;
+                }
+                Rect row = list.GetRect(26f);
+                Widgets.Label(new Rect(row.x, row.y, 150f, 24f), info.Label);
+                float fieldWidth = Mathf.Max(54f, (row.width - 150f - 24f) / 3f);
+                Widgets.TextFieldNumeric(new Rect(row.x + 154f, row.y, fieldWidth, 24f),
+                    ref entry.level0Score, ref entry.level0Buffer, -20, 20);
+                Widgets.TextFieldNumeric(new Rect(row.x + 158f + fieldWidth, row.y, fieldWidth, 24f),
+                    ref entry.perLevelBonus, ref entry.perLevelBuffer, -20, 20);
+                Widgets.TextFieldNumeric(new Rect(row.x + 162f + fieldWidth * 2f, row.y, fieldWidth, 24f),
+                    ref entry.minLevel, ref entry.minLevelBuffer, 0, 20);
+            }
+            if (list.ButtonText("Reset recommendation weights"))
+            {
+                PassionWeightCatalog.ResetToDefaults(Settings);
             }
 
             list.Gap(14f);

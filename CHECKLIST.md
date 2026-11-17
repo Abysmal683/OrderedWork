@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.81)
+# Ordered Work — Current Checklist (0.3.0-alpha.82)
 
 Status: architecture cleanup complete; build 0/0 and 7/7 tests pass. Runtime checks remain for the final profile-only path.
 
@@ -43,6 +43,9 @@ Status: architecture cleanup complete; build 0/0 and 7/7 tests pass. Runtime che
 - [x] Recommendation service reads the configured pins and policy.
 - [x] Verbose diagnostics setting; normal logs are silent.
 - [ ] Runtime recommendation test with different pawn skills/passions.
+- [x] Each registered passion exposes Level 0, per-level and minimum-level weights; negative weights supported.
+- [x] Default pins tooltip documents Patient/PatientBedRest/Firefighter.
+- [ ] Runtime test of modded passion weights (VSE/Alpha).
 - [ ] Decide whether each WorkType should also expose an individual weight or exclude toggle.
 
 ## Pending deep test after alpha.80'

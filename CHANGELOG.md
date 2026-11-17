@@ -3,7 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [0.3.0-alpha.81] - 2026-11-16
+## [0.3.0-alpha.82] - 2026-11-16
+
+### Added — passion weights
+- Rules lists all registered passions (vanilla/VSE/Alpha) with Level 0, per-level bonus and minimum level fields.
+- `PassionWeightCatalog` enumerates VSE `PassionManager.AllPassions` by reflection and falls back to None/Minor/Major.
+- Recommendation score uses Level0Score / PerLevelBonus / MinLevel; below MinLevel it behaves like no passion.
+- Negative weights are allowed; no-skill WorkTypes remain score 0.
+- `Reset recommendation weights` restores defaults.
+- Add-pin button tooltip lists the default pins.
 
 ### Added — automatic recommendation rules
 - Rules now has a `Prioritize low-level passion over work without skill` checkbox.

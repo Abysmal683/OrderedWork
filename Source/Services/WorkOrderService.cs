@@ -205,41 +205,25 @@ namespace OrderedWork.Services
             int level = BestSkillLevel(pawn, workType, out Passion passion);
             if (level < 0)
             {
-                // No relevant skill at all.
                 return 0;
             }
-            bool passionRules = OrderedWorkMod.Settings == null
+
+            bool levelZeroPassion = OrderedWorkMod.Settings == null
                 || OrderedWorkMod.Settings.prioritizeLowSkillPassion;
-            if (level == 0)
+            if (level == 0 && !levelZeroPassion)
             {
-                if (!passionRules)
-                {
-                    return -3;
-                }
-                if (passion == Passion.Major)
-                {
-                    return 3;
-                }
-                if (passion == Passion.Minor)
-                {
-                    return 1;
-                }
                 return -3;
             }
-            int score = level * 2;
-            if (passionRules)
-            {
-                score += passion == Passion.Major ? 4 : passion == Passion.Minor ? 2 : 0;
-            }
-            return score;
-        }
 
-        /// <summary>
-        /// Stored order for the pawn, filtered to visible and capable WorkTypes. Before the
-        /// colony is initialized this falls back to the default order; afterwards it never
-        /// refills from the default, using the skill recommendation for an unknown pawn.
-        /// Reading never touches pawn priorities.
-        /// </summary>
+            PassionWeightEntry entry = PassionWeightCatalog.Find(OrderedWorkMod.Settings, passion);
+            if (passion == Passion.None || entry == null || level < entry.minLevel)
+            {
+                return level == 0 ? -3 : level * 2;
+            }
+            return level == 0
+                ? entry.level0Score
+                : level * 2 + entry.perLevelBonus;
+        }
         public static List<string> GetOrder(Pawn pawn)
         {
             if (pawn == null)
