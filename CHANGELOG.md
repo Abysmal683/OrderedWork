@@ -3,6 +3,20 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.52] - 2026-11-16
+
+### Changed
+- Refactored `OrderedWorkMod.cs` from 1978 lines into partial-class files:
+  - `OrderedWorkMod.cs` — core lifecycle/tabs/state (241 lines)
+  - `OrderedWorkMod.SplitMerge.cs` — Split/Merge/Order UI and drag helpers (943 lines)
+  - `OrderedWorkMod.Order.cs` — giver order, profile reset, profile apply helpers (379 lines)
+  - `OrderedWorkMod.Settings.cs` — tabs, Rules/General/Profile panels (236 lines)
+  - `OrderedWorkMod.Helpers.cs` — shared reorder rows, tooltips, WorkType normalization (306 lines)
+- No behavior change; build and existing tests pass.
+
+### Next
+- With responsibilities separated, resume bug fixes for restore/pending/button states from the smaller files.
+
 ## [0.3.0-alpha.51] - 2026-11-16
 
 ### Fixed
