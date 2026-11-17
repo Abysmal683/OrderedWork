@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.21] - 2026-11-16
+
+### Changed
+- Resize grip is now a 12 px bar labelled `resize`, with a `[OrderedWork][Resize]` MouseDown diagnostic.
+- Shift+wheel logs `scrollX/maxX/delta` for the remaining end-of-scroll report.
+- Added `SPLIT_MERGE_DESIGN.md` defining the unified two-column Split/Merge editor, validation, cancel-vs-delete rules, aggressive `Merge all`, and the restart/hot-apply question.
+
 ## [0.3.0-alpha.20] - 2026-11-16
 
 ### Fixed

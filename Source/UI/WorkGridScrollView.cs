@@ -62,6 +62,7 @@ namespace OrderedWork.UI
                 {
                     scroll.x = maxX;
                 }
+                Log.Message("[OrderedWork][Scroll] shiftWheel scrollX=" + scroll.x + " maxX=" + maxX + " delta=" + delta);
             }
             else
             {

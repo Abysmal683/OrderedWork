@@ -281,9 +281,10 @@ namespace OrderedWork.UI
         /// <summary>Top grip: drag up to grow the panel, down to shrink it; 4 pawn rows minimum.</summary>
         private void DrawPanelResizeHandle(Rect inRect)
         {
-            Rect handle = new Rect(inRect.center.x - 60f, 0f, 120f, 7f);
+            Rect handle = new Rect(inRect.center.x - 80f, 0f, 160f, 12f);
             Widgets.DrawBoxSolid(handle, new Color(0.32f, 0.36f, 0.40f, 1f));
-            Widgets.DrawBoxSolid(new Rect(handle.x + 20f, handle.y + 2f, 80f, 2f), new Color(0.62f, 0.68f, 0.72f, 1f));
+            Widgets.DrawBoxSolid(new Rect(handle.x + 20f, handle.y + 3f, 120f, 2f), new Color(0.62f, 0.68f, 0.72f, 1f));
+            Widgets.Label(new Rect(handle.x + 20f, handle.y - 1f, 120f, 12f), "resize");
             TooltipHandler.TipRegion(handle, "Drag to resize Work Control (minimum: 4 pawn rows)");
 
             Event current = Event.current;
@@ -292,6 +293,7 @@ namespace OrderedWork.UI
                 resizingPanel = true;
                 resizeStartMouseY = current.mousePosition.y;
                 resizeStartHeight = inRect.height;
+                Log.Message("[OrderedWork][Resize] down mouse=" + current.mousePosition + " height=" + inRect.height);
                 current.Use();
             }
             else if (resizingPanel && current.type == EventType.MouseDrag)
