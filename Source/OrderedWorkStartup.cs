@@ -23,9 +23,7 @@ namespace OrderedWork
                     return;
                 }
 
-                CaptureOriginalGiverOrder(settings);
                 ApplySplits(settings, mod);
-                CaptureOriginalGiverOrder(settings);
                 ApplyOrder(settings);
                 RebuildCaches();
             }
@@ -48,9 +46,7 @@ namespace OrderedWork
             }
             try
             {
-                CaptureOriginalGiverOrder(settings);
                 ApplySplits(settings, mod);
-                CaptureOriginalGiverOrder(settings);
                 ApplyOrder(settings);
                 RebuildCaches();
                 OrderedWork.Services.WorkOrderService.InvalidateAvailableWorkTypes();
@@ -63,34 +59,6 @@ namespace OrderedWork
             }
         }
 
-        private static void CaptureOriginalGiverOrder(OrderedWorkSettings settings)
-        {
-            if (settings.originalGiverOrder == null)
-            {
-                settings.originalGiverOrder = new List<GiverOrderEntry>();
-            }
-            HashSet<string> known = new HashSet<string>(
-                settings.originalGiverOrder.Where(e => e != null).Select(e => e.giver));
-            foreach (WorkGiverDef giver in DefDatabase<WorkGiverDef>.AllDefsListForReading)
-            {
-                if (giver != null && !known.Contains(giver.defName))
-                {
-                    settings.originalGiverOrder.Add(new GiverOrderEntry
-                    {
-                        workType = giver.workType != null ? giver.workType.defName : "",
-                        giver = giver.defName,
-                        order = giver.priorityInType
-                    });
-                    known.Add(giver.defName);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Applies the canonical JSON profile to live defs. The profile is final state, not an
-        /// operation log: every giver has exactly one owner, WorkTypes follow profile order, and
-        /// split entries are materialized first so ApplySplits can create their defs.
-        /// </summary>
         public static void ApplyProfileNow(WorkConfigProfile profile, OrderedWorkSettings settings, OrderedWorkMod mod)
         {
             ApplyProfile(profile, settings, mod);
@@ -105,7 +73,6 @@ namespace OrderedWork
 
             settings.splits.Clear();
                 settings.workTypeOrder.Clear();
-            settings.giverOrder.Clear();
 
             List<KeyValuePair<string, WorkTypeConfig>> ordered = profile.WorkTypes
                 .Where(e => e.Value != null)
@@ -165,12 +132,6 @@ namespace OrderedWork
                         }
                         giver.workType = def;
                         giver.priorityInType = 10000 - giverOrder * 10;
-                        settings.giverOrder.Add(new GiverOrderEntry
-                        {
-                            workType = def.defName,
-                            giver = giver.defName,
-                            order = giverOrder
-                        });
                         giverOrder++;
                     }
                 }
@@ -325,14 +286,6 @@ namespace OrderedWork
                     .Where(g => g.workType == workType)
                     .ToList();
                 List<WorkGiverDef> sorted = new List<WorkGiverDef>();
-                foreach (GiverOrderEntry entry in settings.giverOrder.Where(e => e.workType == workType.defName).OrderBy(e => e.order))
-                {
-                    WorkGiverDef giver = givers.FirstOrDefault(g => g.defName == entry.giver);
-                    if (giver != null && !sorted.Contains(giver))
-                    {
-                        sorted.Add(giver);
-                    }
-                }
                 foreach (WorkGiverDef giver in givers.OrderByDescending(g => g.priorityInType))
                 {
                     if (!sorted.Contains(giver))

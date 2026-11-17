@@ -146,25 +146,6 @@ namespace OrderedWork
             PersistLivePending();
         }
 
-        private void CommitGiverOrder(string workType, List<WorkGiverDef> givers)
-        {
-            for (int i = 0; i < givers.Count; i++)
-            {
-                givers[i].priorityInType = givers.Count - i;
-            }
-
-            Settings.giverOrder.RemoveAll(e => e.workType == workType);
-            for (int i = 0; i < givers.Count; i++)
-            {
-                Settings.giverOrder.Add(new GiverOrderEntry
-                {
-                    workType = workType,
-                    giver = givers[i].defName,
-                    order = i
-                });
-            }
-        }
-
         private void ApplyTestDenseRank()
         {
             try

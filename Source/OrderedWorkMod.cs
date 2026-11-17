@@ -206,7 +206,6 @@ namespace OrderedWork
                 .OrderByDescending(w => w.naturalPriority)
                 .Select(w => w.defName)
                 .ToList();
-            Settings.giverOrder.Clear();
             Settings.splits.Clear();
             Settings.workTypeColors.Clear();
             Settings.autoRecommendNewColony = true;

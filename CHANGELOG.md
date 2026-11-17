@@ -3,7 +3,12 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [0.3.0-alpha.74] - 2026-11-16
+## [0.3.0-alpha.75] - 2026-11-16
+
+### Legacy removal — stage 2
+- Removed `GiverOrderEntry`, `OrderedWorkSettings.giverOrder`, `originalGiverOrder`, legacy capture/apply loops and `CommitGiverOrder`.
+- Order reset now restores giver order from `reference` and applies the profile.
+- Remaining legacy: `splits` and `workTypeOrder`.
 
 ### Legacy removal — stage 1
 - Removed `MergeEntry`, `GiverOrigin`, `OrderedWorkSettings.merges`, legacy `ApplyMerges` and all runtime references. Merge now exists only as profile state.

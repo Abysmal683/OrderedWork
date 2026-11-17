@@ -6,9 +6,6 @@ namespace OrderedWork
     public class OrderedWorkSettings : ModSettings
     {
         public List<string> workTypeOrder = new List<string>();
-        public List<GiverOrderEntry> giverOrder = new List<GiverOrderEntry>();
-        // Captured before the first apply so Order -> Reset can restore def priorities.
-        public List<GiverOrderEntry> originalGiverOrder = new List<GiverOrderEntry>();
         public List<SplitEntry> splits = new List<SplitEntry>();
         public bool initialized;
         public bool autoRecommendNewColony = true;
@@ -22,8 +19,6 @@ namespace OrderedWork
         public override void ExposeData()
         {
             Scribe_Collections.Look(ref workTypeOrder, "workTypeOrder", LookMode.Value);
-            Scribe_Collections.Look(ref giverOrder, "giverOrder", LookMode.Deep);
-            Scribe_Collections.Look(ref originalGiverOrder, "originalGiverOrder", LookMode.Deep);
             Scribe_Collections.Look(ref splits, "splits", LookMode.Deep);
             Scribe_Values.Look(ref initialized, "initialized", false);
             Scribe_Values.Look(ref autoRecommendNewColony, "autoRecommendNewColony", true);
@@ -37,25 +32,9 @@ namespace OrderedWork
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
                 if (workTypeOrder == null) workTypeOrder = new List<string>();
-                if (giverOrder == null) giverOrder = new List<GiverOrderEntry>();
-                if (originalGiverOrder == null) originalGiverOrder = new List<GiverOrderEntry>();
                 if (splits == null) splits = new List<SplitEntry>();
                 if (workTypeColors == null) workTypeColors = new List<WorkTypeColorEntry>();
             }
-        }
-    }
-
-    public class GiverOrderEntry : IExposable
-    {
-        public string workType;
-        public string giver;
-        public int order;
-
-        public void ExposeData()
-        {
-            Scribe_Values.Look(ref workType, "workType");
-            Scribe_Values.Look(ref giver, "giver");
-            Scribe_Values.Look(ref order, "order", 0);
         }
     }
 

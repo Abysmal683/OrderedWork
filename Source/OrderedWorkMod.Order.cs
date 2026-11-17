@@ -174,18 +174,27 @@ namespace OrderedWork
                 list.Label("Remove the saved giver order for " + selectedLabel + "? The original def order returns after a restart; the current session keeps its priority values.");
                 if (list.ButtonText("Confirm reset order"))
                 {
-                    foreach (WorkGiverDef giver in GiversForWorkType(selectedGiverType))
+                    WorkConfigProfile profile = LoadEditingProfile();
+                    WorkConfigProfile reference = WorkConfigStore.LoadReference();
+                    if (profile != null && reference != null
+                        && profile.WorkTypes.TryGetValue(selectedGiverType, out WorkTypeConfig current)
+                        && current != null
+                        && reference.WorkTypes.TryGetValue(selectedGiverType, out WorkTypeConfig original)
+                        && original != null && original.Givers != null)
                     {
-                        GiverOrderEntry original = Settings.originalGiverOrder.FirstOrDefault(
-                            e => e != null && e.giver == giver.defName);
-                        if (original != null)
+                        current.Givers = original.Givers.Select(g => new GiverConfig
                         {
-                            giver.priorityInType = original.order;
-                        }
+                            DefName = g.DefName,
+                            Order = g.Order,
+                            Mod = g.Mod
+                        }).ToList();
+                        WorkConfigStore.SaveProfile(profile, true);
+                        WorkConfigStore.SavePending(profile);
+                        OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
                     }
-                    Settings.giverOrder.RemoveAll(e => e != null && e.workType == selectedGiverType);
-                    OrderedWorkStartup.ApplyPendingChanges(Settings, this);
-                    PersistLivePending();
+                    giverOrderDraftInitialized = false;
+                    giverOrderDraft.Clear();
+                    giverOrderInitial.Clear();
                     confirmResetOrder = false;
                 }
                 if (list.ButtonText("Cancel reset order"))
