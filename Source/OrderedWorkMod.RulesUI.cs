@@ -160,7 +160,6 @@ namespace OrderedWork
             List<PassionWeightCatalog.PassionInfo> registered = PassionWeightCatalog.Registered;
             float viewHeight = Mathf.Min(registered.Count, VisiblePassionRows) * PassionRowHeight;
             Rect outRect = list.GetRect(viewHeight);
-            passionWeightsArea = outRect;
             float barWidth = WorkGridScrollView.Thickness;
             Rect viewport = new Rect(outRect.x, outRect.y, outRect.width - barWidth - 2f, outRect.height);
             Rect content = new Rect(0f, 0f, viewport.width, registered.Count * PassionRowHeight);

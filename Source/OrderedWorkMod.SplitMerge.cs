@@ -46,7 +46,7 @@ namespace OrderedWork
                 : settingsEditorMode == EditorOrder ? orderRect
                 : splitRect;
             DrawTabMarker(marker);
-            list.Label("Tip: Shift+wheel or drag a column scrollbar to scroll that column; a plain wheel scrolls the settings.");
+            list.Label("Tip: Ctrl+wheel or drag a column scrollbar to scroll that column; a plain wheel scrolls the settings.");
             list.Gap(4f);
 
             switch (settingsEditorMode)
@@ -241,14 +241,6 @@ namespace OrderedWork
             float maxScroll = hasRows
                 ? Mathf.Max(0f, names.Count * SplitMergeRowHeight - area.height)
                 : 0f;
-            if (columnId == 1)
-            {
-                smOriginMaxScroll = maxScroll;
-            }
-            else
-            {
-                smDestMaxScroll = maxScroll;
-            }
             float contentWidth = area.width - (maxScroll > 0f ? SplitMergeScrollbarWidth + 2f : 0f);
             Rect track = new Rect(area.xMax - SplitMergeScrollbarWidth, area.y, SplitMergeScrollbarWidth, area.height);
 
@@ -319,7 +311,6 @@ namespace OrderedWork
             float maxScroll = total > 0
                 ? Mathf.Max(0f, total * SplitMergeRowHeight - area.height)
                 : 0f;
-            smDestMaxScroll = maxScroll;
             float contentWidth = area.width - (maxScroll > 0f ? SplitMergeScrollbarWidth + 2f : 0f);
             Rect track = new Rect(area.xMax - SplitMergeScrollbarWidth, area.y, SplitMergeScrollbarWidth, area.height);
 
@@ -429,12 +420,12 @@ namespace OrderedWork
                 return;
             }
 
-            bool shift = current.shift
-                || Input.GetKey(KeyCode.LeftShift)
-                || Input.GetKey(KeyCode.RightShift);
-            if (!shift || (!Mouse.IsOver(area) && !track.Contains(current.mousePosition)))
+            bool ctrl = current.control || Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
+            bool overTrack = track.Contains(current.mousePosition);
+            bool ctrlOverColumn = ctrl && Mouse.IsOver(area);
+            if (!overTrack && !ctrlOverColumn)
             {
-                // Plain wheel belongs to the outer settings scroll.
+                // Not ours: leave the event alone so the outer settings scroll handles the wheel.
                 return;
             }
 
@@ -511,7 +502,7 @@ namespace OrderedWork
                 ? new Color(0.72f, 0.80f, 0.92f, 1f)
                 : new Color(0.48f, 0.53f, 0.60f, 0.95f);
             Widgets.DrawBoxSolid(thumb, color);
-            TooltipHandler.TipRegion(track, "Scrollbar: drag it, or Shift+wheel over this column. A plain wheel scrolls the settings.");
+            TooltipHandler.TipRegion(track, "Scrollbar: drag it, or Ctrl+wheel over this column. A plain wheel scrolls the settings.");
         }
 
         private void DrawSplitMergeRow(Rect row, string giverName, bool inDraft, bool dragged, bool dropTarget, string draftMarker, bool showHandle = true)

@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.92] - 2026-11-17
+
+### Cleanup — reverted shift+wheel attempt
+- Removed the failed nested Shift+wheel routing from Settings.
+- Scrollbar drag remains available for passion weights and Split/Merge columns.
+- Plain wheel is left to the outer settings scroll.
+- No shift-wheel behavior is advertised or consumed.
+
 ## [0.3.0-alpha.91] - 2026-11-17
 
 ### Fixed — deterministic nested wheel routing
