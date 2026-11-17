@@ -107,10 +107,10 @@ namespace OrderedWork.Services
             object def = GetVseDef(passion);
             if (def != null)
             {
-                string label = GetMember<string>(def, "LabelCap");
+                string label = GetStringMember(def, "LabelCap");
                 if (string.IsNullOrEmpty(label))
                 {
-                    label = GetMember<string>(def, "label");
+                    label = GetStringMember(def, "label");
                 }
                 if (!string.IsNullOrEmpty(label))
                 {
@@ -162,22 +162,10 @@ namespace OrderedWork.Services
                     {
                         foreach (object value in values)
                         {
-                            if (!(value is Passion passion))
+                            if (value is Passion passion)
                             {
-                                continue;
+                                AddPassion(passion);
                             }
-                            string defName = DefNameOf(passion);
-                            if (string.IsNullOrEmpty(defName)
-                                || registered.Any(p => p.DefName == defName))
-                            {
-                                continue;
-                            }
-                            registered.Add(new PassionInfo
-                            {
-                                Passion = passion,
-                                DefName = defName,
-                                Label = LabelOf(passion)
-                            });
                         }
                     }
                 }
@@ -186,6 +174,7 @@ namespace OrderedWork.Services
                     Log.Warning("[Ordered Work] Could not enumerate VSE passions: " + exception.Message);
                 }
             }
+            AddPassionsFromDefDatabase();
             if (registered.Count == 0)
             {
                 registered.Add(new PassionInfo { Passion = Passion.None, DefName = "None", Label = "None" });
@@ -194,6 +183,110 @@ namespace OrderedWork.Services
             }
         }
 
+        private static void AddPassion(Passion passion)
+        {
+            string defName = DefNameOf(passion);
+            if (string.IsNullOrEmpty(defName)
+                || registered.Any(p => p.DefName == defName))
+            {
+                return;
+            }
+            string label = null;
+            try
+            {
+                label = LabelOf(passion);
+            }
+            catch (Exception exception)
+            {
+                Log.Warning("[Ordered Work] Could not read passion label for " + defName + ": " + exception.Message);
+            }
+            if (string.IsNullOrEmpty(label))
+            {
+                label = defName;
+            }
+            registered.Add(new PassionInfo
+            {
+                Passion = passion,
+                DefName = defName,
+                Label = label
+            });
+        }
+
+        private static void AddPassionsFromDefDatabase()
+        {
+            Type defType = FindType("VSE.Passions.PassionDef");
+            if (defType == null)
+            {
+                return;
+            }
+            try
+            {
+                Type databaseType = typeof(DefDatabase<>).MakeGenericType(defType);
+                PropertyInfo allDefs = databaseType.GetProperty(
+                    "AllDefsListForReading",
+                    BindingFlags.Public | BindingFlags.Static);
+                if (allDefs == null || !(allDefs.GetValue(null, null) is IEnumerable defs))
+                {
+                    return;
+                }
+                foreach (object def in defs)
+                {
+                    if (!TryReadPassionIndex(defType, def, out int index))
+                    {
+                        continue;
+                    }
+                    AddPassion((Passion)index);
+                }
+            }
+            catch (Exception exception)
+            {
+                Log.Warning("[Ordered Work] Could not enumerate PassionDef database: " + exception.Message);
+            }
+        }
+
+        private static bool TryReadPassionIndex(Type defType, object def, out int index)
+        {
+            index = -1;
+            if (def == null)
+            {
+                return false;
+            }
+            string[] names = { "index", "Index", "passionIndex", "PassionIndex" };
+            foreach (string name in names)
+            {
+                FieldInfo field = defType.GetField(name, BindingFlags.Public | BindingFlags.Instance);
+                if (field != null && field.FieldType == typeof(int))
+                {
+                    index = (int)field.GetValue(def);
+                    return true;
+                }
+                PropertyInfo property = defType.GetProperty(name, BindingFlags.Public | BindingFlags.Instance);
+                if (property != null && property.PropertyType == typeof(int))
+                {
+                    index = (int)property.GetValue(def, null);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private static string GetStringMember(object instance, string name)
+        {
+            if (instance == null)
+            {
+                return null;
+            }
+            object value = GetMember<object>(instance, name);
+            if (value is string text)
+            {
+                return text;
+            }
+            if (value is TaggedString tagged)
+            {
+                return tagged.ToString();
+            }
+            return value?.ToString();
+        }
         private static object GetVseDef(Passion passion)
         {
             Type managerType = FindType("VSE.Passions.PassionManager");

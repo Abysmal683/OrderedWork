@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.84] - 2026-11-17
+
+### Fixed — VSE configuration load
+- `LabelCap` is a `TaggedString`; it is now read safely instead of aborting passion enumeration.
+- Passion enumeration is per-entry fault tolerant.
+- Added a `DefDatabase<VSE.Passions.PassionDef>` fallback for mods that do not populate `AllPassions`.
+- Weight rows show the resolved passion sprite before the label.
+
 ## [0.3.0-alpha.83] - 2026-11-17
 
 ### Changed — passion-mod compatibility
