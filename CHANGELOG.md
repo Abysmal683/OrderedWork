@@ -3,7 +3,10 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [0.3.0-alpha.27] - 2026-11-16
+## [0.3.0-alpha.28] - 2026-11-16
+
+### Fixed
+- Mod Settings showed only the first column and no scrollbar because `Listing_Standard` automatically starts a second column when content exceeds its provisional first-frame height. Set `maxOneColumn = true` so the whole Rules tab is vertical and the measured outer scroll can reach it.
 
 ### Added
 - Phase 1b: a third `Order mode` with an origin selector and one reorderable giver list replaces the old separate `Giver order` section in `Rules`.

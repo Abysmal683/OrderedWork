@@ -107,6 +107,9 @@ namespace OrderedWork
             Rect viewRect = new Rect(0f, 0f, body.width - 24f, contentHeight);
             Widgets.BeginScrollView(body, ref scroll, viewRect);
             Listing_Standard list = new Listing_Standard();
+            // Listing_Standard otherwise starts a second column when content exceeds the first
+            // frame's provisional view height, which hid the rest of the tab off-screen.
+            list.maxOneColumn = true;
             list.Begin(viewRect);
 
             if (settingsTab == TabRules)
