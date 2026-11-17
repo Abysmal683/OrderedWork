@@ -32,6 +32,33 @@ namespace OrderedWork
             }
         }
 
+        /// <summary>
+        /// Applies saved work changes immediately for settings feedback. Safe to call after
+        /// adding a split or merge; it is the same pipeline used at startup and remains
+        /// restart-backed because DefDatabase mutations cannot be cleanly rolled back.
+        /// </summary>
+        public static bool ApplyPendingChanges(OrderedWorkSettings settings, OrderedWorkMod mod)
+        {
+            if (settings == null || mod == null)
+            {
+                return false;
+            }
+            try
+            {
+                ApplySplits(settings, mod);
+                ApplyMerges(settings);
+                ApplyOrder(settings);
+                RebuildCaches();
+                OrderedWork.Services.WorkOrderService.InvalidateAvailableWorkTypes();
+                return true;
+            }
+            catch (Exception exception)
+            {
+                Log.Error("[Ordered Work] Failed to apply pending work changes: " + exception);
+                return false;
+            }
+        }
+
         private static void ApplySplits(OrderedWorkSettings settings, OrderedWorkMod mod)
         {
             foreach (SplitEntry split in settings.splits)

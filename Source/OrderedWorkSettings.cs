@@ -71,9 +71,24 @@ namespace OrderedWork
         }
     }
 
+    public class GiverOrigin : IExposable
+    {
+        public string giver;
+        public string workType;
+
+        public void ExposeData()
+        {
+            Scribe_Values.Look(ref giver, "giver");
+            Scribe_Values.Look(ref workType, "workType");
+        }
+    }
+
     public class MergeEntry : IExposable
     {
         public List<string> givers = new List<string>();
+        // Source WorkType captured before the hot move, so a single merge can be reset
+        // without restarting. Old saves have no origins and still use restart semantics.
+        public List<GiverOrigin> origins = new List<GiverOrigin>();
         public string targetWorkType;
         // Final destination order after applying the merge: existing target givers first
         // (fixed), then the incoming givers in the order chosen in the editor. Empty for
@@ -83,9 +98,11 @@ namespace OrderedWork
         public void ExposeData()
         {
             Scribe_Collections.Look(ref givers, "givers", LookMode.Value);
+            Scribe_Collections.Look(ref origins, "origins", LookMode.Deep);
             Scribe_Values.Look(ref targetWorkType, "targetWorkType");
             Scribe_Collections.Look(ref targetOrder, "targetOrder", LookMode.Value);
             if (Scribe.mode == LoadSaveMode.LoadingVars && givers == null) givers = new List<string>();
+            if (Scribe.mode == LoadSaveMode.LoadingVars && origins == null) origins = new List<GiverOrigin>();
             if (Scribe.mode == LoadSaveMode.LoadingVars && targetOrder == null) targetOrder = new List<string>();
         }
     }

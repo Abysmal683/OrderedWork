@@ -40,6 +40,11 @@ namespace OrderedWork.Services
         public static bool IsInitializing { get; set; }
 
         /// <summary>Visible WorkTypeDefs, cached; ordered by naturalPriority descending.</summary>
+        public static void InvalidateAvailableWorkTypes()
+        {
+            cachedAvailable = null;
+        }
+
         public static List<WorkTypeDef> GetAvailableWorkTypes()
         {
             if (cachedAvailable == null)

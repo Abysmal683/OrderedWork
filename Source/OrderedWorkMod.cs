@@ -1007,8 +1007,6 @@ namespace OrderedWork
             confirmResetOrder = false;
             confirmResetSplitIndex = -1;
             confirmResetMergeIndex = -1;
-            settingsContentHeight = 0f;
-            scroll = Vector2.zero;
         }
 
         private void AddDraftGiver(string giverName, bool mergeMode)
@@ -1114,7 +1112,27 @@ namespace OrderedWork
                     Rect cancelRect = new Rect(row.xMax - buttonWidth, row.y, buttonWidth, 26f);
                     if (Widgets.ButtonText(confirmRect, "Confirm reset split"))
                     {
+                        if (split != null)
+                        {
+                            WorkTypeDef splitDef = DefDatabase<WorkTypeDef>.GetNamedSilentFail(split.newDefName);
+                            WorkTypeDef baseDef = DefDatabase<WorkTypeDef>.GetNamedSilentFail(split.baseWorkType);
+                            if (splitDef != null && baseDef != null && split.givers != null)
+                            {
+                                foreach (string giverName in split.givers)
+                                {
+                                    WorkGiverDef giver = DefDatabase<WorkGiverDef>.GetNamedSilentFail(giverName);
+                                    if (giver != null)
+                                    {
+                                        giver.workType = baseDef;
+                                    }
+                                }
+                                splitDef.visible = false;
+                            }
+                            Settings.workTypeOrder.Remove(split.newDefName);
+                            Settings.giverOrder.RemoveAll(e => e != null && e.workType == split.newDefName);
+                        }
                         Settings.splits.RemoveAt(i);
+                        OrderedWorkStartup.ApplyPendingChanges(Settings, this);
                         confirmResetSplitIndex = -1;
                         break;
                     }
@@ -1163,7 +1181,20 @@ namespace OrderedWork
                     Rect cancelRect = new Rect(row.xMax - buttonWidth, row.y, buttonWidth, 26f);
                     if (Widgets.ButtonText(confirmRect, "Confirm reset merge"))
                     {
+                        if (merge != null && merge.origins != null)
+                        {
+                            foreach (GiverOrigin origin in merge.origins)
+                            {
+                                WorkGiverDef giver = DefDatabase<WorkGiverDef>.GetNamedSilentFail(origin.giver);
+                                WorkTypeDef source = DefDatabase<WorkTypeDef>.GetNamedSilentFail(origin.workType);
+                                if (giver != null && source != null)
+                                {
+                                    giver.workType = source;
+                                }
+                            }
+                        }
                         Settings.merges.RemoveAt(i);
+                        OrderedWorkStartup.ApplyPendingChanges(Settings, this);
                         confirmResetMergeIndex = -1;
                         break;
                     }
@@ -1191,13 +1222,19 @@ namespace OrderedWork
                 return;
             }
 
+            string newDefName = BuildSplitDefName(splitName);
             Settings.splits.Add(new SplitEntry
             {
-                newDefName = BuildSplitDefName(splitName),
+                newDefName = newDefName,
                 label = splitName.Trim(),
                 baseWorkType = splitOrigin,
                 givers = splitDraft.Distinct().ToList()
             });
+            if (!Settings.workTypeOrder.Contains(newDefName))
+            {
+                Settings.workTypeOrder.Add(newDefName);
+            }
+            OrderedWorkStartup.ApplyPendingChanges(Settings, this);
 
             splitName = "";
             splitDraft.Clear();
@@ -1232,12 +1269,27 @@ namespace OrderedWork
                 }
             }
 
+            List<GiverOrigin> origins = new List<GiverOrigin>();
+            foreach (string giverName in incoming)
+            {
+                WorkGiverDef giver = DefDatabase<WorkGiverDef>.GetNamedSilentFail(giverName);
+                if (giver != null && giver.workType != null)
+                {
+                    origins.Add(new GiverOrigin
+                    {
+                        giver = giverName,
+                        workType = giver.workType.defName
+                    });
+                }
+            }
             Settings.merges.Add(new MergeEntry
             {
                 givers = incoming,
+                origins = origins,
                 targetWorkType = mergeTarget,
                 targetOrder = targetOrder
             });
+            OrderedWorkStartup.ApplyPendingChanges(Settings, this);
 
             mergeDraft.Clear();
             mergeTargetScroll = 0f;

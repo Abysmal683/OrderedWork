@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.29] - 2026-11-16
+
+### Fixed
+- Mod Settings no longer jumps to the top when switching tab/mode or applying a draft: the outer scroll and measured content height are preserved.
+- New splits are appended to `workTypeOrder` immediately; WorkType selectors and the palette see them after the hot apply/restart.
+- Split/Merge saving now applies the pending changes immediately (hot) for UI feedback; `Reset split` restores its givers to the base WorkType and hides the split def live.
+- `MergeEntry.origins` records source WorkTypes before a merge, so `Reset merge` can restore them live for entries created after this version. Old entries still use restart semantics.
+- `Listing_Standard.maxOneColumn = true` prevents the hidden second column/no-scroll bug.
+
 ## [0.3.0-alpha.28] - 2026-11-16
 
 ### Fixed
