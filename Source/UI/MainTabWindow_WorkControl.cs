@@ -18,11 +18,12 @@ namespace OrderedWork.UI
     {
         private const float Pad = 4f;
         private const float TitleHeight = 28f;
-        private const float PaletteHeight = 80f;
+        private const float PaletteHeight = 84f;
         private const float SearchHeight = 24f;
+        private const float HScrollHeight = WorkGridScrollView.Thickness;
         private const float HeaderHeight = 18f;
         private const float RowHeight = 42f;
-        private const float CardWidth = 160f;
+        private const float CardWidth = 146f;
         private const float CardHeight = 30f;
         private const float CardGap = 4f;
         private const float LeftColumnMin = 160f;
@@ -73,7 +74,8 @@ namespace OrderedWork.UI
             float titleY = Pad;
             float paletteY = titleY + TitleHeight;
             float searchY = paletteY + PaletteHeight + 2f;
-            float headerY = searchY + SearchHeight + 2f;
+            float hScrollY = searchY + SearchHeight + 2f;
+            float headerY = hScrollY + HScrollHeight + 2f;
             float bodyTop = headerY + HeaderHeight + 2f;
             float bodyHeight = Mathf.Max(40f, inRect.yMax - Pad - bodyTop);
             Rect bodyRect = new Rect(Pad, bodyTop, inRect.width - Pad * 2f, bodyHeight);
@@ -102,7 +104,6 @@ namespace OrderedWork.UI
                 ref paletteScroll,
                 available,
                 paletteWorkType,
-                GetSelectedColonists().FirstOrDefault(),
                 showPaletteScrollbar,
                 dragging || draggingPalette,
                 BeginPaletteDrag);
@@ -114,6 +115,16 @@ namespace OrderedWork.UI
             List<Pawn> colonists = allColonists
                 .Where(p => IsSearchMatch(p) && MatchesWorkFilter(p))
                 .ToList();
+
+            if (filtering)
+            {
+                TextAnchor previousMatchAnchor = Text.Anchor;
+                Text.Anchor = TextAnchor.MiddleRight;
+                Widgets.Label(
+                    new Rect(inRect.xMax - Pad - 180f, searchY, 180f, SearchHeight),
+                    colonists.Count + (colonists.Count == 1 ? " match" : " matches"));
+                Text.Anchor = previousMatchAnchor;
+            }
 
             UpdatePaletteDrag(bodyRect, leftWidth, colonists);
 
@@ -130,24 +141,23 @@ namespace OrderedWork.UI
             }
 
             float vThickness = WorkGridScrollView.Thickness;
-            float hThickness = WorkGridScrollView.Thickness;
             Rect gridViewport = new Rect(
                 bodyRect.x,
                 bodyRect.y,
                 Mathf.Max(0f, bodyRect.width - vThickness),
-                Mathf.Max(0f, bodyRect.height - hThickness));
-            Rect namesViewport = new Rect(bodyRect.x, bodyRect.y, leftWidth, gridViewport.height);
+                bodyRect.height);
+            Rect namesViewport = new Rect(bodyRect.x, bodyRect.y, leftWidth, bodyRect.height);
             Rect laneViewport = new Rect(
                 bodyRect.x + leftWidth,
                 bodyRect.y,
                 Mathf.Max(0f, gridViewport.width - leftWidth),
-                gridViewport.height);
-            Rect vTrack = new Rect(bodyRect.xMax - vThickness, bodyRect.y, vThickness, gridViewport.height);
+                bodyRect.height);
+            Rect vTrack = new Rect(bodyRect.xMax - vThickness, bodyRect.y, vThickness, bodyRect.height);
             Rect hTrack = new Rect(
                 bodyRect.x + leftWidth,
-                bodyRect.yMax - hThickness,
-                Mathf.Max(0f, bodyRect.width - leftWidth - vThickness),
-                hThickness);
+                hScrollY,
+                Mathf.Max(0f, gridViewport.width - leftWidth),
+                HScrollHeight);
 
             int maxLane = 0;
             foreach (Pawn pawn in colonists)
@@ -157,7 +167,7 @@ namespace OrderedWork.UI
 
             float laneContentWidth = Mathf.Max(laneViewport.width, (maxLane + 2) * (CardWidth + CardGap) + CardGap);
             float rowsHeight = colonists.Count * RowHeight;
-            float contentHeight = Mathf.Max(gridViewport.height, rowsHeight);
+            float contentHeight = Mathf.Max(bodyRect.height, rowsHeight);
             Rect laneContent = new Rect(0f, 0f, laneContentWidth, contentHeight);
 
             // Wheel works over both the fixed names and the lanes.
@@ -165,13 +175,10 @@ namespace OrderedWork.UI
 
             bool showMatrixScrollbars = !autoHide
                 || Mouse.IsOver(bodyRect)
+                || Mouse.IsOver(hTrack)
+                || Mouse.IsOver(vTrack)
                 || WorkGridScrollView.IsDragging
                 || WorkGridScrollView.RecentlyScrolled;
-            if (showMatrixScrollbars)
-            {
-                WorkGridScrollView.DrawVertical(vTrack, gridViewport, laneContent, ref gridScroll);
-                WorkGridScrollView.DrawHorizontal(hTrack, laneViewport, laneContent, ref gridScroll);
-            }
 
             Widgets.BeginScrollView(laneViewport, ref gridScroll, laneContent, false);
             try
@@ -204,6 +211,13 @@ namespace OrderedWork.UI
             }
 
             DrawPawnColumn(colonists, namesViewport, leftWidth);
+
+            if (showMatrixScrollbars)
+            {
+                WorkGridScrollView.DrawVertical(vTrack, gridViewport, laneContent, ref gridScroll);
+                WorkGridScrollView.DrawHorizontal(hTrack, laneViewport, laneContent, ref gridScroll);
+            }
+
             DrawHeldCard();
         }
 
@@ -217,21 +231,25 @@ namespace OrderedWork.UI
 
             Widgets.Label(new Rect(x, searchY, 40f, SearchHeight), "Work");
             x += 42f;
-            workFilterText = Widgets.TextField(new Rect(x, searchY, 110f, SearchHeight - 2f), workFilterText ?? "");
-            x += 116f;
+            workFilterText = Widgets.TextField(new Rect(x, searchY, 130f, SearchHeight - 2f), workFilterText ?? "");
+            if (Mouse.IsOver(new Rect(x, searchY, 130f, SearchHeight - 2f)))
+            {
+                TooltipHandler.TipRegion(new Rect(x, searchY, 130f, SearchHeight - 2f), "Filter WorkType options (defName, label or short label)");
+            }
+            x += 136f;
 
-            Rect workButton = new Rect(x, searchY, 150f, SearchHeight - 2f);
-            x += 154f;
+            Rect workButton = new Rect(x, searchY, 140f, SearchHeight - 2f);
+            x += 144f;
             string workLabel = workFilter == null
-                ? "Work: Any"
-                : "Work: " + WorkTypePaletteView.DisplayName(workFilter);
+                ? "Any"
+                : WorkTypePaletteView.DisplayName(workFilter);
             if (Widgets.ButtonText(workButton, workLabel))
             {
                 OpenWorkFilterMenu();
             }
 
-            Rect invertRect = new Rect(x, searchY, 26f, SearchHeight - 2f);
-            if (Widgets.ButtonText(invertRect, "¬", true, true, workFilter != null))
+            Rect invertRect = new Rect(x, searchY, 38f, SearchHeight - 2f);
+            if (Widgets.ButtonText(invertRect, "Not", true, true, workFilter != null))
             {
                 invertWorkFilter = !invertWorkFilter;
             }
@@ -329,7 +347,19 @@ namespace OrderedWork.UI
             {
                 if (paletteHoverPawn != null)
                 {
-                    WorkTypePaletteView.ApplyDrop(paletteWorkType, paletteHoverPawn, paletteDropIndex, GetSelectedColonists());
+                    List<Pawn> selected = GetSelectedColonists();
+                    List<Pawn> targets;
+                    if (selected.Count >= 2 && selected.Contains(paletteHoverPawn))
+                    {
+                        // Drop inside the selected group: apply to every selected pawn.
+                        targets = selected;
+                    }
+                    else
+                    {
+                        // No group, or drop on an unselected row: the hovered pawn only.
+                        targets = new List<Pawn> { paletteHoverPawn };
+                    }
+                    WorkTypePaletteView.ApplyDrop(paletteWorkType, paletteHoverPawn, paletteDropIndex, targets);
                 }
                 CancelPaletteDrag();
                 Event.current.Use();
@@ -651,7 +681,8 @@ namespace OrderedWork.UI
             Rect bodyRect = new Rect(cardRect.x, cardRect.y, cardRect.width - 20f, cardRect.height);
 
             Passion passion;
-            int level = WorkOrderService.BestSkillLevel(pawn, workType, out passion);
+            SkillRecord bestSkill = WorkTypePaletteView.SafeBestSkill(pawn, workType, out passion);
+            int level = bestSkill != null ? bestSkill.Level : -1;
 
             float x = cardRect.x + 4f;
             if (level >= 0)
@@ -719,7 +750,10 @@ namespace OrderedWork.UI
             }
             if (icon != null)
             {
+                Color previous = GUI.color;
+                GUI.color = Color.white; // preserve the vanilla passion icon colors
                 GUI.DrawTexture(rect, icon);
+                GUI.color = previous;
             }
         }
 
@@ -796,8 +830,8 @@ namespace OrderedWork.UI
                     continue;
                 }
 
-                int level = WorkOrderService.BestSkillLevel(pawn, workType, out _);
-                string levelText = level >= 0 ? level.ToString() : "-";
+                SkillRecord bestSkill = WorkTypePaletteView.SafeBestSkill(pawn, workType, out _);
+                string levelText = bestSkill != null ? bestSkill.Level.ToString() : "-";
                 string label = WorkTypePaletteView.DisplayName(workType) + " [" + levelText + "]";
 
                 if (WorkOrderService.IsIncapable(pawn, workType))
@@ -853,9 +887,11 @@ namespace OrderedWork.UI
             }
 
             Passion passion;
-            int level = WorkOrderService.BestSkillLevel(pawn, workType, out passion);
+            SkillRecord bestSkill = WorkTypePaletteView.SafeBestSkill(pawn, workType, out passion);
             builder.AppendLine();
-            builder.AppendLine("Best skill: " + (level >= 0 ? level + " " + WorkTypePaletteView.PassionText(passion) : "—"));
+            builder.AppendLine("Skill: " + (bestSkill != null ? bestSkill.def.label : "—"));
+            builder.AppendLine("Passion: " + WorkTypePaletteView.PassionText(bestSkill != null ? passion : Passion.None));
+            builder.AppendLine("Level: " + (bestSkill != null ? bestSkill.Level.ToString() : "—"));
 
             int rank = WorkOrderService.GetOrder(pawn).IndexOf(workType.defName) + 1;
             builder.AppendLine("Rank: " + (rank > 0 ? rank.ToString() : "Off"));

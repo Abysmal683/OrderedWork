@@ -41,7 +41,6 @@ namespace OrderedWork.UI
             ref Vector2 scroll,
             List<WorkTypeDef> types,
             WorkTypeDef draggingType,
-            Pawn contextPawn,
             bool showScrollbar,
             bool suppressTooltips,
             Action<WorkTypeDef> beginDrag)
@@ -95,7 +94,7 @@ namespace OrderedWork.UI
 
                     if (!suppressTooltips && draggingType == null && Mouse.IsOver(chip))
                     {
-                        TooltipHandler.TipRegion(chip, PaletteTooltip(type, contextPawn));
+                        TooltipHandler.TipRegion(chip, PaletteTooltip(type));
                     }
 
                     if (Event.current.type == EventType.MouseDown
@@ -141,7 +140,8 @@ namespace OrderedWork.UI
             if (hoveredPawn != null && !incapable)
             {
                 Passion passion;
-                int level = WorkOrderService.BestSkillLevel(hoveredPawn, type, out passion);
+                SkillRecord bestSkill = SafeBestSkill(hoveredPawn, type, out passion);
+                int level = bestSkill != null ? bestSkill.Level : -1;
                 if (level >= 0)
                 {
                     if (passion == Passion.Major)
@@ -241,7 +241,7 @@ namespace OrderedWork.UI
             }
         }
 
-        private static string PaletteTooltip(WorkTypeDef type, Pawn contextPawn)
+        private static string PaletteTooltip(WorkTypeDef type)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append(DisplayName(type));
@@ -269,16 +269,95 @@ namespace OrderedWork.UI
                 }
             }
 
-            Passion passion = Passion.None;
-            int level = contextPawn != null ? WorkOrderService.BestSkillLevel(contextPawn, type, out passion) : -1;
             builder.AppendLine();
-            builder.Append("Skill");
-            if (contextPawn != null)
+            builder.Append("Relevant skills: ");
+            if (type.relevantSkills == null || type.relevantSkills.Count == 0)
             {
-                builder.Append(" (").Append(contextPawn.LabelShort).Append(")");
+                builder.Append("none");
             }
-            builder.Append(": ").Append(level >= 0 ? level + " " + PassionText(passion) : "—");
+            else
+            {
+                bool first = true;
+                for (int i = 0; i < type.relevantSkills.Count; i++)
+                {
+                    SkillDef skill = type.relevantSkills[i];
+                    if (skill == null)
+                    {
+                        continue;
+                    }
+                    if (!first)
+                    {
+                        builder.Append(", ");
+                    }
+                    builder.Append(skill.label);
+                    first = false;
+                }
+            }
             return builder.ToString();
+        }
+
+        /// <summary>
+        /// Best relevant SkillRecord without calling Pawn_SkillTracker.GetSkill for a missing
+        /// skill (that call logs a fallback warning). Returns null when no record is present.
+        /// </summary>
+        internal static SkillRecord SafeBestSkill(Pawn pawn, WorkTypeDef workType, out Passion passion)
+        {
+            passion = Passion.None;
+            if (pawn == null || pawn.Dead || pawn.skills == null || pawn.skills.skills == null
+                || workType == null || workType.relevantSkills == null)
+            {
+                return null;
+            }
+
+            SkillRecord best = null;
+            foreach (SkillDef skill in workType.relevantSkills)
+            {
+                if (skill == null)
+                {
+                    continue;
+                }
+
+                SkillRecord record = null;
+                List<SkillRecord> records = pawn.skills.skills;
+                for (int i = 0; i < records.Count; i++)
+                {
+                    if (records[i] != null && records[i].def == skill)
+                    {
+                        record = records[i];
+                        break;
+                    }
+                }
+                if (record == null)
+                {
+                    continue; // do not call GetSkill, which logs a fallback
+                }
+
+                if (best == null
+                    || record.Level > best.Level
+                    || (record.Level == best.Level && PassionRank(record.passion) > PassionRank(best.passion)))
+                {
+                    best = record;
+                }
+            }
+
+            if (best != null)
+            {
+                passion = best.passion;
+            }
+            return best;
+        }
+
+        private static int PassionRank(Passion passion)
+        {
+            if (passion == Passion.Major)
+            {
+                return 2;
+            }
+            if (passion == Passion.Minor)
+            {
+                return 1;
+            }
+            return 0;
         }
 
         internal static string PassionText(Passion passion)

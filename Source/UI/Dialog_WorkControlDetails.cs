@@ -119,8 +119,8 @@ namespace OrderedWork.UI
                         }
 
                         Passion passion;
-                        int level = WorkOrderService.BestSkillLevel(pawn, workType, out passion);
-                        string levelText = level >= 0 ? level.ToString() : "—";
+                        SkillRecord bestSkill = WorkTypePaletteView.SafeBestSkill(pawn, workType, out passion);
+                        string levelText = bestSkill != null ? bestSkill.Level.ToString() : "—";
                         int priority = pawn.workSettings != null ? pawn.workSettings.GetPriority(workType) : 0;
                         string status = WorkOrderService.IsIncapable(pawn, workType)
                             ? "Incapable"
@@ -162,7 +162,10 @@ namespace OrderedWork.UI
 
             if (icon != null)
             {
+                Color previous = GUI.color;
+                GUI.color = Color.white;
                 GUI.DrawTexture(rect, icon);
+                GUI.color = previous;
             }
         }
 

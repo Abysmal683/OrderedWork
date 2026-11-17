@@ -1,6 +1,6 @@
-# Work Control — Milestone 0.3.0-alpha.11 Checklist
+# Work Control — Milestone 0.3.0-alpha.12 Checklist
 
-Status: in progress — version 0.3.0-alpha.11. Layout/search/scroll/palette iteration written: colonist-bar pawn order + fallback, thin auto-hide scrollbars outside content with wheel over names/lanes, 3-row priority palette, Pawn/Work search with inversion, exact placeholder drag ghost with held card, tighter colored capitalized cards, lane/palette tooltips with a pawn-override hook, and resurrection/faction reapply-first logs. Runtime checks pending.
+Status: in progress — version 0.3.0-alpha.12. Bug-fix iteration written: horizontal scrollbar fixed above the matrix (12 px, reliable drag/click), visible Work text filter + plain selector + `Not` + match count, hover-based drag target rules, palette tooltip skill names without selected-pawn lookup and safe skill lookup (no missing-skill fallback log), lane tooltip Skill/Passion/Level/Rank split, preserved passion icon colors, and ~14 px tighter cards/ghost. Runtime checks pending.
 Goal: first usable Work Control tab with a horizontal lane that assigns WorkTypes and updates the vanilla Work tab.
 
 ## Scope in

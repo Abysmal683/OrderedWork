@@ -9,8 +9,8 @@ namespace OrderedWork.UI
     /// </summary>
     internal static class WorkGridScrollView
     {
-        internal const float Thickness = 8f;
-        private const float MinThumb = 16f;
+        internal const float Thickness = 12f;
+        private const float MinThumb = 24f;
 
         private static bool draggingVertical;
         private static bool draggingHorizontal;
