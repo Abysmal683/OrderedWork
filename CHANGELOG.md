@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.43] - 2026-11-16
+
+### Fixed
+- Split, Merge, WorkType reorder, giver-order commit, and Reset order now persist the live state to the active profile's pending JSON. Reset changes therefore see edits instead of a stale profile.
+- Saving a profile also refreshes its pending snapshot.
+- Reset list reads pending when present; after Restore/Delete it reflects the pending file on the next frame.
+- Profile-specific reset lists are expected: a change made under `default` does not appear while `reset_test` is active.
+
 ## [0.3.0-alpha.42] - 2026-11-16
 
 ### Changed

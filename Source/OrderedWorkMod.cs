@@ -266,6 +266,7 @@ namespace OrderedWork
                 {
                     activeProfileName = profile;
                     WorkConfigStore.SaveSelectedProfileName(profile);
+                    PersistLivePending();
                     profileStatus = "Saved " + profile + ".json";
                 }
                 else
@@ -611,6 +612,7 @@ namespace OrderedWork
                     }
                     Settings.giverOrder.RemoveAll(e => e != null && e.workType == selectedGiverType);
                     OrderedWorkStartup.ApplyPendingChanges(Settings, this);
+                    PersistLivePending();
                     confirmResetOrder = false;
                 }
                 if (list.ButtonText("Cancel reset order"))
@@ -630,6 +632,16 @@ namespace OrderedWork
         /// restore their captured origins; order overrides are reset by the selected-type
         /// control above.
         /// </summary>
+        private void PersistLivePending()
+        {
+            if (Settings == null || string.IsNullOrEmpty(activeProfileName))
+            {
+                return;
+            }
+            WorkConfigProfile captured = WorkConfigProfileBuilder.Capture(Settings, activeProfileName);
+            WorkConfigStore.SavePending(captured);
+        }
+
         private void DrawProfileResetChanges(Listing_Standard list)
         {
             list.Gap(14f);
@@ -1396,6 +1408,7 @@ namespace OrderedWork
                 Settings.workTypeOrder.Add(newDefName);
             }
             OrderedWorkStartup.ApplyPendingChanges(Settings, this);
+            PersistLivePending();
 
             splitName = "";
             splitDescription = "";
@@ -1452,6 +1465,7 @@ namespace OrderedWork
                 targetOrder = targetOrder
             });
             OrderedWorkStartup.ApplyPendingChanges(Settings, this);
+            PersistLivePending();
 
             mergeDraft.Clear();
             mergeTargetScroll = 0f;
@@ -1661,6 +1675,7 @@ namespace OrderedWork
             string item = order[from];
             order.RemoveAt(from);
             order.Insert(to, item);
+            PersistLivePending();
         }
 
         private void CommitGiverOrder(string workType, List<WorkGiverDef> givers)
