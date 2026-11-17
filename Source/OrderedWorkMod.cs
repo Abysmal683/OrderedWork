@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using OrderedWork.Core;
+using OrderedWork.UI;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -85,18 +86,20 @@ namespace OrderedWork
             Rect selectorRect = list.GetRect(28f);
             if (Widgets.ButtonText(selectorRect, "Work type: " + selectedLabel + "  ▼"))
             {
-                List<FloatMenuOption> options = new List<FloatMenuOption>();
+                List<WorkTypeDef> options = new List<WorkTypeDef>();
                 foreach (string id in Settings.workTypeOrder)
                 {
                     WorkTypeDef wt = DefDatabase<WorkTypeDef>.GetNamedSilentFail(id);
-                    string label = wt != null ? wt.labelShort : id;
-                    string captured = id;
-                    options.Add(new FloatMenuOption(label, delegate { selectedGiverType = captured; }));
+                    if (wt != null)
+                    {
+                        options.Add(wt);
+                    }
                 }
-                if (options.Count > 0)
-                {
-                    Find.WindowStack.Add(new FloatMenu(options));
-                }
+                Find.WindowStack.Add(new WorkTypeDropdownWindow(
+                    "Select Work type",
+                    options,
+                    DefDatabase<WorkTypeDef>.GetNamedSilentFail(selectedGiverType),
+                    delegate(WorkTypeDef wt) { selectedGiverType = wt.defName; }));
             }
             if (!string.IsNullOrEmpty(selectedGiverType))
             {

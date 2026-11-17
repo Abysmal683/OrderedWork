@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.20] - 2026-11-16
+
+### Fixed
+- The resize grip now actually resizes the tab: the tab override re-runs `SetInitialSizeAndPosition()` every frame, so changing the saved height updates the bottom-anchored window.
+- Mod Settings WorkType selector now uses the same compact 10-row dropdown method as Work Control (`Work type: ... ▼`), with the selected type excluded.
+- Added a thin vertical separator and extra gap between the Pawn filter and the Work combo.
+- Shift+wheel uses a longer step and snaps to the far-right position within 64 px, matching manual scrollbar reach.
+
 ## [0.3.0-alpha.19] - 2026-11-16
 
 ### Changed

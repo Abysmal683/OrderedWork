@@ -80,6 +80,9 @@ namespace OrderedWork.UI
 
         public override void DoWindowContents(Rect inRect)
         {
+            // MainTabWindow normally updates its own bottom-anchored rectangle each frame.
+            // Our override must do it too, otherwise the resize grip changes only the setting.
+            SetInitialSizeAndPosition();
             Widgets.DrawBoxSolid(inRect, new Color(0.11f, 0.12f, 0.13f, 1f));
             DrawPanelResizeHandle(inRect);
 
@@ -315,6 +318,10 @@ namespace OrderedWork.UI
             x += 42f;
             searchText = Widgets.TextField(new Rect(x, searchY, 168f, SearchHeight - 2f), searchText ?? "");
             x += 174f;
+            Widgets.DrawBoxSolid(
+                new Rect(x, searchY + 2f, 1f, SearchHeight - 4f),
+                new Color(0.38f, 0.42f, 0.46f, 1f));
+            x += 8f;
 
             Rect workButton = new Rect(x, searchY, 190f, SearchHeight - 2f);
             x += 194f;
