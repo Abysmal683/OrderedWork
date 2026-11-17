@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.62] - 2026-11-16
+
+### Fixed
+- After Restore/Delete, Order now writes both active and pending, clears the giver-order draft baseline, and reloads the selected WorkType so the Order editor reflects the reset immediately.
+- If the reset removes/hides the selected WorkType, Order falls back to the first visible WorkType.
+- Apply now logs `profileSaved` and `pendingSaved` separately, making a pending write failure visible.
+- `giverOrderDirty` is kept in sync with the sequence difference.
+
 ## [0.3.0-alpha.61] - 2026-11-16
 
 ### Fixed
