@@ -16,6 +16,22 @@ namespace OrderedWork
 {
     public partial class OrderedWorkMod : Mod
     {
+        private void ApplyLiveProfileFromSettings()
+        {
+            if (Settings == null || string.IsNullOrEmpty(activeProfileName))
+            {
+                return;
+            }
+            WorkConfigProfile profile = WorkConfigProfileBuilder.Capture(Settings, activeProfileName);
+            WorkConfigStore.SaveProfile(profile, true);
+            WorkConfigStore.SavePending(profile);
+            OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
+            giverOrderDraftInitialized = false;
+            giverOrderDraft.Clear();
+            giverOrderInitial.Clear();
+            giverOrderDraftType = "";
+        }
+
         private void DrawGiverOrderDiff(Listing_Standard list)
         {
             WorkConfigLoadResult active = WorkConfigStore.LoadActiveWithFallback(activeProfileName);

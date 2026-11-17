@@ -842,6 +842,7 @@ namespace OrderedWork
             }
             OrderedWorkStartup.ApplyPendingChanges(Settings, this);
             PersistLivePending();
+            ApplyLiveProfileFromSettings();
 
             splitName = "";
             splitDescription = "";
@@ -900,6 +901,7 @@ namespace OrderedWork
             });
             OrderedWorkStartup.ApplyPendingChanges(Settings, this);
             PersistLivePending();
+            ApplyLiveProfileFromSettings();
 
             mergeDraft.Clear();
             mergeTargetScroll = 0f;

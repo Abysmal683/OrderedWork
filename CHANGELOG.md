@@ -3,7 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [0.3.0-alpha.68] - 2026-11-16
+## [0.3.0-alpha.69] - 2026-11-16
+
+### Fixed
+- Split/Merge now capture and apply the resulting profile live, so Merge Patient→Firefighter updates Patient immediately rather than only pending.
+- Reset refresh and selected-WorkType fallback apply after live profile changes.
+- Delete split remains target-only; no reciprocal cleanup.
+- Version label remains single in General.
 
 ### Fixed
 - Removed the last fallback writes to `active-profile.txt`; selecting test_1 no longer silently reverts to vanilla after restart.
