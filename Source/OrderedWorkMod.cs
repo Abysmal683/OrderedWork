@@ -45,6 +45,7 @@ namespace OrderedWork
         // Split/Merge drafts are UI-only and never scribed.
         private string splitOrigin = "";
         private string splitName = "";
+        private string splitDescription = "";
         private List<string> splitDraft = new List<string>();
         private float splitOriginScroll;
         private float splitDraftScroll;
@@ -311,6 +312,9 @@ namespace OrderedWork
             Rect nameRow = list.GetRect(26f);
             Widgets.Label(new Rect(nameRow.x, nameRow.y, 110f, 24f), "New name");
             splitName = Widgets.TextField(new Rect(nameRow.x + 114f, nameRow.y, Mathf.Max(60f, nameRow.width - 114f), 24f), splitName ?? "");
+            Rect descRow = list.GetRect(26f);
+            Widgets.Label(new Rect(descRow.x, descRow.y, 110f, 24f), "Description");
+            splitDescription = Widgets.TextField(new Rect(descRow.x + 114f, descRow.y, Mathf.Max(60f, descRow.width - 114f), 24f), splitDescription ?? "");
             if (!string.IsNullOrWhiteSpace(splitName))
             {
                 list.Label("defName: " + BuildSplitDefName(splitName));
@@ -346,6 +350,7 @@ namespace OrderedWork
                 delegate
                 {
                     splitName = "";
+                    splitDescription = "";
                     splitDraft.Clear();
                     splitDraftScroll = 0f;
                 });
@@ -409,17 +414,11 @@ namespace OrderedWork
             }
 
             Rect actionsRect = list.GetRect(30f);
-            float buttonWidth = Mathf.Min(150f, (actionsRect.width - 12f) / 3f);
-            Rect selectedRect = new Rect(actionsRect.x, actionsRect.y, buttonWidth, 28f);
-            Rect allRect = new Rect(selectedRect.xMax + 6f, actionsRect.y, buttonWidth, 28f);
+            float buttonWidth = Mathf.Min(150f, (actionsRect.width - 12f) / 2f);
+            Rect allRect = new Rect(actionsRect.x, actionsRect.y, buttonWidth, 28f);
             Rect cancelRect = new Rect(allRect.xMax + 6f, actionsRect.y, buttonWidth, 28f);
 
-            string selectedWarning = MergeValidationWarning(false);
             string allWarning = MergeValidationWarning(true);
-            if (DrawActionButton(selectedRect, "Merge selected", string.IsNullOrEmpty(selectedWarning)))
-            {
-                SaveMerge(mergeDraft);
-            }
             if (DrawActionButton(allRect, "Merge all", string.IsNullOrEmpty(allWarning)))
             {
                 SaveMerge(originNames);
@@ -428,10 +427,6 @@ namespace OrderedWork
             {
                 mergeDraft.Clear();
                 mergeTargetScroll = 0f;
-            }
-            if (!string.IsNullOrEmpty(selectedWarning))
-            {
-                DrawInlineWarning(list, "Merge selected: " + selectedWarning);
             }
             if (!string.IsNullOrEmpty(allWarning))
             {
@@ -658,7 +653,7 @@ namespace OrderedWork
 
             // Work out where a dragged merge row would be inserted, including the empty area of
             // the column. A drop above all incoming rows inserts at 0; below them appends.
-            if (smDragSide == 2 && smDragMergeMode && smDragMoved && Mouse.IsOver(area))
+            if ((smDragSide == 1 || smDragSide == 2) && smDragMergeMode && smDragMoved && Mouse.IsOver(area))
             {
                 int hovered = -1;
                 for (int j = 0; j < incomingCount; j++)
@@ -967,6 +962,10 @@ namespace OrderedWork
             if (smDragSide == 1 && dropInDest)
             {
                 AddDraftGiver(smDragGiver, smDragMergeMode);
+                if (smDragMergeMode && smMergeDropIndex >= 0)
+                {
+                    ReorderMergeDraft(smDragGiver, smMergeDropIndex);
+                }
             }
             else if (smDragSide == 2 && dropInOrigin)
             {
@@ -1102,6 +1101,13 @@ namespace OrderedWork
                 string label = string.IsNullOrEmpty(split.label) ? split.newDefName : split.label;
                 string givers = split.givers != null ? string.Join(", ", split.givers) : "";
                 string text = "Saved: " + label + " [" + split.newDefName + "] from " + split.baseWorkType + " - " + givers;
+                if (split.givers == null || split.givers.Count == 0)
+                {
+                    Color previous = GUI.color;
+                    GUI.color = new Color(1f, 0.55f, 0.40f, 1f);
+                    list.Label("WARNING: empty split. Reset it; it will not be created on restart.");
+                    GUI.color = previous;
+                }
                 Rect row = list.GetRect(30f);
                 float buttonWidth = 132f;
                 Widgets.LabelEllipses(new Rect(row.x, row.y, Mathf.Max(60f, row.width - buttonWidth * 2f - 18f), 26f), text);
@@ -1227,6 +1233,7 @@ namespace OrderedWork
             {
                 newDefName = newDefName,
                 label = splitName.Trim(),
+                description = splitDescription.Trim(),
                 baseWorkType = splitOrigin,
                 givers = splitDraft.Distinct().ToList()
             });
@@ -1237,6 +1244,7 @@ namespace OrderedWork
             OrderedWorkStartup.ApplyPendingChanges(Settings, this);
 
             splitName = "";
+            splitDescription = "";
             splitDraft.Clear();
             splitDraftScroll = 0f;
         }
@@ -1357,6 +1365,7 @@ namespace OrderedWork
             selectedGiverType = Settings.workTypeOrder.FirstOrDefault() ?? "";
             splitOrigin = "";
             splitName = "";
+            splitDescription = "";
             splitDraft.Clear();
             splitOriginScroll = 0f;
             splitDraftScroll = 0f;
@@ -1606,15 +1615,41 @@ namespace OrderedWork
             {
                 Settings.workTypeOrder = new List<string>();
             }
+            // Drop stale/hidden split defs and empty saved splits from the visible order.
+            HashSet<string> validSplitNames = new HashSet<string>(
+                Settings.splits
+                    .Where(s => s != null && !string.IsNullOrEmpty(s.newDefName)
+                        && s.givers != null && s.givers.Count > 0)
+                    .Select(s => s.newDefName));
+            for (int i = Settings.workTypeOrder.Count - 1; i >= 0; i--)
+            {
+                string id = Settings.workTypeOrder[i];
+                WorkTypeDef def = DefDatabase<WorkTypeDef>.GetNamedSilentFail(id);
+                bool staleSplit = !string.IsNullOrEmpty(id)
+                    && id.StartsWith("OrderedWork_", StringComparison.Ordinal)
+                    && !validSplitNames.Contains(id);
+                if (def == null || !def.visible || staleSplit)
+                {
+                    if (staleSplit && def != null)
+                    {
+                        def.visible = false;
+                    }
+                    Settings.workTypeOrder.RemoveAt(i);
+                }
+            }
+
             if (Settings.workTypeOrder.Count == 0)
             {
                 Settings.workTypeOrder = DefDatabase<WorkTypeDef>.AllDefsListForReading
+                    .Where(w => w != null && w.visible)
                     .OrderByDescending(w => w.naturalPriority)
                     .Select(w => w.defName)
                     .ToList();
                 return;
             }
-            foreach (WorkTypeDef workType in DefDatabase<WorkTypeDef>.AllDefsListForReading.OrderByDescending(w => w.naturalPriority))
+            foreach (WorkTypeDef workType in DefDatabase<WorkTypeDef>.AllDefsListForReading
+                .Where(w => w != null && w.visible)
+                .OrderByDescending(w => w.naturalPriority))
             {
                 if (!Settings.workTypeOrder.Contains(workType.defName))
                 {

@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.30] - 2026-11-16
+
+### Fixed
+- Stale split WorkTypes are removed from the WorkType order on settings open; old `OrderedWork_*` defs with no valid saved split are hidden and dropped. Empty saved splits are no longer created and show an inline warning.
+- Merge-selected was removed: Merge now has **Merge all** and **Cancel draft**. Origin givers dropped on the destination now honor the insertion position; previously only destination rows could set the drop index.
+- Split now has an optional description field, persisted in `SplitEntry.description` and applied to the WorkTypeDef; the draft fields clear after save/cancel.
+- Hot apply/Reset split still restore givers to the base WorkType; new MergeEntry origins restore live reset for merges created after this version.
+
 ## [0.3.0-alpha.29] - 2026-11-16
 
 ### Fixed

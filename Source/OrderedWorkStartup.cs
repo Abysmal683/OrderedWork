@@ -63,7 +63,9 @@ namespace OrderedWork
         {
             foreach (SplitEntry split in settings.splits)
             {
-                if (split == null || string.IsNullOrWhiteSpace(split.newDefName) || string.IsNullOrWhiteSpace(split.baseWorkType))
+                if (split == null || string.IsNullOrWhiteSpace(split.newDefName)
+                    || string.IsNullOrWhiteSpace(split.baseWorkType)
+                    || split.givers == null || split.givers.Count == 0)
                 {
                     continue;
                 }
@@ -83,7 +85,9 @@ namespace OrderedWork
                     labelShort = split.label ?? split.newDefName,
                     pawnLabel = split.label ?? split.newDefName,
                     gerundLabel = split.label ?? split.newDefName,
-                    description = "Split from " + baseDef.labelShort,
+                    description = string.IsNullOrWhiteSpace(split.description)
+                        ? "Split from " + baseDef.labelShort
+                        : split.description,
                     verb = baseDef.verb,
                     naturalPriority = baseDef.naturalPriority,
                     alwaysStartActive = baseDef.alwaysStartActive,
