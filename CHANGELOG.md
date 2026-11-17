@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.55] - 2026-11-16
+
+### Fixed
+- The previous installed build still contained the old `GUI.enabled` button code; the source file was not the edited version despite the refactor. Order now calls `DrawActionButton(..., changed)` so Apply/Cancel are hard-disabled and cannot consume clicks.
+- Giver drag now sets `giverOrderDirty`; Apply/Cancel reset it after use.
+- Added `[OrderedWork][Order]` logs for drag and apply, including active profile and pending path.
+- Existing refactor remains intact.
+
 ## [0.3.0-alpha.54] - 2026-11-16
 
 ### Fixed

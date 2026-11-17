@@ -79,19 +79,16 @@ namespace OrderedWork
             Rect buttons = list.GetRect(30f);
             float half = (buttons.width - 8f) * 0.5f;
             bool changed = giverOrderDirty;
-            bool previousEnabled = GUI.enabled;
-            GUI.enabled = previousEnabled && changed;
-            if (Widgets.ButtonText(new Rect(buttons.x, buttons.y, half, 28f), "Apply giver order"))
+            if (changed && Widgets.ButtonText(new Rect(buttons.x, buttons.y, half, 28f), "Apply giver order"))
             {
                 ApplyGiverOrderDraft(active.Profile);
             }
-            if (Widgets.ButtonText(new Rect(buttons.x + half + 8f, buttons.y, half, 28f), "Cancel giver order"))
+            if (changed && Widgets.ButtonText(new Rect(buttons.x + half + 8f, buttons.y, half, 28f), "Cancel giver order"))
             {
                 giverOrderDraft = new List<string>(giverOrderInitial);
                 giverOrderDirty = false;
                 giverOrderDraftInitialized = true;
             }
-            GUI.enabled = previousEnabled;
         }
 
         private void MoveGiverOrderDraft(int from, int to)
@@ -103,6 +100,7 @@ namespace OrderedWork
             string item = giverOrderDraft[from];
             giverOrderDraft.RemoveAt(from);
             giverOrderDraft.Insert(to, item);
+            giverOrderDirty = true;
         }
 
         private void ApplyGiverOrderDraft(WorkConfigProfile profile)
@@ -128,6 +126,7 @@ namespace OrderedWork
             OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
             profileStatus = "Giver order for " + selectedGiverType + " applied.";
             giverOrderDraftInitialized = false;
+            giverOrderDirty = false;
         }
 
         private void DrawOrderEditor(Listing_Standard list)
