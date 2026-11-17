@@ -126,6 +126,17 @@ namespace OrderedWork
             HandleSplitMergeDrag();
         }
 
+        private WorkConfigProfile LoadEditingProfile()
+        {
+            WorkConfigProfile pending = WorkConfigStore.LoadPending(activeProfileName);
+            if (pending != null)
+            {
+                return pending;
+            }
+            WorkConfigLoadResult active = WorkConfigStore.LoadActiveWithFallback(activeProfileName);
+            return active != null ? active.Profile : null;
+        }
+
         private void DrawMergeEditor(Listing_Standard list)
         {
             EnsureSplitMergeDefaults();
@@ -862,15 +873,20 @@ namespace OrderedWork
                 return;
             }
 
-            List<string> incoming = givers.Distinct().ToList();
-            List<string> targetOrder = new List<string>();
-            foreach (WorkGiverDef existing in GiversForWorkType(mergeTarget))
+            WorkConfigProfile profile = LoadEditingProfile();
+            if (profile == null
+                || !profile.WorkTypes.TryGetValue(mergeOrigin, out WorkTypeConfig origin)
+                || origin == null
+                || !profile.WorkTypes.TryGetValue(mergeTarget, out WorkTypeConfig target)
+                || target == null)
             {
-                if (existing != null && !targetOrder.Contains(existing.defName))
-                {
-                    targetOrder.Add(existing.defName);
-                }
+                return;
             }
+
+            List<string> incoming = givers.Distinct().ToList();
+            target.Givers = target.Givers ?? new List<GiverConfig>();
+            List<string> targetOrder = target.Givers
+                .Where(g => g != null).OrderBy(g => g.Order).Select(g => g.DefName).ToList();
             foreach (string giverName in incoming)
             {
                 if (!targetOrder.Contains(giverName))
@@ -879,30 +895,51 @@ namespace OrderedWork
                 }
             }
 
-            List<GiverOrigin> origins = new List<GiverOrigin>();
             foreach (string giverName in incoming)
             {
-                WorkGiverDef giver = DefDatabase<WorkGiverDef>.GetNamedSilentFail(giverName);
-                if (giver != null && giver.workType != null)
+                foreach (WorkTypeConfig workType in profile.WorkTypes.Values)
                 {
-                    origins.Add(new GiverOrigin
+                    if (workType != null && workType.Givers != null)
                     {
-                        giver = giverName,
-                        workType = giver.workType.defName
-                    });
+                        workType.Givers.RemoveAll(g => g != null && g.DefName == giverName);
+                        for (int i = 0; i < workType.Givers.Count; i++)
+                        {
+                            workType.Givers[i].Order = i;
+                        }
+                    }
                 }
+                target.Givers.Add(new GiverConfig
+                {
+                    DefName = giverName,
+                    Order = target.Givers.Count,
+                    Mod = DefDatabase<WorkGiverDef>.GetNamedSilentFail(giverName)?.modContentPack?.PackageId
+                });
             }
-            Settings.merges.Add(new MergeEntry
+            target.Givers = targetOrder.Select((name, index) =>
             {
-                givers = incoming,
-                origins = origins,
-                targetWorkType = mergeTarget,
-                targetOrder = targetOrder
-            });
-            OrderedWorkStartup.ApplyPendingChanges(Settings, this);
-            PersistLivePending();
-            ApplyLiveProfileFromSettings();
+                GiverConfig giver = target.Givers.FirstOrDefault(g => g != null && g.DefName == name);
+                if (giver == null)
+                {
+                    giver = new GiverConfig { DefName = name };
+                }
+                giver.Order = index;
+                return giver;
+            }).ToList();
 
+            // An emptied split cannot exist in the canonical profile. Vanilla types stay
+            // hidden until another mod gives them content.
+            if (!origin.Vanilla && (origin.Givers == null || origin.Givers.Count == 0))
+            {
+                profile.WorkTypes.Remove(mergeOrigin);
+            }
+            if (origin.Vanilla && (origin.Givers == null || origin.Givers.Count == 0))
+            {
+                origin.Visible = false;
+            }
+
+            WorkConfigStore.SaveProfile(profile, true);
+            WorkConfigStore.SavePending(profile);
+            OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
             mergeDraft.Clear();
             mergeTargetScroll = 0f;
             mergeDirty = false;

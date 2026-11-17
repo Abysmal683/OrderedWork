@@ -3,7 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [0.3.0-alpha.69] - 2026-11-16
+## [0.3.0-alpha.70] - 2026-11-16
+
+### Fixed
+- Merge editor now reads the profile/pending giver lists instead of live WorkGiverDefs.
+- SaveMerge now moves givers in the canonical profile, saves active+pending and applies immediately; it no longer relies on legacy MergeEntry application.
+- ApplyProfile now reconciles every live WorkGiverDef: profile ownership wins; givers absent from the profile return to their reference owner.
+- This addresses the live Firefighter extra giver that Order/Reset could not see.
 
 ### Fixed
 - Split/Merge now capture and apply the resulting profile live, so Merge Patient→Firefighter updates Patient immediately rather than only pending.
