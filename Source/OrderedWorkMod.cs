@@ -87,8 +87,8 @@ namespace OrderedWork
         private List<string> giverOrderInitial = new List<string>();
         private string giverOrderDraftType = "";
         private bool giverOrderDraftInitialized;
-        private bool giverOrderDirty;
         private bool splitDirty;
+        private bool giverOrderDirty;
         private bool mergeDirty;
         private string newProfileName = "";
         private bool profileNameInitialized;

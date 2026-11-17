@@ -46,8 +46,8 @@ namespace OrderedWork
             {
                 reference.WorkTypes.TryGetValue(selectedGiverType, out referenceType);
             }
-            List<string> referenceGivers = referenceType != null && referenceType.Givers != null
-                ? referenceType.Givers.OrderBy(g => g.Order).Select(g => g.DefName).ToList()
+            List<string> referenceGivers = giverOrderInitial.Count > 0
+                ? new List<string>(giverOrderInitial)
                 : giverOrderDraft.ToList();
 
             string workLabel = DefDatabase<WorkTypeDef>.GetNamedSilentFail(selectedGiverType)?.labelShort ?? selectedGiverType;
@@ -78,7 +78,8 @@ namespace OrderedWork
 
             Rect buttons = list.GetRect(30f);
             float half = (buttons.width - 8f) * 0.5f;
-            bool changed = giverOrderDirty;
+            bool changed = !giverOrderDraft.SequenceEqual(giverOrderInitial);
+            giverOrderDirty = changed;
             if (DrawActionButton(new Rect(buttons.x, buttons.y, half, 28f), "Apply giver order", changed))
             {
                 ApplyGiverOrderDraft(active.Profile);
@@ -242,9 +243,20 @@ namespace OrderedWork
                             {
                                 baseType.Givers = new List<GiverConfig>();
                             }
+                            WorkTypeDef baseLive = DefDatabase<WorkTypeDef>.GetNamedSilentFail(removed.Base);
                             foreach (GiverConfig giver in removed.Givers ?? new List<GiverConfig>())
                             {
-                                if (giver != null && !baseType.Givers.Any(g => g.DefName == giver.DefName))
+                                if (giver == null)
+                                {
+                                    continue;
+                                }
+                                RemoveGiverFromOtherTypes(display, giver.DefName, removed.Base);
+                                WorkGiverDef live = DefDatabase<WorkGiverDef>.GetNamedSilentFail(giver.DefName);
+                                if (live != null && baseLive != null)
+                                {
+                                    live.workType = baseLive;
+                                }
+                                if (!baseType.Givers.Any(g => g.DefName == giver.DefName))
                                 {
                                     baseType.Givers.Add(new GiverConfig
                                     {
@@ -259,6 +271,20 @@ namespace OrderedWork
                     }
                     else
                     {
+                        WorkTypeDef restoredDef = DefDatabase<WorkTypeDef>.GetNamedSilentFail(defName);
+                        foreach (GiverConfig giver in original.Givers ?? new List<GiverConfig>())
+                        {
+                            if (giver == null)
+                            {
+                                continue;
+                            }
+                            RemoveGiverFromOtherTypes(display, giver.DefName, defName);
+                            WorkGiverDef live = DefDatabase<WorkGiverDef>.GetNamedSilentFail(giver.DefName);
+                            if (live != null && restoredDef != null)
+                            {
+                                live.workType = restoredDef;
+                            }
+                        }
                         display.WorkTypes[defName] = CloneWorkType(original);
                     }
                     if (WorkConfigStore.SavePending(display))
@@ -278,6 +304,7 @@ namespace OrderedWork
             {
                 return;
             }
+            List<string> emptySplits = new List<string>();
             foreach (KeyValuePair<string, WorkTypeConfig> entry in profile.WorkTypes)
             {
                 if (entry.Key == exceptDefName || entry.Value == null || entry.Value.Givers == null)
@@ -289,6 +316,17 @@ namespace OrderedWork
                 {
                     entry.Value.Givers[i].Order = i;
                 }
+                if (!entry.Value.Vanilla
+                    && !string.IsNullOrEmpty(entry.Value.Base)
+                    && entry.Value.Givers.Count == 0)
+                {
+                    emptySplits.Add(entry.Key);
+                }
+            }
+            foreach (string emptySplit in emptySplits)
+            {
+                profile.WorkTypes.Remove(emptySplit);
+                Log.Message("[OrderedWork][Reset] removed empty split " + emptySplit);
             }
         }
 

@@ -3,6 +3,19 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.60] - 2026-11-16
+
+### Fixed
+- Order left side now truly uses `giverOrderInitial` (last applied), not the reference profile; Apply refreshes it to the new order.
+- Order dirty is the sequence comparison itself; buttons enable/disable as the draft differs from the last applied order.
+- Restore now removes the reference giver from all other profile WorkTypes, reassigns the live WorkGiverDef, and restores the source in reference order.
+- Delete split returns givers to the base at the end and removes them from other profile types.
+- An empty split produced by reciprocal cleanup is removed and logged.
+
+### Still need design review
+- Cascading splits (a split based on another split) and restoring a source that leaves multiple derived splits empty.
+- Exact ordering when a restored giver has to be appended to a non-reference WorkType.
+
 ## [0.3.0-alpha.59] - 2026-11-16
 
 ### Fixed
