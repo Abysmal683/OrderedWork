@@ -3,7 +3,17 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [0.3.0-alpha.77] - 2026-11-16
+## [0.3.0-alpha.78] - 2026-11-16
+
+### Legacy removal — workTypeOrder
+- Removed `OrderedWorkSettings.workTypeOrder` and all persisted references.
+- Rules WorkType order now reads/writes profile `WorkTypeConfig.Order`.
+- Palette order, profile capture, startup fallback and dense-rank test now use the profile order.
+- Removed legacy `EnsureWorkTypeOrder`, `MoveWorkType` and `ApplyOrder` paths.
+
+### Remaining
+- `SplitEntry` remains only as a transient DTO for WorkType creation; no persisted split list.
+- Final cleanup can rename/remove that DTO and consolidate profile editor services.
 
 ### Legacy removal — split stage
 - Startup now loads/promotes/applies the JSON profile.

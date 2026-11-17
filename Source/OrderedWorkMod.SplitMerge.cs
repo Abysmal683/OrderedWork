@@ -767,7 +767,8 @@ namespace OrderedWork
 
         private void EnsureSplitMergeDefaults()
         {
-            string fallback = Settings.workTypeOrder.FirstOrDefault() ?? "";
+            string fallback = WorkConfigStore.GetOrderedVisibleWorkTypes(LoadEditingProfile())
+                .FirstOrDefault()?.defName ?? "";
             WorkTypeDef selectedGiverDef = DefDatabase<WorkTypeDef>.GetNamedSilentFail(selectedGiverType);
             if (selectedGiverDef == null || !selectedGiverDef.visible)
             {

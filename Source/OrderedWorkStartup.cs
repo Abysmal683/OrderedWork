@@ -33,7 +33,6 @@ namespace OrderedWork
                 }
 
                 ApplySplits(new List<SplitEntry>(), mod);
-                ApplyOrder(settings);
                 RebuildCaches();
             }
             catch (Exception exception)
@@ -59,7 +58,6 @@ namespace OrderedWork
                 return;
             }
 
-            settings.workTypeOrder.Clear();
             List<SplitEntry> splitEntries = new List<SplitEntry>();
 
             List<KeyValuePair<string, WorkTypeConfig>> ordered = profile.WorkTypes
@@ -106,7 +104,6 @@ namespace OrderedWork
                 }
                 def.visible = wt.Visible;
                 def.naturalPriority = 10000 - workOrder * 10;
-                settings.workTypeOrder.Add(entry.Key);
 
                 int giverOrder = 0;
                 if (wt.Givers != null)
@@ -236,54 +233,6 @@ namespace OrderedWork
                 if (trait.requiredWorkTypes != null && trait.requiredWorkTypes.Contains(baseDef) && !trait.requiredWorkTypes.Contains(newDef))
                 {
                     trait.requiredWorkTypes.Add(newDef);
-                }
-            }
-        }
-
-        private static void ApplyOrder(OrderedWorkSettings settings)
-        {
-            if (settings.workTypeOrder == null || settings.workTypeOrder.Count == 0)
-            {
-                return;
-            }
-            List<WorkTypeDef> all = DefDatabase<WorkTypeDef>.AllDefsListForReading;
-            List<WorkTypeDef> ordered = new List<WorkTypeDef>();
-            foreach (string defName in settings.workTypeOrder)
-            {
-                WorkTypeDef def = all.FirstOrDefault(d => d.defName == defName);
-                if (def != null && !ordered.Contains(def))
-                {
-                    ordered.Add(def);
-                }
-            }
-            foreach (WorkTypeDef def in all.OrderByDescending(d => d.naturalPriority))
-            {
-                if (!ordered.Contains(def))
-                {
-                    ordered.Add(def);
-                }
-            }
-            for (int i = 0; i < ordered.Count; i++)
-            {
-                ordered[i].naturalPriority = 10000 - i * 10;
-            }
-
-            foreach (WorkTypeDef workType in ordered)
-            {
-                List<WorkGiverDef> givers = DefDatabase<WorkGiverDef>.AllDefsListForReading
-                    .Where(g => g.workType == workType)
-                    .ToList();
-                List<WorkGiverDef> sorted = new List<WorkGiverDef>();
-                foreach (WorkGiverDef giver in givers.OrderByDescending(g => g.priorityInType))
-                {
-                    if (!sorted.Contains(giver))
-                    {
-                        sorted.Add(giver);
-                    }
-                }
-                for (int i = 0; i < sorted.Count; i++)
-                {
-                    sorted[i].priorityInType = 10000 - i * 10;
                 }
             }
         }

@@ -133,17 +133,30 @@ namespace OrderedWork
             }
         }
 
-        private void MoveWorkType(int from, int to)
+        private void MoveWorkTypeProfile(List<WorkTypeDef> ordered, int from, int to)
         {
-            List<string> order = Settings.workTypeOrder;
-            if (from < 0 || from >= order.Count || to < 0 || to >= order.Count || from == to)
+            if (ordered == null || from < 0 || from >= ordered.Count || to < 0 || to >= ordered.Count || from == to)
             {
                 return;
             }
-            string item = order[from];
-            order.RemoveAt(from);
-            order.Insert(to, item);
-            PersistLivePending();
+            WorkTypeDef item = ordered[from];
+            ordered.RemoveAt(from);
+            ordered.Insert(to, item);
+            WorkConfigProfile profile = WorkConfigStore.LoadEditingProfile(activeProfileName);
+            if (profile == null)
+            {
+                return;
+            }
+            for (int i = 0; i < ordered.Count; i++)
+            {
+                if (profile.WorkTypes.TryGetValue(ordered[i].defName, out WorkTypeConfig config) && config != null)
+                {
+                    config.Order = i;
+                }
+            }
+            WorkConfigStore.SaveProfile(profile, true);
+            WorkConfigStore.SavePending(profile);
+            OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
         }
 
         private void ApplyTestDenseRank()
@@ -161,7 +174,9 @@ namespace OrderedWork
                     .Select(w => w.defName)
                     .ToList();
 
-                List<string> order = DenseRank.NormalizeOrder(Settings.workTypeOrder, available);
+                List<string> order = WorkConfigStore.GetOrderedVisibleWorkTypes(
+                    WorkConfigStore.LoadEditingProfile(activeProfileName)).Select(w => w.defName).ToList();
+                order = DenseRank.NormalizeOrder(order, available);
                 if (order.Count == 0)
                 {
                     Log.Warning("[Ordered Work] No visible work types available for the dense rank test.");
@@ -224,59 +239,6 @@ namespace OrderedWork
             catch (Exception ex)
             {
                 Log.Error("[Ordered Work] Dense rank test failed: " + ex);
-            }
-        }
-
-        private void EnsureWorkTypeOrder()
-        {
-            if (Settings.workTypeOrder == null)
-            {
-                Settings.workTypeOrder = new List<string>();
-            }
-            // Drop stale/hidden split defs from the visible order using the profile as source.
-            EnsureProfileNameInitialized();
-            WorkConfigProfile displayProfile = LoadEditingProfile();
-            HashSet<string> validSplitNames = displayProfile == null
-                ? new HashSet<string>(StringComparer.Ordinal)
-                : new HashSet<string>(displayProfile.WorkTypes
-                    .Where(e => e.Value != null && !e.Value.Vanilla
-                        && e.Value.Givers != null && e.Value.Givers.Count > 0)
-                    .Select(e => e.Key), StringComparer.Ordinal);
-            for (int i = Settings.workTypeOrder.Count - 1; i >= 0; i--)
-            {
-                string id = Settings.workTypeOrder[i];
-                WorkTypeDef def = DefDatabase<WorkTypeDef>.GetNamedSilentFail(id);
-                bool staleSplit = !string.IsNullOrEmpty(id)
-                    && id.StartsWith("OrderedWork_", StringComparison.Ordinal)
-                    && (!validSplitNames.Contains(id)
-                        || GiversForWorkType(id).Count == 0);
-                if (def == null || !def.visible || staleSplit)
-                {
-                    if (staleSplit && def != null)
-                    {
-                        def.visible = false;
-                    }
-                    Settings.workTypeOrder.RemoveAt(i);
-                }
-            }
-
-            if (Settings.workTypeOrder.Count == 0)
-            {
-                Settings.workTypeOrder = DefDatabase<WorkTypeDef>.AllDefsListForReading
-                    .Where(w => w != null && w.visible)
-                    .OrderByDescending(w => w.naturalPriority)
-                    .Select(w => w.defName)
-                    .ToList();
-                return;
-            }
-            foreach (WorkTypeDef workType in DefDatabase<WorkTypeDef>.AllDefsListForReading
-                .Where(w => w != null && w.visible)
-                .OrderByDescending(w => w.naturalPriority))
-            {
-                if (!Settings.workTypeOrder.Contains(workType.defName))
-                {
-                    Settings.workTypeOrder.Add(workType.defName);
-                }
             }
         }
 

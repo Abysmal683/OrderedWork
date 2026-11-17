@@ -19,7 +19,8 @@ namespace OrderedWork.Config
                 Profile = string.IsNullOrWhiteSpace(profileName) ? "default" : profileName.Trim()
             };
             HashSet<string> mods = new HashSet<string>(StringComparer.Ordinal);
-            List<WorkTypeDef> workTypes = OrderedWorkTypes(settings);
+            List<WorkTypeDef> workTypes = WorkConfigStore.GetOrderedVisibleWorkTypes(
+                WorkConfigStore.LoadEditingProfile(WorkConfigStore.LoadSelectedProfileName()));
             WorkConfigProfile existingProfile = WorkConfigStore.LoadPending(profile.Profile)
                 ?? (WorkConfigStore.LoadActiveWithFallback(profile.Profile)?.Profile);
             int order = 0;
@@ -63,34 +64,6 @@ namespace OrderedWork.Config
                 profile.Mods.Add(new WorkConfigMod { PackageId = packageId, Name = packageId });
             }
             return profile;
-        }
-
-        private static List<WorkTypeDef> OrderedWorkTypes(OrderedWorkSettings settings)
-        {
-            List<WorkTypeDef> all = DefDatabase<WorkTypeDef>.AllDefsListForReading
-                .Where(w => w != null && w.visible)
-                .ToList();
-            List<WorkTypeDef> ordered = new List<WorkTypeDef>();
-            HashSet<string> added = new HashSet<string>(StringComparer.Ordinal);
-            if (settings != null && settings.workTypeOrder != null)
-            {
-                foreach (string id in settings.workTypeOrder)
-                {
-                    WorkTypeDef def = all.FirstOrDefault(w => w.defName == id);
-                    if (def != null && added.Add(def.defName))
-                    {
-                        ordered.Add(def);
-                    }
-                }
-            }
-            foreach (WorkTypeDef def in all.OrderByDescending(w => w.naturalPriority))
-            {
-                if (added.Add(def.defName))
-                {
-                    ordered.Add(def);
-                }
-            }
-            return ordered;
         }
     }
 }

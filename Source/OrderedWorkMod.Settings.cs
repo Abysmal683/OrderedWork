@@ -73,17 +73,21 @@ namespace OrderedWork
             list.Gap(6f);
 
             list.Label("Work type order (top = first). Drag rows to reorder:");
+            WorkConfigProfile rulesProfile = WorkConfigStore.LoadEditingProfile(activeProfileName);
+            List<WorkTypeDef> orderedTypes = WorkConfigStore.GetOrderedVisibleWorkTypes(rulesProfile);
             List<Rect> workRows = new List<Rect>();
-            for (int i = 0; i < Settings.workTypeOrder.Count; i++)
+            for (int i = 0; i < orderedTypes.Count; i++)
             {
-                string defName = Settings.workTypeOrder[i];
-                WorkTypeDef wt = DefDatabase<WorkTypeDef>.GetNamedSilentFail(defName);
-                string label = wt != null ? wt.labelShort : defName;
+                WorkTypeDef wt = orderedTypes[i];
+                string defName = wt.defName;
                 Rect row = list.GetRect(24f);
-                DrawReorderRow(row, i + 1 + ". " + label, 1, i, WorkTypeTooltip(defName));
+                DrawReorderRow(row, i + 1 + ". " + wt.labelShort, 1, i, WorkTypeTooltip(defName));
                 workRows.Add(row);
             }
-            HandleReorderDrag(1, workRows, MoveWorkType);
+            HandleReorderDrag(1, workRows, delegate(int from, int to)
+            {
+                MoveWorkTypeProfile(orderedTypes, from, to);
+            });
 
             list.Gap(14f);
             DrawSplitMergeEditor(list);

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using OrderedWork.Config;
 using OrderedWork.Services;
 using RimWorld;
 using UnityEngine;
@@ -764,40 +765,22 @@ namespace OrderedWork.UI
             {
                 return new List<WorkTypeDef>();
             }
-            if (OrderedWorkMod.Settings == null
-                || OrderedWorkMod.Settings.workTypeOrder == null
-                || OrderedWorkMod.Settings.workTypeOrder.Count == 0)
-            {
-                return available;
-            }
-
-            Dictionary<string, WorkTypeDef> byName = new Dictionary<string, WorkTypeDef>(StringComparer.Ordinal);
+            WorkConfigProfile profile = WorkConfigStore.LoadEditingProfile(
+                WorkConfigStore.LoadSelectedProfileName());
+            List<WorkTypeDef> ordered = WorkConfigStore.GetOrderedVisibleWorkTypes(profile);
+            HashSet<string> availableNames = new HashSet<string>(
+                available.Where(t => t != null).Select(t => t.defName), StringComparer.Ordinal);
+            List<WorkTypeDef> result = ordered
+                .Where(t => t != null && availableNames.Contains(t.defName))
+                .ToList();
             foreach (WorkTypeDef type in available)
             {
-                if (type != null && !string.IsNullOrEmpty(type.defName))
+                if (type != null && !result.Contains(type))
                 {
-                    byName[type.defName] = type;
+                    result.Add(type);
                 }
             }
-
-            List<WorkTypeDef> ordered = new List<WorkTypeDef>();
-            HashSet<string> added = new HashSet<string>(StringComparer.Ordinal);
-            foreach (string id in OrderedWorkMod.Settings.workTypeOrder)
-            {
-                WorkTypeDef type;
-                if (!string.IsNullOrEmpty(id) && byName.TryGetValue(id, out type) && added.Add(id))
-                {
-                    ordered.Add(type);
-                }
-            }
-            foreach (WorkTypeDef type in available)
-            {
-                if (type != null && added.Add(type.defName))
-                {
-                    ordered.Add(type);
-                }
-            }
-            return ordered;
+            return result;
         }
 
         private static List<Pawn> GetColonistsInDisplayOrder()

@@ -103,7 +103,6 @@ namespace OrderedWork
         public override void DoSettingsWindowContents(Rect inRect)
         {
             EnsureProfileNameInitialized();
-            EnsureWorkTypeOrder();
 
             Rect tabsRect = new Rect(inRect.x, inRect.y, inRect.width, 28f);
             DrawSettingsTabs(tabsRect);
@@ -196,17 +195,13 @@ namespace OrderedWork
 
         private void ResetAllSettings()
         {
-            Settings.workTypeOrder = DefDatabase<WorkTypeDef>.AllDefsListForReading
-                .Where(w => w != null && w.visible)
-                .OrderByDescending(w => w.naturalPriority)
-                .Select(w => w.defName)
-                .ToList();
             Settings.workTypeColors.Clear();
             Settings.autoRecommendNewColony = true;
             Settings.autoHideScrollbars = true;
             Settings.paletteStressTest = false;
             Settings.workControlHeight = 0f;
-            selectedGiverType = Settings.workTypeOrder.FirstOrDefault() ?? "";
+            selectedGiverType = WorkConfigStore.GetOrderedVisibleWorkTypes(
+                WorkConfigStore.LoadEditingProfile(activeProfileName)).FirstOrDefault()?.defName ?? "";
             splitOrigin = "";
             splitName = "";
             splitDescription = "";

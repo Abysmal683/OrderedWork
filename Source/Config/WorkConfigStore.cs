@@ -90,6 +90,48 @@ namespace OrderedWork.Config
             };
         }
 
+        public static WorkConfigProfile LoadEditingProfile(string selected)
+        {
+            WorkConfigProfile pending = LoadPending(selected);
+            if (pending != null)
+            {
+                return pending;
+            }
+            WorkConfigLoadResult active = LoadActiveWithFallback(selected);
+            return active != null ? active.Profile : null;
+        }
+
+        public static List<WorkTypeDef> GetOrderedVisibleWorkTypes(WorkConfigProfile profile)
+        {
+            List<WorkTypeDef> all = DefDatabase<WorkTypeDef>.AllDefsListForReading
+                .Where(w => w != null && w.visible)
+                .ToList();
+            if (profile == null)
+            {
+                return all.OrderByDescending(w => w.naturalPriority).ToList();
+            }
+            List<WorkTypeDef> ordered = new List<WorkTypeDef>();
+            HashSet<string> added = new HashSet<string>(StringComparer.Ordinal);
+            foreach (KeyValuePair<string, WorkTypeConfig> entry in profile.WorkTypes
+                .Where(e => e.Value != null)
+                .OrderBy(e => e.Value.Order))
+            {
+                WorkTypeDef def = all.FirstOrDefault(w => w.defName == entry.Key);
+                if (def != null && added.Add(def.defName))
+                {
+                    ordered.Add(def);
+                }
+            }
+            foreach (WorkTypeDef def in all.OrderByDescending(w => w.naturalPriority))
+            {
+                if (added.Add(def.defName))
+                {
+                    ordered.Add(def);
+                }
+            }
+            return ordered;
+        }
+
         public static WorkConfigProfile TryLoad(string path)
         {
             try

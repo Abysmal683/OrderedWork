@@ -285,7 +285,8 @@ namespace OrderedWork
                         WorkTypeDef selectedAfterReset = DefDatabase<WorkTypeDef>.GetNamedSilentFail(selectedGiverType);
                         if (selectedAfterReset == null || !selectedAfterReset.visible)
                         {
-                            selectedGiverType = Settings.workTypeOrder.FirstOrDefault() ?? "";
+                            selectedGiverType = WorkConfigStore.GetOrderedVisibleWorkTypes(display)
+                                .FirstOrDefault()?.defName ?? "";
                         }
                     }
                     break;
