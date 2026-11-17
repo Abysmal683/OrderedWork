@@ -3,6 +3,18 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.31] - 2026-11-16
+
+### Fixed
+- Restored `Merge selected` alongside `Merge all` and `Cancel draft`.
+- Order mode now has a saved-split metadata editor: select a live split, edit name and description, and apply them to both `SplitEntry` and the live `WorkTypeDef`.
+- Stale split/giver selections are cleared when a reset hides/removes a WorkType, so selectors no longer point at ghost types.
+- Empty splits are hidden/skipped and show a warning; split descriptions are optional and clear after save/cancel.
+
+### Known limitations
+- `Merge all` can still empty the origin; vanilla origin handling and the accept/cancel dialog for an empty split origin are not implemented yet.
+- Global def changes are still hot in the current session; the pending-file/next-load application guard remains a design item.
+
 ## [0.3.0-alpha.30] - 2026-11-16
 
 ### Fixed

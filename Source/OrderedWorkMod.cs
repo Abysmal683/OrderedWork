@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using OrderedWork.Core;
+using OrderedWork.Services;
 using OrderedWork.UI;
 using RimWorld;
 using UnityEngine;
@@ -41,6 +42,9 @@ namespace OrderedWork
 
         // Order mode origin. Kept as UI-only state; the saved order itself lives in settings.
         private string selectedGiverType = "";
+        private string editSplitDefName = "";
+        private string editSplitName = "";
+        private string editSplitDescription = "";
 
         // Split/Merge drafts are UI-only and never scribed.
         private string splitOrigin = "";
@@ -414,11 +418,17 @@ namespace OrderedWork
             }
 
             Rect actionsRect = list.GetRect(30f);
-            float buttonWidth = Mathf.Min(150f, (actionsRect.width - 12f) / 2f);
-            Rect allRect = new Rect(actionsRect.x, actionsRect.y, buttonWidth, 28f);
+            float buttonWidth = Mathf.Min(150f, (actionsRect.width - 12f) / 3f);
+            Rect selectedRect = new Rect(actionsRect.x, actionsRect.y, buttonWidth, 28f);
+            Rect allRect = new Rect(selectedRect.xMax + 6f, actionsRect.y, buttonWidth, 28f);
             Rect cancelRect = new Rect(allRect.xMax + 6f, actionsRect.y, buttonWidth, 28f);
 
+            string selectedWarning = MergeValidationWarning(false);
             string allWarning = MergeValidationWarning(true);
+            if (DrawActionButton(selectedRect, "Merge selected", string.IsNullOrEmpty(selectedWarning)))
+            {
+                SaveMerge(mergeDraft);
+            }
             if (DrawActionButton(allRect, "Merge all", string.IsNullOrEmpty(allWarning)))
             {
                 SaveMerge(originNames);
@@ -427,6 +437,10 @@ namespace OrderedWork
             {
                 mergeDraft.Clear();
                 mergeTargetScroll = 0f;
+            }
+            if (!string.IsNullOrEmpty(selectedWarning))
+            {
+                DrawInlineWarning(list, "Merge selected: " + selectedWarning);
             }
             if (!string.IsNullOrEmpty(allWarning))
             {
@@ -496,6 +510,64 @@ namespace OrderedWork
                 }
             }
             list.Label("Reset order does not write WorkTypes or pawn priorities now; it only removes the saved override.");
+            list.Gap(12f);
+            DrawSavedSplitMetadata(list);
+        }
+
+        private void DrawSavedSplitMetadata(Listing_Standard list)
+        {
+            list.Label("Edit saved split metadata (hot):");
+            List<WorkTypeDef> splitDefs = Settings.splits
+                .Where(s => s != null && !string.IsNullOrEmpty(s.newDefName))
+                .Select(s => DefDatabase<WorkTypeDef>.GetNamedSilentFail(s.newDefName))
+                .Where(d => d != null)
+                .ToList();
+            if (splitDefs.Count == 0)
+            {
+                list.Label("No saved splits with a live WorkType.");
+                return;
+            }
+
+            WorkTypeDef selected = DefDatabase<WorkTypeDef>.GetNamedSilentFail(editSplitDefName);
+            Rect selector = list.GetRect(28f);
+            if (Widgets.ButtonText(selector, "Split: " + (selected != null ? selected.labelShort : "(select)") + "  ▼"))
+            {
+                Find.WindowStack.Add(new WorkTypeDropdownWindow(
+                    "Select split",
+                    splitDefs,
+                    selected,
+                    delegate(WorkTypeDef wt)
+                    {
+                        editSplitDefName = wt.defName;
+                        SplitEntry entry = Settings.splits.FirstOrDefault(s => s != null && s.newDefName == wt.defName);
+                        editSplitName = entry != null ? entry.label : wt.labelShort;
+                        editSplitDescription = entry != null ? entry.description : wt.description;
+                    }));
+            }
+
+            if (selected != null)
+            {
+                Rect nameRow = list.GetRect(26f);
+                Widgets.Label(new Rect(nameRow.x, nameRow.y, 100f, 24f), "Name");
+                editSplitName = Widgets.TextField(new Rect(nameRow.x + 104f, nameRow.y, nameRow.width - 104f, 24f), editSplitName ?? "");
+                Rect descRow = list.GetRect(26f);
+                Widgets.Label(new Rect(descRow.x, descRow.y, 100f, 24f), "Description");
+                editSplitDescription = Widgets.TextField(new Rect(descRow.x + 104f, descRow.y, descRow.width - 104f, 24f), editSplitDescription ?? "");
+                if (Widgets.ButtonText(list.GetRect(28f), "Apply split metadata") && !string.IsNullOrWhiteSpace(editSplitName))
+                {
+                    SplitEntry entry = Settings.splits.FirstOrDefault(s => s != null && s.newDefName == selected.defName);
+                    if (entry != null)
+                    {
+                        entry.label = editSplitName.Trim();
+                        entry.description = editSplitDescription.Trim();
+                    }
+                    selected.labelShort = editSplitName.Trim();
+                    selected.pawnLabel = editSplitName.Trim();
+                    selected.gerundLabel = editSplitName.Trim();
+                    selected.description = editSplitDescription.Trim();
+                    WorkOrderService.InvalidateAvailableWorkTypes();
+                }
+            }
         }
 
         private void DrawGiverColumn(
@@ -1031,6 +1103,18 @@ namespace OrderedWork
         private void EnsureSplitMergeDefaults()
         {
             string fallback = Settings.workTypeOrder.FirstOrDefault() ?? "";
+            WorkTypeDef selectedGiverDef = DefDatabase<WorkTypeDef>.GetNamedSilentFail(selectedGiverType);
+            if (selectedGiverDef == null || !selectedGiverDef.visible)
+            {
+                selectedGiverType = "";
+            }
+            WorkTypeDef editDef = DefDatabase<WorkTypeDef>.GetNamedSilentFail(editSplitDefName);
+            if (editDef == null || !editDef.visible)
+            {
+                editSplitDefName = "";
+                editSplitName = "";
+                editSplitDescription = "";
+            }
             if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(splitOrigin) == null)
             {
                 splitOrigin = fallback;
@@ -1136,6 +1220,12 @@ namespace OrderedWork
                             }
                             Settings.workTypeOrder.Remove(split.newDefName);
                             Settings.giverOrder.RemoveAll(e => e != null && e.workType == split.newDefName);
+                            if (editSplitDefName == split.newDefName)
+                            {
+                                editSplitDefName = "";
+                                editSplitName = "";
+                                editSplitDescription = "";
+                            }
                         }
                         Settings.splits.RemoveAt(i);
                         OrderedWorkStartup.ApplyPendingChanges(Settings, this);
