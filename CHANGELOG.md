@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.36] - 2026-11-16
+
+### Changed
+- Split/Merge saved-entry lists are now informational only; their reset buttons were removed.
+- Reset changed WorkTypes moved to the Order tab: split entries use **Delete**, merge entries use **Restore**, each with confirmation. Split delete restores givers to the base and hides the split; merge restore uses `MergeEntry.origins` when available.
+- The reset section remains separate from profile JSON application; profile promotion/apply is still the next integration step.
+
 ## [0.3.0-alpha.35] - 2026-11-16
 
 ### Added

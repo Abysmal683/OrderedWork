@@ -631,6 +631,134 @@ namespace OrderedWork
             list.Label("Reset order does not write WorkTypes or pawn priorities now; it only removes the saved override.");
             list.Gap(12f);
             DrawSavedSplitMetadata(list);
+            DrawResetChanges(list);
+        }
+
+        /// <summary>
+        /// Unified reset surface: Split and Merge editors no longer own reset buttons.
+        /// Split entries are deleted (restoring their givers to the base); merge entries
+        /// restore their captured origins; order overrides are reset by the selected-type
+        /// control above.
+        /// </summary>
+        private void DrawResetChanges(Listing_Standard list)
+        {
+            list.Gap(14f);
+            list.Label("Reset changes:");
+            if (Settings.splits.Count == 0 && Settings.merges.Count == 0)
+            {
+                list.Label("No saved split/merge changes.");
+                return;
+            }
+
+            for (int i = 0; i < Settings.splits.Count; i++)
+            {
+                SplitEntry split = Settings.splits[i];
+                if (split == null)
+                {
+                    continue;
+                }
+                Rect row = list.GetRect(30f);
+                string label = string.IsNullOrEmpty(split.label) ? split.newDefName : split.label;
+                Widgets.LabelEllipses(new Rect(row.x, row.y, row.width - 150f, 26f),
+                    "Delete split: " + label);
+                if (confirmResetSplitIndex == i)
+                {
+                    if (Widgets.ButtonText(new Rect(row.xMax - 144f, row.y, 138f, 26f), "Confirm delete"))
+                    {
+                        ResetSplit(i);
+                        break;
+                    }
+                }
+                else if (Widgets.ButtonText(new Rect(row.xMax - 138f, row.y, 132f, 26f), "Delete"))
+                {
+                    confirmResetSplitIndex = i;
+                }
+            }
+
+            for (int i = 0; i < Settings.merges.Count; i++)
+            {
+                MergeEntry merge = Settings.merges[i];
+                if (merge == null)
+                {
+                    continue;
+                }
+                Rect row = list.GetRect(30f);
+                Widgets.LabelEllipses(new Rect(row.x, row.y, row.width - 150f, 26f),
+                    "Restore merge -> " + merge.targetWorkType);
+                if (confirmResetMergeIndex == i)
+                {
+                    if (Widgets.ButtonText(new Rect(row.xMax - 144f, row.y, 138f, 26f), "Confirm restore"))
+                    {
+                        ResetMerge(i);
+                        break;
+                    }
+                }
+                else if (Widgets.ButtonText(new Rect(row.xMax - 138f, row.y, 132f, 26f), "Restore"))
+                {
+                    confirmResetMergeIndex = i;
+                }
+            }
+        }
+
+        private void ResetSplit(int index)
+        {
+            if (index < 0 || index >= Settings.splits.Count)
+            {
+                return;
+            }
+            SplitEntry split = Settings.splits[index];
+            if (split != null)
+            {
+                WorkTypeDef splitDef = DefDatabase<WorkTypeDef>.GetNamedSilentFail(split.newDefName);
+                WorkTypeDef baseDef = DefDatabase<WorkTypeDef>.GetNamedSilentFail(split.baseWorkType);
+                if (splitDef != null && baseDef != null && split.givers != null)
+                {
+                    foreach (string giverName in split.givers)
+                    {
+                        WorkGiverDef giver = DefDatabase<WorkGiverDef>.GetNamedSilentFail(giverName);
+                        if (giver != null)
+                        {
+                            giver.workType = baseDef;
+                        }
+                    }
+                    splitDef.visible = false;
+                }
+                Settings.workTypeOrder.Remove(split.newDefName);
+                Settings.giverOrder.RemoveAll(e => e != null && e.workType == split.newDefName);
+                if (editSplitDefName == split.newDefName)
+                {
+                    editSplitDefName = "";
+                    editSplitName = "";
+                    editSplitDescription = "";
+                }
+            }
+            Settings.splits.RemoveAt(index);
+            OrderedWorkStartup.ApplyPendingChanges(Settings, this);
+            confirmResetSplitIndex = -1;
+        }
+
+        private void ResetMerge(int index)
+        {
+            if (index < 0 || index >= Settings.merges.Count)
+            {
+                return;
+            }
+            MergeEntry merge = Settings.merges[index];
+            if (merge != null && merge.origins != null)
+            {
+                foreach (GiverOrigin origin in merge.origins)
+                {
+                    WorkGiverDef giver = DefDatabase<WorkGiverDef>.GetNamedSilentFail(origin.giver);
+                    WorkTypeDef source = DefDatabase<WorkTypeDef>.GetNamedSilentFail(origin.workType);
+                    if (giver != null && source != null)
+                    {
+                        giver.workType = source;
+                    }
+                }
+            }
+            Settings.merges.RemoveAt(index);
+            OrderedWorkStartup.ApplyPendingChanges(Settings, this);
+            confirmResetMergeIndex = -1;
         }
 
         private void DrawSavedSplitMetadata(Listing_Standard list)
@@ -1302,7 +1430,7 @@ namespace OrderedWork
         private void DrawSavedSplits(Listing_Standard list)
         {
             list.Gap(8f);
-            list.Label("Saved splits (applied on restart):");
+            list.Label("Saved splits (informational; reset is in Order):");
             if (Settings.splits.Count == 0)
             {
                 list.Label("None.");
@@ -1317,75 +1445,20 @@ namespace OrderedWork
                 }
                 string label = string.IsNullOrEmpty(split.label) ? split.newDefName : split.label;
                 string givers = split.givers != null ? string.Join(", ", split.givers) : "";
-                string text = "Saved: " + label + " [" + split.newDefName + "] from " + split.baseWorkType + " - " + givers;
                 if (split.givers == null || split.givers.Count == 0)
                 {
                     Color previous = GUI.color;
                     GUI.color = new Color(1f, 0.55f, 0.40f, 1f);
-                    list.Label("WARNING: empty split. Reset it; it will not be created on restart.");
+                    list.Label("WARNING: empty split. Reset it from Order.");
                     GUI.color = previous;
                 }
-                Rect row = list.GetRect(30f);
-                float buttonWidth = 132f;
-                Widgets.LabelEllipses(new Rect(row.x, row.y, Mathf.Max(60f, row.width - buttonWidth * 2f - 18f), 26f), text);
-
-                if (confirmResetSplitIndex == i)
-                {
-                    Rect confirmRect = new Rect(row.xMax - buttonWidth * 2f - 12f, row.y, buttonWidth, 26f);
-                    Rect cancelRect = new Rect(row.xMax - buttonWidth, row.y, buttonWidth, 26f);
-                    if (Widgets.ButtonText(confirmRect, "Confirm reset split"))
-                    {
-                        if (split != null)
-                        {
-                            WorkTypeDef splitDef = DefDatabase<WorkTypeDef>.GetNamedSilentFail(split.newDefName);
-                            WorkTypeDef baseDef = DefDatabase<WorkTypeDef>.GetNamedSilentFail(split.baseWorkType);
-                            if (splitDef != null && baseDef != null && split.givers != null)
-                            {
-                                foreach (string giverName in split.givers)
-                                {
-                                    WorkGiverDef giver = DefDatabase<WorkGiverDef>.GetNamedSilentFail(giverName);
-                                    if (giver != null)
-                                    {
-                                        giver.workType = baseDef;
-                                    }
-                                }
-                                splitDef.visible = false;
-                            }
-                            Settings.workTypeOrder.Remove(split.newDefName);
-                            Settings.giverOrder.RemoveAll(e => e != null && e.workType == split.newDefName);
-                            if (editSplitDefName == split.newDefName)
-                            {
-                                editSplitDefName = "";
-                                editSplitName = "";
-                                editSplitDescription = "";
-                            }
-                        }
-                        Settings.splits.RemoveAt(i);
-                        OrderedWorkStartup.ApplyPendingChanges(Settings, this);
-                        confirmResetSplitIndex = -1;
-                        break;
-                    }
-                    if (Widgets.ButtonText(cancelRect, "Cancel"))
-                    {
-                        confirmResetSplitIndex = -1;
-                    }
-                }
-                else
-                {
-                    Rect resetRect = new Rect(row.xMax - buttonWidth, row.y, buttonWidth, 26f);
-                    if (Widgets.ButtonText(resetRect, "Reset split"))
-                    {
-                        confirmResetSplitIndex = i;
-                    }
-                }
+                list.Label("Saved: " + label + " [" + split.newDefName + "] from " + split.baseWorkType + " - " + givers);
             }
-            list.Label("Reset split removes the saved entry; the split work type stops being recreated after a restart. Pawns are not touched now.");
         }
-
         private void DrawSavedMerges(Listing_Standard list)
         {
             list.Gap(8f);
-            list.Label("Saved merges (applied on restart):");
+            list.Label("Saved merges (informational; reset is in Order):");
             if (Settings.merges.Count == 0)
             {
                 list.Label("None.");
@@ -1399,51 +1472,9 @@ namespace OrderedWork
                     continue;
                 }
                 string givers = merge.givers != null ? string.Join(", ", merge.givers) : "";
-                string text = "Saved: [" + givers + "] -> " + merge.targetWorkType;
-                Rect row = list.GetRect(30f);
-                float buttonWidth = 138f;
-                Widgets.LabelEllipses(new Rect(row.x, row.y, Mathf.Max(60f, row.width - buttonWidth * 2f - 18f), 26f), text);
-
-                if (confirmResetMergeIndex == i)
-                {
-                    Rect confirmRect = new Rect(row.xMax - buttonWidth * 2f - 12f, row.y, buttonWidth, 26f);
-                    Rect cancelRect = new Rect(row.xMax - buttonWidth, row.y, buttonWidth, 26f);
-                    if (Widgets.ButtonText(confirmRect, "Confirm reset merge"))
-                    {
-                        if (merge != null && merge.origins != null)
-                        {
-                            foreach (GiverOrigin origin in merge.origins)
-                            {
-                                WorkGiverDef giver = DefDatabase<WorkGiverDef>.GetNamedSilentFail(origin.giver);
-                                WorkTypeDef source = DefDatabase<WorkTypeDef>.GetNamedSilentFail(origin.workType);
-                                if (giver != null && source != null)
-                                {
-                                    giver.workType = source;
-                                }
-                            }
-                        }
-                        Settings.merges.RemoveAt(i);
-                        OrderedWorkStartup.ApplyPendingChanges(Settings, this);
-                        confirmResetMergeIndex = -1;
-                        break;
-                    }
-                    if (Widgets.ButtonText(cancelRect, "Cancel"))
-                    {
-                        confirmResetMergeIndex = -1;
-                    }
-                }
-                else
-                {
-                    Rect resetRect = new Rect(row.xMax - buttonWidth, row.y, buttonWidth, 26f);
-                    if (Widgets.ButtonText(resetRect, "Reset merge"))
-                    {
-                        confirmResetMergeIndex = i;
-                    }
-                }
+                list.Label("Saved: [" + givers + "] -> " + merge.targetWorkType);
             }
-            list.Label("Reset merge removes the saved entry; foreign givers return to their original work type after a restart. Pawns are not touched now.");
         }
-
         private void SaveSplit()
         {
             if (!string.IsNullOrEmpty(SplitValidationWarning()))
