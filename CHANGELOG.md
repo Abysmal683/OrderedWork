@@ -3,7 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [0.3.0-alpha.36] - 2026-11-16
+## [0.3.0-alpha.37] - 2026-11-16
+
+### Added
+- `WorkConfigDiff` computes modified WorkTypes by comparing the active profile with `reference.json`. No persisted `modified` boolean: giver defName/order, visibility, order, label, description and split base are compared. Repeated giver classes/priorities are preserved.
+- Design decision: reference diff wins on reliability; the ~100-giver comparison is cheap and cached by the caller when needed.
+
+### Next
+- Remove the legacy settings lists and make the JSON profile the source of truth (approved scope).
+
+
 
 ### Changed
 - Split/Merge saved-entry lists are now informational only; their reset buttons were removed.
