@@ -1,6 +1,6 @@
-# Work Control — Milestone 0.3.0-alpha.26 Checklist
+# Work Control — Milestone 0.3.0-alpha.27 Checklist
 
-Status: in progress — version 0.3.0-alpha.26. Bug-fix and polish iteration written: half-height tab with top resize grip (minimum four pawn rows), centered Work combo with `Filter Work` title (selected WorkType excluded, `Any` only while filtering, 10 rows + thin bar), 3-state `Filter: Line/Palette/Both` scope (default Line, disabled until filtering) with exact WorkType matching and a `Clear` button, 135 px lane cards with 14 px passion icons, shared natural + modded passion icon resolver (VSE/Alpha Skills soft reflection, vanilla fallback, `Def.LabelCap` text), scrollbar input split before the scroll view from drawing after it plus separate palette/matrix horizontal drag owners, palette column-major fill in saved `workTypeOrder` with Shift+wheel and a cached debug 60-type stress setting, vertical drag-and-drop order for work types and givers with drag/drop visuals and hover tooltips, WorkType dropdown selector, shared layout/passion constants, Shift+wheel snap-to-end, and `CREDITS.md` provenance/licensing documentation. Build 0/0 and existing tests pass; runtime checks pending.
+Status: in progress — version 0.3.0-alpha.27. Bug-fix and polish iteration written: half-height tab with top resize grip (minimum four pawn rows), centered Work combo with `Filter Work` title (selected WorkType excluded, `Any` only while filtering, 10 rows + thin bar), 3-state `Filter: Line/Palette/Both` scope (default Line, disabled until filtering) with exact WorkType matching and a `Clear` button, 135 px lane cards with 14 px passion icons, shared natural + modded passion icon resolver (VSE/Alpha Skills soft reflection, vanilla fallback, `Def.LabelCap` text), scrollbar input split before the scroll view from drawing after it plus separate palette/matrix horizontal drag owners, palette column-major fill in saved `workTypeOrder` with Shift+wheel and a cached debug 60-type stress setting, vertical drag-and-drop order for work types and givers with drag/drop visuals and hover tooltips, WorkType dropdown selector, shared layout/passion constants, Shift+wheel snap-to-end, and `CREDITS.md` provenance/licensing documentation. Build 0/0 and existing tests pass; runtime checks pending.
 
 ## Phase 1 — Mod Settings Rules/General + unified Split/Merge editor (unreleased)
 
@@ -26,6 +26,30 @@ Written in `Source/OrderedWorkMod.cs` only:
 - [ ] `Cancel draft` leaves saved split/merge entries untouched.
 - [ ] Restarting RimWorld applies saved splits/merges; drafts never persist.
 - [ ] `Reset config mod all` clears settings and drafts, and pawn priorities are unchanged.
+
+## Phase 1b — vision fixes (unreleased)
+
+Written in `Source/OrderedWorkMod.cs`, `Source/OrderedWorkSettings.cs`, `Source/OrderedWorkStartup.cs`:
+
+- [x] Outer Mod Settings scroll height comes from `Listing_Standard.CurHeight` (used next frame) instead of a fixed 4000 px; it resets on tab/mode change.
+- [x] Each giver column has a 6 px scrollbar track with a draggable thumb and a hint tooltip.
+- [x] Plain wheel scrolls the outer settings unless the pointer is over the column bar or Ctrl is held over the column.
+- [x] Merge destination shows existing target givers fixed at the top (marked `(fixed)`) and incoming origin givers below, reorderable with position numbers and a drop preview.
+- [x] `MergeEntry.targetOrder` added; `SaveMerge` writes existing target givers first then incoming; `ApplyMerges` assigns `workType` then applies `targetOrder` to `priorityInType`. Empty `targetOrder` = old save behavior.
+- [x] Third `Order mode` with origin selector and one reorderable giver list; old separate `Giver order` block removed from `Rules`.
+- [x] `Reset split` / `Reset merge` per saved row and `Reset order` in Order mode, each with two-step confirmation; `Cancel draft` stays separate.
+- [x] No WorkType creation/deletion in the editor; all resets take effect on restart.
+- [x] Build `0 errors / 0 warnings`; existing test suite prints `All tests passed.`
+
+### Phase 1b runtime checks (pending)
+
+- [ ] The Mod Settings outer scroll stops at the current tab content instead of 4000 px.
+- [ ] A giver column with overflow shows a thin bar; dragging it scrolls that column; a plain wheel over the column scrolls the settings; Ctrl+wheel scrolls the column.
+- [ ] Merge destination shows `(fixed)` target givers first and movable incoming givers after; the position numbers and drop preview match the saved insertion order.
+- [ ] `Merge selected` saves only draft givers with a `targetOrder` that places them after the fixed givers; `Merge all` does the same for every origin giver.
+- [ ] After restart, the merged givers appear in the saved `targetOrder` within the target work type.
+- [ ] Order mode reorders givers; `Reset order` asks for confirmation, removes the override, and the original order returns after restart.
+- [ ] `Reset split` / `Reset merge` ask for confirmation, remove the saved row, and the change appears after restart; `Cancel draft` does not touch saved rows.
 
 
 ## Alpha.14 fixed items

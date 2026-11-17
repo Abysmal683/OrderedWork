@@ -22,13 +22,24 @@ namespace OrderedWork
         private const float SplitMergeRowHeight = 24f;
         private const int SplitMergeVisibleRows = 10;
         private const float SplitMergeColumnHeight = SplitMergeRowHeight * SplitMergeVisibleRows;
+        private const float SplitMergeScrollbarWidth = 6f;
+
+        // Split/Merge/Order editor modes are UI-only.
+        private const int EditorSplit = 0;
+        private const int EditorMerge = 1;
+        private const int EditorOrder = 2;
 
         private Vector2 scroll;
 
+        // Measured from Listing_Standard.CurHeight after each draw and reused next frame so
+        // the outer settings scroll is only as tall as the current tab content.
+        private float settingsContentHeight;
+
         // Tab selection is intentionally UI-only; it is not scribed to settings.
         private int settingsTab = TabRules;
-        private bool settingsMergeMode;
+        private int settingsEditorMode = EditorSplit;
 
+        // Order mode origin. Kept as UI-only state; the saved order itself lives in settings.
         private string selectedGiverType = "";
 
         // Split/Merge drafts are UI-only and never scribed.
@@ -53,11 +64,19 @@ namespace OrderedWork
         private Rect smOriginArea;
         private Rect smDestArea;
 
+        // Per-column scrollbar drag owner (0 = none, 1 = origin column, 2 = destination).
+        private int smScrollDragColumn;
+        // Merge destination reorder preview: insertion index into mergeDraft, -1 = none.
+        private int smMergeDropIndex = -1;
+
         private int dragKind;
         private int dragIndex = -1;
         private float dragStartMouseY;
         private bool dragMoved;
         private bool confirmResetAll;
+        private bool confirmResetOrder;
+        private int confirmResetSplitIndex = -1;
+        private int confirmResetMergeIndex = -1;
 
         public OrderedWorkMod(ModContentPack content) : base(content)
         {
@@ -82,7 +101,10 @@ namespace OrderedWork
                 inRect.width,
                 Mathf.Max(40f, inRect.height - tabsRect.height - 4f));
 
-            Rect viewRect = new Rect(0f, 0f, body.width - 24f, 4000f);
+            // Use the height measured after last frame's draw. Zero means "not measured yet",
+            // so fall back to the body height and let this frame measure the real content.
+            float contentHeight = Mathf.Max(body.height, settingsContentHeight);
+            Rect viewRect = new Rect(0f, 0f, body.width - 24f, contentHeight);
             Widgets.BeginScrollView(body, ref scroll, viewRect);
             Listing_Standard list = new Listing_Standard();
             list.Begin(viewRect);
@@ -97,6 +119,7 @@ namespace OrderedWork
             }
 
             list.End();
+            settingsContentHeight = list.CurHeight + 8f;
             Widgets.EndScrollView();
         }
 
@@ -111,7 +134,7 @@ namespace OrderedWork
                 if (settingsTab != TabRules)
                 {
                     settingsTab = TabRules;
-                    ResetSplitMergeDrag();
+                    ResetEditorUiState();
                 }
             }
             if (Widgets.ButtonText(generalRect, "General"))
@@ -119,7 +142,7 @@ namespace OrderedWork
                 if (settingsTab != TabGeneral)
                 {
                     settingsTab = TabGeneral;
-                    ResetSplitMergeDrag();
+                    ResetEditorUiState();
                 }
             }
 
@@ -153,51 +176,6 @@ namespace OrderedWork
                 workRows.Add(row);
             }
             HandleReorderDrag(1, workRows, MoveWorkType);
-
-            list.Gap(10f);
-            list.Label("Giver order (top = first) for one work type:");
-            if (string.IsNullOrEmpty(selectedGiverType) || DefDatabase<WorkTypeDef>.GetNamedSilentFail(selectedGiverType) == null)
-            {
-                selectedGiverType = Settings.workTypeOrder.FirstOrDefault() ?? "";
-            }
-            string selectedLabel = DefDatabase<WorkTypeDef>.GetNamedSilentFail(selectedGiverType)?.labelShort ?? selectedGiverType;
-            Rect selectorRect = list.GetRect(28f);
-            if (Widgets.ButtonText(selectorRect, "Work type: " + selectedLabel + "  ▼"))
-            {
-                List<WorkTypeDef> options = new List<WorkTypeDef>();
-                foreach (string id in Settings.workTypeOrder)
-                {
-                    WorkTypeDef wt = DefDatabase<WorkTypeDef>.GetNamedSilentFail(id);
-                    if (wt != null)
-                    {
-                        options.Add(wt);
-                    }
-                }
-                Find.WindowStack.Add(new WorkTypeDropdownWindow(
-                    "Select Work type",
-                    options,
-                    DefDatabase<WorkTypeDef>.GetNamedSilentFail(selectedGiverType),
-                    delegate(WorkTypeDef wt) { selectedGiverType = wt.defName; }));
-            }
-            if (!string.IsNullOrEmpty(selectedGiverType))
-            {
-                List<WorkGiverDef> givers = GiversForWorkType(selectedGiverType);
-                List<Rect> giverRows = new List<Rect>();
-                for (int i = 0; i < givers.Count; i++)
-                {
-                    WorkGiverDef giver = givers[i];
-                    Rect row = list.GetRect(24f);
-                    DrawReorderRow(row, i + 1 + ". " + giver.defName, 2, i, GiverTooltip(giver));
-                    giverRows.Add(row);
-                }
-                HandleReorderDrag(2, giverRows, (from, to) =>
-                {
-                    WorkGiverDef item = givers[from];
-                    givers.RemoveAt(from);
-                    givers.Insert(Mathf.Clamp(to, 0, givers.Count), item);
-                    CommitGiverOrder(selectedGiverType, givers);
-                });
-            }
 
             list.Gap(14f);
             DrawSplitMergeEditor(list);
@@ -269,38 +247,48 @@ namespace OrderedWork
 
         private void DrawSplitMergeEditor(Listing_Standard list)
         {
-            list.Label("Split / Merge editor. Drafts are temporary; saved entries apply on restart.");
+            list.Label("Split / Merge / Order editor. Drafts are temporary; saved entries apply on restart.");
 
             Rect modeRect = list.GetRect(28f);
-            float modeHalf = (modeRect.width - 8f) * 0.5f;
-            Rect splitRect = new Rect(modeRect.x, modeRect.y, modeHalf, 28f);
-            Rect mergeRect = new Rect(splitRect.xMax + 8f, modeRect.y, modeHalf, 28f);
-            if (Widgets.ButtonText(splitRect, "Split mode"))
+            float modeThird = (modeRect.width - 16f) / 3f;
+            Rect splitRect = new Rect(modeRect.x, modeRect.y, modeThird, 28f);
+            Rect mergeRect = new Rect(splitRect.xMax + 8f, modeRect.y, modeThird, 28f);
+            Rect orderRect = new Rect(mergeRect.xMax + 8f, modeRect.y, modeThird, 28f);
+
+            if (Widgets.ButtonText(splitRect, "Split mode") && settingsEditorMode != EditorSplit)
             {
-                if (settingsMergeMode)
-                {
-                    settingsMergeMode = false;
-                    ResetSplitMergeDrag();
-                }
+                settingsEditorMode = EditorSplit;
+                ResetEditorUiState();
             }
-            if (Widgets.ButtonText(mergeRect, "Merge mode"))
+            if (Widgets.ButtonText(mergeRect, "Merge mode") && settingsEditorMode != EditorMerge)
             {
-                if (!settingsMergeMode)
-                {
-                    settingsMergeMode = true;
-                    ResetSplitMergeDrag();
-                }
+                settingsEditorMode = EditorMerge;
+                ResetEditorUiState();
             }
-            DrawTabMarker(settingsMergeMode ? mergeRect : splitRect);
+            if (Widgets.ButtonText(orderRect, "Order mode") && settingsEditorMode != EditorOrder)
+            {
+                settingsEditorMode = EditorOrder;
+                ResetEditorUiState();
+            }
+
+            Rect marker = settingsEditorMode == EditorMerge ? mergeRect
+                : settingsEditorMode == EditorOrder ? orderRect
+                : splitRect;
+            DrawTabMarker(marker);
+            list.Label("Tip: Ctrl+wheel or drag a column scrollbar to scroll that column; a plain wheel scrolls the settings.");
             list.Gap(4f);
 
-            if (settingsMergeMode)
+            switch (settingsEditorMode)
             {
-                DrawMergeEditor(list);
-            }
-            else
-            {
-                DrawSplitEditor(list);
+                case EditorMerge:
+                    DrawMergeEditor(list);
+                    break;
+                case EditorOrder:
+                    DrawOrderEditor(list);
+                    break;
+                default:
+                    DrawSplitEditor(list);
+                    break;
             }
         }
 
@@ -343,8 +331,8 @@ namespace OrderedWork
             smOriginArea = left;
             smDestArea = right;
 
-            DrawGiverColumn(left, originNames, draftSet, true, false, ref splitOriginScroll, "(in split)");
-            DrawGiverColumn(right, splitDraft, draftSet, false, false, ref splitDraftScroll, null);
+            DrawGiverColumn(left, originNames, draftSet, true, false, ref splitOriginScroll, "(in split)", 1);
+            DrawGiverColumn(right, splitDraft, draftSet, false, false, ref splitDraftScroll, null, 2);
 
             string warning = SplitValidationWarning();
             DrawSplitMergeActions(list, "Add split", warning,
@@ -385,6 +373,7 @@ namespace OrderedWork
                 "Target: ", mergeTarget, "Select merge target", delegate(string defName)
                 {
                     mergeTarget = defName;
+                    smMergeDropIndex = -1;
                 },
                 mergeOrigin);
 
@@ -392,22 +381,29 @@ namespace OrderedWork
             List<WorkGiverDef> originGivers = GiversForWorkType(mergeOrigin);
             List<string> originNames = originGivers.Select(g => g.defName).ToList();
             HashSet<string> draftSet = new HashSet<string>(mergeDraft);
+            List<string> existingTarget = GiversForWorkType(mergeTarget).Select(g => g.defName).ToList();
 
             Rect headerRect = list.GetRect(20f);
             float columnWidth = (headerRect.width - 12f) * 0.5f;
             Widgets.Label(new Rect(headerRect.x, headerRect.y, columnWidth, 20f),
                 "Origin givers (" + originNames.Count + ")");
             Widgets.Label(new Rect(headerRect.x + columnWidth + 12f, headerRect.y, columnWidth, 20f),
-                "Merge destination (" + mergeDraft.Count + ")");
+                "Destination (" + existingTarget.Count + " fixed + " + mergeDraft.Count + " incoming)");
 
             Rect columnsRect = list.GetRect(SplitMergeColumnHeight);
             Rect left = new Rect(columnsRect.x, columnsRect.y, columnWidth, SplitMergeColumnHeight);
             Rect right = new Rect(columnsRect.x + columnWidth + 12f, columnsRect.y, columnWidth, SplitMergeColumnHeight);
             smOriginArea = left;
             smDestArea = right;
+            smMergeDropIndex = -1;
 
-            DrawGiverColumn(left, originNames, draftSet, true, true, ref mergeOriginScroll, "(in merge)");
-            DrawGiverColumn(right, mergeDraft, draftSet, false, true, ref mergeTargetScroll, null);
+            DrawGiverColumn(left, originNames, draftSet, true, true, ref mergeOriginScroll, "(in merge)", 1);
+            DrawMergeDestinationColumn(right, existingTarget, mergeDraft, ref mergeTargetScroll);
+
+            if (smDragSide == 2 && smDragMergeMode && smDragMoved && smMergeDropIndex >= 0)
+            {
+                list.Label("Drop \"" + smDragGiver + "\" at destination position " + (existingTarget.Count + smMergeDropIndex + 1) + ".");
+            }
 
             Rect actionsRect = list.GetRect(30f);
             float buttonWidth = Mathf.Min(150f, (actionsRect.width - 12f) / 3f);
@@ -443,6 +439,67 @@ namespace OrderedWork
             HandleSplitMergeDrag();
         }
 
+        private void DrawOrderEditor(Listing_Standard list)
+        {
+            EnsureSplitMergeDefaults();
+
+            list.Label("Order mode reorders the WorkGivers of one work type. Top = first.");
+            Rect selectorRect = list.GetRect(28f);
+            DrawWorkTypeSelector(selectorRect, "Work type: ", selectedGiverType, "Select Work type", delegate(string defName)
+            {
+                selectedGiverType = defName;
+                confirmResetOrder = false;
+            });
+
+            List<WorkGiverDef> givers = GiversForWorkType(selectedGiverType);
+            if (givers.Count == 0)
+            {
+                list.Label("This work type has no WorkGivers.");
+            }
+            else
+            {
+                List<Rect> giverRows = new List<Rect>();
+                for (int i = 0; i < givers.Count; i++)
+                {
+                    WorkGiverDef giver = givers[i];
+                    Rect row = list.GetRect(SplitMergeRowHeight);
+                    DrawReorderRow(row, (i + 1) + ". " + giver.defName, 2, i, GiverTooltip(giver));
+                    giverRows.Add(row);
+                }
+                HandleReorderDrag(2, giverRows, delegate(int from, int to)
+                {
+                    WorkGiverDef item = givers[from];
+                    givers.RemoveAt(from);
+                    givers.Insert(Mathf.Clamp(to, 0, givers.Count), item);
+                    CommitGiverOrder(selectedGiverType, givers);
+                });
+            }
+
+            list.Gap(10f);
+            string selectedLabel = DefDatabase<WorkTypeDef>.GetNamedSilentFail(selectedGiverType)?.labelShort ?? selectedGiverType;
+            if (!confirmResetOrder)
+            {
+                if (list.ButtonText("Reset order"))
+                {
+                    confirmResetOrder = true;
+                }
+            }
+            else
+            {
+                list.Label("Remove the saved giver order for " + selectedLabel + "? The original def order returns after a restart; the current session keeps its priority values.");
+                if (list.ButtonText("Confirm reset order"))
+                {
+                    Settings.giverOrder.RemoveAll(e => e != null && e.workType == selectedGiverType);
+                    confirmResetOrder = false;
+                }
+                if (list.ButtonText("Cancel reset order"))
+                {
+                    confirmResetOrder = false;
+                }
+            }
+            list.Label("Reset order does not write WorkTypes or pawn priorities now; it only removes the saved override.");
+        }
+
         private void DrawGiverColumn(
             Rect area,
             List<string> names,
@@ -450,34 +507,32 @@ namespace OrderedWork
             bool originSide,
             bool mergeMode,
             ref float scroll,
-            string draftMarker)
+            string draftMarker,
+            int columnId)
         {
             Widgets.DrawBoxSolid(area, new Color(0.10f, 0.10f, 0.12f, 0.45f));
 
-            if (names == null || names.Count == 0)
+            bool hasRows = names != null && names.Count > 0;
+            float maxScroll = hasRows
+                ? Mathf.Max(0f, names.Count * SplitMergeRowHeight - area.height)
+                : 0f;
+            float contentWidth = area.width - (maxScroll > 0f ? SplitMergeScrollbarWidth + 2f : 0f);
+            Rect track = new Rect(area.xMax - SplitMergeScrollbarWidth, area.y, SplitMergeScrollbarWidth, area.height);
+
+            HandleColumnWheel(area, track, maxScroll, ref scroll);
+            HandleColumnScrollbarInput(columnId, track, area.height, maxScroll, ref scroll);
+            ClampColumnScroll(maxScroll, ref scroll);
+
+            if (!hasRows)
             {
                 Widgets.Label(
-                    new Rect(area.x + 6f, area.y + 4f, area.width - 12f, area.height - 8f),
+                    new Rect(area.x + 6f, area.y + 4f, contentWidth - 12f, area.height - 8f),
                     originSide ? "No givers on this work type." : "Drag origin givers here.");
+                DrawColumnScrollbar(track, area.height, maxScroll, scroll, columnId);
                 return;
             }
 
-            float maxScroll = Mathf.Max(0f, names.Count * SplitMergeRowHeight - area.height);
             Event current = Event.current;
-            if (Mouse.IsOver(area) && current.type == EventType.ScrollWheel)
-            {
-                float delta = current.delta.y;
-                if (Mathf.Abs(delta) > 0.001f)
-                {
-                    scroll += delta > 0f ? -SplitMergeRowHeight : SplitMergeRowHeight;
-                }
-                current.Use();
-            }
-
-            // Keep scroll on whole rows so no row is ever drawn half-clipped.
-            scroll = Mathf.Clamp(scroll, 0f, maxScroll);
-            scroll = Mathf.Floor(scroll / SplitMergeRowHeight) * SplitMergeRowHeight;
-
             for (int i = 0; i < names.Count; i++)
             {
                 float y = area.y + i * SplitMergeRowHeight - scroll;
@@ -487,7 +542,7 @@ namespace OrderedWork
                 }
 
                 string name = names[i];
-                Rect row = new Rect(area.x + 3f, y, area.width - 6f, SplitMergeRowHeight - 2f);
+                Rect row = new Rect(area.x + 3f, y, contentWidth - 6f, SplitMergeRowHeight - 2f);
                 bool inDraft = originSide && draftNames.Contains(name);
                 bool dragged = smDragSide != 0
                     && smDragMergeMode == mergeMode
@@ -514,9 +569,218 @@ namespace OrderedWork
                     current.Use();
                 }
             }
+
+            DrawColumnScrollbar(track, area.height, maxScroll, scroll, columnId);
         }
 
-        private void DrawSplitMergeRow(Rect row, string giverName, bool inDraft, bool dragged, bool dropTarget, string draftMarker)
+        // Merge destination column: existing target givers are drawn first and are fixed; the
+        // incoming origin givers follow and can be dragged/reordered. Their resulting order is
+        // saved as MergeEntry.targetOrder and applied after workType assignment on restart.
+        private void DrawMergeDestinationColumn(Rect area, List<string> existingNames, List<string> incomingNames, ref float scroll)
+        {
+            Widgets.DrawBoxSolid(area, new Color(0.10f, 0.10f, 0.12f, 0.45f));
+
+            int fixedCount = existingNames != null ? existingNames.Count : 0;
+            int incomingCount = incomingNames != null ? incomingNames.Count : 0;
+            int total = fixedCount + incomingCount;
+            float maxScroll = total > 0
+                ? Mathf.Max(0f, total * SplitMergeRowHeight - area.height)
+                : 0f;
+            float contentWidth = area.width - (maxScroll > 0f ? SplitMergeScrollbarWidth + 2f : 0f);
+            Rect track = new Rect(area.xMax - SplitMergeScrollbarWidth, area.y, SplitMergeScrollbarWidth, area.height);
+
+            HandleColumnWheel(area, track, maxScroll, ref scroll);
+            HandleColumnScrollbarInput(2, track, area.height, maxScroll, ref scroll);
+            ClampColumnScroll(maxScroll, ref scroll);
+
+            if (total == 0)
+            {
+                Widgets.Label(
+                    new Rect(area.x + 6f, area.y + 4f, contentWidth - 12f, area.height - 8f),
+                    "Select a target, then drag origin givers here.");
+                DrawColumnScrollbar(track, area.height, maxScroll, scroll, 2);
+                return;
+            }
+
+            Event current = Event.current;
+            for (int i = 0; i < total; i++)
+            {
+                float y = area.y + i * SplitMergeRowHeight - scroll;
+                if (y + SplitMergeRowHeight <= area.y || y >= area.yMax)
+                {
+                    continue;
+                }
+
+                bool isFixed = i < fixedCount;
+                string name = isFixed ? existingNames[i] : incomingNames[i - fixedCount];
+                Rect row = new Rect(area.x + 3f, y, contentWidth - 6f, SplitMergeRowHeight - 2f);
+                bool dragged = !isFixed
+                    && smDragSide == 2
+                    && smDragMergeMode
+                    && smDragGiver == name;
+                bool dropTarget = !isFixed
+                    && smDragSide != 0
+                    && smDragMergeMode
+                    && smDragMoved
+                    && row.Contains(current.mousePosition);
+
+                if (isFixed)
+                {
+                    DrawSplitMergeRow(row, (i + 1) + ". " + name, true, false, false, "(fixed)", false);
+                }
+                else
+                {
+                    int position = fixedCount + (i - fixedCount) + 1;
+                    DrawSplitMergeRow(row, position + ". " + name, false, dragged, dropTarget, null);
+                }
+
+                if (!dragged && smDragSide == 0)
+                {
+                    TooltipHandler.TipRegion(row, GiverTooltip(DefDatabase<WorkGiverDef>.GetNamedSilentFail(name)));
+                }
+
+                if (!isFixed
+                    && current.type == EventType.MouseDown
+                    && current.button == 0
+                    && row.Contains(current.mousePosition))
+                {
+                    smDragSide = 2;
+                    smDragMergeMode = true;
+                    smDragGiver = name;
+                    smDragStartY = current.mousePosition.y;
+                    smDragMoved = false;
+                    current.Use();
+                }
+            }
+
+            // Work out where a dragged merge row would be inserted, including the empty area of
+            // the column. A drop above all incoming rows inserts at 0; below them appends.
+            if (smDragSide == 2 && smDragMergeMode && smDragMoved && Mouse.IsOver(area))
+            {
+                int hovered = -1;
+                for (int j = 0; j < incomingCount; j++)
+                {
+                    float y = area.y + (fixedCount + j) * SplitMergeRowHeight - scroll;
+                    Rect row = new Rect(area.x + 3f, y, contentWidth - 6f, SplitMergeRowHeight - 2f);
+                    if (row.Contains(current.mousePosition))
+                    {
+                        hovered = j;
+                        break;
+                    }
+                }
+                if (hovered >= 0)
+                {
+                    smMergeDropIndex = hovered;
+                }
+                else
+                {
+                    float incomingTop = area.y + fixedCount * SplitMergeRowHeight - scroll;
+                    smMergeDropIndex = current.mousePosition.y < incomingTop ? 0 : incomingCount;
+                }
+            }
+
+            DrawColumnScrollbar(track, area.height, maxScroll, scroll, 2);
+        }
+
+        private static void HandleColumnWheel(Rect area, Rect track, float maxScroll, ref float scroll)
+        {
+            if (maxScroll <= 0f)
+            {
+                return;
+            }
+
+            Event current = Event.current;
+            if (current.type != EventType.ScrollWheel)
+            {
+                return;
+            }
+
+            bool ctrl = current.control || Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
+            bool overTrack = track.Contains(current.mousePosition);
+            bool ctrlOverColumn = ctrl && Mouse.IsOver(area);
+            if (!overTrack && !ctrlOverColumn)
+            {
+                // Not ours: leave the event alone so the outer settings scroll handles the wheel.
+                return;
+            }
+
+            float delta = current.delta.y;
+            if (Mathf.Abs(delta) > 0.001f)
+            {
+                scroll += delta > 0f ? -SplitMergeRowHeight : SplitMergeRowHeight;
+            }
+            current.Use();
+        }
+
+        private void HandleColumnScrollbarInput(int columnId, Rect track, float visibleHeight, float maxScroll, ref float scroll)
+        {
+            if (maxScroll <= 0f)
+            {
+                if (smScrollDragColumn == columnId)
+                {
+                    smScrollDragColumn = 0;
+                }
+                return;
+            }
+
+            Event current = Event.current;
+            if (current.type == EventType.MouseDown && current.button == 0 && track.Contains(current.mousePosition))
+            {
+                smScrollDragColumn = columnId;
+                UpdateColumnScrollFromMouse(track, visibleHeight, maxScroll, current.mousePosition.y, ref scroll);
+                current.Use();
+            }
+            else if (smScrollDragColumn == columnId && current.type == EventType.MouseDrag)
+            {
+                UpdateColumnScrollFromMouse(track, visibleHeight, maxScroll, current.mousePosition.y, ref scroll);
+                current.Use();
+            }
+            else if (smScrollDragColumn == columnId && current.type == EventType.MouseUp)
+            {
+                smScrollDragColumn = 0;
+                current.Use();
+            }
+        }
+
+        private static void UpdateColumnScrollFromMouse(Rect track, float visibleHeight, float maxScroll, float mouseY, ref float scroll)
+        {
+            float contentHeight = visibleHeight + maxScroll;
+            float thumbHeight = Mathf.Clamp(track.height * (visibleHeight / contentHeight), 20f, track.height);
+            float travel = track.height - thumbHeight;
+            float t = travel <= 0f ? 0f : (mouseY - track.y - thumbHeight * 0.5f) / travel;
+            scroll = Mathf.Clamp01(t) * maxScroll;
+        }
+
+        private static void ClampColumnScroll(float maxScroll, ref float scroll)
+        {
+            // Keep scroll on whole rows so no row is ever drawn half-clipped.
+            scroll = Mathf.Clamp(scroll, 0f, maxScroll);
+            scroll = Mathf.Floor(scroll / SplitMergeRowHeight) * SplitMergeRowHeight;
+            scroll = Mathf.Clamp(scroll, 0f, maxScroll);
+        }
+
+        private void DrawColumnScrollbar(Rect track, float visibleHeight, float maxScroll, float scroll, int columnId)
+        {
+            if (maxScroll <= 0f)
+            {
+                return;
+            }
+
+            Widgets.DrawBoxSolid(track, new Color(0.05f, 0.05f, 0.06f, 0.80f));
+            float contentHeight = visibleHeight + maxScroll;
+            float thumbHeight = Mathf.Clamp(track.height * (visibleHeight / contentHeight), 20f, track.height);
+            float travel = track.height - thumbHeight;
+            float t = Mathf.Clamp01(scroll / maxScroll);
+            Rect thumb = new Rect(track.x + 1f, track.y + travel * t, track.width - 2f, thumbHeight);
+            bool active = smScrollDragColumn == columnId;
+            Color color = active || Mouse.IsOver(thumb)
+                ? new Color(0.72f, 0.80f, 0.92f, 1f)
+                : new Color(0.48f, 0.53f, 0.60f, 0.95f);
+            Widgets.DrawBoxSolid(thumb, color);
+            TooltipHandler.TipRegion(track, "Scrollbar: drag it, or Ctrl+wheel over this column. A plain wheel scrolls the settings.");
+        }
+
+        private void DrawSplitMergeRow(Rect row, string giverName, bool inDraft, bool dragged, bool dropTarget, string draftMarker, bool showHandle = true)
         {
             if (dragged)
             {
@@ -545,7 +809,10 @@ namespace OrderedWork
             string text = string.IsNullOrEmpty(draftMarker) ? giverName : giverName + "  " + draftMarker;
             Widgets.LabelEllipses(new Rect(row.x + 4f, row.y, row.width - 26f, row.height), text);
             GUI.color = previous;
-            Widgets.Label(new Rect(row.xMax - 20f, row.y, 16f, row.height), "≡");
+            if (showHandle)
+            {
+                Widgets.Label(new Rect(row.xMax - 20f, row.y, 16f, row.height), "≡");
+            }
         }
 
         private bool IsValidDropHover(bool originSide, bool mergeMode, Rect row)
@@ -702,9 +969,24 @@ namespace OrderedWork
             {
                 RemoveDraftGiver(smDragGiver, smDragMergeMode);
             }
+            else if (smDragSide == 2 && smDragMergeMode && dropInDest && smMergeDropIndex >= 0)
+            {
+                ReorderMergeDraft(smDragGiver, smMergeDropIndex);
+            }
 
             ResetSplitMergeDrag();
             current.Use();
+        }
+
+        private void ReorderMergeDraft(string giverName, int targetIndex)
+        {
+            int current = mergeDraft.IndexOf(giverName);
+            if (current < 0)
+            {
+                return;
+            }
+            mergeDraft.RemoveAt(current);
+            mergeDraft.Insert(Mathf.Clamp(targetIndex, 0, mergeDraft.Count), giverName);
         }
 
         private void ResetSplitMergeDrag()
@@ -712,6 +994,18 @@ namespace OrderedWork
             smDragSide = 0;
             smDragGiver = null;
             smDragMoved = false;
+            smScrollDragColumn = 0;
+            smMergeDropIndex = -1;
+        }
+
+        private void ResetEditorUiState()
+        {
+            ResetSplitMergeDrag();
+            confirmResetOrder = false;
+            confirmResetSplitIndex = -1;
+            confirmResetMergeIndex = -1;
+            settingsContentHeight = 0f;
+            scroll = Vector2.zero;
         }
 
         private void AddDraftGiver(string giverName, bool mergeMode)
@@ -752,6 +1046,11 @@ namespace OrderedWork
             {
                 mergeTarget = "";
             }
+            if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(selectedGiverType) == null)
+            {
+                selectedGiverType = fallback;
+                confirmResetOrder = false;
+            }
             splitDraft.RemoveAll(g => !GiverBelongsTo(g, splitOrigin));
             mergeDraft.RemoveAll(g => !GiverBelongsTo(g, mergeOrigin));
         }
@@ -786,42 +1085,100 @@ namespace OrderedWork
         private void DrawSavedSplits(Listing_Standard list)
         {
             list.Gap(8f);
-            list.Label("Saved splits (read-only; applied on restart):");
+            list.Label("Saved splits (applied on restart):");
             if (Settings.splits.Count == 0)
             {
                 list.Label("None.");
                 return;
             }
-            foreach (SplitEntry split in Settings.splits)
+            for (int i = 0; i < Settings.splits.Count; i++)
             {
+                SplitEntry split = Settings.splits[i];
                 if (split == null)
                 {
                     continue;
                 }
                 string label = string.IsNullOrEmpty(split.label) ? split.newDefName : split.label;
                 string givers = split.givers != null ? string.Join(", ", split.givers) : "";
-                list.Label("Saved: " + label + " [" + split.newDefName + "] from " + split.baseWorkType + " - " + givers);
+                string text = "Saved: " + label + " [" + split.newDefName + "] from " + split.baseWorkType + " - " + givers;
+                Rect row = list.GetRect(30f);
+                float buttonWidth = 132f;
+                Widgets.LabelEllipses(new Rect(row.x, row.y, Mathf.Max(60f, row.width - buttonWidth * 2f - 18f), 26f), text);
+
+                if (confirmResetSplitIndex == i)
+                {
+                    Rect confirmRect = new Rect(row.xMax - buttonWidth * 2f - 12f, row.y, buttonWidth, 26f);
+                    Rect cancelRect = new Rect(row.xMax - buttonWidth, row.y, buttonWidth, 26f);
+                    if (Widgets.ButtonText(confirmRect, "Confirm reset split"))
+                    {
+                        Settings.splits.RemoveAt(i);
+                        confirmResetSplitIndex = -1;
+                        break;
+                    }
+                    if (Widgets.ButtonText(cancelRect, "Cancel"))
+                    {
+                        confirmResetSplitIndex = -1;
+                    }
+                }
+                else
+                {
+                    Rect resetRect = new Rect(row.xMax - buttonWidth, row.y, buttonWidth, 26f);
+                    if (Widgets.ButtonText(resetRect, "Reset split"))
+                    {
+                        confirmResetSplitIndex = i;
+                    }
+                }
             }
+            list.Label("Reset split removes the saved entry; the split work type stops being recreated after a restart. Pawns are not touched now.");
         }
 
         private void DrawSavedMerges(Listing_Standard list)
         {
             list.Gap(8f);
-            list.Label("Saved merges (read-only; applied on restart):");
+            list.Label("Saved merges (applied on restart):");
             if (Settings.merges.Count == 0)
             {
                 list.Label("None.");
                 return;
             }
-            foreach (MergeEntry merge in Settings.merges)
+            for (int i = 0; i < Settings.merges.Count; i++)
             {
+                MergeEntry merge = Settings.merges[i];
                 if (merge == null)
                 {
                     continue;
                 }
                 string givers = merge.givers != null ? string.Join(", ", merge.givers) : "";
-                list.Label("Saved: [" + givers + "] -> " + merge.targetWorkType);
+                string text = "Saved: [" + givers + "] -> " + merge.targetWorkType;
+                Rect row = list.GetRect(30f);
+                float buttonWidth = 138f;
+                Widgets.LabelEllipses(new Rect(row.x, row.y, Mathf.Max(60f, row.width - buttonWidth * 2f - 18f), 26f), text);
+
+                if (confirmResetMergeIndex == i)
+                {
+                    Rect confirmRect = new Rect(row.xMax - buttonWidth * 2f - 12f, row.y, buttonWidth, 26f);
+                    Rect cancelRect = new Rect(row.xMax - buttonWidth, row.y, buttonWidth, 26f);
+                    if (Widgets.ButtonText(confirmRect, "Confirm reset merge"))
+                    {
+                        Settings.merges.RemoveAt(i);
+                        confirmResetMergeIndex = -1;
+                        break;
+                    }
+                    if (Widgets.ButtonText(cancelRect, "Cancel"))
+                    {
+                        confirmResetMergeIndex = -1;
+                    }
+                }
+                else
+                {
+                    Rect resetRect = new Rect(row.xMax - buttonWidth, row.y, buttonWidth, 26f);
+                    if (Widgets.ButtonText(resetRect, "Reset merge"))
+                    {
+                        confirmResetMergeIndex = i;
+                    }
+                }
             }
+            list.Label("Reset merge removes the saved entry; foreign givers return to their original work type after a restart. Pawns are not touched now.");
         }
 
         private void SaveSplit()
@@ -855,10 +1212,28 @@ namespace OrderedWork
                 return;
             }
 
+            List<string> incoming = givers.Distinct().ToList();
+            List<string> targetOrder = new List<string>();
+            foreach (WorkGiverDef existing in GiversForWorkType(mergeTarget))
+            {
+                if (existing != null && !targetOrder.Contains(existing.defName))
+                {
+                    targetOrder.Add(existing.defName);
+                }
+            }
+            foreach (string giverName in incoming)
+            {
+                if (!targetOrder.Contains(giverName))
+                {
+                    targetOrder.Add(giverName);
+                }
+            }
+
             Settings.merges.Add(new MergeEntry
             {
-                givers = givers.Distinct().ToList(),
-                targetWorkType = mergeTarget
+                givers = incoming,
+                targetWorkType = mergeTarget,
+                targetOrder = targetOrder
             });
 
             mergeDraft.Clear();
@@ -935,7 +1310,7 @@ namespace OrderedWork
             mergeDraft.Clear();
             mergeOriginScroll = 0f;
             mergeTargetScroll = 0f;
-            ResetSplitMergeDrag();
+            ResetEditorUiState();
             dragKind = 0;
             dragIndex = -1;
             EnsureSplitMergeDefaults();

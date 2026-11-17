@@ -75,12 +75,18 @@ namespace OrderedWork
     {
         public List<string> givers = new List<string>();
         public string targetWorkType;
+        // Final destination order after applying the merge: existing target givers first
+        // (fixed), then the incoming givers in the order chosen in the editor. Empty for
+        // old saves, which keeps the previous behavior.
+        public List<string> targetOrder = new List<string>();
 
         public void ExposeData()
         {
             Scribe_Collections.Look(ref givers, "givers", LookMode.Value);
             Scribe_Values.Look(ref targetWorkType, "targetWorkType");
+            Scribe_Collections.Look(ref targetOrder, "targetOrder", LookMode.Value);
             if (Scribe.mode == LoadSaveMode.LoadingVars && givers == null) givers = new List<string>();
+            if (Scribe.mode == LoadSaveMode.LoadingVars && targetOrder == null) targetOrder = new List<string>();
         }
     }
 

@@ -3,9 +3,17 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [0.3.0-alpha.26] - 2026-11-16
+## [0.3.0-alpha.27] - 2026-11-16
 
 ### Added
+- Phase 1b: a third `Order mode` with an origin selector and one reorderable giver list replaces the old separate `Giver order` section in `Rules`.
+- Phase 1b: Merge destination now shows the target's existing givers fixed at the top, followed by the movable/reorderable incoming origin givers. Row position numbers and a drag preview show the insertion position.
+- Phase 1b: `MergeEntry.targetOrder` stores the final destination order (existing target givers first, then incoming). `OrderedWorkStartup.ApplyMerges` applies it to `priorityInType` after assigning `workType`; old saves with an empty `targetOrder` keep the previous behavior.
+- Phase 1b: per-saved-row `Reset split` / `Reset merge` and `Reset order`, each with two-step confirmation. They only remove the saved entry/override; the effect appears on restart. `Cancel draft` stays separate.
+- Phase 1b: every giver column has a 6 px scrollbar with a draggable thumb and a scroll hint. A plain wheel scrolls the outer settings; the column scrolls only over its bar or with Ctrl held.
+- Phase 1b: the outer Mod Settings scroll is measured from `Listing_Standard.CurHeight`, so it is only as tall as the current tab content and resets when the tab or editor mode changes.
+
+### Added (phase 1)
 - Mod Settings now has two in-memory tabs: **Rules** (WorkType order, giver order, Split/Merge editor) and **General** (auto settings, palette stress test, dense-rank spike, reset). Tab selection is not saved.
 - New unified two-column Split/Merge editor replaces the old text-field Split/Merge inputs. Left column is always Origin; right column is explicitly labelled `Split destination` or `Merge destination`.
 - Split mode: origin WorkType dropdown, editable new name with a generated `defName` preview, drag Origin → Split to add, drag Split → Origin to remove, and `Add split` gated on a non-empty name, valid origin, and at least one origin giver in the draft.
