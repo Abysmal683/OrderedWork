@@ -3,6 +3,18 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.35] - 2026-11-16
+
+### Added
+- General tab profile panel: lists saved JSON profiles, selects the active profile, saves the current live state as a named profile, and writes `<active>.pending.json`.
+- `WorkConfigProfileBuilder` captures the current live WorkType/giver state into the canonical JSON shape (no operation history).
+- Profile saves use atomic writes and keep timestamped backups of the previous profile.
+
+### Not wired yet
+- Pending is written but not promoted/applied at startup.
+- The editor still uses the old settings lists; profile selection is not yet the live source of truth.
+- Reference-based reset and compact `PawnWorkOrder` overrides remain next.
+
 ## [0.3.0-alpha.34] - 2026-11-16
 
 ### Added

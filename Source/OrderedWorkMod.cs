@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using OrderedWork.Config;
 using OrderedWork.Core;
 using OrderedWork.Services;
 using OrderedWork.UI;
@@ -81,6 +83,10 @@ namespace OrderedWork
         private bool confirmResetAll;
         private bool confirmResetOrder;
         private bool splitAllowEmptyOrigin;
+        private string activeProfileName = "default";
+        private string newProfileName = "";
+        private bool profileNameInitialized;
+        private string profileStatus = "";
         private bool mergeAllowEmptyOrigin;
         private int confirmResetSplitIndex = -1;
         private int confirmResetMergeIndex = -1;
@@ -195,6 +201,93 @@ namespace OrderedWork
             list.Label("Split/Merge changes take effect after a restart.");
         }
 
+        private void DrawProfilePanel(Listing_Standard list)
+        {
+            list.Label("Global JSON profiles (pending edits apply on restart):");
+            if (!profileNameInitialized)
+            {
+                activeProfileName = WorkConfigStore.LoadSelectedProfileName();
+                newProfileName = activeProfileName;
+                profileNameInitialized = true;
+            }
+
+            List<string> profiles = new List<string>();
+            try
+            {
+                Directory.CreateDirectory(WorkConfigStore.ProfilesDirectory);
+                profiles = Directory.GetFiles(WorkConfigStore.ProfilesDirectory, "*.json")
+                    .Select(Path.GetFileNameWithoutExtension)
+                    .Where(n => !n.EndsWith(".pending", StringComparison.Ordinal))
+                    .Distinct()
+                    .OrderBy(n => n, StringComparer.Ordinal)
+                    .ToList();
+            }
+            catch (Exception exception)
+            {
+                profileStatus = "Could not list profiles: " + exception.Message;
+            }
+
+            Rect selector = list.GetRect(28f);
+            if (Widgets.ButtonText(selector, "Active profile: " + activeProfileName + "  ▼"))
+            {
+                List<FloatMenuOption> options = new List<FloatMenuOption>();
+                foreach (string profile in profiles)
+                {
+                    string captured = profile;
+                    options.Add(new FloatMenuOption(profile, delegate
+                    {
+                        activeProfileName = captured;
+                        newProfileName = captured;
+                        WorkConfigStore.SaveSelectedProfileName(captured);
+                        profileStatus = "Selected " + captured + ". Apply on next startup.";
+                    }));
+                }
+                if (options.Count > 0)
+                {
+                    Find.WindowStack.Add(new FloatMenu(options));
+                }
+            }
+
+            Rect nameRow = list.GetRect(26f);
+            Widgets.Label(new Rect(nameRow.x, nameRow.y, 84f, 24f), "Save as");
+            newProfileName = Widgets.TextField(
+                new Rect(nameRow.x + 88f, nameRow.y, Mathf.Max(80f, nameRow.width - 88f), 24f),
+                newProfileName ?? "");
+
+            if (list.ButtonText("Save current as profile"))
+            {
+                string profile = string.IsNullOrWhiteSpace(newProfileName) ? activeProfileName : newProfileName.Trim();
+                if (string.IsNullOrWhiteSpace(profile))
+                {
+                    profile = "default";
+                }
+                WorkConfigProfile captured = WorkConfigProfileBuilder.Capture(Settings, profile);
+                if (WorkConfigStore.SaveProfile(captured, true))
+                {
+                    activeProfileName = profile;
+                    WorkConfigStore.SaveSelectedProfileName(profile);
+                    profileStatus = "Saved " + profile + ".json";
+                }
+                else
+                {
+                    profileStatus = "Failed to save " + profile + ".json";
+                }
+            }
+            if (list.ButtonText("Write pending for active profile"))
+            {
+                WorkConfigProfile captured = WorkConfigProfileBuilder.Capture(Settings, activeProfileName);
+                profileStatus = WorkConfigStore.SavePending(captured)
+                    ? "Wrote " + activeProfileName + ".pending.json. Apply on next startup."
+                    : "Failed to write pending profile.";
+            }
+
+            list.Label("Reference: " + WorkConfigStore.ReferencePath);
+            if (!string.IsNullOrEmpty(profileStatus))
+            {
+                list.Label(profileStatus);
+            }
+        }
+
         private void DrawGeneralTab(Listing_Standard list)
         {
             list.Label("Ordered Work (Core) - changes apply on restart.");
@@ -217,6 +310,8 @@ namespace OrderedWork
                 ref Settings.keepDestroyedPawnOrders,
                 "Off: remove the pawn entry when the game no longer remembers it. On: keep it for mods that can return fully deleted pawns.");
 
+            list.Gap(12f);
+            DrawProfilePanel(list);
             list.Gap(12f);
             list.Label("Technical spike: writes dense rank 1..N to free colonists and logs the result.");
             if (Find.CurrentMap == null)
