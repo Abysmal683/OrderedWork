@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.22] - 2026-11-16
+
+### Changed
+- Removed the clipped `resize` text; the grip is only the 12 px bar. Added drag/up diagnostics to identify why the setting does not reach the window.
+- Pawn/Work separator is now 2 px with a brighter color and a wider gap.
+- Split/Merge design updated: left origin / right destination, explicit action label, `Merge selected` vs `Merge all`, two settings panels with local reset, and `Reset config mod all` in the general panel.
+- Shift+wheel log proved it reaches `scrollX=1999` of `maxX=1999`; the remaining visual gap is the lane's right padding, not the wheel.
+
 ## [0.3.0-alpha.21] - 2026-11-16
 
 ### Changed

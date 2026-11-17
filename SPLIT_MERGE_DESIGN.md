@@ -30,9 +30,9 @@ One two-column editor is used for both Split and Merge:
 
 - Origin selector is always present; the right column selects a different target WorkType (the selected origin is excluded).
 - Drag individual givers from Origin to Target and use `Merge selected`.
-- `Merge all` is the aggressive action: move every giver of the origin WorkType to the target.
+- `Merge all` is the aggressive action: move every giver of the origin WorkType to the target. `Merge selected` moves only the givers dragged to the destination.
 - A target WorkType cannot be the same as origin and cannot be empty.
-- Merge does not delete either WorkType; it moves giver ownership. The origin may become a WorkType with no givers.
+- Merge does not delete either WorkType; it moves giver ownership. The origin may become a WorkType with no givers.\n- Left column is always **origin**; the right column is the **destination**. The destination column header must say whether the action creates a split or merges into a WorkType; do not infer the action from the fields.
 - Per-entry remove/cancel resets the draft; existing saved merges remain editable only through their own saved entry controls.
 
 ## Validation and safety

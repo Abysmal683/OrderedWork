@@ -283,8 +283,7 @@ namespace OrderedWork.UI
         {
             Rect handle = new Rect(inRect.center.x - 80f, 0f, 160f, 12f);
             Widgets.DrawBoxSolid(handle, new Color(0.32f, 0.36f, 0.40f, 1f));
-            Widgets.DrawBoxSolid(new Rect(handle.x + 20f, handle.y + 3f, 120f, 2f), new Color(0.62f, 0.68f, 0.72f, 1f));
-            Widgets.Label(new Rect(handle.x + 20f, handle.y - 1f, 120f, 12f), "resize");
+            Widgets.DrawBoxSolid(new Rect(handle.x + 20f, handle.y + 4f, 120f, 2f), new Color(0.62f, 0.68f, 0.72f, 1f));
             TooltipHandler.TipRegion(handle, "Drag to resize Work Control (minimum: 4 pawn rows)");
 
             Event current = Event.current;
@@ -303,11 +302,14 @@ namespace OrderedWork.UI
                     float max = Mathf.Max(MinPanelHeight, Verse.UI.screenHeight - 35f);
                     float newHeight = resizeStartHeight + (resizeStartMouseY - current.mousePosition.y);
                     OrderedWorkMod.Settings.workControlHeight = Mathf.Clamp(newHeight, MinPanelHeight, max);
+                    Log.Message("[OrderedWork][Resize] drag mouse=" + current.mousePosition
+                        + " requested=" + OrderedWorkMod.Settings.workControlHeight);
                 }
                 current.Use();
             }
             else if (resizingPanel && current.type == EventType.MouseUp)
             {
+                Log.Message("[OrderedWork][Resize] up saved=" + (OrderedWorkMod.Settings != null ? OrderedWorkMod.Settings.workControlHeight : -1f));
                 resizingPanel = false;
                 current.Use();
             }
@@ -321,9 +323,9 @@ namespace OrderedWork.UI
             searchText = Widgets.TextField(new Rect(x, searchY, 168f, SearchHeight - 2f), searchText ?? "");
             x += 174f;
             Widgets.DrawBoxSolid(
-                new Rect(x, searchY + 2f, 1f, SearchHeight - 4f),
-                new Color(0.38f, 0.42f, 0.46f, 1f));
-            x += 8f;
+                new Rect(x, searchY + 1f, 2f, SearchHeight - 2f),
+                new Color(0.62f, 0.67f, 0.72f, 1f));
+            x += 10f;
 
             Rect workButton = new Rect(x, searchY, 190f, SearchHeight - 2f);
             x += 194f;
