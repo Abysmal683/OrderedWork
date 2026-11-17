@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.83] - 2026-11-17
+
+### Changed — passion-mod compatibility
+- Rules resolves all VSE/Alpha passion defs with icons and stable `defName` keys.
+- Unknown custom passions receive a neutral default entry and can be weighted immediately.
+- Missing entries are created before opening Rules and before recommendation scoring.
+- Removed passion mods keep their stored weights for when the mod is re-enabled.
+- Global weights and pins remain in ModSettings XML; profile JSON stays unchanged.
+
 ## [0.3.0-alpha.82] - 2026-11-16
 
 ### Added — passion weights

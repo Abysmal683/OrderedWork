@@ -1,6 +1,6 @@
 # Ordered Work — save/config design
 
-Status: foundation implemented in `Source/Config/WorkConfigStore.cs`, `WorkConfigModels.cs`, `WorkConfigProfileBuilder.cs` and `WorkConfigDiff.cs`; the live settings UI is not wired to it yet. Legacy settings lists remain until the next integration pass.
+Status: profile JSON is wired to the Rules UI. Global rule preferences live in ModSettings XML; profile state lives in JSON; per-pawn orders live in the save.
 
 ## 1. Two separate scopes
 
@@ -175,3 +175,28 @@ A profile is never switched silently.
 Should the active profile be global for the installation, or selected per colony save?
 
 Recommendation: global for the installation now; per-save profile binding later only if explicitly required, because it needs a stable save id and a profile selection on load.
+
+## Global rule preferences (ModSettings XML)
+
+These are global for every profile and are not part of the profile JSON:
+
+```text
+Config/Mod_OrderedWork_OrderedWorkMod.xml
+  recommendationPins
+  passionWeights
+  prioritizeLowSkillPassion
+  verboseDiagnostics
+  UI preferences (height, colors, auto settings)
+```
+
+They are read live by the recommendation service, so changing pins or passion weights applies without restarting. The XML is written by RimWorld when settings are saved or the game closes.
+
+## Passion-mod compatibility
+
+`Source/Services/PassionWeightCatalog.cs` enumerates VSE `PassionManager.AllPassions` through reflection. Vanilla `None/Minor/Major` are the fallback when VSE is absent. Mods that register `PassionDef` through VSE (including Alpha Skills) expose their passions and labels automatically.
+
+- Weights are keyed by `defName`, never by enum numeric value.
+- Unknown custom passions default to `Level 0 = 0`, `Per level = 0`, `Min level = 0`.
+- Names containing `Major`, `Minor`, `None`, `Disabled` or `Disinterested` receive the matching vanilla defaults.
+- Entries for disabled mods are retained, not deleted, so re-enabling the mod preserves the player's weights.
+- No third-party code or assets are copied.

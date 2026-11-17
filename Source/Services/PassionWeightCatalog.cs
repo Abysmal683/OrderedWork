@@ -66,12 +66,24 @@ namespace OrderedWork.Services
 
         public static PassionWeightEntry Find(OrderedWorkSettings settings, Passion passion)
         {
-            if (settings == null || settings.passionWeights == null)
+            if (settings == null)
             {
                 return null;
             }
+            EnsureDefaults(settings);
             string defName = DefNameOf(passion);
-            return settings.passionWeights.FirstOrDefault(e => e != null && e.defName == defName);
+            PassionWeightEntry entry = settings.passionWeights
+                .FirstOrDefault(e => e != null && e.defName == defName);
+            if (entry == null)
+            {
+                PassionInfo info = Registered.FirstOrDefault(p => p.DefName == defName);
+                if (info != null)
+                {
+                    entry = DefaultEntry(info);
+                    settings.passionWeights.Add(entry);
+                }
+            }
+            return entry;
         }
 
         public static string DefNameOf(Passion passion)
@@ -150,15 +162,22 @@ namespace OrderedWork.Services
                     {
                         foreach (object value in values)
                         {
-                            if (value is Passion passion)
+                            if (!(value is Passion passion))
                             {
-                                registered.Add(new PassionInfo
-                                {
-                                    Passion = passion,
-                                    DefName = DefNameOf(passion),
-                                    Label = LabelOf(passion)
-                                });
+                                continue;
                             }
+                            string defName = DefNameOf(passion);
+                            if (string.IsNullOrEmpty(defName)
+                                || registered.Any(p => p.DefName == defName))
+                            {
+                                continue;
+                            }
+                            registered.Add(new PassionInfo
+                            {
+                                Passion = passion,
+                                DefName = defName,
+                                Label = LabelOf(passion)
+                            });
                         }
                     }
                 }

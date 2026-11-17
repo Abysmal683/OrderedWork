@@ -140,6 +140,7 @@ namespace OrderedWork
 
             list.Gap(10f);
             list.Label("Recommendation passion weights (global). Level 0 / per level / min level:");
+            PassionWeightCatalog.EnsureDefaults(Settings);
             foreach (PassionWeightCatalog.PassionInfo info in PassionWeightCatalog.Registered)
             {
                 PassionWeightEntry entry = PassionWeightCatalog.Find(Settings, info.Passion);

@@ -167,6 +167,7 @@ namespace OrderedWork.Services
         /// </summary>
         public static List<string> GetRecommendation(Pawn pawn)
         {
+            PassionWeightCatalog.EnsureDefaults(OrderedWorkMod.Settings);
             List<string> pins = new List<string>();
             List<string> pinNames = OrderedWorkMod.Settings != null
                 && OrderedWorkMod.Settings.recommendationPins != null
