@@ -41,13 +41,28 @@ namespace OrderedWork.UI
                 return false;
             }
 
-            float max = Mathf.Max(0f, content.height - viewport.height);
-            if (max <= 0f)
+            // Shift+wheel is the quick horizontal access; normal wheel remains vertical.
+            if (Event.current.shift)
             {
-                return false;
+                float maxX = Mathf.Max(0f, content.width - viewport.width);
+                if (maxX <= 0f)
+                {
+                    return false;
+                }
+
+                scroll.x = Mathf.Clamp(scroll.x + Event.current.delta.y * 20f, 0f, maxX);
+            }
+            else
+            {
+                float maxY = Mathf.Max(0f, content.height - viewport.height);
+                if (maxY <= 0f)
+                {
+                    return false;
+                }
+
+                scroll.y = Mathf.Clamp(scroll.y + Event.current.delta.y * 20f, 0f, maxY);
             }
 
-            scroll.y = Mathf.Clamp(scroll.y + Event.current.delta.y * 20f, 0f, max);
             lastScrollTime = Time.realtimeSinceStartup;
             Event.current.Use();
             return true;

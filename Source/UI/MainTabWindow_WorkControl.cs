@@ -105,6 +105,10 @@ namespace OrderedWork.UI
 
             List<WorkTypeDef> available = WorkOrderService.GetAvailableWorkTypes();
             List<WorkTypeDef> paletteTypes = available.Where(MatchesPaletteFilter).ToList();
+            if (OrderedWorkMod.Settings != null && OrderedWorkMod.Settings.paletteStressTest)
+            {
+                paletteTypes.AddRange(WorkTypePaletteView.BuildDebugPaletteTypes(60));
+            }
             bool autoHide = OrderedWorkMod.Settings == null || OrderedWorkMod.Settings.autoHideScrollbars;
             bool showPaletteScrollbar = !autoHide
                 || Mouse.IsOver(paletteRect)
@@ -461,6 +465,18 @@ namespace OrderedWork.UI
 
             protected override void SetInitialSizeAndPosition()
             {
+                PlaceUnderAnchor();
+            }
+
+            public override void PostOpen()
+            {
+                base.PostOpen();
+                // WindowStack may adjust/round a window after PreOpen; re-apply the anchor once.
+                PlaceUnderAnchor();
+            }
+
+            private void PlaceUnderAnchor()
+            {
                 Vector2 size = InitialSize;
                 float x = Mathf.Clamp(anchor.x, 0f, Mathf.Max(0f, Verse.UI.screenWidth - size.x));
                 float y = anchor.yMax + 6f;
@@ -471,6 +487,8 @@ namespace OrderedWork.UI
                 }
                 y = Mathf.Clamp(y, 0f, Mathf.Max(0f, Verse.UI.screenHeight - size.y));
                 windowRect = new Rect(x, y, size.x, size.y);
+                Log.Message("[OrderedWork][Combo] anchor=" + anchor + " window=" + windowRect
+                    + " screen=" + Verse.UI.screenWidth + "x" + Verse.UI.screenHeight);
             }
 
             public override void DoWindowContents(Rect inRect)

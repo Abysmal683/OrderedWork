@@ -3,6 +3,17 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.16] - 2026-11-16
+
+### Fixed
+- Palette chips now fill **top-to-bottom, then left-to-right** (column-major) instead of row-major.
+- Added **Shift+wheel** horizontal scrolling for both the matrix and the palette; normal wheel remains vertical for the matrix.
+- Added a `Palette stress test (debug)` Mod Setting that appends 60 visual-only WorkTypes to test the palette's own horizontal scrollbar. These entries are not in `DefDatabase`, cannot be dragged and are not assignable.
+- Re-applies the combo anchor in `PostOpen` and logs `[OrderedWork][Combo]` anchor/window/screen geometry to diagnose the remaining placement report.
+
+### Added
+- `CREDITS.md` documents the compatibility references and licensing posture: no third-party code or assets are copied; VSE/Alpha Skills are read at runtime through their public `PassionDef` contract.
+
 ## [0.3.0-alpha.15] - 2026-11-16
 
 ### Fixed

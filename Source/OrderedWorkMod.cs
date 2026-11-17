@@ -51,6 +51,10 @@ namespace OrderedWork
                 "Auto-hide scrollbars",
                 ref Settings.autoHideScrollbars,
                 "Show Work Control scrollbars only while hovering or scrolling, so the matrix keeps its space.");
+            list.CheckboxLabeled(
+                "Palette stress test (debug)",
+                ref Settings.paletteStressTest,
+                "Adds 60 visual-only WorkTypes to test the palette's own horizontal scrollbar. They cannot be dragged or assigned.");
             list.Gap(6f);
 
             list.Label("Work type order (top = first):");

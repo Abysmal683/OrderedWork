@@ -13,7 +13,8 @@ namespace OrderedWork.UI
     /// <summary>
     /// Three-row WorkType palette, drag ghost and drop application. The main tab owns the
     /// drag state; this helper draws the chips/ghost and applies a drop to the target pawns.
-    /// Also owns the shared passion visual resolver used by the lane, the drag card and Details.
+    /// VSE/Alpha Skills integration is read-only reflection over their public PassionDef
+    /// contract; no third-party source or assets are copied or redistributed. See CREDITS.md.
     /// </summary>
     internal static class WorkTypePaletteView
     {
@@ -30,6 +31,35 @@ namespace OrderedWork.UI
         {
             public Texture2D Texture;
             public Color Tint;
+        }
+
+        /// <summary>
+        /// Visual-only palette entries for the debug scroll stress test. They are never
+        /// registered in DefDatabase and must not be draggable or assignable.
+        /// </summary>
+        internal static bool IsDebugPaletteType(WorkTypeDef type)
+        {
+            return type != null
+                && !string.IsNullOrEmpty(type.defName)
+                && type.defName.StartsWith("OWDebugPalette_", StringComparison.Ordinal);
+        }
+
+        internal static List<WorkTypeDef> BuildDebugPaletteTypes(int count)
+        {
+            List<WorkTypeDef> result = new List<WorkTypeDef>();
+            for (int i = 1; i <= count; i++)
+            {
+                result.Add(new WorkTypeDef
+                {
+                    defName = "OWDebugPalette_" + i,
+                    label = "Debug Work " + i,
+                    labelShort = "Debug " + i,
+                    description = "Visual-only palette stress entry; not assignable.",
+                    naturalPriority = 0,
+                    visible = true
+                });
+            }
+            return result;
         }
 
         internal static string DisplayName(WorkTypeDef type)
@@ -61,10 +91,13 @@ namespace OrderedWork.UI
             }
 
             Rect viewport = new Rect(rect.x, rect.y, rect.width, rect.height - WorkGridScrollView.Thickness);
-            int perRow = Mathf.Max(1, Mathf.CeilToInt(types.Count / (float)Rows));
-            float contentWidth = Mathf.Max(viewport.width, perRow * (ChipWidth + ChipGap) + ChipGap);
+            int perColumn = Mathf.Max(1, Mathf.CeilToInt(types.Count / (float)Rows));
+            float contentWidth = Mathf.Max(viewport.width, perColumn * (ChipWidth + ChipGap) + ChipGap);
             Rect content = new Rect(0f, 0f, contentWidth, viewport.height);
             Rect hTrack = new Rect(rect.x, rect.yMax - WorkGridScrollView.Thickness, rect.width, WorkGridScrollView.Thickness);
+
+            // Shift+wheel gives the palette its own horizontal quick scroll.
+            WorkGridScrollView.HandleWheel(viewport, viewport, content, ref scroll);
 
             // Handle the bar before the scroll view so the content cannot eat its MouseDown.
             if (showScrollbar)
@@ -83,8 +116,9 @@ namespace OrderedWork.UI
                         continue;
                     }
 
-                    int row = i / perRow;
-                    int column = i % perRow;
+                    // Top-to-bottom inside a column, then left-to-right.
+                    int row = i % Rows;
+                    int column = i / Rows;
                     Rect chip = new Rect(
                         ChipGap + column * (ChipWidth + ChipGap),
                         row * (ChipHeight + ChipGap),
@@ -114,7 +148,8 @@ namespace OrderedWork.UI
                         TooltipHandler.TipRegion(chip, PaletteTooltip(type));
                     }
 
-                    if (Event.current.type == EventType.MouseDown
+                    if (!IsDebugPaletteType(type)
+                        && Event.current.type == EventType.MouseDown
                         && Event.current.button == 0
                         && chip.Contains(Event.current.mousePosition))
                     {
