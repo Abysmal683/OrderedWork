@@ -34,6 +34,8 @@ namespace OrderedWork.Services
             }
         }
 
+        private const int DefaultsVersion = 2;
+
         public static void EnsureDefaults(OrderedWorkSettings settings)
         {
             if (settings == null)
@@ -44,15 +46,24 @@ namespace OrderedWork.Services
             {
                 settings.passionWeights = new List<PassionWeightEntry>();
             }
+            bool migrate = settings.passionDefaultsVersion < DefaultsVersion;
             foreach (PassionInfo info in Registered)
             {
-                if (settings.passionWeights.Any(e => e != null && e.defName == info.DefName))
+                PassionWeightEntry entry = settings.passionWeights
+                    .FirstOrDefault(e => e != null && e.defName == info.DefName);
+                if (entry == null)
                 {
+                    settings.passionWeights.Add(DefaultEntry(info));
                     continue;
                 }
-                PassionWeightEntry entry = DefaultEntry(info);
-                settings.passionWeights.Add(entry);
+                if (migrate
+                    && !IsVanillaName(info.DefName)
+                    && IsLegacyNeutral(entry))
+                {
+                    ApplyWeights(entry, DefaultEntry(info));
+                }
             }
+            settings.passionDefaultsVersion = DefaultsVersion;
         }
 
         public static void ResetToDefaults(OrderedWorkSettings settings)
@@ -62,6 +73,7 @@ namespace OrderedWork.Services
                 return;
             }
             settings.passionWeights = Registered.Select(DefaultEntry).ToList();
+            settings.passionDefaultsVersion = DefaultsVersion;
         }
 
         public static PassionWeightEntry Find(OrderedWorkSettings settings, Passion passion)
@@ -135,28 +147,81 @@ namespace OrderedWork.Services
             return string.IsNullOrEmpty(description) ? null : description;
         }
 
+        public static float LearnRateOf(Passion passion)
+        {
+            object def = GetVseDef(passion);
+            if (def == null)
+            {
+                return 0f;
+            }
+            object value = GetMember<object>(def, "learnRateFactor");
+            if (value == null)
+            {
+                return 0f;
+            }
+            try
+            {
+                return Convert.ToSingle(value);
+            }
+            catch (Exception)
+            {
+                return 0f;
+            }
+        }
+
         private static PassionWeightEntry DefaultEntry(PassionInfo info)
         {
             string name = info.DefName ?? "";
-            if (name.IndexOf("Major", StringComparison.OrdinalIgnoreCase) >= 0)
+            if (name == "Major")
             {
                 return new PassionWeightEntry { defName = name, level0Score = 3, perLevelBonus = 4, minLevel = 0 };
             }
-            if (name.IndexOf("Minor", StringComparison.OrdinalIgnoreCase) >= 0)
+            if (name == "Minor")
             {
                 return new PassionWeightEntry { defName = name, level0Score = 1, perLevelBonus = 2, minLevel = 0 };
             }
-            if (name.IndexOf("Disabled", StringComparison.OrdinalIgnoreCase) >= 0
+            if (name == "None"
+                || name.IndexOf("Disabled", StringComparison.OrdinalIgnoreCase) >= 0
                 || name.IndexOf("Desinterested", StringComparison.OrdinalIgnoreCase) >= 0
                 || name.IndexOf("Disinterested", StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 return new PassionWeightEntry { defName = name, level0Score = -3, perLevelBonus = 0, minLevel = 0 };
             }
-            if (name.IndexOf("None", StringComparison.OrdinalIgnoreCase) >= 0)
+
+            float learnRate = LearnRateOf(info.Passion);
+            if (learnRate > 0f)
             {
-                return new PassionWeightEntry { defName = name, level0Score = -3, perLevelBonus = 0, minLevel = 0 };
+                int level0 = Mathf.Clamp(Mathf.RoundToInt(learnRate * 4f - 3f), -20, 20);
+                int perLevel = Mathf.Clamp(Mathf.RoundToInt(learnRate * 4f - 2f), -20, 20);
+                return new PassionWeightEntry
+                {
+                    defName = name,
+                    level0Score = level0,
+                    perLevelBonus = perLevel,
+                    minLevel = 0
+                };
             }
             return new PassionWeightEntry { defName = name, level0Score = 0, perLevelBonus = 0, minLevel = 0 };
+        }
+
+        private static bool IsVanillaName(string defName)
+        {
+            return defName == "None" || defName == "Minor" || defName == "Major";
+        }
+
+        private static bool IsLegacyNeutral(PassionWeightEntry entry)
+        {
+            return entry != null
+                && entry.level0Score == 0
+                && entry.perLevelBonus == 0
+                && entry.minLevel == 0;
+        }
+
+        private static void ApplyWeights(PassionWeightEntry target, PassionWeightEntry source)
+        {
+            target.level0Score = source.level0Score;
+            target.perLevelBonus = source.perLevelBonus;
+            target.minLevel = source.minLevel;
         }
 
         private static void EnsureInitialized()

@@ -15,6 +15,7 @@ namespace OrderedWork
         public bool verboseLogging;
         public List<string> recommendationPins = new List<string> { "Patient", "PatientBedRest", "Firefighter" };
         public List<PassionWeightEntry> passionWeights = new List<PassionWeightEntry>();
+        public int passionDefaultsVersion;
         public List<WorkTypeColorEntry> workTypeColors = new List<WorkTypeColorEntry>();
 
         public override void ExposeData()
@@ -29,6 +30,7 @@ namespace OrderedWork
             Scribe_Values.Look(ref verboseLogging, "verboseLogging", false);
             Scribe_Collections.Look(ref recommendationPins, "recommendationPins", LookMode.Value);
             Scribe_Collections.Look(ref passionWeights, "passionWeights", LookMode.Deep);
+            Scribe_Values.Look(ref passionDefaultsVersion, "passionDefaultsVersion", 0);
             Scribe_Collections.Look(ref workTypeColors, "workTypeColors", LookMode.Deep);
 
             if (Scribe.mode == LoadSaveMode.LoadingVars)

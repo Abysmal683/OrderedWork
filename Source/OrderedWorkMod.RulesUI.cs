@@ -188,6 +188,14 @@ namespace OrderedWork
                 }
                 Widgets.Label(new Rect(row.x + 20f, row.y, 140f, 24f), info.Label);
                 string description = PassionWeightCatalog.DescriptionOf(info.Passion);
+                float learnRate = PassionWeightCatalog.LearnRateOf(info.Passion);
+                if (learnRate > 0f)
+                {
+                    string rateLine = "Learn rate: x" + learnRate.ToString("0.##");
+                    description = string.IsNullOrEmpty(description)
+                        ? rateLine
+                        : description + "\n\n" + rateLine;
+                }
                 if (!string.IsNullOrEmpty(description))
                 {
                     TooltipHandler.TipRegion(new Rect(row.x, row.y, 170f, 24f), description);

@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.90] - 2026-11-17
+
+### Added — learn-rate based defaults for modded passions
+- Unknown modded passions now derive defaults from `PassionDef.learnRateFactor`, the skill learning multiplier.
+- Vanilla `None/Minor/Major` keep the approved `-3/0/0`, `1/2/0`, `3/4/0` defaults.
+- Custom defaults use `level 0 = round(4 * learnRate - 3)` and `per level = round(4 * learnRate - 2)`.
+- Existing neutral custom entries from older builds migrate once; edited values are preserved.
+- The tooltip shows the live `Learn rate` multiplier.
+
 ## [0.3.0-alpha.89] - 2026-11-17
 
 ### Fixed — nested wheel capture
