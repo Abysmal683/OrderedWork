@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.54] - 2026-11-16
+
+### Fixed
+- Order Apply/Cancel are now guarded by `dirty && Widgets.ButtonText`, so they are hard-disabled, not just grey.
+- Giver drag sets `giverOrderDirty`; Apply/Cancel reset it.
+- Split/Merge Cancel uses an explicit dirty guard and no longer accepts clicks with an empty draft.
+- Split/Merge add/remove now marks the corresponding draft dirty.
+- Refactor remains behavior-preserving apart from these guards.
+
 ## [0.3.0-alpha.53] - 2026-11-16
 
 ### Changed
