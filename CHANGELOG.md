@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.63] - 2026-11-16
+
+### Fixed
+- Log diagnosis: reset threw `Collection was modified; enumeration operation may not execute` at `OrderedWorkMod.Order.cs:247` during Delete split. Delete was calling `RemoveGiverFromOtherTypes` while iterating the split's own giver list, and the helper removed entries from that same list.
+- Delete split now removes only the selected split, appends its givers to the base, reassigns live ownership, and never calls reciprocal cleanup.
+- Restore keeps the reciprocal cleanup and surplus-return behavior.
+- Order left side uses `giverOrderInitial`; Apply/Cancel use the visible `DrawActionButton`.
+- Reset refreshes Order and writes both active and pending.
+
 ## [0.3.0-alpha.62] - 2026-11-16
 
 ### Fixed
