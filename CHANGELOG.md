@@ -3,6 +3,17 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.51] - 2026-11-16
+
+### Fixed
+- Apply/Cancel giver order now depend on an explicit dirty flag set only by a drag, not on reference/current differences. They stay disabled until the user changes the draft.
+- Cancel restores the initial draft and clears dirty.
+- Removed the unused WorkType-order diff implementation and its draft state.
+- Restore cleanup now reassigns live giver owners and removes the giver from other profile WorkTypes before restoring the source.
+
+### Known issue
+- The reset list is profile-specific. `vanilla`/`default` have different pending/giver states; a restore shown under one profile is not the same change under another.
+
 ## [0.3.0-alpha.50] - 2026-11-16
 
 ### Fixed

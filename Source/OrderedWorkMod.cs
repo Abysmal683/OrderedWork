@@ -87,6 +87,7 @@ namespace OrderedWork
         private List<string> giverOrderInitial = new List<string>();
         private string giverOrderDraftType = "";
         private bool giverOrderDraftInitialized;
+        private bool giverOrderDirty;
         private string newProfileName = "";
         private bool profileNameInitialized;
         private string profileStatus = "";
@@ -574,8 +575,10 @@ namespace OrderedWork
             {
                 giverOrderDraft = (current.Givers ?? new List<GiverConfig>())
                     .Where(g => g != null).OrderBy(g => g.Order).Select(g => g.DefName).ToList();
+                giverOrderInitial = new List<string>(giverOrderDraft);
                 giverOrderDraftType = selectedGiverType;
                 giverOrderDraftInitialized = true;
+                giverOrderDirty = false;
             }
 
             WorkTypeConfig referenceType = null;
@@ -615,15 +618,20 @@ namespace OrderedWork
 
             Rect buttons = list.GetRect(30f);
             float half = (buttons.width - 8f) * 0.5f;
+            bool changed = giverOrderDirty;
+            bool previousEnabled = GUI.enabled;
+            GUI.enabled = previousEnabled && changed;
             if (Widgets.ButtonText(new Rect(buttons.x, buttons.y, half, 28f), "Apply giver order"))
             {
                 ApplyGiverOrderDraft(active.Profile);
             }
             if (Widgets.ButtonText(new Rect(buttons.x + half + 8f, buttons.y, half, 28f), "Cancel giver order"))
             {
-                giverOrderDraftInitialized = false;
-                giverOrderDraft.Clear();
+                giverOrderDraft = new List<string>(giverOrderInitial);
+                giverOrderDirty = false;
+                giverOrderDraftInitialized = true;
             }
+            GUI.enabled = previousEnabled;
         }
 
         private void MoveGiverOrderDraft(int from, int to)
