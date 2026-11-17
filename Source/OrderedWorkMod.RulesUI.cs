@@ -89,6 +89,51 @@ namespace OrderedWork
                 MoveWorkTypeProfile(orderedTypes, from, to);
             });
 
+            list.Gap(10f);
+            list.CheckboxLabeled(
+                "Prioritize low-level passion over work without skill",
+                ref Settings.prioritizeLowSkillPassion,
+                "When on, a low skill with Minor/Major passion can rank above a WorkType without a relevant skill. When off, only level and naturalPriority decide.");
+            list.Label("Automatic recommendation pins (top = first). Drag to reorder:");
+            List<Rect> pinRows = new List<Rect>();
+            for (int i = 0; i < Settings.recommendationPins.Count; i++)
+            {
+                string id = Settings.recommendationPins[i];
+                WorkTypeDef pin = DefDatabase<WorkTypeDef>.GetNamedSilentFail(id);
+                string label = pin != null ? pin.labelShort : id;
+                Rect row = list.GetRect(24f);
+                DrawReorderRow(row, i + 1 + ". " + label, 6, i, WorkTypeTooltip(id));
+                Rect pinRemove = new Rect(row.xMax - 22f, row.y + 2f, 18f, 20f);
+                if (Widgets.ButtonText(pinRemove, "x"))
+                {
+                    Settings.recommendationPins.RemoveAt(i);
+                    break;
+                }
+                pinRows.Add(row);
+            }
+            HandleReorderDrag(6, pinRows, MoveRecommendationPin);
+            if (list.ButtonText("Add recommendation pin"))
+            {
+                List<WorkTypeDef> candidates = WorkConfigStore.GetOrderedVisibleWorkTypes(
+                        WorkConfigStore.LoadEditingProfile(activeProfileName))
+                    .Where(w => !Settings.recommendationPins.Contains(w.defName))
+                    .ToList();
+                if (candidates.Count > 0)
+                {
+                    Find.WindowStack.Add(new WorkTypeDropdownWindow(
+                        "Add recommendation pin",
+                        candidates,
+                        null,
+                        delegate(WorkTypeDef wt)
+                        {
+                            if (wt != null && !Settings.recommendationPins.Contains(wt.defName))
+                            {
+                                Settings.recommendationPins.Add(wt.defName);
+                            }
+                        }));
+                }
+            }
+
             list.Gap(14f);
             DrawSplitMergeEditor(list);
 
@@ -206,6 +251,10 @@ namespace OrderedWork
                 "Palette stress test (debug)",
                 ref Settings.paletteStressTest,
                 "Adds 60 visual-only WorkTypes to test the palette's own horizontal scrollbar. They cannot be dragged or assigned.");
+            list.CheckboxLabeled(
+                "Verbose diagnostics in Player.log",
+                ref Settings.verboseLogging,
+                "Enables temporary Order/Reset/Scroll debug lines. Disable for normal play.");
             list.CheckboxLabeled(
                 "Keep orders for destroyed pawns",
                 ref Settings.keepDestroyedPawnOrders,
