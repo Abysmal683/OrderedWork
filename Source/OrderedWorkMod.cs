@@ -88,6 +88,8 @@ namespace OrderedWork
         private string giverOrderDraftType = "";
         private bool giverOrderDraftInitialized;
         private bool giverOrderDirty;
+        private bool splitDirty;
+        private bool mergeDirty;
         private string newProfileName = "";
         private bool profileNameInitialized;
         private string profileStatus = "";

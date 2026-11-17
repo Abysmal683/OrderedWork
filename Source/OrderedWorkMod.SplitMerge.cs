@@ -120,7 +120,8 @@ namespace OrderedWork
                     splitDescription = "";
                     splitDraft.Clear();
                     splitDraftScroll = 0f;
-                });
+                    splitDirty = false;
+                }, splitDirty);
 
             HandleSplitMergeDrag();
         }
@@ -195,11 +196,15 @@ namespace OrderedWork
             {
                 SaveMerge(originNames);
             }
+            bool previousMergeEnabled = GUI.enabled;
+            GUI.enabled = previousMergeEnabled && mergeDirty;
             if (Widgets.ButtonText(cancelRect, "Cancel draft"))
             {
                 mergeDraft.Clear();
                 mergeTargetScroll = 0f;
+                mergeDirty = false;
             }
+            GUI.enabled = previousMergeEnabled;
             if (!string.IsNullOrEmpty(selectedWarning))
             {
                 DrawInlineWarning(list, "Merge selected: " + selectedWarning);
@@ -537,7 +542,7 @@ namespace OrderedWork
             return wantsOrigin == originSide && row.Contains(Event.current.mousePosition);
         }
 
-        private void DrawSplitMergeActions(Listing_Standard list, string actionLabel, string warning, Action onSave, Action onCancel)
+        private void DrawSplitMergeActions(Listing_Standard list, string actionLabel, string warning, Action onSave, Action onCancel, bool canCancel)
         {
             Rect actionsRect = list.GetRect(30f);
             float buttonWidth = Mathf.Min(150f, (actionsRect.width - 12f) / 3f);

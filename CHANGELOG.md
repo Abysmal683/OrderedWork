@@ -3,7 +3,17 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [0.3.0-alpha.52] - 2026-11-16
+## [0.3.0-alpha.53] - 2026-11-16
+
+### Changed
+- Order Apply/Cancel use a real edit-dirty flag set by dragging; disabled until the draft changes and reset after Apply/Cancel.
+- Split/Merge drafts track dirty state; Cancel draft stays disabled until a giver is added/removed.
+- Refactor remains behavior-preserving; no claim yet on restore/pending fixes.
+
+### Next focused test
+- Test Order in isolation before touching Split/Merge.
+
+
 
 ### Changed
 - Refactored `OrderedWorkMod.cs` from 1978 lines into partial-class files:
