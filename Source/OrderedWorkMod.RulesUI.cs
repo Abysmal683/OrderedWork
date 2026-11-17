@@ -16,6 +16,10 @@ namespace OrderedWork
 {
     public partial class OrderedWorkMod : Mod
     {
+        private const int VisiblePassionRows = 10;
+        private const float PassionRowHeight = 26f;
+        private Vector2 passionWeightScroll;
+
         private void EnsureProfileNameInitialized()
         {
             if (profileNameInitialized)
@@ -139,16 +143,34 @@ namespace OrderedWork
                 "Default pins: Patient, PatientBedRest, Firefighter. Pins are global and applied in this order before scoring.");
 
             list.Gap(10f);
+            DrawPassionWeights(list);
+
+            list.Gap(14f);
+            DrawSplitMergeEditor(list);
+
+            list.Gap(10f);
+            list.Label("No work type or giver is ever deleted. Back up your save before applying.");
+            list.Label("Split/Merge changes take effect after a restart.");
+        }
+
+        private void DrawPassionWeights(Listing_Standard list)
+        {
             list.Label("Recommendation passion weights (global). Level 0 / per level / min level:");
             PassionWeightCatalog.EnsureDefaults(Settings);
-            foreach (PassionWeightCatalog.PassionInfo info in PassionWeightCatalog.Registered)
+            List<PassionWeightCatalog.PassionInfo> registered = PassionWeightCatalog.Registered;
+            float viewHeight = Mathf.Min(registered.Count, VisiblePassionRows) * PassionRowHeight;
+            Rect outRect = list.GetRect(viewHeight);
+            Rect viewRect = new Rect(0f, 0f, outRect.width - 20f, registered.Count * PassionRowHeight);
+            Widgets.BeginScrollView(outRect, ref passionWeightScroll, viewRect);
+            for (int i = 0; i < registered.Count; i++)
             {
+                PassionWeightCatalog.PassionInfo info = registered[i];
                 PassionWeightEntry entry = PassionWeightCatalog.Find(Settings, info.Passion);
                 if (entry == null)
                 {
                     continue;
                 }
-                Rect row = list.GetRect(26f);
+                Rect row = new Rect(0f, i * PassionRowHeight, viewRect.width, 24f);
                 WorkTypePaletteView.PassionVisual visual = WorkTypePaletteView.ResolvePassionVisual(info.Passion);
                 if (visual.Texture != null)
                 {
@@ -166,17 +188,11 @@ namespace OrderedWork
                 Widgets.TextFieldNumeric(new Rect(row.x + 182f + fieldWidth * 2f, row.y, fieldWidth, 24f),
                     ref entry.minLevel, ref entry.minLevelBuffer, 0, 20);
             }
+            Widgets.EndScrollView();
             if (list.ButtonText("Reset recommendation weights"))
             {
                 PassionWeightCatalog.ResetToDefaults(Settings);
             }
-
-            list.Gap(14f);
-            DrawSplitMergeEditor(list);
-
-            list.Gap(10f);
-            list.Label("No work type or giver is ever deleted. Back up your save before applying.");
-            list.Label("Split/Merge changes take effect after a restart.");
         }
 
         private void DrawProfilePanel(Listing_Standard list)

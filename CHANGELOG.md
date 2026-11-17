@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.86] - 2026-11-17
+
+### Changed — passion weights view
+- Passion weight rows are capped at 10 visible rows.
+- The table gets its own scrollbar when more passions are registered.
+- The global settings scroll no longer grows with every passion mod.
+
 ## [0.3.0-alpha.85] - 2026-11-17
 
 ### Fixed — passion sprites in weight rows
