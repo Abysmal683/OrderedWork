@@ -44,9 +44,6 @@ namespace OrderedWork
 
         // Order mode origin. Kept as UI-only state; the saved order itself lives in settings.
         private string selectedGiverType = "";
-        private string editSplitDefName = "";
-        private string editSplitName = "";
-        private string editSplitDescription = "";
 
         // Split/Merge drafts are UI-only and never scribed.
         private string splitOrigin = "";
@@ -204,7 +201,6 @@ namespace OrderedWork
                 .OrderByDescending(w => w.naturalPriority)
                 .Select(w => w.defName)
                 .ToList();
-            Settings.splits.Clear();
             Settings.workTypeColors.Clear();
             Settings.autoRecommendNewColony = true;
             Settings.autoHideScrollbars = true;

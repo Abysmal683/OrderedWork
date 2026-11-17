@@ -233,12 +233,15 @@ namespace OrderedWork
             {
                 Settings.workTypeOrder = new List<string>();
             }
-            // Drop stale/hidden split defs and empty saved splits from the visible order.
-            HashSet<string> validSplitNames = new HashSet<string>(
-                Settings.splits
-                    .Where(s => s != null && !string.IsNullOrEmpty(s.newDefName)
-                        && s.givers != null && s.givers.Count > 0)
-                    .Select(s => s.newDefName));
+            // Drop stale/hidden split defs from the visible order using the profile as source.
+            EnsureProfileNameInitialized();
+            WorkConfigProfile displayProfile = LoadEditingProfile();
+            HashSet<string> validSplitNames = displayProfile == null
+                ? new HashSet<string>(StringComparer.Ordinal)
+                : new HashSet<string>(displayProfile.WorkTypes
+                    .Where(e => e.Value != null && !e.Value.Vanilla
+                        && e.Value.Givers != null && e.Value.Givers.Count > 0)
+                    .Select(e => e.Key), StringComparer.Ordinal);
             for (int i = Settings.workTypeOrder.Count - 1; i >= 0; i--)
             {
                 string id = Settings.workTypeOrder[i];

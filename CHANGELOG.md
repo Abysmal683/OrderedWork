@@ -3,7 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [0.3.0-alpha.76] - 2026-11-16
+## [0.3.0-alpha.77] - 2026-11-16
+
+### Legacy removal — split stage
+- Startup now loads/promotes/applies the JSON profile.
+- `SaveSplit` writes a canonical `WorkTypeConfig` and moves givers inside the profile.
+- `ApplyProfile` creates split WorkTypes from the profile using a transient split DTO.
+- Removed `OrderedWorkSettings.splits` and all persisted split list references.
+- Removed the old split metadata UI (will return profile-backed later).
+- Remaining legacy: `Settings.workTypeOrder` only.
 
 ### Changed
 - Confirmed Reset order duplicates the selected WorkType Restore already shown in Reset changes; removed the large Reset order button and its confirmation state. Use Restore in the unified list.

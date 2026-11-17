@@ -6,7 +6,6 @@ namespace OrderedWork
     public class OrderedWorkSettings : ModSettings
     {
         public List<string> workTypeOrder = new List<string>();
-        public List<SplitEntry> splits = new List<SplitEntry>();
         public bool initialized;
         public bool autoRecommendNewColony = true;
         public bool autoHideScrollbars = true;
@@ -19,7 +18,6 @@ namespace OrderedWork
         public override void ExposeData()
         {
             Scribe_Collections.Look(ref workTypeOrder, "workTypeOrder", LookMode.Value);
-            Scribe_Collections.Look(ref splits, "splits", LookMode.Deep);
             Scribe_Values.Look(ref initialized, "initialized", false);
             Scribe_Values.Look(ref autoRecommendNewColony, "autoRecommendNewColony", true);
             Scribe_Values.Look(ref autoHideScrollbars, "autoHideScrollbars", true);
@@ -32,7 +30,6 @@ namespace OrderedWork
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
                 if (workTypeOrder == null) workTypeOrder = new List<string>();
-                if (splits == null) splits = new List<SplitEntry>();
                 if (workTypeColors == null) workTypeColors = new List<WorkTypeColorEntry>();
             }
         }

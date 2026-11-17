@@ -773,13 +773,6 @@ namespace OrderedWork
             {
                 selectedGiverType = "";
             }
-            WorkTypeDef editDef = DefDatabase<WorkTypeDef>.GetNamedSilentFail(editSplitDefName);
-            if (editDef == null || !editDef.visible)
-            {
-                editSplitDefName = "";
-                editSplitName = "";
-                editSplitDescription = "";
-            }
             if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(splitOrigin) == null)
             {
                 splitOrigin = fallback;
@@ -838,21 +831,56 @@ namespace OrderedWork
             }
 
             string newDefName = BuildSplitDefName(splitName);
-            Settings.splits.Add(new SplitEntry
+            WorkConfigProfile profile = LoadEditingProfile();
+            if (profile == null || !profile.WorkTypes.TryGetValue(splitOrigin, out WorkTypeConfig origin) || origin == null)
             {
-                newDefName = newDefName,
-                label = splitName.Trim(),
-                description = splitDescription.Trim(),
-                baseWorkType = splitOrigin,
-                givers = splitDraft.Distinct().ToList()
-            });
-            if (!Settings.workTypeOrder.Contains(newDefName))
-            {
-                Settings.workTypeOrder.Add(newDefName);
+                return;
             }
-            OrderedWorkStartup.ApplyPendingChanges(Settings, this);
-            PersistLivePending();
-            ApplyLiveProfileFromSettings();
+
+            List<string> incoming = splitDraft.Distinct().ToList();
+            foreach (string giverName in incoming)
+            {
+                foreach (WorkTypeConfig workType in profile.WorkTypes.Values)
+                {
+                    if (workType != null && workType.Givers != null)
+                    {
+                        workType.Givers.RemoveAll(g => g != null && g.DefName == giverName);
+                        for (int i = 0; i < workType.Givers.Count; i++)
+                        {
+                            workType.Givers[i].Order = i;
+                        }
+                    }
+                }
+            }
+
+            WorkTypeConfig split = new WorkTypeConfig
+            {
+                Vanilla = false,
+                Base = splitOrigin,
+                Label = splitName.Trim(),
+                Description = splitDescription.Trim(),
+                Visible = true,
+                Order = profile.WorkTypes.Count == 0 ? 0 : profile.WorkTypes.Values.Max(w => w != null ? w.Order : 0) + 1,
+                Mod = Content != null && Content.ModMetaData != null ? Content.PackageId : "nightmare123487.OrderedWork",
+                Givers = incoming.Select((name, index) => new GiverConfig
+                {
+                    DefName = name,
+                    Order = index,
+                    Mod = DefDatabase<WorkGiverDef>.GetNamedSilentFail(name)?.modContentPack?.PackageId
+                }).ToList()
+            };
+            profile.WorkTypes[newDefName] = split;
+            if (!origin.Vanilla && (origin.Givers == null || origin.Givers.Count == 0))
+            {
+                profile.WorkTypes.Remove(splitOrigin);
+            }
+            if (origin.Vanilla && (origin.Givers == null || origin.Givers.Count == 0))
+            {
+                origin.Visible = false;
+            }
+            WorkConfigStore.SaveProfile(profile, true);
+            WorkConfigStore.SavePending(profile);
+            OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
 
             splitName = "";
             splitDescription = "";
@@ -952,9 +980,10 @@ namespace OrderedWork
                 baseName = "Split";
             }
 
-            int suffix = Settings.splits.Count + 1;
+            WorkConfigProfile currentProfile = LoadEditingProfile();
+            int suffix = (currentProfile != null ? currentProfile.WorkTypes.Count : 0) + 1;
             string defName = "OrderedWork_" + baseName + "_" + suffix;
-            while (Settings.splits.Any(s => s != null && s.newDefName == defName)
+            while ((currentProfile != null && currentProfile.WorkTypes.ContainsKey(defName))
                 || DefDatabase<WorkTypeDef>.GetNamedSilentFail(defName) != null)
             {
                 suffix++;

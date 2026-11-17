@@ -23,7 +23,16 @@ namespace OrderedWork
                     return;
                 }
 
-                ApplySplits(settings, mod);
+                string selectedProfile = WorkConfigStore.LoadSelectedProfileName();
+                WorkConfigStore.PromotePending(selectedProfile);
+                WorkConfigLoadResult loaded = WorkConfigStore.LoadActiveWithFallback(selectedProfile);
+                if (loaded != null && loaded.Profile != null)
+                {
+                    ApplyProfile(loaded.Profile, settings, mod);
+                    return;
+                }
+
+                ApplySplits(new List<SplitEntry>(), mod);
                 ApplyOrder(settings);
                 RebuildCaches();
             }
@@ -38,27 +47,6 @@ namespace OrderedWork
         /// adding a split or merge; it is the same pipeline used at startup and remains
         /// restart-backed because DefDatabase mutations cannot be cleanly rolled back.
         /// </summary>
-        public static bool ApplyPendingChanges(OrderedWorkSettings settings, OrderedWorkMod mod)
-        {
-            if (settings == null || mod == null)
-            {
-                return false;
-            }
-            try
-            {
-                ApplySplits(settings, mod);
-                ApplyOrder(settings);
-                RebuildCaches();
-                OrderedWork.Services.WorkOrderService.InvalidateAvailableWorkTypes();
-                return true;
-            }
-            catch (Exception exception)
-            {
-                Log.Error("[Ordered Work] Failed to apply pending work changes: " + exception);
-                return false;
-            }
-        }
-
         public static void ApplyProfileNow(WorkConfigProfile profile, OrderedWorkSettings settings, OrderedWorkMod mod)
         {
             ApplyProfile(profile, settings, mod);
@@ -71,8 +59,8 @@ namespace OrderedWork
                 return;
             }
 
-            settings.splits.Clear();
-                settings.workTypeOrder.Clear();
+            settings.workTypeOrder.Clear();
+            List<SplitEntry> splitEntries = new List<SplitEntry>();
 
             List<KeyValuePair<string, WorkTypeConfig>> ordered = profile.WorkTypes
                 .Where(e => e.Value != null)
@@ -84,7 +72,7 @@ namespace OrderedWork
                 WorkTypeConfig wt = entry.Value;
                 if (!wt.Vanilla)
                 {
-                    settings.splits.Add(new SplitEntry
+                    splitEntries.Add(new SplitEntry
                     {
                         newDefName = entry.Key,
                         label = wt.Label,
@@ -97,7 +85,7 @@ namespace OrderedWork
                 }
             }
 
-            ApplySplits(settings, mod);
+            ApplySplits(splitEntries, mod);
 
             int workOrder = 0;
             foreach (KeyValuePair<string, WorkTypeConfig> entry in ordered)
@@ -152,9 +140,9 @@ namespace OrderedWork
             OrderedWork.Services.WorkOrderService.InvalidateAvailableWorkTypes();
         }
 
-        private static void ApplySplits(OrderedWorkSettings settings, OrderedWorkMod mod)
+        private static void ApplySplits(IEnumerable<SplitEntry> splitEntries, OrderedWorkMod mod)
         {
-            foreach (SplitEntry split in settings.splits)
+            foreach (SplitEntry split in splitEntries)
             {
                 if (split == null || string.IsNullOrWhiteSpace(split.newDefName)
                     || string.IsNullOrWhiteSpace(split.baseWorkType)

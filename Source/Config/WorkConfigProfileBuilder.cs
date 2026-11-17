@@ -20,16 +20,21 @@ namespace OrderedWork.Config
             };
             HashSet<string> mods = new HashSet<string>(StringComparer.Ordinal);
             List<WorkTypeDef> workTypes = OrderedWorkTypes(settings);
+            WorkConfigProfile existingProfile = WorkConfigStore.LoadPending(profile.Profile)
+                ?? (WorkConfigStore.LoadActiveWithFallback(profile.Profile)?.Profile);
             int order = 0;
             foreach (WorkTypeDef workType in workTypes)
             {
-                SplitEntry split = settings != null && settings.splits != null
-                    ? settings.splits.FirstOrDefault(s => s != null && s.newDefName == workType.defName)
-                    : null;
+                WorkTypeConfig existingType = null;
+                if (existingProfile != null)
+                {
+                    existingProfile.WorkTypes.TryGetValue(workType.defName, out existingType);
+                }
+                bool isSplit = existingType != null && !existingType.Vanilla;
                 WorkTypeConfig wt = new WorkTypeConfig
                 {
-                    Vanilla = split == null && !workType.defName.StartsWith("OrderedWork_", StringComparison.Ordinal),
-                    Base = split != null ? split.baseWorkType : null,
+                    Vanilla = !isSplit && !workType.defName.StartsWith("OrderedWork_", StringComparison.Ordinal),
+                    Base = isSplit ? existingType.Base : null,
                     Label = workType.labelShort,
                     Description = workType.description,
                     Visible = workType.visible,
