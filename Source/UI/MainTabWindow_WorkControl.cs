@@ -28,6 +28,7 @@ namespace OrderedWork.UI
         private const float CardGap = 4f;
         private const float LeftColumnMin = 160f;
         private const float LeftColumnMax = 260f;
+        private const float ColumnGutter = 6f;
         private const int DebugPaletteTypeCount = 60;
         private const float MinPanelHeight = 360f; // top UI + 4 pawn rows
         private const float DefaultPanelHeightFactor = 0.5f;
@@ -206,7 +207,7 @@ namespace OrderedWork.UI
                 maxLane = Mathf.Max(maxLane, BuildLane(pawn).types.Count);
             }
 
-            float laneContentWidth = Mathf.Max(laneViewport.width, (maxLane + 2) * (CardWidth + CardGap) + CardGap);
+            float laneContentWidth = Mathf.Max(laneViewport.width, (maxLane + 1) * (CardWidth + CardGap) + CardGap);
             float rowsHeight = colonists.Count * RowHeight;
             float contentHeight = Mathf.Max(bodyRect.height, rowsHeight);
             Rect laneContent = new Rect(0f, 0f, laneContentWidth, contentHeight);
@@ -299,7 +300,7 @@ namespace OrderedWork.UI
             if (current.type == EventType.MouseDown && current.button == 0 && handle.Contains(current.mousePosition))
             {
                 resizingPanel = true;
-                resizeStartMouseY = current.mousePosition.y;
+                resizeStartMouseY = Verse.UI.MousePositionOnUIInverted.y;
                 resizeStartHeight = windowRect.height;
                 Log.Message("[OrderedWork][Resize] down mouse=" + current.mousePosition + " height=" + inRect.height);
                 current.Use();
@@ -309,7 +310,7 @@ namespace OrderedWork.UI
                 if (OrderedWorkMod.Settings != null)
                 {
                     float max = Mathf.Max(MinPanelHeight, Verse.UI.screenHeight - 35f);
-                    float newHeight = resizeStartHeight + (resizeStartMouseY - current.mousePosition.y);
+                    float newHeight = resizeStartHeight + (resizeStartMouseY - Verse.UI.MousePositionOnUIInverted.y);
                     OrderedWorkMod.Settings.workControlHeight = Mathf.Clamp(newHeight, MinPanelHeight, max);
                     Log.Message("[OrderedWork][Resize] drag mouse=" + current.mousePosition
                         + " requested=" + OrderedWorkMod.Settings.workControlHeight);
@@ -875,7 +876,7 @@ namespace OrderedWork.UI
 
                     float infoWidth = leftWidth >= 170f ? 46f : 0f;
                     float textX = portraitRect.xMax + 3f;
-                    float textWidth = Mathf.Max(16f, leftWidth - textX - infoWidth - 2f);
+                    float textWidth = Mathf.Max(16f, leftWidth - textX - infoWidth - ColumnGutter - 2f);
                     string title = pawn.story != null ? pawn.story.Title : null;
 
                     TextAnchor previous = Text.Anchor;
@@ -910,7 +911,7 @@ namespace OrderedWork.UI
                         Text.Font = GameFont.Tiny;
                         Text.Anchor = TextAnchor.MiddleRight;
                         GUI.color = new Color(0.72f, 0.72f, 0.72f);
-                        Rect infoRect = new Rect(leftWidth - infoWidth - 2f, y, infoWidth, RowHeight);
+                        Rect infoRect = new Rect(leftWidth - infoWidth - ColumnGutter - 2f, y, infoWidth, RowHeight);
                         Widgets.Label(new Rect(infoRect.x, y, infoRect.width, RowHeight / 2f),
                             pawn.ageTracker != null ? pawn.ageTracker.AgeBiologicalYears + "y" : "");
                         Widgets.Label(new Rect(infoRect.x, y + RowHeight / 2f, infoRect.width, RowHeight / 2f), HealthShort(pawn));

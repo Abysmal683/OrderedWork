@@ -26,6 +26,7 @@ namespace OrderedWork
         private int dragIndex = -1;
         private float dragStartMouseY;
         private bool dragMoved;
+        private bool confirmResetAll;
 
         public OrderedWorkMod(ModContentPack content) : base(content)
         {
@@ -173,9 +174,52 @@ namespace OrderedWork
             }
 
             list.Gap(10f);
+            list.Label("Danger zone: reset the mod configuration without touching pawn 1..N priorities.");
+            if (!confirmResetAll)
+            {
+                if (list.ButtonText("Reset config mod all"))
+                {
+                    confirmResetAll = true;
+                }
+            }
+            else
+            {
+                list.Label("This clears orders, splits, merges, colors, stress test and panel height. Pawn work priorities are not touched.");
+                if (list.ButtonText("Confirm reset config mod all"))
+                {
+                    ResetAllSettings();
+                    confirmResetAll = false;
+                }
+                if (list.ButtonText("Cancel reset"))
+                {
+                    confirmResetAll = false;
+                }
+            }
+
+            list.Gap(10f);
             list.Label("No work type or giver is ever deleted. Back up your save before applying.");
             list.End();
             Widgets.EndScrollView();
+        }
+
+        private void ResetAllSettings()
+        {
+            Settings.workTypeOrder = DefDatabase<WorkTypeDef>.AllDefsListForReading
+                .Where(w => w != null && w.visible)
+                .OrderByDescending(w => w.naturalPriority)
+                .Select(w => w.defName)
+                .ToList();
+            Settings.giverOrder.Clear();
+            Settings.splits.Clear();
+            Settings.merges.Clear();
+            Settings.workTypeColors.Clear();
+            Settings.autoRecommendNewColony = true;
+            Settings.autoHideScrollbars = true;
+            Settings.paletteStressTest = false;
+            Settings.workControlHeight = 0f;
+            selectedGiverType = Settings.workTypeOrder.FirstOrDefault() ?? "";
+            dragKind = 0;
+            dragIndex = -1;
         }
 
         private void DrawReorderRow(Rect row, string label, int kind, int index, string tooltip)

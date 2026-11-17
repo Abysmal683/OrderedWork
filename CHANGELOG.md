@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.24] - 2026-11-16
+
+### Fixed
+- Resize drag now uses the screen mouse position instead of the window-local mouse position, eliminating the feedback where the content origin moved while dragging.
+- Lane content width is `(maxLane + 1)` slots instead of `(maxLane + 2)`, removing the extra ghost slot after the last card and `+`.
+- Added a 6 px right gutter inside the pawn column so age/health no longer touch the lane divider; the divider itself stays at the column boundary.
+- Added a safe `Reset config mod all` with a two-step confirmation. It resets mod settings (orders, givers, splits, merges, colors, stress test, panel height) but does not write pawn 1..N priorities.
+
 ## [0.3.0-alpha.23] - 2026-11-16
 
 ### Fixed
