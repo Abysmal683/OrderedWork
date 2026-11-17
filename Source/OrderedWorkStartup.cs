@@ -21,7 +21,9 @@ namespace OrderedWork
                     return;
                 }
 
+                CaptureOriginalGiverOrder(settings);
                 ApplySplits(settings, mod);
+                CaptureOriginalGiverOrder(settings);
                 ApplyMerges(settings);
                 ApplyOrder(settings);
                 RebuildCaches();
@@ -45,7 +47,9 @@ namespace OrderedWork
             }
             try
             {
+                CaptureOriginalGiverOrder(settings);
                 ApplySplits(settings, mod);
+                CaptureOriginalGiverOrder(settings);
                 ApplyMerges(settings);
                 ApplyOrder(settings);
                 RebuildCaches();
@@ -56,6 +60,29 @@ namespace OrderedWork
             {
                 Log.Error("[Ordered Work] Failed to apply pending work changes: " + exception);
                 return false;
+            }
+        }
+
+        private static void CaptureOriginalGiverOrder(OrderedWorkSettings settings)
+        {
+            if (settings.originalGiverOrder == null)
+            {
+                settings.originalGiverOrder = new List<GiverOrderEntry>();
+            }
+            HashSet<string> known = new HashSet<string>(
+                settings.originalGiverOrder.Where(e => e != null).Select(e => e.giver));
+            foreach (WorkGiverDef giver in DefDatabase<WorkGiverDef>.AllDefsListForReading)
+            {
+                if (giver != null && !known.Contains(giver.defName))
+                {
+                    settings.originalGiverOrder.Add(new GiverOrderEntry
+                    {
+                        workType = giver.workType != null ? giver.workType.defName : "",
+                        giver = giver.defName,
+                        order = giver.priorityInType
+                    });
+                    known.Add(giver.defName);
+                }
             }
         }
 

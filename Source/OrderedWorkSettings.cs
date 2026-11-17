@@ -7,6 +7,8 @@ namespace OrderedWork
     {
         public List<string> workTypeOrder = new List<string>();
         public List<GiverOrderEntry> giverOrder = new List<GiverOrderEntry>();
+        // Captured before the first apply so Order -> Reset can restore def priorities.
+        public List<GiverOrderEntry> originalGiverOrder = new List<GiverOrderEntry>();
         public List<SplitEntry> splits = new List<SplitEntry>();
         public List<MergeEntry> merges = new List<MergeEntry>();
         public bool initialized;
@@ -20,6 +22,7 @@ namespace OrderedWork
         {
             Scribe_Collections.Look(ref workTypeOrder, "workTypeOrder", LookMode.Value);
             Scribe_Collections.Look(ref giverOrder, "giverOrder", LookMode.Deep);
+            Scribe_Collections.Look(ref originalGiverOrder, "originalGiverOrder", LookMode.Deep);
             Scribe_Collections.Look(ref splits, "splits", LookMode.Deep);
             Scribe_Collections.Look(ref merges, "merges", LookMode.Deep);
             Scribe_Values.Look(ref initialized, "initialized", false);
@@ -33,6 +36,7 @@ namespace OrderedWork
             {
                 if (workTypeOrder == null) workTypeOrder = new List<string>();
                 if (giverOrder == null) giverOrder = new List<GiverOrderEntry>();
+                if (originalGiverOrder == null) originalGiverOrder = new List<GiverOrderEntry>();
                 if (splits == null) splits = new List<SplitEntry>();
                 if (merges == null) merges = new List<MergeEntry>();
                 if (workTypeColors == null) workTypeColors = new List<WorkTypeColorEntry>();

@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.32] - 2026-11-16
+
+### Fixed
+- Split and Merge now have an explicit `Allow empty origin` checkbox. Without it, the action is blocked and the inline warning explains why.
+- `Merge selected` is back; `Merge all` is still available.
+- `Reset order` restores the captured original `priorityInType` values and re-applies the config immediately.
+- A split that no longer has live givers is hidden and removed from the order, so merging away a split's content no longer leaves a ghost.
+- `originalGiverOrder` is captured before the first apply; new givers are appended when a split is created.
+
 ## [0.3.0-alpha.31] - 2026-11-16
 
 ### Fixed

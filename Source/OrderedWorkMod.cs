@@ -80,6 +80,8 @@ namespace OrderedWork
         private bool dragMoved;
         private bool confirmResetAll;
         private bool confirmResetOrder;
+        private bool splitAllowEmptyOrigin;
+        private bool mergeAllowEmptyOrigin;
         private int confirmResetSplitIndex = -1;
         private int confirmResetMergeIndex = -1;
 
@@ -344,6 +346,10 @@ namespace OrderedWork
 
             DrawGiverColumn(left, originNames, draftSet, true, false, ref splitOriginScroll, "(in split)", 1);
             DrawGiverColumn(right, splitDraft, draftSet, false, false, ref splitDraftScroll, null, 2);
+            list.CheckboxLabeled(
+                "Allow empty origin",
+                ref splitAllowEmptyOrigin,
+                "If the split takes every origin giver, the origin may be left empty. This is the explicit confirmation.");
 
             string warning = SplitValidationWarning();
             DrawSplitMergeActions(list, "Add split", warning,
@@ -411,6 +417,10 @@ namespace OrderedWork
 
             DrawGiverColumn(left, originNames, draftSet, true, true, ref mergeOriginScroll, "(in merge)", 1);
             DrawMergeDestinationColumn(right, existingTarget, mergeDraft, ref mergeTargetScroll);
+            list.CheckboxLabeled(
+                "Allow empty origin",
+                ref mergeAllowEmptyOrigin,
+                "Merge all/selected may empty the origin. This is the explicit confirmation; vanilla origins are hidden rather than deleted.");
 
             if (smDragSide == 2 && smDragMergeMode && smDragMoved && smMergeDropIndex >= 0)
             {
@@ -501,7 +511,17 @@ namespace OrderedWork
                 list.Label("Remove the saved giver order for " + selectedLabel + "? The original def order returns after a restart; the current session keeps its priority values.");
                 if (list.ButtonText("Confirm reset order"))
                 {
+                    foreach (WorkGiverDef giver in GiversForWorkType(selectedGiverType))
+                    {
+                        GiverOrderEntry original = Settings.originalGiverOrder.FirstOrDefault(
+                            e => e != null && e.giver == giver.defName);
+                        if (original != null)
+                        {
+                            giver.priorityInType = original.order;
+                        }
+                    }
                     Settings.giverOrder.RemoveAll(e => e != null && e.workType == selectedGiverType);
+                    OrderedWorkStartup.ApplyPendingChanges(Settings, this);
                     confirmResetOrder = false;
                 }
                 if (list.ButtonText("Cancel reset order"))
@@ -956,6 +976,11 @@ namespace OrderedWork
             {
                 return "Drag at least one origin giver into Split destination.";
             }
+            List<WorkGiverDef> originGivers = GiversForWorkType(splitOrigin);
+            if (!splitAllowEmptyOrigin && originGivers.Count > 0 && splitDraft.Count >= originGivers.Count)
+            {
+                return "This split would leave the origin empty. Leave at least one giver or enable 'Allow empty origin'.";
+            }
             foreach (string giver in splitDraft)
             {
                 if (!GiverBelongsTo(giver, splitOrigin))
@@ -980,17 +1005,26 @@ namespace OrderedWork
             {
                 return "Target must be a different work type.";
             }
+            List<WorkGiverDef> originGivers = GiversForWorkType(mergeOrigin);
             if (all)
             {
-                if (GiversForWorkType(mergeOrigin).Count == 0)
+                if (originGivers.Count == 0)
                 {
                     return "Origin work type has no givers to move.";
+                }
+                if (!mergeAllowEmptyOrigin)
+                {
+                    return "Merge all would leave the origin empty. Enable 'Allow empty origin' to confirm.";
                 }
                 return null;
             }
             if (mergeDraft.Count == 0)
             {
                 return "Drag at least one origin giver into Merge destination.";
+            }
+            if (!mergeAllowEmptyOrigin && mergeDraft.Count >= originGivers.Count)
+            {
+                return "Merge selected would leave the origin empty. Enable 'Allow empty origin' to confirm.";
             }
             foreach (string giver in mergeDraft)
             {
@@ -1717,7 +1751,8 @@ namespace OrderedWork
                 WorkTypeDef def = DefDatabase<WorkTypeDef>.GetNamedSilentFail(id);
                 bool staleSplit = !string.IsNullOrEmpty(id)
                     && id.StartsWith("OrderedWork_", StringComparison.Ordinal)
-                    && !validSplitNames.Contains(id);
+                    && (!validSplitNames.Contains(id)
+                        || GiversForWorkType(id).Count == 0);
                 if (def == null || !def.visible || staleSplit)
                 {
                     if (staleSplit && def != null)
