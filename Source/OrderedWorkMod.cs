@@ -81,7 +81,6 @@ namespace OrderedWork
         private float dragStartMouseY;
         private bool dragMoved;
         private bool confirmResetAll;
-        private bool confirmResetOrder;
         private string activeProfileName = "default";
         private List<string> giverOrderDraft = new List<string>();
         private List<string> giverOrderInitial = new List<string>();
@@ -183,7 +182,6 @@ namespace OrderedWork
         private void ResetEditorUiState()
         {
             ResetSplitMergeDrag();
-            confirmResetOrder = false;
         }
 
 

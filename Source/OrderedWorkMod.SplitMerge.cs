@@ -798,7 +798,6 @@ namespace OrderedWork
             if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(selectedGiverType) == null)
             {
                 selectedGiverType = fallback;
-                confirmResetOrder = false;
             }
             splitDraft.RemoveAll(g => !GiverBelongsTo(g, splitOrigin));
             mergeDraft.RemoveAll(g => !GiverBelongsTo(g, mergeOrigin));

@@ -155,54 +155,12 @@ namespace OrderedWork
             {
                 selectedGiverType = defName;
                 giverOrderDraftInitialized = false;
-                confirmResetOrder = false;
             });
 
             DrawGiverOrderDiff(list);
             list.Gap(10f);
 
-            string selectedLabel = DefDatabase<WorkTypeDef>.GetNamedSilentFail(selectedGiverType)?.labelShort ?? selectedGiverType;
-            if (!confirmResetOrder)
-            {
-                if (list.ButtonText("Reset order"))
-                {
-                    confirmResetOrder = true;
-                }
-            }
-            else
-            {
-                list.Label("Remove the saved giver order for " + selectedLabel + "? The original def order returns after a restart; the current session keeps its priority values.");
-                if (list.ButtonText("Confirm reset order"))
-                {
-                    WorkConfigProfile profile = LoadEditingProfile();
-                    WorkConfigProfile reference = WorkConfigStore.LoadReference();
-                    if (profile != null && reference != null
-                        && profile.WorkTypes.TryGetValue(selectedGiverType, out WorkTypeConfig current)
-                        && current != null
-                        && reference.WorkTypes.TryGetValue(selectedGiverType, out WorkTypeConfig original)
-                        && original != null && original.Givers != null)
-                    {
-                        current.Givers = original.Givers.Select(g => new GiverConfig
-                        {
-                            DefName = g.DefName,
-                            Order = g.Order,
-                            Mod = g.Mod
-                        }).ToList();
-                        WorkConfigStore.SaveProfile(profile, true);
-                        WorkConfigStore.SavePending(profile);
-                        OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
-                    }
-                    giverOrderDraftInitialized = false;
-                    giverOrderDraft.Clear();
-                    giverOrderInitial.Clear();
-                    confirmResetOrder = false;
-                }
-                if (list.ButtonText("Cancel reset order"))
-                {
-                    confirmResetOrder = false;
-                }
-            }
-            list.Label("Reset order removes the saved override; restart restores the def order.");
+
             list.Gap(12f);
             DrawSavedSplitMetadata(list);
             DrawProfileResetChanges(list);

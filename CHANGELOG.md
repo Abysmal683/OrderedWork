@@ -3,7 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [0.3.0-alpha.75] - 2026-11-16
+## [0.3.0-alpha.76] - 2026-11-16
+
+### Changed
+- Confirmed Reset order duplicates the selected WorkType Restore already shown in Reset changes; removed the large Reset order button and its confirmation state. Use Restore in the unified list.
+- Legacy giver-order structures remain removed from alpha.75.
+
+### Remaining legacy
+- `splits`;
+- `workTypeOrder`.
 
 ### Legacy removal — stage 2
 - Removed `GiverOrderEntry`, `OrderedWorkSettings.giverOrder`, `originalGiverOrder`, legacy capture/apply loops and `CommitGiverOrder`.
