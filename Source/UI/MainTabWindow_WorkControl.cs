@@ -23,7 +23,7 @@ namespace OrderedWork.UI
         private const float HScrollHeight = WorkGridScrollView.Thickness;
         private const float HeaderHeight = 18f;
         private const float RowHeight = 42f;
-        private const float CardWidth = 117f;
+        private const float CardWidth = 135f;
         private const float CardHeight = 30f;
         private const float CardGap = 4f;
         private const float LeftColumnMin = 160f;
@@ -36,6 +36,18 @@ namespace OrderedWork.UI
         private string workFilterText = "";
         private WorkTypeDef workFilter;
         private bool invertWorkFilter;
+        private WorkFilterScope workFilterScope = WorkFilterScope.Line;
+
+        /// <summary>Where the active Work filter applies: pawn rows, palette chips, or both.</summary>
+        private enum WorkFilterScope
+        {
+            Line,
+            Palette,
+            Both
+        }
+
+        public override Vector2 RequestedTabSize =>
+            new Vector2(Verse.UI.screenWidth, Verse.UI.screenHeight - 35f);
 
         private bool draggingPalette;
         private WorkTypeDef paletteWorkType;
@@ -92,7 +104,7 @@ namespace OrderedWork.UI
             DrawTopControls(recommendRect, detailsRect, viewRect);
 
             List<WorkTypeDef> available = WorkOrderService.GetAvailableWorkTypes();
-            List<WorkTypeDef> paletteTypes = available.Where(MatchesWorkFilterText).ToList();
+            List<WorkTypeDef> paletteTypes = available.Where(MatchesPaletteFilter).ToList();
             bool autoHide = OrderedWorkMod.Settings == null || OrderedWorkMod.Settings.autoHideScrollbars;
             bool showPaletteScrollbar = !autoHide
                 || Mouse.IsOver(paletteRect)
@@ -110,11 +122,11 @@ namespace OrderedWork.UI
                 BeginPaletteDrag);
 
             // Search row below the palette, above the matrix.
-            DrawSearchRow(searchY);
+            DrawSearchRow(searchY, inRect.x, inRect.y);
 
-            bool filtering = !string.IsNullOrWhiteSpace(searchText) || WorkFilterActive;
+            bool filtering = !string.IsNullOrWhiteSpace(searchText) || ScopeFiltersLine;
             List<Pawn> colonists = allColonists
-                .Where(p => IsSearchMatch(p) && MatchesWorkFilter(p))
+                .Where(p => IsSearchMatch(p) && MatchesLineWorkFilter(p))
                 .ToList();
 
             if (filtering)
@@ -185,6 +197,16 @@ namespace OrderedWork.UI
                 || WorkGridScrollView.IsDragging
                 || WorkGridScrollView.RecentlyScrolled;
 
+            // Handle bar input before the scroll view so the content cannot eat MouseDown.
+            if (showVerticalScrollbar)
+            {
+                WorkGridScrollView.HandleVertical(vTrack, gridViewport, laneContent, ref gridScroll);
+            }
+            if (showHorizontalScrollbar)
+            {
+                WorkGridScrollView.HandleHorizontal(hTrack, laneViewport, laneContent, ref gridScroll);
+            }
+
             Widgets.BeginScrollView(laneViewport, ref gridScroll, laneContent, false);
             try
             {
@@ -229,7 +251,7 @@ namespace OrderedWork.UI
             DrawHeldCard();
         }
 
-        private void DrawSearchRow(float searchY)
+        private void DrawSearchRow(float searchY, float originX, float originY)
         {
             float x = Pad;
             Widgets.Label(new Rect(x, searchY, 40f, SearchHeight), "Pawn");
@@ -239,12 +261,14 @@ namespace OrderedWork.UI
 
             Rect workButton = new Rect(x, searchY, 190f, SearchHeight - 2f);
             x += 194f;
-            string workLabel = string.IsNullOrEmpty(workFilterText)
+            string workLabel = !WorkFilterActive
                 ? "Any"
                 : (workFilter != null ? WorkTypePaletteView.DisplayName(workFilter) : workFilterText);
             if (Widgets.ButtonText(workButton, workLabel))
             {
-                Find.WindowStack.Add(new WorkTypeComboWindow(this));
+                Find.WindowStack.Add(new WorkTypeComboWindow(
+                    this,
+                    new Rect(originX + workButton.x, originY + workButton.y, workButton.width, workButton.height)));
             }
             if (Mouse.IsOver(workButton))
             {
@@ -255,44 +279,114 @@ namespace OrderedWork.UI
             Widgets.CheckboxLabeled(notRect, "Not", ref invertWorkFilter, !WorkFilterActive);
             if (Mouse.IsOver(notRect))
             {
-                TooltipHandler.TipRegion(notRect, "Show pawns without the selected work");
+                TooltipHandler.TipRegion(notRect, "Invert the Work filter where it applies");
+            }
+            x += 68f;
+
+            Rect scopeRect = new Rect(x, searchY, 118f, SearchHeight - 2f);
+            if (Widgets.ButtonText(scopeRect, "Filter: " + WorkFilterScopeLabel))
+            {
+                workFilterScope = NextScope(workFilterScope);
+            }
+            if (Mouse.IsOver(scopeRect))
+            {
+                TooltipHandler.TipRegion(scopeRect, "Where the Work filter applies: pawn rows, palette, or both");
+            }
+        }
+
+        private string WorkFilterScopeLabel
+        {
+            get
+            {
+                switch (workFilterScope)
+                {
+                    case WorkFilterScope.Palette:
+                        return "Palette";
+                    case WorkFilterScope.Both:
+                        return "Both";
+                    default:
+                        return "Line";
+                }
+            }
+        }
+
+        private static WorkFilterScope NextScope(WorkFilterScope scope)
+        {
+            switch (scope)
+            {
+                case WorkFilterScope.Line:
+                    return WorkFilterScope.Palette;
+                case WorkFilterScope.Palette:
+                    return WorkFilterScope.Both;
+                default:
+                    return WorkFilterScope.Line;
             }
         }
 
         private bool WorkFilterActive
         {
-            get { return !string.IsNullOrEmpty(workFilterText); }
+            get { return workFilter != null || !string.IsNullOrEmpty(workFilterText); }
         }
 
-        private bool MatchesWorkFilterText(WorkTypeDef workType)
+        private bool ScopeFiltersLine
         {
-            if (!WorkFilterActive)
+            get
+            {
+                return WorkFilterActive
+                    && (workFilterScope == WorkFilterScope.Line || workFilterScope == WorkFilterScope.Both);
+            }
+        }
+
+        private bool ScopeFiltersPalette
+        {
+            get
+            {
+                return WorkFilterActive
+                    && (workFilterScope == WorkFilterScope.Palette || workFilterScope == WorkFilterScope.Both);
+            }
+        }
+
+        private bool IsCurrentWorkFilter(WorkTypeDef workType)
+        {
+            if (workType == null)
+            {
+                return false;
+            }
+            if (workFilter != null)
+            {
+                return ReferenceEquals(workFilter, workType)
+                    || string.Equals(workFilter.defName, workType.defName, StringComparison.Ordinal);
+            }
+            return !string.IsNullOrEmpty(workFilterText)
+                && string.Equals(workFilterText, workType.defName, StringComparison.Ordinal);
+        }
+
+        private bool IsCurrentWorkFilterId(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return false;
+            }
+            if (workFilter != null)
+            {
+                return string.Equals(workFilter.defName, id, StringComparison.Ordinal);
+            }
+            return string.Equals(workFilterText, id, StringComparison.Ordinal);
+        }
+
+        private bool MatchesPaletteFilter(WorkTypeDef workType)
+        {
+            if (!ScopeFiltersPalette)
             {
                 return true;
             }
-            bool match = MatchesWorkText(workType, workFilterText);
+            bool match = IsCurrentWorkFilter(workType);
             return invertWorkFilter ? !match : match;
         }
 
-        private static bool MatchesWorkText(WorkTypeDef workType, string term)
+        private bool MatchesLineWorkFilter(Pawn pawn)
         {
-            if (string.IsNullOrEmpty(term))
-            {
-                return true;
-            }
-            return Contains(workType.defName, term)
-                || Contains(workType.label, term)
-                || Contains(workType.labelShort, term);
-        }
-
-        private static bool Contains(string value, string term)
-        {
-            return !string.IsNullOrEmpty(value) && value.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0;
-        }
-
-        private bool MatchesWorkFilter(Pawn pawn)
-        {
-            if (!WorkFilterActive)
+            if (!ScopeFiltersLine)
             {
                 return true;
             }
@@ -300,8 +394,7 @@ namespace OrderedWork.UI
             bool active = false;
             foreach (string id in WorkOrderService.GetOrder(pawn))
             {
-                WorkTypeDef workType = DefDatabase<WorkTypeDef>.GetNamedSilentFail(id);
-                if (workType != null && MatchesWorkText(workType, workFilterText))
+                if (IsCurrentWorkFilterId(id))
                 {
                     active = true;
                     break;
@@ -321,14 +414,16 @@ namespace OrderedWork.UI
             private const float BarWidth = 12f;
 
             private readonly MainTabWindow_WorkControl owner;
+            private readonly Rect anchor;
             private Vector2 scroll;
             private bool draggingBar;
             private float barDragStartMouse;
             private float barDragStartScroll;
 
-            public WorkTypeComboWindow(MainTabWindow_WorkControl owner)
+            public WorkTypeComboWindow(MainTabWindow_WorkControl owner, Rect anchor)
             {
                 this.owner = owner;
+                this.anchor = anchor;
                 doCloseX = true;
                 closeOnClickedOutside = true;
                 absorbInputAroundWindow = true;
@@ -340,9 +435,26 @@ namespace OrderedWork.UI
                 get { return new Vector2(260f, (MaxVisibleRows + 1) * RowHeight + 12f); }
             }
 
+            protected override void SetInitialSizeAndPosition()
+            {
+                Vector2 size = InitialSize;
+                float x = Mathf.Clamp(anchor.x, 0f, Mathf.Max(0f, Verse.UI.screenWidth - size.x));
+                float y = anchor.yMax + 2f;
+                if (y + size.y > Verse.UI.screenHeight)
+                {
+                    // Not enough room below the Work button; open above it instead.
+                    y = anchor.y - size.y - 2f;
+                }
+                y = Mathf.Clamp(y, 0f, Mathf.Max(0f, Verse.UI.screenHeight - size.y));
+                windowRect = new Rect(x, y, size.x, size.y);
+            }
+
             public override void DoWindowContents(Rect inRect)
             {
-                List<WorkTypeDef> matches = WorkOrderService.GetAvailableWorkTypes();
+                // Any stays first; the currently selected WorkType is excluded from the list.
+                List<WorkTypeDef> matches = WorkOrderService.GetAvailableWorkTypes()
+                    .Where(w => w != null && !owner.IsCurrentWorkFilter(w))
+                    .ToList();
 
                 Rect listOuter = new Rect(0f, 0f, inRect.width, inRect.height);
                 Rect viewport = new Rect(listOuter.x, listOuter.y, listOuter.width - BarWidth, listOuter.height);
@@ -812,11 +924,14 @@ namespace OrderedWork.UI
             float x = cardRect.x + 4f;
             if (level >= 0)
             {
-                if (passion == Passion.Major || passion == Passion.Minor)
+                WorkTypePaletteView.PassionVisual visual = WorkTypePaletteView.ResolvePassionVisual(passion);
+                if (visual.Texture != null)
                 {
-                    DrawPassionIcon(new Rect(x, cardRect.y + (cardRect.height - PassionIconSize) / 2f, PassionIconSize, PassionIconSize), passion);
+                    WorkTypePaletteView.DrawPassionIcon(
+                        new Rect(x, cardRect.y + (cardRect.height - PassionIconSize) / 2f, PassionIconSize, PassionIconSize),
+                        visual);
+                    x += PassionIconSize + 2f;
                 }
-                x += PassionIconSize + 2f;
 
                 GameFont previousFont = Text.Font;
                 Text.Font = GameFont.Tiny;
@@ -859,26 +974,6 @@ namespace OrderedWork.UI
             if (Widgets.ButtonInvisible(bodyRect))
             {
                 // Click only; reordering is driven by the drag events above.
-            }
-        }
-
-        private static void DrawPassionIcon(Rect rect, Passion passion)
-        {
-            Texture2D icon = null;
-            if (passion == Passion.Major)
-            {
-                icon = WidgetsWork.PassionWorkboxMajorIcon;
-            }
-            else if (passion == Passion.Minor)
-            {
-                icon = WidgetsWork.PassionWorkboxMinorIcon;
-            }
-            if (icon != null)
-            {
-                Color previous = GUI.color;
-                GUI.color = WorkTypePaletteView.PassionColor(passion);
-                GUI.DrawTexture(rect, icon);
-                GUI.color = previous;
             }
         }
 

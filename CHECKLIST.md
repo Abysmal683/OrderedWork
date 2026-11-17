@@ -1,6 +1,16 @@
-# Work Control — Milestone 0.3.0-alpha.13 Checklist
+# Work Control — Milestone 0.3.0-alpha.14 Checklist
 
-Status: in progress — version 0.3.0-alpha.13. Bug-fix iteration written: single Work combo (10 visible rows + `Any` + thin dropdown bar, no separate search field; selected WorkType filters palette + rows), real `Not` checkbox, independent horizontal/vertical scrollbars (horizontal fixed above the matrix), ~117 px lane cards, and warm minor/major passion icon tints in lane/drag/Details. Runtime checks pending.
+Status: in progress — version 0.3.0-alpha.14. Bug-fix and polish iteration written: full-screen tab height, Work combo anchored under its button (clamped/flipped, selected WorkType excluded, `Any` first, 10 rows + thin bar), 3-state `Filter: Line/Palette/Both` scope (default Line) with exact WorkType matching, 135 px lane cards, shared natural + modded passion icon resolver (VSE/Alpha Skills soft reflection, vanilla fallback, `PassionDef.LabelCap` text), and scrollbar input split before the scroll view from drawing after it (`HandleVertical`/`HandleHorizontal` + temporary `[OrderedWork][Scroll]` MouseDown diagnostics). Build 0/0 and existing tests pass; runtime checks pending.
+
+## Alpha.14 fixed items
+
+- Full-screen `RequestedTabSize` (`UI.screenWidth`, `UI.screenHeight - 35`).
+- Combo anchored under the Work button; bottom overflow flips it above; selected WorkType excluded; `Any` first; max 10 visible rows + thin integrated scrollbar.
+- Work filter scope `Line` (default) / `Palette` / `Both`; `Not` inverts where it applies; Pawn search filters only pawn rows; exact `WorkTypeDef` identity (`Patient` ≠ `PatientBedRest`); `N match(es)` for Pawn search or Line scope.
+- Lane `CardWidth` 135; ghost/placeholder, `+`, remove, ellipsis and lane content follow.
+- Passion visual resolver shared by lane, palette drag card and Details; VSE/Alpha Skills `Icon` then `WorkBoxIcon` + `color` tint; vanilla colored then gray fallback; no icon for `None`; cached reflection with silent fallback; `PassionText` uses `LabelCap`; custom passions ranked by `color`.
+- Scrollbars: `HandleVertical`/`HandleHorizontal` run before `Widgets.BeginScrollView`; `DrawVertical`/`DrawHorizontal` after content; horizontal bar stays interactive with the vertical bar; one temporary `MouseDown` diagnostic per bar.
+
 Goal: first usable Work Control tab with a horizontal lane that assigns WorkTypes and updates the vanilla Work tab.
 
 ## Scope in
@@ -29,6 +39,19 @@ Goal: first usable Work Control tab with a horizontal lane that assigns WorkType
 - Mechs, slaves, prisoners, NPCs.
 - Replacing the vanilla Work tab.
 - Per-giver per-pawn priorities.
+
+## Alpha.14 runtime checks
+
+- [ ] Work Control fills the screen above the main-tab bar.
+- [ ] Work combo opens under the button; near the bottom edge it flips above; it excludes the current selection and keeps `Any` first.
+- [ ] `Filter: Line` (default) filters pawn rows only and leaves the palette complete.
+- [ ] `Filter: Palette` filters chips only; `Filter: Both` filters both; `Not` inverts the Work filter where it applies.
+- [ ] Pawn search never hides palette chips; `N match(es)` appears for Pawn search or Line scope.
+- [ ] `Patient` does not match `PatientBedRest` in either direction.
+- [ ] Lane cards are 135 px and the drag ghost/remove/ellipsis still line up.
+- [ ] With VSE/Alpha Skills active, lane/drag/Details show the modded passion icons and `LabelCap` text.
+- [ ] Without VSE/Alpha Skills, the vanilla colored icons appear, with gray fallback if missing.
+- [ ] Clicking/dragging the horizontal bar works while the vertical bar is visible; one `[OrderedWork][Scroll] H/V down ...` line appears per MouseDown.
 
 ## Loading and synchronization semantics
 

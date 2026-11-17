@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using OrderedWork.Services;
 using RimWorld;
@@ -12,6 +13,7 @@ namespace OrderedWork.UI
     /// <summary>
     /// Three-row WorkType palette, drag ghost and drop application. The main tab owns the
     /// drag state; this helper draws the chips/ghost and applies a drop to the target pawns.
+    /// Also owns the shared passion visual resolver used by the lane, the drag card and Details.
     /// </summary>
     internal static class WorkTypePaletteView
     {
@@ -21,6 +23,14 @@ namespace OrderedWork.UI
         internal const int Rows = 3;
 
         private const float PassionIconSize = 12f;
+        private const float HeldCardWidth = 180f;
+
+        /// <summary>Texture + tint for a passion icon; Texture is null when no icon should be drawn.</summary>
+        internal struct PassionVisual
+        {
+            public Texture2D Texture;
+            public Color Tint;
+        }
 
         internal static string DisplayName(WorkTypeDef type)
         {
@@ -54,6 +64,13 @@ namespace OrderedWork.UI
             int perRow = Mathf.Max(1, Mathf.CeilToInt(types.Count / (float)Rows));
             float contentWidth = Mathf.Max(viewport.width, perRow * (ChipWidth + ChipGap) + ChipGap);
             Rect content = new Rect(0f, 0f, contentWidth, viewport.height);
+            Rect hTrack = new Rect(rect.x, rect.yMax - WorkGridScrollView.Thickness, rect.width, WorkGridScrollView.Thickness);
+
+            // Handle the bar before the scroll view so the content cannot eat its MouseDown.
+            if (showScrollbar)
+            {
+                WorkGridScrollView.HandleHorizontal(hTrack, viewport, content, ref scroll);
+            }
 
             Widgets.BeginScrollView(viewport, ref scroll, content, false);
             try
@@ -113,11 +130,7 @@ namespace OrderedWork.UI
 
             if (showScrollbar)
             {
-                WorkGridScrollView.DrawHorizontal(
-                    new Rect(rect.x, rect.yMax - WorkGridScrollView.Thickness, rect.width, WorkGridScrollView.Thickness),
-                    viewport,
-                    content,
-                    ref scroll);
+                WorkGridScrollView.DrawHorizontal(hTrack, viewport, content, ref scroll);
             }
         }
 
@@ -128,7 +141,7 @@ namespace OrderedWork.UI
                 return;
             }
 
-            Rect rect = new Rect(mouse.x + 12f, mouse.y + 10f, 200f, 28f);
+            Rect rect = new Rect(mouse.x + 12f, mouse.y + 10f, HeldCardWidth, 28f);
             Color typeColor = WorkTypeColorRegistry.GetColor(type);
             Widgets.DrawBoxSolid(
                 rect,
@@ -144,18 +157,12 @@ namespace OrderedWork.UI
                 int level = bestSkill != null ? bestSkill.Level : -1;
                 if (level >= 0)
                 {
-                    Color previousColor = GUI.color;
-                    GUI.color = PassionColor(passion);
-                    if (passion == Passion.Major)
+                    PassionVisual visual = ResolvePassionVisual(passion);
+                    if (visual.Texture != null)
                     {
-                        GUI.DrawTexture(new Rect(x, rect.y + 8f, PassionIconSize, PassionIconSize), WidgetsWork.PassionWorkboxMajorIcon);
+                        DrawPassionIcon(new Rect(x, rect.y + 8f, PassionIconSize, PassionIconSize), visual);
+                        x += PassionIconSize + 2f;
                     }
-                    else if (passion == Passion.Minor)
-                    {
-                        GUI.DrawTexture(new Rect(x, rect.y + 8f, PassionIconSize, PassionIconSize), WidgetsWork.PassionWorkboxMinorIcon);
-                    }
-                    GUI.color = previousColor;
-                    x += PassionIconSize + 2f;
 
                     GameFont previousFont = Text.Font;
                     Text.Font = GameFont.Tiny;
@@ -352,19 +359,33 @@ namespace OrderedWork.UI
 
         private static int PassionRank(Passion passion)
         {
+            if (passion == Passion.None)
+            {
+                return 0;
+            }
+            int colorRank = ColorRankOf(passion);
+            if (colorRank > 0)
+            {
+                return colorRank;
+            }
             if (passion == Passion.Major)
             {
-                return 2;
+                return 4;
             }
             if (passion == Passion.Minor)
             {
-                return 1;
+                return 3;
             }
             return 0;
         }
 
         internal static string PassionText(Passion passion)
         {
+            string vseLabel = TryGetVseLabel(passion);
+            if (!string.IsNullOrEmpty(vseLabel))
+            {
+                return vseLabel;
+            }
             if (passion == Passion.Major)
             {
                 return "major";
@@ -373,7 +394,11 @@ namespace OrderedWork.UI
             {
                 return "minor";
             }
-            return "none";
+            if (passion == Passion.None)
+            {
+                return "none";
+            }
+            return passion.ToString();
         }
 
         /// <summary>Distinct warm tint for the vanilla monochrome passion icons.</summary>
@@ -389,5 +414,355 @@ namespace OrderedWork.UI
             }
             return Color.white;
         }
+
+        /// <summary>
+        /// Resolves the icon texture/tint for a passion. Uses VSE/Alpha Skills when loaded:
+        /// colored <c>PassionDef.Icon</c> first, then the gray <c>WorkBoxIcon</c> tinted by
+        /// <c>PassionDef.color</c>. Without VSE it uses the vanilla colored textures, falling
+        /// back to the vanilla gray work-box icons with the existing warm tints. Never draws
+        /// an icon for <see cref="Passion.None"/>; never throws or spams the log.
+        /// </summary>
+        internal static PassionVisual ResolvePassionVisual(Passion passion)
+        {
+            if (passion == Passion.None)
+            {
+                return default(PassionVisual);
+            }
+
+            int key = ToInt(passion);
+            PassionVisual cached;
+            if (passionVisualCache.TryGetValue(key, out cached))
+            {
+                return cached;
+            }
+
+            PassionVisual visual = ComputePassionVisual(passion);
+            passionVisualCache[key] = visual;
+            return visual;
+        }
+
+        internal static void DrawPassionIcon(Rect rect, Passion passion)
+        {
+            DrawPassionIcon(rect, ResolvePassionVisual(passion));
+        }
+
+        internal static void DrawPassionIcon(Rect rect, PassionVisual visual)
+        {
+            if (visual.Texture == null)
+            {
+                return;
+            }
+
+            Color previous = GUI.color;
+            GUI.color = visual.Tint;
+            GUI.DrawTexture(rect, visual.Texture);
+            GUI.color = previous;
+        }
+
+        private static PassionVisual ComputePassionVisual(Passion passion)
+        {
+            object passionDef = GetVsePassionDef(passion);
+            if (passionDef != null)
+            {
+                Texture2D colored = GetDefTexture(iconProperty, passionDef);
+                if (colored != null)
+                {
+                    PassionVisual result = new PassionVisual();
+                    result.Texture = colored;
+                    result.Tint = Color.white;
+                    return result;
+                }
+
+                Texture2D workBox = GetDefTexture(workBoxIconProperty, passionDef);
+                if (workBox != null)
+                {
+                    PassionVisual result = new PassionVisual();
+                    result.Texture = workBox;
+                    result.Tint = TintForPassionColor(passionDef);
+                    return result;
+                }
+            }
+
+            // Vanilla colored textures first, then the vanilla gray work-box icons.
+            Texture2D vanillaColored = VanillaColoredTexture(passion);
+            if (vanillaColored != null)
+            {
+                PassionVisual result = new PassionVisual();
+                result.Texture = vanillaColored;
+                result.Tint = Color.white;
+                return result;
+            }
+
+            Texture2D vanillaGray = VanillaGrayTexture(passion);
+            if (vanillaGray != null)
+            {
+                PassionVisual result = new PassionVisual();
+                result.Texture = vanillaGray;
+                result.Tint = PassionColor(passion);
+                return result;
+            }
+
+            return default(PassionVisual);
+        }
+
+        private static Texture2D VanillaColoredTexture(Passion passion)
+        {
+            ResolveVanillaTextures();
+            if (passion == Passion.Major)
+            {
+                return vanillaMajorColored;
+            }
+            if (passion == Passion.Minor)
+            {
+                return vanillaMinorColored;
+            }
+            return null;
+        }
+
+        private static Texture2D VanillaGrayTexture(Passion passion)
+        {
+            if (passion == Passion.Major)
+            {
+                return WidgetsWork.PassionWorkboxMajorIcon;
+            }
+            if (passion == Passion.Minor)
+            {
+                return WidgetsWork.PassionWorkboxMinorIcon;
+            }
+            return null;
+        }
+
+        private static void ResolveVanillaTextures()
+        {
+            if (vanillaTexturesResolved)
+            {
+                return;
+            }
+            vanillaTexturesResolved = true;
+            try
+            {
+                vanillaMinorColored = ContentFinder<Texture2D>.Get("UI/Icons/PassionMinor", false);
+                vanillaMajorColored = ContentFinder<Texture2D>.Get("UI/Icons/PassionMajor", false);
+            }
+            catch (Exception)
+            {
+                vanillaMinorColored = null;
+                vanillaMajorColored = null;
+            }
+        }
+
+        private static Texture2D GetDefTexture(PropertyInfo property, object passionDef)
+        {
+            if (property == null || passionDef == null)
+            {
+                return null;
+            }
+            try
+            {
+                return property.GetValue(passionDef, null) as Texture2D;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        private static Color TintForPassionColor(object passionDef)
+        {
+            string colorName = PassionColorName(passionDef);
+            switch (colorName)
+            {
+                case "Minor":
+                    return new Color(1f, 0.86f, 0.30f, 1f);
+                case "Major":
+                    return new Color(1f, 0.55f, 0.12f, 1f);
+                case "Disabled":
+                    return new Color(0.55f, 0.55f, 0.55f, 1f);
+                case "Main":
+                default:
+                    return Color.white;
+            }
+        }
+
+        private static string PassionColorName(object passionDef)
+        {
+            if (passionDef == null || colorField == null)
+            {
+                return "";
+            }
+            try
+            {
+                object value = colorField.GetValue(passionDef);
+                return value != null ? value.ToString() : "";
+            }
+            catch (Exception)
+            {
+                return "";
+            }
+        }
+
+        private static int ColorRankOf(Passion passion)
+        {
+            int key = ToInt(passion);
+            int cached;
+            if (colorRankCache.TryGetValue(key, out cached))
+            {
+                return cached;
+            }
+
+            int rank = 0;
+            object passionDef = GetVsePassionDef(passion);
+            if (passionDef != null)
+            {
+                switch (PassionColorName(passionDef))
+                {
+                    case "Major":
+                        rank = 4;
+                        break;
+                    case "Minor":
+                        rank = 3;
+                        break;
+                    case "Main":
+                        rank = 2;
+                        break;
+                    case "Disabled":
+                        rank = 1;
+                        break;
+                }
+            }
+
+            colorRankCache[key] = rank;
+            return rank;
+        }
+
+        private static string TryGetVseLabel(Passion passion)
+        {
+            object passionDef = GetVsePassionDef(passion);
+            if (passionDef == null)
+            {
+                return null;
+            }
+            try
+            {
+                PropertyInfo property = labelCapProperty ?? passionDef.GetType().GetProperty("LabelCap");
+                if (property == null)
+                {
+                    return null;
+                }
+                return property.GetValue(passionDef, null) as string;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        private static object GetVsePassionDef(Passion passion)
+        {
+            if (passion == Passion.None)
+            {
+                return null;
+            }
+            ResolveVseApi();
+            if (!vseAvailable || passionToDefMethod == null)
+            {
+                return null;
+            }
+            try
+            {
+                return passionToDefMethod.Invoke(null, new object[] { passion });
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        private static void ResolveVseApi()
+        {
+            if (vseResolved)
+            {
+                return;
+            }
+            vseResolved = true;
+
+            try
+            {
+                Type managerType = null;
+                Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                for (int i = 0; i < assemblies.Length; i++)
+                {
+                    try
+                    {
+                        managerType = assemblies[i].GetType("VSE.Passions.PassionManager", false);
+                    }
+                    catch (Exception)
+                    {
+                        managerType = null;
+                    }
+                    if (managerType != null)
+                    {
+                        break;
+                    }
+                }
+
+                if (managerType == null)
+                {
+                    return;
+                }
+
+                MethodInfo[] methods = managerType.GetMethods(BindingFlags.Public | BindingFlags.Static);
+                for (int i = 0; i < methods.Length; i++)
+                {
+                    if (methods[i].Name == "PassionToDef" && methods[i].GetParameters().Length == 1)
+                    {
+                        passionToDefMethod = methods[i];
+                        break;
+                    }
+                }
+
+                Type passionDefType = managerType.Assembly.GetType("VSE.Passions.PassionDef", false);
+                if (passionDefType != null)
+                {
+                    iconProperty = passionDefType.GetProperty("Icon", BindingFlags.Public | BindingFlags.Instance);
+                    workBoxIconProperty = passionDefType.GetProperty("WorkBoxIcon", BindingFlags.Public | BindingFlags.Instance);
+                    colorField = passionDefType.GetField("color", BindingFlags.Public | BindingFlags.Instance);
+                    labelCapProperty = passionDefType.GetProperty("LabelCap", BindingFlags.Public | BindingFlags.Instance);
+                }
+
+                vseAvailable = passionToDefMethod != null;
+            }
+            catch (Exception)
+            {
+                vseAvailable = false;
+            }
+        }
+
+        private static int ToInt(Passion passion)
+        {
+            try
+            {
+                return Convert.ToInt32(passion);
+            }
+            catch (Exception)
+            {
+                return (int)passion;
+            }
+        }
+
+        private static bool vseResolved;
+        private static bool vseAvailable;
+        private static MethodInfo passionToDefMethod;
+        private static PropertyInfo iconProperty;
+        private static PropertyInfo workBoxIconProperty;
+        private static PropertyInfo labelCapProperty;
+        private static FieldInfo colorField;
+
+        private static bool vanillaTexturesResolved;
+        private static Texture2D vanillaMinorColored;
+        private static Texture2D vanillaMajorColored;
+
+        private static readonly Dictionary<int, PassionVisual> passionVisualCache = new Dictionary<int, PassionVisual>();
+        private static readonly Dictionary<int, int> colorRankCache = new Dictionary<int, int>();
     }
 }

@@ -3,6 +3,23 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.14] - 2026-11-16
+
+### Fixed
+- Work Control now requests the full screen above the 35 px main-tab bar instead of the default centered size.
+- The Work combo opens directly under its button (clamped to the screen; flips above the button when it would overflow the bottom), keeps `Any` first, and excludes the currently selected WorkType from the list while still showing at most 10 rows with a thin scrollbar.
+- Added a three-state `Filter: Line` / `Filter: Palette` / `Filter: Both` control (default **Line**). `Line` filters pawn rows only and keeps the palette complete; `Palette` filters palette chips only; `Both` filters both. `Not` inverts the Work filter wherever it applies. Pawn search always filters only pawn rows.
+- WorkTypes now match by identity/defName instead of substring, so `Patient` no longer matches `PatientBedRest`.
+- Scrollbars now handle input **before** `Widgets.BeginScrollView` and draw **after** the content, so the horizontal bar remains interactive when the vertical bar appears. Temporary `[OrderedWork][Scroll]` `MouseDown` diagnostics log either bar's geometry.
+- Lane cards are now 135 px wide; ghost/placeholder, `+` card, remove button, ellipsis, lane content width and tooltips follow the new width.
+
+### Added
+- Shared passion icon resolver used by lane cards, the palette drag card and Details: VSE/Alpha Skills `PassionDef.Icon` first, then gray `PassionDef.WorkBoxIcon` tinted by `PassionDef.color`, then vanilla `UI/Icons/PassionMinor`/`PassionMajor`, then vanilla gray work-box icons. No icon for `Passion.None`. Reflection lookups are cached and silently fall back.
+- `PassionText` uses VSE `PassionDef.LabelCap` when available; repeated comparisons rank custom passions by `PassionDef.color` (Major > Minor > Main > Disabled).
+
+### Kept
+- Colonist-bar order, hover-based drag targets, ghost/colors, simple/manual Work-tab fixes, return button, right-click max, selection, Recommend/Details, auto-recommend, save/load and resurrection. No profiles, schedules, equipment or multi-pawn.
+
 ## [0.3.0-alpha.13] - 2026-11-16
 
 ### Fixed

@@ -6,6 +6,9 @@ namespace OrderedWork.UI
     /// <summary>
     /// Thin, optional-auto-hide scrollbars for the Work Control matrix and palette.
     /// The scrollbars live outside the content viewport, so they never cover the last row.
+    /// Input handling is split from drawing: call <see cref="HandleVertical"/> /
+    /// <see cref="HandleHorizontal"/> before <c>Widgets.BeginScrollView</c> so the content
+    /// cannot consume the bar's MouseDown, then draw the bars after the content.
     /// </summary>
     internal static class WorkGridScrollView
     {
@@ -49,7 +52,8 @@ namespace OrderedWork.UI
             return true;
         }
 
-        internal static void DrawVertical(Rect track, Rect viewport, Rect content, ref Vector2 scroll)
+        /// <summary>Consumes vertical-bar input before the scroll view/content is drawn.</summary>
+        internal static void HandleVertical(Rect track, Rect viewport, Rect content, ref Vector2 scroll)
         {
             float max = Mathf.Max(0f, content.height - viewport.height);
             if (max <= 0f || track.height <= 0f)
@@ -58,17 +62,14 @@ namespace OrderedWork.UI
                 return;
             }
 
-            float thumbSize = Mathf.Clamp(track.height * (viewport.height / content.height), MinThumb, track.height);
-            float travel = track.height - thumbSize;
-            float thumbY = track.y + travel * Mathf.Clamp01(scroll.y / max);
-            Rect thumb = new Rect(track.x, thumbY, track.width, thumbSize);
-
-            Widgets.DrawBoxSolid(track, new Color(0.07f, 0.07f, 0.08f, 0.75f));
-            Widgets.DrawBoxSolid(thumb, Mouse.IsOver(thumb)
-                ? new Color(0.62f, 0.70f, 0.78f, 0.95f)
-                : new Color(0.45f, 0.50f, 0.56f, 0.90f));
-
+            Rect thumb = VerticalThumb(track, viewport, content, scroll);
             Event current = Event.current;
+
+            if (current.type == EventType.MouseDown && Mouse.IsOver(track))
+            {
+                LogScrollDown("V", current, track, thumb, scroll.y);
+            }
+
             if (current.type == EventType.MouseDown && current.button == 0 && Mouse.IsOver(thumb))
             {
                 draggingVertical = true;
@@ -80,6 +81,7 @@ namespace OrderedWork.UI
             else if (draggingVertical && current.type == EventType.MouseDrag)
             {
                 float delta = current.mousePosition.y - dragStartMouseY;
+                float travel = track.height - thumb.height;
                 scroll.y = Mathf.Clamp(dragStartScrollY + (travel <= 0f ? 0f : delta / travel * max), 0f, max);
                 lastScrollTime = Time.realtimeSinceStartup;
                 current.Use();
@@ -98,7 +100,21 @@ namespace OrderedWork.UI
             }
         }
 
-        internal static void DrawHorizontal(Rect track, Rect viewport, Rect content, ref Vector2 scroll)
+        /// <summary>Draws the vertical bar after the scroll view/content.</summary>
+        internal static void DrawVertical(Rect track, Rect viewport, Rect content, ref Vector2 scroll)
+        {
+            float max = Mathf.Max(0f, content.height - viewport.height);
+            if (max <= 0f || track.height <= 0f)
+            {
+                return;
+            }
+
+            Rect thumb = VerticalThumb(track, viewport, content, scroll);
+            DrawTrackAndThumb(track, thumb);
+        }
+
+        /// <summary>Consumes horizontal-bar input before the scroll view/content is drawn.</summary>
+        internal static void HandleHorizontal(Rect track, Rect viewport, Rect content, ref Vector2 scroll)
         {
             float max = Mathf.Max(0f, content.width - viewport.width);
             if (max <= 0f || track.width <= 0f)
@@ -107,17 +123,14 @@ namespace OrderedWork.UI
                 return;
             }
 
-            float thumbSize = Mathf.Clamp(track.width * (viewport.width / content.width), MinThumb, track.width);
-            float travel = track.width - thumbSize;
-            float thumbX = track.x + travel * Mathf.Clamp01(scroll.x / max);
-            Rect thumb = new Rect(thumbX, track.y, thumbSize, track.height);
-
-            Widgets.DrawBoxSolid(track, new Color(0.07f, 0.07f, 0.08f, 0.75f));
-            Widgets.DrawBoxSolid(thumb, Mouse.IsOver(thumb)
-                ? new Color(0.62f, 0.70f, 0.78f, 0.95f)
-                : new Color(0.45f, 0.50f, 0.56f, 0.90f));
-
+            Rect thumb = HorizontalThumb(track, viewport, content, scroll);
             Event current = Event.current;
+
+            if (current.type == EventType.MouseDown && Mouse.IsOver(track))
+            {
+                LogScrollDown("H", current, track, thumb, scroll.x);
+            }
+
             if (current.type == EventType.MouseDown && current.button == 0 && Mouse.IsOver(thumb))
             {
                 draggingHorizontal = true;
@@ -129,6 +142,7 @@ namespace OrderedWork.UI
             else if (draggingHorizontal && current.type == EventType.MouseDrag)
             {
                 float delta = current.mousePosition.x - dragStartMouseX;
+                float travel = track.width - thumb.width;
                 scroll.x = Mathf.Clamp(dragStartScrollX + (travel <= 0f ? 0f : delta / travel * max), 0f, max);
                 lastScrollTime = Time.realtimeSinceStartup;
                 current.Use();
@@ -145,6 +159,63 @@ namespace OrderedWork.UI
                 lastScrollTime = Time.realtimeSinceStartup;
                 current.Use();
             }
+        }
+
+        /// <summary>Draws the horizontal bar after the scroll view/content.</summary>
+        internal static void DrawHorizontal(Rect track, Rect viewport, Rect content, ref Vector2 scroll)
+        {
+            float max = Mathf.Max(0f, content.width - viewport.width);
+            if (max <= 0f || track.width <= 0f)
+            {
+                return;
+            }
+
+            Rect thumb = HorizontalThumb(track, viewport, content, scroll);
+            DrawTrackAndThumb(track, thumb);
+        }
+
+        private static Rect VerticalThumb(Rect track, Rect viewport, Rect content, Vector2 scroll)
+        {
+            float max = Mathf.Max(0f, content.height - viewport.height);
+            float thumbSize = Mathf.Clamp(
+                track.height * (viewport.height / content.height),
+                Mathf.Min(MinThumb, track.height),
+                track.height);
+            float travel = track.height - thumbSize;
+            float thumbY = track.y + travel * Mathf.Clamp01(scroll.y / max);
+            return new Rect(track.x, thumbY, track.width, thumbSize);
+        }
+
+        private static Rect HorizontalThumb(Rect track, Rect viewport, Rect content, Vector2 scroll)
+        {
+            float max = Mathf.Max(0f, content.width - viewport.width);
+            float thumbSize = Mathf.Clamp(
+                track.width * (viewport.width / content.width),
+                Mathf.Min(MinThumb, track.width),
+                track.width);
+            float travel = track.width - thumbSize;
+            float thumbX = track.x + travel * Mathf.Clamp01(scroll.x / max);
+            return new Rect(thumbX, track.y, thumbSize, track.height);
+        }
+
+        private static void DrawTrackAndThumb(Rect track, Rect thumb)
+        {
+            Widgets.DrawBoxSolid(track, new Color(0.07f, 0.07f, 0.08f, 0.75f));
+            Widgets.DrawBoxSolid(thumb, Mouse.IsOver(thumb)
+                ? new Color(0.62f, 0.70f, 0.78f, 0.95f)
+                : new Color(0.45f, 0.50f, 0.56f, 0.90f));
+        }
+
+        // Temporary diagnostics: one line per bar MouseDown, never per frame.
+        private static void LogScrollDown(string axis, Event current, Rect track, Rect thumb, float scrollValue)
+        {
+            Log.Message("[OrderedWork][Scroll] " + axis + " down mouse=(" +
+                current.mousePosition.x.ToString("F0") + "," + current.mousePosition.y.ToString("F0") + ") track=(" +
+                track.x.ToString("F0") + "," + track.y.ToString("F0") + "," +
+                track.width.ToString("F0") + "," + track.height.ToString("F0") + ") thumb=(" +
+                thumb.x.ToString("F0") + "," + thumb.y.ToString("F0") + "," +
+                thumb.width.ToString("F0") + "," + thumb.height.ToString("F0") + ") scroll" +
+                axis + "=" + scrollValue.ToString("F0"));
         }
     }
 }
