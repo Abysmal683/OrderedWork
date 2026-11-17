@@ -14,7 +14,7 @@ namespace OrderedWork.Services
     /// into the private <see cref="Pawn_WorkSettings.priorities"/> map so ranks above 4
     /// survive (falling back to SetPriority when the field is unavailable).
     /// </summary>
-    public static class WorkOrderService
+    public static partial class WorkOrderService
     {
         private const BindingFlags PrivateInstance = BindingFlags.Instance | BindingFlags.NonPublic;
         private const int PostSpawnCaptureSuppressionTicks = 120;
@@ -126,25 +126,6 @@ namespace OrderedWork.Services
         /// Pawn_WorkSettings.SetPriority (which logs for values above the vanilla cap).
         /// Returns false when the private map is unavailable.
         /// </summary>
-        public static bool TrySetPriorityDirect(Pawn_WorkSettings settings, WorkTypeDef workType, int priority)
-        {
-            if (settings == null || workType == null)
-            {
-                return false;
-            }
-            Pawn pawn = GetOwningPawn(settings);
-            if (pawn != null && IsIncapable(pawn, workType))
-            {
-                return false;
-            }
-            DefMap<WorkTypeDef, int> map = GetPrioritiesMap(settings);
-            if (map == null)
-            {
-                return false;
-            }
-            map[workType] = priority;
-            return true;
-        }
 
         /// <summary>
         /// Default order for a pawn: visible, capable WorkTypes by naturalPriority descending.
@@ -260,303 +241,26 @@ namespace OrderedWork.Services
         /// Writes the dense rank into the pawn's priority map. Missing and incapable
         /// WorkTypes are written as 0 so the vanilla tab reflects "off". Never throws.
         /// </summary>
-        public static void Apply(Pawn pawn, List<string> order)
-        {
-            if (pawn == null)
-            {
-                return;
-            }
-
-            try
-            {
-                Pawn_WorkSettings settings = pawn.workSettings;
-                if (settings == null)
-                {
-                    Log.Warning("[Ordered Work] " + pawn.LabelShort + " has no work settings; skipping apply.");
-                    return;
-                }
-
-                bool previousApplying = IsApplying;
-                IsApplying = true;
-                try
-                {
-                    List<string> normalized = Normalize(pawn, order);
-
-                    // Dense rank is built only over capable types, so the written values
-                    // stay unique and gap-free (1..M). Incapable types are forced to 0.
-                    List<string> capableOrder = new List<string>();
-                    foreach (string defName in normalized)
-                    {
-                        WorkTypeDef workType = DefDatabase<WorkTypeDef>.GetNamedSilentFail(defName);
-                        if (workType != null && !IsIncapable(pawn, workType))
-                        {
-                            capableOrder.Add(defName);
-                        }
-                    }
-
-                    Dictionary<string, int> ranks = DenseRank.BuildRanks(capableOrder, capableOrder);
-                    DefMap<WorkTypeDef, int> priorities = GetPrioritiesMap(settings);
-
-                    foreach (WorkTypeDef workType in GetAvailableWorkTypes())
-                    {
-                        int value;
-                        if (!ranks.TryGetValue(workType.defName, out value))
-                        {
-                            value = 0;
-                        }
-
-                        if (priorities != null)
-                        {
-                            priorities[workType] = value;
-                        }
-                        else
-                        {
-                            settings.SetPriority(workType, value);
-                        }
-                    }
-
-                    settings.Notify_UseWorkPrioritiesChanged();
-
-                    Log.Message("[Ordered Work] Applied order for " + pawn.LabelShort + ": " +
-                        string.Join(", ", capableOrder.Select((id, index) => id + "=" + (index + 1))));
-                }
-                finally
-                {
-                    IsApplying = previousApplying;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error("[Ordered Work] Failed to apply the order for " +
-                    (pawn?.LabelShort ?? "null") + ": " + ex);
-            }
-        }
 
         /// <summary>
         /// One-time colony setup. Existing colonies copy the current vanilla priority order
         /// without writing; new/default colonies get the skill recommendation applied once.
         /// </summary>
-        public static void EnsureColonyInitialized()
-        {
-            try
-            {
-                if (Current.Game == null || Find.CurrentMap == null)
-                {
-                    return;
-                }
-
-                OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
-                if (component == null || component.initialized)
-                {
-                    return;
-                }
-
-                List<Pawn> colonists = Find.CurrentMap.mapPawns.FreeColonists.ToList();
-                if (colonists.Count == 0)
-                {
-                    return;
-                }
-
-                // Auto recommend off behaves like an existing colony (copy the vanilla
-                // order, no write). On keeps the current new/default recommendation.
-                bool autoRecommend = AutoRecommendNewColony;
-                bool existingColony = !autoRecommend || colonists.Any(HasNonDefaultPriorities);
-
-                foreach (Pawn pawn in colonists)
-                {
-                    if (existingColony)
-                    {
-                        // Capture the established vanilla order but do not write priorities.
-                        component.SetOrder(pawn, Normalize(pawn, ReadVanillaOrder(pawn)));
-                    }
-                    else
-                    {
-                        List<string> recommendation = GetRecommendation(pawn);
-                        component.SetOrder(pawn, recommendation);
-                        Apply(pawn, recommendation);
-                    }
-                }
-
-                component.initialized = true;
-                Log.Message("[Ordered Work] Colony initialized (" +
-                    (!autoRecommend ? "copy" : existingColony ? "existing" : "new") + "): " + colonists.Count + " colonist(s).");
-            }
-            catch (Exception ex)
-            {
-                Log.Error("[Ordered Work] Colony initialization failed: " + ex);
-            }
-        }
 
         /// <summary>
         /// Vanilla Work-tab capture. Called from the SetPriority Harmony postfix; rebuilds and
         /// stores the order from the current priorities. Never calls Apply/Notify.
         /// </summary>
-        public static void OnVanillaPriorityChanged(Pawn_WorkSettings settings)
-        {
-            if (IsApplying || IsSpawning || IsInitializing)
-            {
-                return;
-            }
-            if (Scribe.mode != LoadSaveMode.Inactive || settings == null)
-            {
-                return;
-            }
-
-            try
-            {
-                Pawn pawn = GetOwningPawn(settings);
-                if (!IsManagedFreeColonist(pawn))
-                {
-                    return;
-                }
-
-                OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
-                if (component == null || !component.initialized)
-                {
-                    return;
-                }
-
-                // Ignore the settling window right after spawn/resurrection, where the
-                // vanilla Work tab may still be partially initialized.
-                PawnWorkOrder entry = component.GetEntry(pawn);
-                if (entry != null && CurrentTick < entry.captureSuppressedUntilTick)
-                {
-                    return;
-                }
-
-                component.SetOrder(pawn, Normalize(pawn, ReadVanillaOrder(pawn)));
-            }
-            catch (Exception ex)
-            {
-                Log.Error("[Ordered Work] Vanilla-priority sync failed: " + ex);
-            }
-        }
 
         /// <summary>
         /// Spawn/resurrection handling. If a stored order exists it is reapplied so the
         /// vanilla Work tab matches; otherwise the new pawn gets the recommendation applied.
         /// </summary>
-        public static void OnPawnSpawned(Pawn pawn, bool respawningAfterLoad)
-        {
-            if (respawningAfterLoad)
-            {
-                return;
-            }
-            if (Scribe.mode != LoadSaveMode.Inactive || !IsManagedFreeColonist(pawn))
-            {
-                return;
-            }
-
-            try
-            {
-                OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
-                if (component == null || !component.initialized)
-                {
-                    return;
-                }
-
-                PawnWorkOrder entry = component.GetEntry(pawn);
-                int suppressUntil = CurrentTick + PostSpawnCaptureSuppressionTicks;
-                if (entry != null)
-                {
-                    // Reapply the stored order exactly once and suppress vanilla capture
-                    // while the Work tab settles, so a partial state cannot overwrite it.
-                    entry.captureSuppressedUntilTick = suppressUntil;
-                    Apply(pawn, Normalize(pawn, entry.order));
-                    Log.Message("[Ordered Work] Reapplied stored order after spawn for " + pawn.LabelShort +
-                        " (" + (entry.order != null ? entry.order.Count : 0) + " types).");
-                }
-                else if (!AutoRecommendNewColony)
-                {
-                    // Auto recommend off: capture the vanilla order but do not write.
-                    component.SetOrder(pawn, Normalize(pawn, ReadVanillaOrder(pawn)));
-                    PawnWorkOrder created = component.GetEntry(pawn);
-                    if (created != null)
-                    {
-                        created.captureSuppressedUntilTick = suppressUntil;
-                    }
-                    Log.Message("[Ordered Work] Copied vanilla order after spawn for " + pawn.LabelShort + " (auto-recommend off).");
-                }
-                else
-                {
-                    List<string> recommendation = GetRecommendation(pawn);
-                    component.SetOrder(pawn, recommendation);
-                    PawnWorkOrder created = component.GetEntry(pawn);
-                    if (created != null)
-                    {
-                        created.captureSuppressedUntilTick = suppressUntil;
-                    }
-                    Apply(pawn, recommendation);
-                    Log.Message("[Ordered Work] Recommended new pawn after spawn for " + pawn.LabelShort + ".");
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error("[Ordered Work] Spawn/reapply failed: " + ex);
-            }
-        }
 
         /// <summary>
         /// Faction change handling. An existing stored order is always reapplied first; only
         /// a pawn with no stored order gets the auto-recommend/copy behavior.
         /// </summary>
-        public static void OnPawnFactionChanged(Pawn pawn)
-        {
-            if (IsApplying || IsSpawning)
-            {
-                return;
-            }
-            if (Scribe.mode != LoadSaveMode.Inactive || !IsManagedFreeColonist(pawn))
-            {
-                return;
-            }
-
-            try
-            {
-                OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
-                if (component == null || !component.initialized)
-                {
-                    return;
-                }
-
-                int suppressUntil = CurrentTick + PostSpawnCaptureSuppressionTicks;
-                PawnWorkOrder entry = component.GetEntry(pawn);
-                if (entry != null)
-                {
-                    entry.captureSuppressedUntilTick = suppressUntil;
-                    Apply(pawn, Normalize(pawn, entry.order));
-                    Log.Message("[Ordered Work] Reapplied stored order after faction change for " + pawn.LabelShort +
-                        " (" + (entry.order != null ? entry.order.Count : 0) + " types).");
-                    return;
-                }
-
-                if (!AutoRecommendNewColony)
-                {
-                    component.SetOrder(pawn, Normalize(pawn, ReadVanillaOrder(pawn)));
-                    PawnWorkOrder copied = component.GetEntry(pawn);
-                    if (copied != null)
-                    {
-                        copied.captureSuppressedUntilTick = suppressUntil;
-                    }
-                    Log.Message("[Ordered Work] Copied vanilla order after faction change for " + pawn.LabelShort + " (auto-recommend off).");
-                    return;
-                }
-
-                List<string> recommendation = GetRecommendation(pawn);
-                component.SetOrder(pawn, recommendation);
-                PawnWorkOrder created = component.GetEntry(pawn);
-                if (created != null)
-                {
-                    created.captureSuppressedUntilTick = suppressUntil;
-                }
-                Apply(pawn, recommendation);
-                Log.Message("[Ordered Work] Recommended new pawn after faction change for " + pawn.LabelShort + ".");
-            }
-            catch (Exception ex)
-            {
-                Log.Error("[Ordered Work] Faction-change recommendation failed: " + ex);
-            }
-        }
 
         /// <summary>
         /// True when the pawn cannot perform the WorkType at all (trait/backstory/health).
@@ -601,67 +305,11 @@ namespace OrderedWork.Services
         /// and removes duplicates. Missing types are intentionally NOT re-appended: an
         /// absent type means "off" (priority 0).
         /// </summary>
-        private static List<string> Normalize(Pawn pawn, List<string> order)
-        {
-            HashSet<string> valid = new HashSet<string>(
-                GetAvailableWorkTypes().Select(w => w.defName),
-                StringComparer.Ordinal);
-
-            List<string> filtered = (order ?? new List<string>())
-                .Where(id => !string.IsNullOrWhiteSpace(id) && valid.Contains(id))
-                .Where(id =>
-                {
-                    WorkTypeDef workType = DefDatabase<WorkTypeDef>.GetNamedSilentFail(id);
-                    return workType != null && !IsIncapable(pawn, workType);
-                })
-                .ToList();
-
-            return DenseRank.NormalizeOrder(filtered, filtered);
-        }
 
         /// <summary>Active, capable vanilla types (priority &gt; 0), sorted by priority then naturalPriority.</summary>
-        private static List<string> ReadVanillaOrder(Pawn pawn)
-        {
-            Pawn_WorkSettings settings = pawn?.workSettings;
-            if (settings == null)
-            {
-                return new List<string>();
-            }
-
-            return GetAvailableWorkTypes()
-                .Where(w => !IsIncapable(pawn, w))
-                .Select(w => new { workType = w, priority = settings.GetPriority(w) })
-                .Where(entry => entry.priority > 0)
-                .OrderBy(entry => entry.priority)
-                .ThenByDescending(entry => entry.workType.naturalPriority)
-                .Select(entry => entry.workType.defName)
-                .ToList();
-        }
 
         /// <summary>Anything other than the vanilla default 0 (off) or 3 (active).</summary>
-        private static bool HasNonDefaultPriorities(Pawn pawn)
-        {
-            Pawn_WorkSettings settings = pawn?.workSettings;
-            if (settings == null)
-            {
-                return false;
-            }
 
-            foreach (WorkTypeDef workType in GetAvailableWorkTypes())
-            {
-                int priority = settings.GetPriority(workType);
-                if (priority != 0 && priority != 3)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private static bool IsManagedFreeColonist(Pawn pawn)
-        {
-            return pawn != null && !pawn.Dead && !pawn.Destroyed && pawn.IsFreeColonist;
-        }
 
         private static bool AutoRecommendNewColony
         {
@@ -677,30 +325,6 @@ namespace OrderedWork.Services
             get { return Find.TickManager != null ? Find.TickManager.TicksGame : 0; }
         }
 
-        private static Pawn GetOwningPawn(Pawn_WorkSettings settings)
-        {
-            if (!workSettingsPawnFieldResolved)
-            {
-                cachedWorkSettingsPawnField = typeof(Pawn_WorkSettings).GetField("pawn", PrivateInstance);
-                workSettingsPawnFieldResolved = true;
-            }
 
-            return cachedWorkSettingsPawnField != null
-                ? cachedWorkSettingsPawnField.GetValue(settings) as Pawn
-                : null;
-        }
-
-        private static DefMap<WorkTypeDef, int> GetPrioritiesMap(Pawn_WorkSettings settings)
-        {
-            if (!prioritiesFieldResolved)
-            {
-                cachedPrioritiesField = typeof(Pawn_WorkSettings).GetField("priorities", PrivateInstance);
-                prioritiesFieldResolved = true;
-            }
-
-            return cachedPrioritiesField != null
-                ? cachedPrioritiesField.GetValue(settings) as DefMap<WorkTypeDef, int>
-                : null;
-        }
     }
 }

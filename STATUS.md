@@ -1,6 +1,6 @@
 # Ordered Work — Current Status
 
-Version: `0.3.0-alpha.80` (cleanup target). Build 0/0; core tests 7/7.
+Version: `0.3.0-alpha.94` (refactor checkpoint). Build 0/0; tests 14/14.
 
 ## Completed architecture
 
@@ -22,7 +22,7 @@ Version: `0.3.0-alpha.80` (cleanup target). Build 0/0; core tests 7/7.
 - Unified reset, no duplicated reset button.
 - Palette, filters, cards, scrollbars, passion resolver.
 
-## Pending verification
+## Refactor checkpoint\n\n- Passion pipeline split into `PassionSource`, `PassionWeightPolicy`, `PassionWeightsView` and `RecommendationScorer`.\n- Pure scoring formula lives in `OrderedWork.Core.RecommendationScorePolicy` and is covered by tests.\n- `SplitMerge` split into orchestration, columns, drag and persistence partials.\n- `WorkOrderService` split into core, apply and lifecycle partials.\n- Work Control remains split into core, rows, search and interaction; palette left unchanged because it is approved.\n\n## Pending verification
 
 - Final profile-only split/merge/order path after `alpha.80`.
 - `test_1`/pending/reference alignment after a full create→restart→delete→restart cycle.
@@ -31,8 +31,8 @@ Version: `0.3.0-alpha.80` (cleanup target). Build 0/0; core tests 7/7.
 
 ## Next scope
 
-1. Per-pawn WorkGiver overrides, normal list only.
-2. Profile-backed split metadata editing.
+1. Per-pawn WorkGiver overrides and pawn detail UI.
+2. Clothing, zone and schedule policy tabs.
 3. Compact per-save pawn override storage.
 4. Optional palette-filter control, only if needed.
 5. Emergency/custom-job work only on explicit request.

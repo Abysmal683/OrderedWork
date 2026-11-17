@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.94] - 2026-11-17
+
+### Refactor — Work Control and order service
+- Split `OrderedWorkMod.SplitMerge.cs` into orchestration, columns, drag and persistence partials.
+- Split `WorkOrderService` into core, apply and lifecycle partials.
+- Extracted the pure score formula to `OrderedWork.Core.RecommendationScorePolicy`.
+- Added seven scoring-policy tests; suite now 14/14.
+- No intended behavior change.
+- Documented `WorkGiverDef` cloning as rejected; no runtime Def clones.
+
 ## [0.3.0-alpha.93] - 2026-11-17
 
 ### Refactor — passion pipeline

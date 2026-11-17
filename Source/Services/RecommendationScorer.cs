@@ -1,3 +1,4 @@
+using OrderedWork.Core;
 using RimWorld;
 using Verse;
 
@@ -17,20 +18,16 @@ namespace OrderedWork.Services
                 return 0;
             }
 
-            bool levelZeroPassion = settings == null || settings.prioritizeLowSkillPassion;
-            if (level == 0 && !levelZeroPassion)
-            {
-                return -3;
-            }
-
+            bool prioritizeLowSkill = settings == null || settings.prioritizeLowSkillPassion;
             PassionWeightEntry entry = PassionWeightPolicy.Find(settings, passion);
-            if (passion == Passion.None || entry == null || level < entry.minLevel)
-            {
-                return level == 0 ? -3 : level * 2;
-            }
-            return level == 0
-                ? entry.level0Score
-                : level * 2 + entry.perLevelBonus;
+            bool hasPassion = passion != Passion.None && entry != null;
+            return RecommendationScorePolicy.Score(
+                level,
+                hasPassion,
+                entry != null ? entry.level0Score : 0,
+                entry != null ? entry.perLevelBonus : 0,
+                entry != null ? entry.minLevel : 0,
+                prioritizeLowSkill);
         }
 
         public static int BestSkillLevel(Pawn pawn, WorkTypeDef workType, out Passion passion)

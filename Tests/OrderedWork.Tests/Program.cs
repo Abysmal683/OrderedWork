@@ -18,6 +18,13 @@ namespace OrderedWork.Tests
             Run("BuildRanks appends missing available ids", TestMissingAppended);
             Run("BuildRanks handles empty available", TestEmptyAvailable);
             Run("NormalizeOrder tolerates null inputs", TestNullInputs);
+            Run("RecommendationScorePolicy handles no relevant skill", TestScoreNoSkill);
+            Run("RecommendationScorePolicy handles None", TestScoreNone);
+            Run("RecommendationScorePolicy applies Minor weights", TestScoreMinor);
+            Run("RecommendationScorePolicy applies Major weights", TestScoreMajor);
+            Run("RecommendationScorePolicy respects min level", TestScoreMinLevel);
+            Run("RecommendationScorePolicy supports negative weights", TestScoreNegative);
+            Run("RecommendationScorePolicy disables level-zero passion", TestScoreLevelZeroDisabled);
 
             Console.WriteLine(failures == 0 ? "All tests passed." : failures + " test(s) failed.");
             return failures == 0 ? 0 : 1;
@@ -88,6 +95,49 @@ namespace OrderedWork.Tests
         {
             List<string> result = DenseRank.NormalizeOrder(null, null);
             AssertEqual(0, result.Count);
+        }
+
+        private static void TestScoreNoSkill()
+        {
+            AssertEqual(0, RecommendationScorePolicy.Score(-1, false, -3, 0, 0, true));
+        }
+
+        private static void TestScoreNone()
+        {
+            AssertEqual(-3, RecommendationScorePolicy.Score(0, false, -3, 0, 0, true));
+            AssertEqual(6, RecommendationScorePolicy.Score(3, false, -3, 0, 0, true));
+        }
+
+        private static void TestScoreMinor()
+        {
+            AssertEqual(1, RecommendationScorePolicy.Score(0, true, 1, 2, 0, true));
+            AssertEqual(4, RecommendationScorePolicy.Score(1, true, 1, 2, 0, true));
+            AssertEqual(6, RecommendationScorePolicy.Score(2, true, 1, 2, 0, true));
+        }
+
+        private static void TestScoreMajor()
+        {
+            AssertEqual(3, RecommendationScorePolicy.Score(0, true, 3, 4, 0, true));
+            AssertEqual(10, RecommendationScorePolicy.Score(3, true, 3, 4, 0, true));
+        }
+
+        private static void TestScoreMinLevel()
+        {
+            AssertEqual(-3, RecommendationScorePolicy.Score(0, true, 5, 6, 5, true));
+            AssertEqual(8, RecommendationScorePolicy.Score(4, true, 5, 6, 5, true));
+            AssertEqual(16, RecommendationScorePolicy.Score(5, true, 5, 6, 5, true));
+        }
+
+        private static void TestScoreNegative()
+        {
+            AssertEqual(-5, RecommendationScorePolicy.Score(0, true, -5, -2, 0, true));
+            AssertEqual(0, RecommendationScorePolicy.Score(1, true, -5, -2, 0, true));
+        }
+
+        private static void TestScoreLevelZeroDisabled()
+        {
+            AssertEqual(-3, RecommendationScorePolicy.Score(0, true, 3, 4, 0, false));
+            AssertEqual(10, RecommendationScorePolicy.Score(3, true, 3, 4, 0, false));
         }
 
         private static void AssertSequence(IEnumerable<string> expected, IEnumerable<string> actual)

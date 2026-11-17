@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.93)
+# Ordered Work — Current Checklist (0.3.0-alpha.94)
 
 Status: architecture cleanup complete; build 0/0 and 7/7 tests pass. Runtime checks remain for the final profile-only path.
 
@@ -57,9 +57,9 @@ Status: architecture cleanup complete; build 0/0 and 7/7 tests pass. Runtime che
 - [ ] Confirm no `Collection was modified` or profile fallback log.
 - [ ] Confirm no legacy lists are read after load.
 
-## Future scope
+## Refactor checkpoint (alpha.94)\n\n- [x] `PassionSource` owns VSE/Alpha discovery and metadata.\n- [x] `PassionWeightPolicy` owns defaults, migration and reset.\n- [x] `PassionWeightsView` owns the weight table, sprites, tooltips, scrollbar and reset.\n- [x] `RecommendationScorer` owns skill selection and score composition.\n- [x] Pure `RecommendationScorePolicy` has automated tests.\n- [x] `SplitMerge` split into orchestration, columns, drag and persistence partials.\n- [x] `WorkOrderService` split into core, apply and lifecycle partials.\n- [ ] Runtime smoke test after the refactor: settings, pins, weights, split/merge, save/load.\n\n## Future scope
 
-- [ ] Per-pawn WorkGiver overrides (normal list only; no emergency/forced).
+- [ ] Per-pawn WorkGiver overrides (normal list only; no emergency/forced).\n- [ ] Pawn detail UI: skills, passions, current order, overrides and incapabilities.\n- [ ] Clothing policy tab.\n- [ ] Zone policy tab.\n- [ ] Schedule policy tab.\n- [ ] WorkGiverDef clones: rejected as a design path; do not add runtime Def clones.
 - [ ] Profile-backed split metadata editor (name/description) after the legacy removal.
 - [ ] Optional `Filter palette` control if the global 3-state scope proves insufficient.
 - [ ] Compact per-save pawn override format and migration.
@@ -69,6 +69,6 @@ Status: architecture cleanup complete; build 0/0 and 7/7 tests pass. Runtime che
 ## Non-goals
 
 - No full compatibility while replacing the vanilla Work tab.
-- No schedules, apparel, areas, drug/food policies or room assignment.
+- No runtime `WorkGiverDef` cloning. Schedules, apparel and areas are planned policy tabs, not runtime Def clones.
 - No per-pawn per-giver numeric priorities in this milestone.
 - No global shared core with Medical Hub/Security Suite yet.
