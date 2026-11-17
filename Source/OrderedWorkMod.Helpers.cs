@@ -159,6 +159,26 @@ namespace OrderedWork
             OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
         }
 
+        public static void DebugLog(string message)
+        {
+            if (Settings != null && Settings.verboseLogging)
+            {
+                Log.Message("[OrderedWork] " + message);
+            }
+        }
+
+        private void MoveRecommendationPin(int from, int to)
+        {
+            List<string> pins = Settings.recommendationPins;
+            if (pins == null || from < 0 || from >= pins.Count || to < 0 || to >= pins.Count || from == to)
+            {
+                return;
+            }
+            string item = pins[from];
+            pins.RemoveAt(from);
+            pins.Insert(to, item);
+        }
+
         private void ApplyTestDenseRank()
         {
             try

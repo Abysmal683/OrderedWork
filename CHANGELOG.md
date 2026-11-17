@@ -3,7 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [0.3.0-alpha.80] - 2026-11-16
+## [0.3.0-alpha.81] - 2026-11-16
+
+### Added — automatic recommendation rules
+- Rules now has a `Prioritize low-level passion over work without skill` checkbox.
+- Recommendation pins are configurable: drag to order, `x` to remove, `Add recommendation pin` dropdown for any visible WorkType.
+- Recommendation scoring uses the configured pins and the passion-policy toggle.
+- General adds `Verbose diagnostics in Player.log`, default off; temporary Order/Reset/Scroll/Resize lines are now routed through `DebugLog` and silenced by default.
 
 ### Refactor / cleanup
 - Split Work Control into core/search/rows/interaction partials.

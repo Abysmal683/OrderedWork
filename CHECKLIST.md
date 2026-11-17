@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.80)
+# Ordered Work — Current Checklist (0.3.0-alpha.81)
 
 Status: architecture cleanup complete; build 0/0 and 7/7 tests pass. Runtime checks remain for the final profile-only path.
 
@@ -35,7 +35,17 @@ Status: architecture cleanup complete; build 0/0 and 7/7 tests pass. Runtime che
 - [x] Work Control colonist-bar order, selection, cards, filters and scrollbars.
 - [x] Passion icons and labels with VSE/Alpha Skills.
 
-## Pending deep test after alpha.80
+'## Automatic recommendation rules (alpha.81)
+
+- [x] Global checkbox `Prioritize low-level passion over work without skill`.
+- [x] Configurable recommendation pins with drag order and remove.
+- [x] Add-pin dropdown covers every visible WorkType; no per-worktype weight yet.
+- [x] Recommendation service reads the configured pins and policy.
+- [x] Verbose diagnostics setting; normal logs are silent.
+- [ ] Runtime recommendation test with different pawn skills/passions.
+- [ ] Decide whether each WorkType should also expose an individual weight or exclude toggle.
+
+## Pending deep test after alpha.80'
 
 - [ ] Create a split, restart, delete it, restart again.
 - [ ] Merge Patient→Firefighter, restore Firefighter first, then Patient.

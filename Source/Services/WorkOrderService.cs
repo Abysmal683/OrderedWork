@@ -19,7 +19,7 @@ namespace OrderedWork.Services
         private const BindingFlags PrivateInstance = BindingFlags.Instance | BindingFlags.NonPublic;
         private const int PostSpawnCaptureSuppressionTicks = 120;
 
-        private static readonly string[] RecommendationPins = { "Patient", "PatientBedRest", "Firefighter" };
+        private static readonly string[] DefaultRecommendationPins = { "Patient", "PatientBedRest", "Firefighter" };
 
         private static List<WorkTypeDef> cachedAvailable;
         private static readonly Dictionary<Pawn, int> manualMaxCache = new Dictionary<Pawn, int>();
@@ -168,7 +168,12 @@ namespace OrderedWork.Services
         public static List<string> GetRecommendation(Pawn pawn)
         {
             List<string> pins = new List<string>();
-            foreach (string defName in RecommendationPins)
+            List<string> pinNames = OrderedWorkMod.Settings != null
+                && OrderedWorkMod.Settings.recommendationPins != null
+                && OrderedWorkMod.Settings.recommendationPins.Count > 0
+                ? OrderedWorkMod.Settings.recommendationPins
+                : new List<string>(DefaultRecommendationPins);
+            foreach (string defName in pinNames)
             {
                 WorkTypeDef pinned = DefDatabase<WorkTypeDef>.GetNamedSilentFail(defName);
                 if (pinned != null && pinned.visible && !IsIncapable(pawn, pinned) && !pins.Contains(pinned.defName))
@@ -203,8 +208,14 @@ namespace OrderedWork.Services
                 // No relevant skill at all.
                 return 0;
             }
+            bool passionRules = OrderedWorkMod.Settings == null
+                || OrderedWorkMod.Settings.prioritizeLowSkillPassion;
             if (level == 0)
             {
+                if (!passionRules)
+                {
+                    return -3;
+                }
                 if (passion == Passion.Major)
                 {
                     return 3;
@@ -215,7 +226,12 @@ namespace OrderedWork.Services
                 }
                 return -3;
             }
-            return level * 2 + (passion == Passion.Major ? 4 : passion == Passion.Minor ? 2 : 0);
+            int score = level * 2;
+            if (passionRules)
+            {
+                score += passion == Passion.Major ? 4 : passion == Passion.Minor ? 2 : 0;
+            }
+            return score;
         }
 
         /// <summary>

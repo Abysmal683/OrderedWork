@@ -218,7 +218,7 @@ namespace OrderedWork.UI
             WorkGridScrollView.HandleWheel(bodyRect, laneViewport, laneContent, ref gridScroll);
             if (Event.current.type == EventType.ScrollWheel && Event.current.shift)
             {
-                Log.Message("[OrderedWork][Scroll] shiftGeometry maxLane=" + maxLane
+                OrderedWorkMod.DebugLog("[Scroll] shiftGeometry maxLane=" + maxLane
                     + " content=" + laneContentWidth + " laneViewport=" + laneViewport.width
                     + " scrollX=" + gridScroll.x);
             }
@@ -304,7 +304,7 @@ namespace OrderedWork.UI
                 resizingPanel = true;
                 resizeStartMouseY = Verse.UI.MousePositionOnUIInverted.y;
                 resizeStartHeight = windowRect.height;
-                Log.Message("[OrderedWork][Resize] down mouse=" + current.mousePosition + " height=" + inRect.height);
+                OrderedWorkMod.DebugLog("[Resize] down mouse=" + current.mousePosition + " height=" + inRect.height);
                 current.Use();
                 return;
             }
@@ -318,7 +318,7 @@ namespace OrderedWork.UI
             // waiting for MouseDrag/MouseUp events only inside the window is what cut it off.
             if (!Input.GetMouseButton(0))
             {
-                Log.Message("[OrderedWork][Resize] up saved="
+                OrderedWorkMod.DebugLog("[Resize] up saved="
                     + (OrderedWorkMod.Settings != null ? OrderedWorkMod.Settings.workControlHeight : -1f));
                 resizingPanel = false;
                 return;

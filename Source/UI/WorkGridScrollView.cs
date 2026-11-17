@@ -62,7 +62,7 @@ namespace OrderedWork.UI
                 {
                     scroll.x = maxX;
                 }
-                Log.Message("[OrderedWork][Scroll] shiftWheel scrollX=" + scroll.x + " maxX=" + maxX + " delta=" + delta);
+                OrderedWorkMod.DebugLog("[Scroll] shiftWheel scrollX=" + scroll.x + " maxX=" + maxX + " delta=" + delta);
             }
             else
             {
@@ -244,7 +244,7 @@ namespace OrderedWork.UI
         // Temporary diagnostics: one line per bar MouseDown, never per frame.
         private static void LogScrollDown(string axis, Event current, Rect track, Rect thumb, float scrollValue)
         {
-            Log.Message("[OrderedWork][Scroll] " + axis + " down mouse=(" +
+            OrderedWorkMod.DebugLog("[Scroll] " + axis + " down mouse=(" +
                 current.mousePosition.x.ToString("F0") + "," + current.mousePosition.y.ToString("F0") + ") track=(" +
                 track.x.ToString("F0") + "," + track.y.ToString("F0") + "," +
                 track.width.ToString("F0") + "," + track.height.ToString("F0") + ") thumb=(" +

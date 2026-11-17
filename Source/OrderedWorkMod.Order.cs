@@ -276,7 +276,7 @@ namespace OrderedWork
                     {
                         WorkConfigStore.SaveProfile(display, true);
                         profileStatus = "Reset written to pending and applied now.";
-                        Log.Message("[OrderedWork][Reset] " + defName + " profile=" + display.Profile);
+                        OrderedWorkMod.DebugLog("[Reset] " + defName + " profile=" + display.Profile);
                         OrderedWorkStartup.ApplyProfileNow(display, Settings, this);
                         giverOrderDraftInitialized = false;
                         giverOrderDraft.Clear();
@@ -327,7 +327,7 @@ namespace OrderedWork
                     || !display.WorkTypes.TryGetValue(ownerName, out ownerConfig)
                     || ownerConfig == null)
                 {
-                    Log.Message("[OrderedWork][Reset] surplus giver dropped " + giver.DefName);
+                    OrderedWorkMod.DebugLog("[Reset] surplus giver dropped " + giver.DefName);
                     continue;
                 }
                 ownerConfig.Givers = ownerConfig.Givers ?? new List<GiverConfig>();
@@ -377,7 +377,7 @@ namespace OrderedWork
             foreach (string emptySplit in emptySplits)
             {
                 profile.WorkTypes.Remove(emptySplit);
-                Log.Message("[OrderedWork][Reset] removed empty split " + emptySplit);
+                OrderedWorkMod.DebugLog("[Reset] removed empty split " + emptySplit);
             }
         }
 
