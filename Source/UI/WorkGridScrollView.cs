@@ -57,7 +57,11 @@ namespace OrderedWork.UI
                     return false;
                 }
 
-                scroll.x = Mathf.Clamp(scroll.x + delta * 20f, 0f, maxX);
+                scroll.x = Mathf.Clamp(scroll.x + delta * 30f, 0f, maxX);
+                if (maxX - scroll.x < 24f)
+                {
+                    scroll.x = maxX;
+                }
             }
             else
             {

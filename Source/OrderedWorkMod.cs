@@ -70,7 +70,7 @@ namespace OrderedWork
                 WorkTypeDef wt = DefDatabase<WorkTypeDef>.GetNamedSilentFail(defName);
                 string label = wt != null ? wt.labelShort : defName;
                 Rect row = list.GetRect(24f);
-                DrawReorderRow(row, i + 1 + ". " + label, 1, i);
+                DrawReorderRow(row, i + 1 + ". " + label, 1, i, WorkTypeTooltip(defName));
                 workRows.Add(row);
             }
             HandleReorderDrag(1, workRows, MoveWorkType);
@@ -82,12 +82,20 @@ namespace OrderedWork
                 selectedGiverType = Settings.workTypeOrder.FirstOrDefault() ?? "";
             }
             string selectedLabel = DefDatabase<WorkTypeDef>.GetNamedSilentFail(selectedGiverType)?.labelShort ?? selectedGiverType;
-            if (Widgets.ButtonText(list.GetRect(24f), "Selected: " + selectedLabel + "  (click to change)"))
+            Rect selectorRect = list.GetRect(28f);
+            if (Widgets.ButtonText(selectorRect, "Work type: " + selectedLabel + "  ▼"))
             {
-                int idx = Settings.workTypeOrder.IndexOf(selectedGiverType);
-                if (Settings.workTypeOrder.Count > 0)
+                List<FloatMenuOption> options = new List<FloatMenuOption>();
+                foreach (string id in Settings.workTypeOrder)
                 {
-                    selectedGiverType = Settings.workTypeOrder[(idx + 1 + Settings.workTypeOrder.Count) % Settings.workTypeOrder.Count];
+                    WorkTypeDef wt = DefDatabase<WorkTypeDef>.GetNamedSilentFail(id);
+                    string label = wt != null ? wt.labelShort : id;
+                    string captured = id;
+                    options.Add(new FloatMenuOption(label, delegate { selectedGiverType = captured; }));
+                }
+                if (options.Count > 0)
+                {
+                    Find.WindowStack.Add(new FloatMenu(options));
                 }
             }
             if (!string.IsNullOrEmpty(selectedGiverType))
@@ -101,7 +109,7 @@ namespace OrderedWork
                 {
                     WorkGiverDef giver = givers[i];
                     Rect row = list.GetRect(24f);
-                    DrawReorderRow(row, i + 1 + ". " + giver.defName, 2, i);
+                    DrawReorderRow(row, i + 1 + ". " + giver.defName, 2, i, GiverTooltip(giver));
                     giverRows.Add(row);
                 }
                 HandleReorderDrag(2, giverRows, (from, to) =>
@@ -167,14 +175,69 @@ namespace OrderedWork
             Widgets.EndScrollView();
         }
 
-        private void DrawReorderRow(Rect row, string label, int kind, int index)
+        private void DrawReorderRow(Rect row, string label, int kind, int index, string tooltip)
         {
-            if ((dragKind == kind && dragIndex == index) || Mouse.IsOver(row))
+            bool dragging = dragKind == kind;
+            bool dragged = dragging && dragIndex == index;
+            bool dropTarget = dragging && dragIndex >= 0 && dragIndex != index && Mouse.IsOver(row);
+
+            if (dragged)
+            {
+                Widgets.DrawBoxSolid(row, new Color(0.22f, 0.42f, 0.62f, 0.55f));
+            }
+            else if (dropTarget)
+            {
+                Widgets.DrawBoxSolid(row, new Color(0.55f, 0.72f, 0.35f, 0.35f));
+            }
+            else if (Mouse.IsOver(row))
             {
                 Widgets.DrawHighlight(row);
             }
+
             Widgets.LabelEllipses(new Rect(row.x + 4f, row.y, row.width - 30f, row.height), label);
             Widgets.Label(new Rect(row.xMax - 24f, row.y, 20f, row.height), "≡");
+
+            if (!dragging && !dragMoved && !string.IsNullOrEmpty(tooltip))
+            {
+                TooltipHandler.TipRegion(row, tooltip);
+            }
+        }
+
+        private static string WorkTypeTooltip(string defName)
+        {
+            WorkTypeDef wt = DefDatabase<WorkTypeDef>.GetNamedSilentFail(defName);
+            if (wt == null)
+            {
+                return defName;
+            }
+            string text = wt.labelShort + "\n\n" + (wt.description ?? "");
+            List<WorkGiverDef> givers = DefDatabase<WorkGiverDef>.AllDefsListForReading
+                .Where(g => g.workType == wt)
+                .OrderByDescending(g => g.priorityInType)
+                .ToList();
+            if (givers.Count > 0)
+            {
+                text += "\n\nWorkGivers:";
+                foreach (WorkGiverDef giver in givers)
+                {
+                    text += "\n- " + giver.defName;
+                }
+            }
+            return text;
+        }
+
+        private static string GiverTooltip(WorkGiverDef giver)
+        {
+            if (giver == null)
+            {
+                return "";
+            }
+            string text = giver.defName;
+            if (giver.workType != null)
+            {
+                text += "\nWork type: " + giver.workType.labelShort;
+            }
+            return text;
         }
 
         private void HandleReorderDrag(int kind, List<Rect> rows, Action<int, int> move)

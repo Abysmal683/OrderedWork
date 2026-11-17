@@ -29,6 +29,8 @@ namespace OrderedWork.UI
         private const float LeftColumnMin = 160f;
         private const float LeftColumnMax = 260f;
         private const int DebugPaletteTypeCount = 60;
+        private const float MinPanelHeight = 360f; // top UI + 4 pawn rows
+        private const float DefaultPanelHeightFactor = 0.5f;
 
         private Vector2 gridScroll;
         private Vector2 paletteScroll;
@@ -46,8 +48,21 @@ namespace OrderedWork.UI
             Both
         }
 
-        public override Vector2 RequestedTabSize =>
-            new Vector2(Verse.UI.screenWidth, Verse.UI.screenHeight - 35f);
+        public override Vector2 RequestedTabSize
+        {
+            get
+            {
+                float max = Mathf.Max(MinPanelHeight, Verse.UI.screenHeight - 35f);
+                float desired = OrderedWorkMod.Settings != null && OrderedWorkMod.Settings.workControlHeight > 0f
+                    ? OrderedWorkMod.Settings.workControlHeight
+                    : max * DefaultPanelHeightFactor;
+                return new Vector2(Verse.UI.screenWidth, Mathf.Clamp(desired, MinPanelHeight, max));
+            }
+        }
+
+        private bool resizingPanel;
+        private float resizeStartMouseY;
+        private float resizeStartHeight;
 
         private bool draggingPalette;
         private WorkTypeDef paletteWorkType;
@@ -66,6 +81,7 @@ namespace OrderedWork.UI
         public override void DoWindowContents(Rect inRect)
         {
             Widgets.DrawBoxSolid(inRect, new Color(0.11f, 0.12f, 0.13f, 1f));
+            DrawPanelResizeHandle(inRect);
 
             if (Find.CurrentMap == null)
             {
@@ -257,6 +273,39 @@ namespace OrderedWork.UI
             }
 
             DrawHeldCard();
+        }
+
+        /// <summary>Top grip: drag up to grow the panel, down to shrink it; 4 pawn rows minimum.</summary>
+        private void DrawPanelResizeHandle(Rect inRect)
+        {
+            Rect handle = new Rect(inRect.center.x - 60f, 0f, 120f, 7f);
+            Widgets.DrawBoxSolid(handle, new Color(0.32f, 0.36f, 0.40f, 1f));
+            Widgets.DrawBoxSolid(new Rect(handle.x + 20f, handle.y + 2f, 80f, 2f), new Color(0.62f, 0.68f, 0.72f, 1f));
+            TooltipHandler.TipRegion(handle, "Drag to resize Work Control (minimum: 4 pawn rows)");
+
+            Event current = Event.current;
+            if (current.type == EventType.MouseDown && current.button == 0 && handle.Contains(current.mousePosition))
+            {
+                resizingPanel = true;
+                resizeStartMouseY = current.mousePosition.y;
+                resizeStartHeight = inRect.height;
+                current.Use();
+            }
+            else if (resizingPanel && current.type == EventType.MouseDrag)
+            {
+                if (OrderedWorkMod.Settings != null)
+                {
+                    float max = Mathf.Max(MinPanelHeight, Verse.UI.screenHeight - 35f);
+                    float newHeight = resizeStartHeight + (resizeStartMouseY - current.mousePosition.y);
+                    OrderedWorkMod.Settings.workControlHeight = Mathf.Clamp(newHeight, MinPanelHeight, max);
+                }
+                current.Use();
+            }
+            else if (resizingPanel && current.type == EventType.MouseUp)
+            {
+                resizingPanel = false;
+                current.Use();
+            }
         }
 
         private void DrawSearchRow(float searchY)

@@ -3,6 +3,17 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.19] - 2026-11-16
+
+### Changed
+- Mod Settings drag rows now show a distinct dragged row, a green drop-target row, a hover highlight and a `≡` handle. Hover tooltips show the WorkType description plus its WorkGiverDef list; giver rows show their WorkType. Tooltips are suppressed while dragging.
+- The WorkType selector is now a real dropdown (`Work type: ... ▼`) instead of cycling through options.
+- Work Control now opens at half of the available height by default, with a top grip to resize it. The minimum height keeps the top UI plus four pawn rows, and the chosen height is saved.
+- Shift+wheel horizontal scrolling steps further and snaps to the far-right position when within 24 px, matching manual-bar reach.
+
+### Still pending
+- Split/Merge drag editors (origin/split lists, validation, merge target, per-entry remove/reset) are the next isolated pass. The old text-field split/merge UI remains for now.
+
 ## [0.3.0-alpha.18] - 2026-11-16
 
 ### Changed
