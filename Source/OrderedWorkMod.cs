@@ -83,6 +83,8 @@ namespace OrderedWork
         private bool confirmResetAll;
         private bool confirmResetOrder;
         private string activeProfileName = "default";
+        private List<string> orderDraft = new List<string>();
+        private bool orderDraftInitialized;
         private string newProfileName = "";
         private bool profileNameInitialized;
         private string profileStatus = "";
@@ -558,6 +560,114 @@ namespace OrderedWork
             }
 
             HandleSplitMergeDrag();
+        }
+
+        private void DrawWorkTypeOrderDiff(Listing_Standard list)
+        {
+            WorkConfigLoadResult active = WorkConfigStore.LoadActiveWithFallback(activeProfileName);
+            WorkConfigProfile reference = WorkConfigStore.LoadReference();
+            if (active == null || active.Profile == null)
+            {
+                list.Label("No active profile available for WorkType order.");
+                return;
+            }
+            if (!orderDraftInitialized || orderDraft == null || orderDraft.Count == 0)
+            {
+                orderDraft = active.Profile.WorkTypes
+                    .Where(e => e.Value != null)
+                    .OrderBy(e => e.Value.Order)
+                    .Select(e => e.Key)
+                    .ToList();
+                orderDraftInitialized = true;
+            }
+            List<string> referenceOrder = reference != null
+                ? reference.WorkTypes.Where(e => e.Value != null)
+                    .OrderBy(e => e.Value.Order).Select(e => e.Key).ToList()
+                : orderDraft.ToList();
+
+            list.Label("WorkType order — origin = reference, destination = draft. Drag destination rows.");
+            int rowCount = Mathf.Max(referenceOrder.Count, orderDraft.Count);
+            Rect columns = list.GetRect(Mathf.Max(120f, 28f + rowCount * SplitMergeRowHeight));
+            float columnWidth = (columns.width - 12f) * 0.5f;
+            Rect left = new Rect(columns.x, columns.y, columnWidth, columns.height);
+            Rect right = new Rect(columns.x + columnWidth + 12f, columns.y, columnWidth, columns.height);
+
+            Widgets.Label(new Rect(left.x, left.y, left.width, 22f), "Origin (reference)");
+            Widgets.Label(new Rect(right.x, right.y, right.width, 22f), "Destination (current)");
+
+            for (int i = 0; i < referenceOrder.Count; i++)
+            {
+                string label = DisplayWorkType(referenceOrder[i]);
+                Rect row = new Rect(left.x, left.y + 24f + i * SplitMergeRowHeight, left.width, SplitMergeRowHeight - 2f);
+                Widgets.DrawBoxSolid(row, new Color(0.20f, 0.25f, 0.30f, 0.45f));
+                Widgets.LabelEllipses(new Rect(row.x + 4f, row.y, row.width - 8f, row.height), (i + 1) + ". " + label);
+            }
+
+            List<Rect> destinations = new List<Rect>();
+            for (int i = 0; i < orderDraft.Count; i++)
+            {
+                string label = DisplayWorkType(orderDraft[i]);
+                Rect row = new Rect(right.x, right.y + 24f + i * SplitMergeRowHeight, right.width, SplitMergeRowHeight - 2f);
+                DrawReorderRow(row, (i + 1) + ". " + label, 4, i, null);
+                destinations.Add(row);
+            }
+            HandleReorderDrag(4, destinations, MoveOrderDraft);
+
+            if (list.ButtonText("Confirm WorkType order to pending"))
+            {
+                ApplyOrderDraft(active.Profile);
+            }
+            if (!string.IsNullOrEmpty(profileStatus))
+            {
+                list.Label(profileStatus);
+            }
+        }
+
+        private static string DisplayWorkType(string defName)
+        {
+            WorkTypeDef def = DefDatabase<WorkTypeDef>.GetNamedSilentFail(defName);
+            return def != null ? def.labelShort : defName;
+        }
+
+        private void MoveOrderDraft(int from, int to)
+        {
+            if (from < 0 || from >= orderDraft.Count || to < 0 || to >= orderDraft.Count || from == to)
+            {
+                return;
+            }
+            string item = orderDraft[from];
+            orderDraft.RemoveAt(from);
+            orderDraft.Insert(to, item);
+        }
+
+        private void ApplyOrderDraft(WorkConfigProfile profile)
+        {
+            if (profile == null || profile.WorkTypes == null)
+            {
+                return;
+            }
+            for (int i = 0; i < orderDraft.Count; i++)
+            {
+                WorkTypeConfig config;
+                if (profile.WorkTypes.TryGetValue(orderDraft[i], out config) && config != null)
+                {
+                    config.Order = i;
+                }
+            }
+            int next = orderDraft.Count;
+            foreach (WorkTypeConfig config in profile.WorkTypes.Values)
+            {
+                if (config != null && !orderDraft.Contains(config.Base ?? ""))
+                {
+                    // WorkTypes not present in the draft are appended in their existing order.
+                    config.Order = next++;
+                }
+            }
+            Settings.workTypeOrder = new List<string>(orderDraft);
+            WorkConfigStore.SavePending(profile);
+            profileStatus = "WorkType order written to pending and applied.";
+            OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
+            orderDraftInitialized = false;
         }
 
         private void DrawOrderEditor(Listing_Standard list)

@@ -3,6 +3,18 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.47] - 2026-11-16
+
+### Added
+- Order mode now has the requested two-column WorkType comparison: left = reference order, right = editable destination order. Confirmation writes the order to active + pending and applies it live.
+- Split name generation checks hidden `DefDatabase` defs, so reusing a deleted split name no longer silently fails.
+- Deleting a split from the profile returns its givers to the base in reference order.
+- Profile fallback persists active resolution.
+
+### Still pending
+- The old settings lists still bridge the editor and startup.
+- Giver order remains a separate list below the new WorkType comparison.
+
 ## [0.3.0-alpha.46] - 2026-11-16
 
 ### Fixed
