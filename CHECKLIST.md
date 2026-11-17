@@ -1,6 +1,6 @@
-# Work Control — Milestone 0.3.0-alpha.12 Checklist
+# Work Control — Milestone 0.3.0-alpha.13 Checklist
 
-Status: in progress — version 0.3.0-alpha.12. Bug-fix iteration written: horizontal scrollbar fixed above the matrix (12 px, reliable drag/click), visible Work text filter + plain selector + `Not` + match count, hover-based drag target rules, palette tooltip skill names without selected-pawn lookup and safe skill lookup (no missing-skill fallback log), lane tooltip Skill/Passion/Level/Rank split, preserved passion icon colors, and ~14 px tighter cards/ghost. Runtime checks pending.
+Status: in progress — version 0.3.0-alpha.13. Bug-fix iteration written: single Work combo (10 visible rows + `Any` + thin dropdown bar, no separate search field; selected WorkType filters palette + rows), real `Not` checkbox, independent horizontal/vertical scrollbars (horizontal fixed above the matrix), ~117 px lane cards, and warm minor/major passion icon tints in lane/drag/Details. Runtime checks pending.
 Goal: first usable Work Control tab with a horizontal lane that assigns WorkTypes and updates the vanilla Work tab.
 
 ## Scope in

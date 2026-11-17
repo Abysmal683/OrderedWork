@@ -23,7 +23,7 @@ namespace OrderedWork.UI
         private const float HScrollHeight = WorkGridScrollView.Thickness;
         private const float HeaderHeight = 18f;
         private const float RowHeight = 42f;
-        private const float CardWidth = 146f;
+        private const float CardWidth = 117f;
         private const float CardHeight = 30f;
         private const float CardGap = 4f;
         private const float LeftColumnMin = 160f;
@@ -92,6 +92,7 @@ namespace OrderedWork.UI
             DrawTopControls(recommendRect, detailsRect, viewRect);
 
             List<WorkTypeDef> available = WorkOrderService.GetAvailableWorkTypes();
+            List<WorkTypeDef> paletteTypes = available.Where(MatchesWorkFilterText).ToList();
             bool autoHide = OrderedWorkMod.Settings == null || OrderedWorkMod.Settings.autoHideScrollbars;
             bool showPaletteScrollbar = !autoHide
                 || Mouse.IsOver(paletteRect)
@@ -102,7 +103,7 @@ namespace OrderedWork.UI
             WorkTypePaletteView.DrawPalette(
                 paletteRect,
                 ref paletteScroll,
-                available,
+                paletteTypes,
                 paletteWorkType,
                 showPaletteScrollbar,
                 dragging || draggingPalette,
@@ -111,7 +112,7 @@ namespace OrderedWork.UI
             // Search row below the palette, above the matrix.
             DrawSearchRow(searchY);
 
-            bool filtering = !string.IsNullOrWhiteSpace(searchText) || workFilter != null;
+            bool filtering = !string.IsNullOrWhiteSpace(searchText) || WorkFilterActive;
             List<Pawn> colonists = allColonists
                 .Where(p => IsSearchMatch(p) && MatchesWorkFilter(p))
                 .ToList();
@@ -173,10 +174,14 @@ namespace OrderedWork.UI
             // Wheel works over both the fixed names and the lanes.
             WorkGridScrollView.HandleWheel(bodyRect, gridViewport, laneContent, ref gridScroll);
 
-            bool showMatrixScrollbars = !autoHide
+            bool showVerticalScrollbar = !autoHide
+                || Mouse.IsOver(bodyRect)
+                || Mouse.IsOver(vTrack)
+                || WorkGridScrollView.IsDragging
+                || WorkGridScrollView.RecentlyScrolled;
+            bool showHorizontalScrollbar = !autoHide
                 || Mouse.IsOver(bodyRect)
                 || Mouse.IsOver(hTrack)
-                || Mouse.IsOver(vTrack)
                 || WorkGridScrollView.IsDragging
                 || WorkGridScrollView.RecentlyScrolled;
 
@@ -212,9 +217,12 @@ namespace OrderedWork.UI
 
             DrawPawnColumn(colonists, namesViewport, leftWidth);
 
-            if (showMatrixScrollbars)
+            if (showVerticalScrollbar)
             {
                 WorkGridScrollView.DrawVertical(vTrack, gridViewport, laneContent, ref gridScroll);
+            }
+            if (showHorizontalScrollbar)
+            {
                 WorkGridScrollView.DrawHorizontal(hTrack, laneViewport, laneContent, ref gridScroll);
             }
 
@@ -229,61 +237,49 @@ namespace OrderedWork.UI
             searchText = Widgets.TextField(new Rect(x, searchY, 168f, SearchHeight - 2f), searchText ?? "");
             x += 174f;
 
-            Widgets.Label(new Rect(x, searchY, 40f, SearchHeight), "Work");
-            x += 42f;
-            workFilterText = Widgets.TextField(new Rect(x, searchY, 130f, SearchHeight - 2f), workFilterText ?? "");
-            if (Mouse.IsOver(new Rect(x, searchY, 130f, SearchHeight - 2f)))
-            {
-                TooltipHandler.TipRegion(new Rect(x, searchY, 130f, SearchHeight - 2f), "Filter WorkType options (defName, label or short label)");
-            }
-            x += 136f;
-
-            Rect workButton = new Rect(x, searchY, 140f, SearchHeight - 2f);
-            x += 144f;
-            string workLabel = workFilter == null
+            Rect workButton = new Rect(x, searchY, 190f, SearchHeight - 2f);
+            x += 194f;
+            string workLabel = string.IsNullOrEmpty(workFilterText)
                 ? "Any"
-                : WorkTypePaletteView.DisplayName(workFilter);
+                : (workFilter != null ? WorkTypePaletteView.DisplayName(workFilter) : workFilterText);
             if (Widgets.ButtonText(workButton, workLabel))
             {
-                OpenWorkFilterMenu();
+                Find.WindowStack.Add(new WorkTypeComboWindow(this));
+            }
+            if (Mouse.IsOver(workButton))
+            {
+                TooltipHandler.TipRegion(workButton, "Filter WorkTypes");
             }
 
-            Rect invertRect = new Rect(x, searchY, 38f, SearchHeight - 2f);
-            if (Widgets.ButtonText(invertRect, "Not", true, true, workFilter != null))
+            Rect notRect = new Rect(x, searchY, 64f, SearchHeight - 2f);
+            Widgets.CheckboxLabeled(notRect, "Not", ref invertWorkFilter, !WorkFilterActive);
+            if (Mouse.IsOver(notRect))
             {
-                invertWorkFilter = !invertWorkFilter;
-            }
-            if (Mouse.IsOver(invertRect))
-            {
-                TooltipHandler.TipRegion(invertRect, "Show pawns without this work");
+                TooltipHandler.TipRegion(notRect, "Show pawns without the selected work");
             }
         }
 
-        private void OpenWorkFilterMenu()
+        private bool WorkFilterActive
         {
-            List<FloatMenuOption> options = new List<FloatMenuOption>();
-            options.Add(new FloatMenuOption("Any WorkType", delegate { workFilter = null; }));
+            get { return !string.IsNullOrEmpty(workFilterText); }
+        }
 
-            string term = workFilterText?.Trim();
-            foreach (WorkTypeDef workType in WorkOrderService.GetAvailableWorkTypes())
+        private bool MatchesWorkFilterText(WorkTypeDef workType)
+        {
+            if (!WorkFilterActive)
             {
-                if (!string.IsNullOrEmpty(term) && !MatchesWorkText(workType, term))
-                {
-                    continue;
-                }
-                WorkTypeDef local = workType;
-                options.Add(new FloatMenuOption(WorkTypePaletteView.DisplayName(local), delegate { workFilter = local; }));
+                return true;
             }
-
-            if (options.Count == 1)
-            {
-                options.Add(new FloatMenuOption("No matches", null));
-            }
-            Find.WindowStack.Add(new FloatMenu(options));
+            bool match = MatchesWorkText(workType, workFilterText);
+            return invertWorkFilter ? !match : match;
         }
 
         private static bool MatchesWorkText(WorkTypeDef workType, string term)
         {
+            if (string.IsNullOrEmpty(term))
+            {
+                return true;
+            }
             return Contains(workType.defName, term)
                 || Contains(workType.label, term)
                 || Contains(workType.labelShort, term);
@@ -296,12 +292,141 @@ namespace OrderedWork.UI
 
         private bool MatchesWorkFilter(Pawn pawn)
         {
-            if (workFilter == null)
+            if (!WorkFilterActive)
             {
                 return true;
             }
-            bool active = WorkOrderService.GetOrder(pawn).Contains(workFilter.defName);
+
+            bool active = false;
+            foreach (string id in WorkOrderService.GetOrder(pawn))
+            {
+                WorkTypeDef workType = DefDatabase<WorkTypeDef>.GetNamedSilentFail(id);
+                if (workType != null && MatchesWorkText(workType, workFilterText))
+                {
+                    active = true;
+                    break;
+                }
+            }
             return invertWorkFilter ? !active : active;
+        }
+
+        /// <summary>
+        /// WorkType combo with at most 10 visible rows and a thin integrated scrollbar.
+        /// The selected WorkType is the filter; there is no separate text field.
+        /// </summary>
+        private sealed class WorkTypeComboWindow : Window
+        {
+            private const float RowHeight = 24f;
+            private const int MaxVisibleRows = 10;
+            private const float BarWidth = 12f;
+
+            private readonly MainTabWindow_WorkControl owner;
+            private Vector2 scroll;
+            private bool draggingBar;
+            private float barDragStartMouse;
+            private float barDragStartScroll;
+
+            public WorkTypeComboWindow(MainTabWindow_WorkControl owner)
+            {
+                this.owner = owner;
+                doCloseX = true;
+                closeOnClickedOutside = true;
+                absorbInputAroundWindow = true;
+                resizeable = false;
+            }
+
+            public override Vector2 InitialSize
+            {
+                get { return new Vector2(260f, (MaxVisibleRows + 1) * RowHeight + 12f); }
+            }
+
+            public override void DoWindowContents(Rect inRect)
+            {
+                List<WorkTypeDef> matches = WorkOrderService.GetAvailableWorkTypes();
+
+                Rect listOuter = new Rect(0f, 0f, inRect.width, inRect.height);
+                Rect viewport = new Rect(listOuter.x, listOuter.y, listOuter.width - BarWidth, listOuter.height);
+                Rect content = new Rect(0f, 0f, viewport.width, Mathf.Max(viewport.height, (matches.Count + 1) * RowHeight));
+
+                Widgets.BeginScrollView(viewport, ref scroll, content, false);
+                try
+                {
+                    Rect anyRect = new Rect(0f, 0f, viewport.width, RowHeight - 2f);
+                    if (Widgets.ButtonText(anyRect, "Any"))
+                    {
+                        owner.workFilterText = "";
+                        owner.workFilter = null;
+                        Close(true);
+                    }
+
+                    for (int i = 0; i < matches.Count; i++)
+                    {
+                        WorkTypeDef workType = matches[i];
+                        Rect row = new Rect(0f, (i + 1) * RowHeight, viewport.width, RowHeight - 2f);
+                        if (Widgets.ButtonText(row, WorkTypePaletteView.DisplayName(workType)))
+                        {
+                            owner.workFilterText = workType.defName;
+                            owner.workFilter = workType;
+                            Close(true);
+                        }
+                    }
+
+                }
+                finally
+                {
+                    Widgets.EndScrollView();
+                }
+
+                DrawThinScrollbar(
+                    new Rect(listOuter.xMax - BarWidth, listOuter.y, BarWidth, listOuter.height),
+                    viewport,
+                    content);
+            }
+
+            private void DrawThinScrollbar(Rect track, Rect viewport, Rect content)
+            {
+                float max = Mathf.Max(0f, content.height - viewport.height);
+                if (max <= 0f)
+                {
+                    draggingBar = false;
+                    return;
+                }
+
+                float thumbSize = Mathf.Clamp(track.height * (viewport.height / content.height), 24f, track.height);
+                float travel = track.height - thumbSize;
+                float thumbY = track.y + travel * Mathf.Clamp01(scroll.y / max);
+                Rect thumb = new Rect(track.x, thumbY, track.width, thumbSize);
+
+                Widgets.DrawBoxSolid(track, new Color(0.07f, 0.07f, 0.08f, 0.75f));
+                Widgets.DrawBoxSolid(thumb, Mouse.IsOver(thumb)
+                    ? new Color(0.62f, 0.70f, 0.78f, 0.95f)
+                    : new Color(0.45f, 0.50f, 0.56f, 0.90f));
+
+                Event current = Event.current;
+                if (current.type == EventType.MouseDown && current.button == 0 && Mouse.IsOver(thumb))
+                {
+                    draggingBar = true;
+                    barDragStartMouse = current.mousePosition.y;
+                    barDragStartScroll = scroll.y;
+                    current.Use();
+                }
+                else if (draggingBar && current.type == EventType.MouseDrag)
+                {
+                    float delta = current.mousePosition.y - barDragStartMouse;
+                    scroll.y = Mathf.Clamp(barDragStartScroll + (travel <= 0f ? 0f : delta / travel * max), 0f, max);
+                    current.Use();
+                }
+                else if (draggingBar && current.type == EventType.MouseUp)
+                {
+                    draggingBar = false;
+                    current.Use();
+                }
+                else if (current.type == EventType.MouseDown && current.button == 0 && Mouse.IsOver(track) && !Mouse.IsOver(thumb))
+                {
+                    scroll.y = Mathf.Clamp(scroll.y + (current.mousePosition.y < thumb.y ? -viewport.height : viewport.height), 0f, max);
+                    current.Use();
+                }
+            }
         }
 
         private void BeginPaletteDrag(WorkTypeDef type)
@@ -751,7 +876,7 @@ namespace OrderedWork.UI
             if (icon != null)
             {
                 Color previous = GUI.color;
-                GUI.color = Color.white; // preserve the vanilla passion icon colors
+                GUI.color = WorkTypePaletteView.PassionColor(passion);
                 GUI.DrawTexture(rect, icon);
                 GUI.color = previous;
             }

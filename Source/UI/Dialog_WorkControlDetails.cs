@@ -163,7 +163,7 @@ namespace OrderedWork.UI
             if (icon != null)
             {
                 Color previous = GUI.color;
-                GUI.color = Color.white;
+                GUI.color = WorkTypePaletteView.PassionColor(passion);
                 GUI.DrawTexture(rect, icon);
                 GUI.color = previous;
             }

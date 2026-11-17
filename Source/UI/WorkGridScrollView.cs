@@ -14,8 +14,10 @@ namespace OrderedWork.UI
 
         private static bool draggingVertical;
         private static bool draggingHorizontal;
-        private static float dragStartMouse;
-        private static float dragStartScroll;
+        private static float dragStartMouseY;
+        private static float dragStartScrollY;
+        private static float dragStartMouseX;
+        private static float dragStartScrollX;
         private static float lastScrollTime;
 
         internal static bool IsDragging
@@ -70,15 +72,15 @@ namespace OrderedWork.UI
             if (current.type == EventType.MouseDown && current.button == 0 && Mouse.IsOver(thumb))
             {
                 draggingVertical = true;
-                dragStartMouse = current.mousePosition.y;
-                dragStartScroll = scroll.y;
+                dragStartMouseY = current.mousePosition.y;
+                dragStartScrollY = scroll.y;
                 lastScrollTime = Time.realtimeSinceStartup;
                 current.Use();
             }
             else if (draggingVertical && current.type == EventType.MouseDrag)
             {
-                float delta = current.mousePosition.y - dragStartMouse;
-                scroll.y = Mathf.Clamp(dragStartScroll + (travel <= 0f ? 0f : delta / travel * max), 0f, max);
+                float delta = current.mousePosition.y - dragStartMouseY;
+                scroll.y = Mathf.Clamp(dragStartScrollY + (travel <= 0f ? 0f : delta / travel * max), 0f, max);
                 lastScrollTime = Time.realtimeSinceStartup;
                 current.Use();
             }
@@ -119,15 +121,15 @@ namespace OrderedWork.UI
             if (current.type == EventType.MouseDown && current.button == 0 && Mouse.IsOver(thumb))
             {
                 draggingHorizontal = true;
-                dragStartMouse = current.mousePosition.x;
-                dragStartScroll = scroll.x;
+                dragStartMouseX = current.mousePosition.x;
+                dragStartScrollX = scroll.x;
                 lastScrollTime = Time.realtimeSinceStartup;
                 current.Use();
             }
             else if (draggingHorizontal && current.type == EventType.MouseDrag)
             {
-                float delta = current.mousePosition.x - dragStartMouse;
-                scroll.x = Mathf.Clamp(dragStartScroll + (travel <= 0f ? 0f : delta / travel * max), 0f, max);
+                float delta = current.mousePosition.x - dragStartMouseX;
+                scroll.x = Mathf.Clamp(dragStartScrollX + (travel <= 0f ? 0f : delta / travel * max), 0f, max);
                 lastScrollTime = Time.realtimeSinceStartup;
                 current.Use();
             }

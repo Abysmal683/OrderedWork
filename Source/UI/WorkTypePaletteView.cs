@@ -144,6 +144,8 @@ namespace OrderedWork.UI
                 int level = bestSkill != null ? bestSkill.Level : -1;
                 if (level >= 0)
                 {
+                    Color previousColor = GUI.color;
+                    GUI.color = PassionColor(passion);
                     if (passion == Passion.Major)
                     {
                         GUI.DrawTexture(new Rect(x, rect.y + 8f, PassionIconSize, PassionIconSize), WidgetsWork.PassionWorkboxMajorIcon);
@@ -152,6 +154,7 @@ namespace OrderedWork.UI
                     {
                         GUI.DrawTexture(new Rect(x, rect.y + 8f, PassionIconSize, PassionIconSize), WidgetsWork.PassionWorkboxMinorIcon);
                     }
+                    GUI.color = previousColor;
                     x += PassionIconSize + 2f;
 
                     GameFont previousFont = Text.Font;
@@ -371,6 +374,20 @@ namespace OrderedWork.UI
                 return "minor";
             }
             return "none";
+        }
+
+        /// <summary>Distinct warm tint for the vanilla monochrome passion icons.</summary>
+        internal static Color PassionColor(Passion passion)
+        {
+            if (passion == Passion.Major)
+            {
+                return new Color(1f, 0.55f, 0.12f, 1f);
+            }
+            if (passion == Passion.Minor)
+            {
+                return new Color(1f, 0.86f, 0.30f, 1f);
+            }
+            return Color.white;
         }
     }
 }

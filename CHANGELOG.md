@@ -3,6 +3,17 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.13] - 2026-11-16
+
+### Fixed
+- Work search is now a single combo (the separate Work label/text and search field are gone). The dropdown shows at most 10 WorkTypes plus `Any` with an integrated thin scrollbar; the selected WorkType filters palette chips and pawn rows. `Not` is a real checkbox with tooltip “Show pawns without the selected work”.
+- Horizontal and vertical scrollbars are independent: separate drag state and show flags, both gutters reserved, so the vertical bar no longer blocks the horizontal one. The horizontal bar stays fixed above the matrix; names scroll only vertically, lanes share the horizontal offset, auto-hide remains, and the last row stays complete.
+- Lane cards are 20% tighter (~117 px); ghost, remove button, ellipsis and tooltips use the new width.
+- Vanilla passion icons are tinted with distinct warm colors (minor yellow, major orange) in the lane, palette drag card and Details, preserving icon alpha and not tinting the card.
+
+### Kept
+- Colonist-bar order, hover-based drag targets, ghost/colors, simple/manual Work-tab fixes, return button, right-click max, selection, Recommend/Details, auto-recommend and save/load.
+
 ## [0.3.0-alpha.12] - 2026-11-16
 
 ### Fixed
