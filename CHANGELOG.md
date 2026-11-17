@@ -3,6 +3,12 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.85] - 2026-11-17
+
+### Fixed — passion sprites in weight rows
+- The resolved VSE/vanilla passion sprite is now drawn before each weight label.
+- The icon uses the same cache and color/tint path as the Work tab.
+
 ## [0.3.0-alpha.84] - 2026-11-17
 
 ### Fixed — VSE configuration load

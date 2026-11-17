@@ -149,13 +149,21 @@ namespace OrderedWork
                     continue;
                 }
                 Rect row = list.GetRect(26f);
-                Widgets.Label(new Rect(row.x, row.y, 150f, 24f), info.Label);
-                float fieldWidth = Mathf.Max(54f, (row.width - 150f - 24f) / 3f);
-                Widgets.TextFieldNumeric(new Rect(row.x + 154f, row.y, fieldWidth, 24f),
+                WorkTypePaletteView.PassionVisual visual = WorkTypePaletteView.ResolvePassionVisual(info.Passion);
+                if (visual.Texture != null)
+                {
+                    Color previous = GUI.color;
+                    GUI.color = visual.Tint;
+                    GUI.DrawTexture(new Rect(row.x, row.y + 5f, 16f, 16f), visual.Texture);
+                    GUI.color = previous;
+                }
+                Widgets.Label(new Rect(row.x + 20f, row.y, 140f, 24f), info.Label);
+                float fieldWidth = Mathf.Max(54f, (row.width - 170f - 24f) / 3f);
+                Widgets.TextFieldNumeric(new Rect(row.x + 174f, row.y, fieldWidth, 24f),
                     ref entry.level0Score, ref entry.level0Buffer, -20, 20);
-                Widgets.TextFieldNumeric(new Rect(row.x + 158f + fieldWidth, row.y, fieldWidth, 24f),
+                Widgets.TextFieldNumeric(new Rect(row.x + 178f + fieldWidth, row.y, fieldWidth, 24f),
                     ref entry.perLevelBonus, ref entry.perLevelBuffer, -20, 20);
-                Widgets.TextFieldNumeric(new Rect(row.x + 162f + fieldWidth * 2f, row.y, fieldWidth, 24f),
+                Widgets.TextFieldNumeric(new Rect(row.x + 182f + fieldWidth * 2f, row.y, fieldWidth, 24f),
                     ref entry.minLevel, ref entry.minLevelBuffer, 0, 20);
             }
             if (list.ButtonText("Reset recommendation weights"))
