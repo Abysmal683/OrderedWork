@@ -287,6 +287,10 @@ namespace OrderedWork
                     else
                     {
                         WorkTypeDef restoredDef = DefDatabase<WorkTypeDef>.GetNamedSilentFail(defName);
+                        HashSet<string> targetGivers = new HashSet<string>(
+                            (original.Givers ?? new List<GiverConfig>())
+                                .Where(g => g != null).Select(g => g.DefName));
+                        ReturnSurplusGivers(display, reference, defName, targetGivers, current);
                         foreach (GiverConfig giver in original.Givers ?? new List<GiverConfig>())
                         {
                             if (giver == null)
@@ -322,6 +326,60 @@ namespace OrderedWork
                 }
             }
             list.Label("Reset writes to pending; it does not mutate live defs until restart.");
+        }
+
+        private static void ReturnSurplusGivers(
+            WorkConfigProfile display,
+            WorkConfigProfile reference,
+            string targetDefName,
+            HashSet<string> targetGivers,
+            WorkTypeConfig currentTarget)
+        {
+            if (display == null || reference == null || currentTarget == null || currentTarget.Givers == null)
+            {
+                return;
+            }
+            foreach (GiverConfig giver in currentTarget.Givers.ToList())
+            {
+                if (giver == null || targetGivers.Contains(giver.DefName))
+                {
+                    continue;
+                }
+                string ownerName = null;
+                foreach (KeyValuePair<string, WorkTypeConfig> entry in reference.WorkTypes)
+                {
+                    if (entry.Value != null && entry.Value.Givers != null
+                        && entry.Value.Givers.Any(g => g != null && g.DefName == giver.DefName))
+                    {
+                        ownerName = entry.Key;
+                        break;
+                    }
+                }
+                WorkTypeConfig ownerConfig;
+                if (string.IsNullOrEmpty(ownerName) || ownerName == targetDefName
+                    || !display.WorkTypes.TryGetValue(ownerName, out ownerConfig)
+                    || ownerConfig == null)
+                {
+                    Log.Message("[OrderedWork][Reset] surplus giver dropped " + giver.DefName);
+                    continue;
+                }
+                ownerConfig.Givers = ownerConfig.Givers ?? new List<GiverConfig>();
+                if (!ownerConfig.Givers.Any(g => g != null && g.DefName == giver.DefName))
+                {
+                    ownerConfig.Givers.Add(new GiverConfig
+                    {
+                        DefName = giver.DefName,
+                        Order = ownerConfig.Givers.Count,
+                        Mod = giver.Mod
+                    });
+                }
+                WorkGiverDef live = DefDatabase<WorkGiverDef>.GetNamedSilentFail(giver.DefName);
+                WorkTypeDef ownerDef = DefDatabase<WorkTypeDef>.GetNamedSilentFail(ownerName);
+                if (live != null && ownerDef != null)
+                {
+                    live.workType = ownerDef;
+                }
+            }
         }
 
         private static void RemoveGiverFromOtherTypes(WorkConfigProfile profile, string giverDefName, string exceptDefName)

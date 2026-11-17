@@ -3,7 +3,12 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [0.3.0-alpha.72] - 2026-11-16
+## [0.3.0-alpha.73] - 2026-11-16
+
+### Fixed
+- Re-added `ReturnSurplusGivers` in the restore path; it had been lost in a refactor. Givers present in the restored target but absent from its reference now move to their reference WorkType, appended at the end.
+- Reconcile live/profile before reset, so the live Firefighter extra is represented in the profile before Restore.
+- Delete split remains target-only.
 
 ### Fixed
 - Added live-profile reconciliation: givers that exist only in live WorkGiverDefs (the Firefighter extra) are returned to their reference WorkType in the profile before Merge/Reset is rendered or saved.
