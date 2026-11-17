@@ -24,27 +24,30 @@ Basic RimWorld 1.7 work-management framework.
 2. Enable it after work mods (Job Splitter, Some More Jobs, Compact Work Tab, etc.).
 3. Back up the save before enabling.
 
-## Work Control tab (0.3.0-alpha.10)
+## Work Control tab (0.3.0-alpha.11)
 - Open the new **Work Control** bottom tab (between Work and Schedule). It does **not** replace the vanilla Work tab.
-- Layout mirrors the Work tab: one row per player free colonist. The fixed left column shows the pawn **portrait** (about 32×32, scaled to row height), an **ellipsized** name/title, and compact right-side age/health when the column has room. Hovering the row shows a tooltip with the full name, age, title, health and active WorkType count. The rest of the row is the colonist's horizontal WorkType lane. Outer/internal margins are ~4 px.
-- One **shared horizontal scroll** moves every lane together; one outer vertical scroll moves all pawn rows. The horizontal position is kept across redraws.
-- Cards are **flat single-line** rows (~190×30) with a fixed order: **passion icon → best relevant skill level → WorkType name → `×`**. The name is ellipsized and the full name is in the tooltip. If the WorkType has **no relevant skill**, only the name and `×` are drawn (no level/passion placeholders). The vanilla `WidgetsWork` minor/major passion textures are used.
-- **WorkType palette** (one compact row above the matrix, horizontal scroll): drag a WorkType onto a pawn row. The floating drag card shows that pawn's passion/level (or red `Incapaz`); a ghost marker shows the exact insertion slot. A valid drop adds the WorkType there, or moves an existing one; an adjacent ghost is a no-op. With a multi-selection, the same WorkType/position is applied to every selected pawn; capable pawns update, incapable ones are skipped and one grouped message is shown. The WorkType is never duplicated.
-- **Search pawns** (above the matrix) matches flexibly against `LabelShort`, full/short name, colored name, title and first/nick/last name components. A non-empty search **filters the rows** (matching pawns only) and shows `No pawns match` when nothing matches. It never selects pawns, changes orders or changes priorities.
-- **Selection is `Find.Selector`-driven.** Rows highlight the pawns currently selected in game (none selected → no highlight). **Single click** selects the pawn (no camera move, no close); **shift-click** toggles it in/out; **double-click** selects the pawn, moves the camera and closes Work Control. Selection is shared with the vanilla tab, so opening either tab in either order keeps the same selection.
-- The top-bar **Recommend** button recomputes and applies the skill recommendation to **every selected pawn** (disabled when nothing is selected). The top-bar **Details** button opens the read-only `Dialog_WorkControlDetails` for the **first selected pawn**: name/title, top skills with levels/passions, and the WorkType order with rank, best skill/passion and status. Recommendations pin `Patient`, `PatientBedRest` and `Firefighter` first (when capable, in that order), then score the rest: no relevant skill `0`; level 0 no/minor/major passion `-3`/`1`/`3`; level ≥1 `level*2 + 2/4`; ties by `naturalPriority` descending.
-- **View: Numeric** (top right) switches to the vanilla Work tab; the vanilla Work tab gets a **View: Draw** button to return. Both use `Find.MainTabsRoot`; neither tab is hidden or replaced.
-- **Auto recommend new colony** (Mod Settings, default on): on = new/default colonies and new pawns get the scored recommendation applied; off = they copy the current vanilla order instead (no automatic recommendation). The top Recommend button still works when off.
-- Drag a card to reorder within that pawn's lane (left = highest). The `×` removes a card (off, priority 0). The `+` card opens the candidate picker.
-- **Incapable WorkTypes stay out of the lane** and out of default/stored/written orders. The `+` picker lists the remaining visible WorkTypes with levels (`-` when none) and shows incapable ones greyed out as `Incapaz` (not selectable).
-- **Initialization runs at game start** (`GameComponentTick`), not when the tab opens. Existing colony copies the current Work-tab order without writing; with auto-recommend off, new/default colonies also copy; with it on, a new/default colony applies the recommendation once.
+- **Pawn order** follows `Find.ColonistBar.GetColonistsInOrder()` filtered to visible free colonists, with `Find.CurrentMap.mapPawns.FreeColonists` as fallback. A revived pawn returns to its stable colonist-bar position; rows follow the bar if it changes.
+- Layout mirrors the Work tab: one row per player free colonist. The fixed left column shows the pawn **portrait** (about 32×32, scaled to row height), an **ellipsized** name/title, and compact right-side age/health. Hovering the row shows a tooltip with the full name, age, title, health and active WorkType count. The rest of the row is the colonist's horizontal WorkType lane. Outer/internal margins are ~4 px.
+- **Scrollbars** are thin and sit outside the content (right gutter and below the lane), so the last row is not cut. The vertical bar scrolls names and lanes together; the horizontal bar moves only the lanes. Mouse wheel works over the name column and the lanes. Mod Settings `Auto-hide scrollbars` (default on) shows them while hovering/scrolling and hides them otherwise.
+- **WorkType palette**: 3 compact rows above the matrix, filled left→right then top→bottom in natural `naturalPriority` order, with a horizontal slide for overflow. All visible WorkTypes are kept; chips are ellipsized and never overflow.
+- **Search row** below the palette and above the matrix, labeled `Pawn` and `Work`. `Pawn` filters by name (flexible short/full/colored/title/first/nick/last matching). `Work` has a WorkType selector plus a text filter matching `defName`, `label` and `labelShort`; it filters rows to pawns with that WorkType active. A small `¬` button (tooltip “Show pawns without this work”) inverts the Work filter. Pawn AND Work filters combine; `No pawns match` is shown when empty.
+- Cards are **flat single-line** rows (~160×30) with a fixed order: **passion icon → best relevant skill level → capitalized WorkType name → `×`**. WorkType names are capitalized; colors come from `WorkTypeColorRegistry` (deterministic defName hash, user overrides stored in Mod Settings for a future picker). Hover shows the full tooltip; no tooltip is shown while dragging.
+- **Lane tooltip**: WorkType description, all `WorkGiverDef`s, best skill and the pawn's current rank. A `PawnSpecificOverrideHook` is exposed for future per-pawn/per-giver overrides (none implemented yet). **Palette tooltip**: description, global WorkGivers, compressed name and context skill.
+- **Drag**: dragging a palette WorkType shows a floating held card at the cursor (with the hovered pawn's passion/level, or red `Incapaz`) and an **empty placeholder block** at the exact final slot; a valid drop adds/reorders there, an adjacent drop is a no-op, and a multi-selection applies the same WorkType/position to every selected pawn (incapable pawns are skipped with one grouped message). Lane reorder uses the same placeholder renderer.
+- **Selection is `Find.Selector`-driven.** Rows highlight the pawns currently selected in game. Single click selects; shift-click toggles; double-click selects, moves the camera and closes Work Control. Selection is shared with the vanilla tab.
+- The top-bar **Recommend** applies the skill recommendation to every selected pawn (disabled when nothing is selected). **Details** opens the read-only `Dialog_WorkControlDetails` for the first selected pawn.
+- **View: Numeric** (top right) switches to the vanilla Work tab; the vanilla Work tab gets a **View: Draw** button to return. Both use `Find.MainTabsRoot`.
+- **Auto recommend new colony** (Mod Settings, default on): on = new/default colonies and new pawns get the scored recommendation; off = they copy the current vanilla order instead.
+- Drag a lane card to reorder (left = highest). The `×` removes a card (off, priority 0). The `+` card opens the candidate picker.
+- **Incapable WorkTypes stay out of the lane** and out of default/stored/written orders. The `+` picker shows levels and greys incapable types as `Incapaz`.
+- **Initialization runs at game start** (`GameComponentTick`). Existing colony copies the current Work-tab order without writing; with auto-recommend off, new/default colonies also copy; with it on, a new/default colony applies the recommendation once.
 - A Harmony postfix on `Pawn_WorkSettings.SetPriority` captures genuine vanilla Work-tab edits and rebuilds the stored order, ignoring our writes, `EnableAndInitialize`, spawning and a 120-tick post-spawn window.
-- On spawn/resurrection the stored order is reapplied once; with auto-recommend on, a new colonist with no stored order gets the recommendation applied; with it off, the vanilla order is copied. Dead-but-not-destroyed pawns keep their entries.
+- **Resurrection/faction change**: an existing stored order is always reapplied first (logged as `Reapplied stored order`); only a pawn with no stored order gets `Recommended new pawn` (or a vanilla copy when auto-recommend is off). A resurrected pawn is never treated as brand new. Dead-but-not-destroyed entries are kept.
 - Edits write dense rank 1..N directly into `Pawn_WorkSettings.priorities` and call `Notify_UseWorkPrioritiesChanged`.
 - Each pawn's order is saved per colony in a `GameComponent`; save/load preserves it.
 - No result table and no Sync button.
 
-## Vanilla Work tab: simple/manual priorities (0.3.0-alpha.10)
+## Vanilla Work tab: simple/manual priorities (0.3.0-alpha.11)
 - **Simple mode** (`Find.PlaySettings.useWorkPriorities == false`): our numeric prefix defers completely to vanilla, so checkboxes work (remove = 0, add = default).
 - **Manual mode** (`useWorkPriorities == true`): the capable free-colonist cell is replaced by a clean-room numeric cell:
   - **Left-click** cycles `0 → 1 → … → max → 0`.
@@ -74,18 +77,22 @@ Basic RimWorld 1.7 work-management framework.
 - Expected log shape: `[Ordered Work] Dense rank test <pawn>: max=<max>, count=<count>, first=<defName>=<priority>, last=<defName>=<priority>`. Compare `last` with its assigned rank (e.g. 23): if it survives, direct-map mode bypasses the vanilla 4 cap; if it reads 4, the value was clamped downstream.
 - **Do not use this build in a main save**; test in a throwaway colony.
 
-## Limitations (0.3.0-alpha.10)
+## Limitations (0.3.0-alpha.11)
 - No profiles, schedules, equipment or multi-pawn yet.
-- The drag palette supports drag-to-lane but not shift-drag marquee row selection; shift-click toggles rows.
-- The palette drop applies the same insertion index to every selected pawn; lanes of different lengths clamp the index.
+- Pawn order follows the colonist bar; if the bar is unavailable or returns no visible free colonists, the map's `FreeColonists` order is used. Dead pawns are filtered out.
+- Scrollbars are custom and thin; when auto-hidden they still reserve their 8 px gutters. Wheel direction follows Unity's scroll delta.
+- The 3-row palette balances rows with `ceil(count/3)` and slides horizontally; chips are ellipsized rather than wrapped.
+- The Work filter's text box filters the WorkType selector options; the selected WorkType then filters rows. It matches `defName`/`label`/`labelShort`.
+- The drag placeholder is drawn on the hovered row; a multi-selection applies the same insertion slot to every selected pawn (clamped per lane). Shift-drag marquee row selection is not implemented.
+- Per-pawn/per-giver overrides are only a hook (`PawnSpecificOverrideHook`); no overrides are implemented yet. The color registry stores user overrides but has no picker yet.
 - Selection is `Find.Selector`-driven; row selection is via the pawn name/portrait column, while lane cards remain editing controls.
 - The vanilla **View: Draw** button is an overlay at the top-right of the vanilla Work tab and may cover part of the last column header (usually the remaining-space filler).
-- **Auto recommend new colony** is a global Mod Settings toggle. The old per-save `viewMode` field is kept only so old saves load harmlessly; it no longer drives behavior.
-- `Dialog_WorkControlDetails` is read-only and basic: name/title, top 8 skills, and the current WorkType order. Editing, profiles, schedules and equipment are future work.
+- **Auto recommend new colony** and **Auto-hide scrollbars** are global Mod Settings toggles. The old per-save `viewMode` field is kept only for save compatibility and is ignored.
+- `Dialog_WorkControlDetails` is read-only and basic: name/title, top 8 skills, and the current WorkType order.
 - The >4 cell applies only in manual mode (`useWorkPriorities`) and only to capable free colonists; simple mode and incapable/non-free-colonist pawns stay vanilla.
 - If another mod also prefixes `WidgetsWork.DrawWorkBoxFor`, Harmony ordering may let that mod win, leaving the cell vanilla; the rest of the mod keeps working.
 - The dynamic max falls back to 99 when the count fails; the fallback is logged.
-- The search term is UI-only and not persisted; a non-empty search filters the drawn rows.
+- Pawn/Work filters are UI-only and not persisted.
 - Initialization only scans the current map's free colonists; a colony initialized on one map does not backfill colonists on another map until they spawn.
 - The vanilla capture hook covers `SetPriority`; a mod that changes priorities by writing the private map directly will not be captured.
 - The "Sort by WorkType" header button is not implemented yet.

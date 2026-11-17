@@ -1,6 +1,6 @@
-# Work Control — Milestone 0.3.0-alpha.10 Checklist
+# Work Control — Milestone 0.3.0-alpha.11 Checklist
 
-Status: in progress — version 0.3.0-alpha.10. Interaction/drag-palette iteration written: simple-mode deferral, manual >4 direct-map writes (no invalid-priority log), fixed `Rect rect` return button (applies to Compact Work Tab), compact WorkType palette with drag/ghost/reorder/multi-select and grouped incapable messages, portrait with ellipsized name/title + age/health + row tooltip. Runtime checks pending.
+Status: in progress — version 0.3.0-alpha.11. Layout/search/scroll/palette iteration written: colonist-bar pawn order + fallback, thin auto-hide scrollbars outside content with wheel over names/lanes, 3-row priority palette, Pawn/Work search with inversion, exact placeholder drag ghost with held card, tighter colored capitalized cards, lane/palette tooltips with a pawn-override hook, and resurrection/faction reapply-first logs. Runtime checks pending.
 Goal: first usable Work Control tab with a horizontal lane that assigns WorkTypes and updates the vanilla Work tab.
 
 ## Scope in

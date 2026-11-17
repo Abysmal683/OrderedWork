@@ -127,7 +127,7 @@ namespace OrderedWork.UI
                             : priority > 0 ? "Active" : "Off";
 
                         Widgets.Label(new Rect(0f, y, rankWidth, 18f), (i + 1).ToString());
-                        Widgets.Label(new Rect(rankWidth, y, nameWidth, 18f), workType.labelShort);
+                        Widgets.Label(new Rect(rankWidth, y, nameWidth, 18f), WorkTypePaletteView.DisplayName(workType));
                         DrawPassionIcon(new Rect(rankWidth + nameWidth, y + 3f, PassionIconSize, PassionIconSize), passion);
                         Widgets.Label(new Rect(rankWidth + nameWidth + 16f, y, skillWidth - 16f, 18f), levelText);
                         Widgets.Label(new Rect(rankWidth + nameWidth + skillWidth, y, statusWidth, 18f), status);

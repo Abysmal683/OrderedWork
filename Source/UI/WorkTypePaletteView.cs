@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using OrderedWork.Services;
 using RimWorld;
 using UnityEngine;
@@ -7,33 +10,53 @@ using Verse;
 namespace OrderedWork.UI
 {
     /// <summary>
-    /// Compact horizontal WorkType palette and its drag ghost. The main tab owns the drag
-    /// state; this helper draws the palette/card and applies a drop to the target pawns.
+    /// Three-row WorkType palette, drag ghost and drop application. The main tab owns the
+    /// drag state; this helper draws the chips/ghost and applies a drop to the target pawns.
     /// </summary>
     internal static class WorkTypePaletteView
     {
-        internal const float CardWidth = 120f;
-        internal const float CardHeight = 26f;
-        internal const float Gap = 4f;
+        internal const float ChipWidth = 110f;
+        internal const float ChipHeight = 22f;
+        internal const float ChipGap = 3f;
+        internal const int Rows = 3;
 
         private const float PassionIconSize = 12f;
+
+        internal static string DisplayName(WorkTypeDef type)
+        {
+            if (type == null)
+            {
+                return "";
+            }
+            string name = !string.IsNullOrEmpty(type.labelShort) ? type.labelShort : type.label;
+            if (string.IsNullOrEmpty(name))
+            {
+                return type.defName;
+            }
+            return char.ToUpperInvariant(name[0]) + name.Substring(1);
+        }
 
         internal static void DrawPalette(
             Rect rect,
             ref Vector2 scroll,
             List<WorkTypeDef> types,
             WorkTypeDef draggingType,
-            System.Action<WorkTypeDef> beginDrag)
+            Pawn contextPawn,
+            bool showScrollbar,
+            bool suppressTooltips,
+            Action<WorkTypeDef> beginDrag)
         {
             if (types == null || types.Count == 0)
             {
                 return;
             }
 
-            float contentWidth = Mathf.Max(rect.width, types.Count * (CardWidth + Gap) + Gap);
-            Rect content = new Rect(0f, 0f, contentWidth, rect.height);
+            Rect viewport = new Rect(rect.x, rect.y, rect.width, rect.height - WorkGridScrollView.Thickness);
+            int perRow = Mathf.Max(1, Mathf.CeilToInt(types.Count / (float)Rows));
+            float contentWidth = Mathf.Max(viewport.width, perRow * (ChipWidth + ChipGap) + ChipGap);
+            Rect content = new Rect(0f, 0f, contentWidth, viewport.height);
 
-            Widgets.BeginScrollView(rect, ref scroll, content);
+            Widgets.BeginScrollView(viewport, ref scroll, content, false);
             try
             {
                 for (int i = 0; i < types.Count; i++)
@@ -44,26 +67,40 @@ namespace OrderedWork.UI
                         continue;
                     }
 
-                    Rect card = new Rect(Gap + i * (CardWidth + Gap), 2f, CardWidth, CardHeight);
-                    Widgets.DrawBoxSolid(
-                        card,
-                        type == draggingType
-                            ? new Color(0.20f, 0.32f, 0.42f, 0.95f)
-                            : new Color(0.17f, 0.18f, 0.20f, 0.75f));
+                    int row = i / perRow;
+                    int column = i % perRow;
+                    Rect chip = new Rect(
+                        ChipGap + column * (ChipWidth + ChipGap),
+                        row * (ChipHeight + ChipGap),
+                        ChipWidth,
+                        ChipHeight);
 
-                    if (Mouse.IsOver(card))
+                    Color typeColor = WorkTypeColorRegistry.GetColor(type);
+                    Widgets.DrawBoxSolid(
+                        chip,
+                        type == draggingType
+                            ? new Color(typeColor.r, typeColor.g, typeColor.b, 0.55f)
+                            : new Color(typeColor.r, typeColor.g, typeColor.b, 0.30f));
+                    Widgets.DrawBoxSolid(new Rect(chip.x, chip.y, 2f, chip.height), new Color(typeColor.r, typeColor.g, typeColor.b, 0.95f));
+
+                    if (Mouse.IsOver(chip))
                     {
-                        Widgets.DrawHighlight(card);
+                        Widgets.DrawHighlight(chip);
                     }
 
                     bool previousWrap = Text.WordWrap;
                     Text.WordWrap = false;
-                    Widgets.LabelEllipses(new Rect(card.x + 4f, card.y, card.width - 8f, card.height), type.labelShort);
+                    Widgets.LabelEllipses(new Rect(chip.x + 5f, chip.y, chip.width - 9f, chip.height), DisplayName(type));
                     Text.WordWrap = previousWrap;
+
+                    if (!suppressTooltips && draggingType == null && Mouse.IsOver(chip))
+                    {
+                        TooltipHandler.TipRegion(chip, PaletteTooltip(type, contextPawn));
+                    }
 
                     if (Event.current.type == EventType.MouseDown
                         && Event.current.button == 0
-                        && card.Contains(Event.current.mousePosition))
+                        && chip.Contains(Event.current.mousePosition))
                     {
                         beginDrag(type);
                         Event.current.Use();
@@ -73,6 +110,15 @@ namespace OrderedWork.UI
             finally
             {
                 Widgets.EndScrollView();
+            }
+
+            if (showScrollbar)
+            {
+                WorkGridScrollView.DrawHorizontal(
+                    new Rect(rect.x, rect.yMax - WorkGridScrollView.Thickness, rect.width, WorkGridScrollView.Thickness),
+                    viewport,
+                    content,
+                    ref scroll);
             }
         }
 
@@ -84,11 +130,12 @@ namespace OrderedWork.UI
             }
 
             Rect rect = new Rect(mouse.x + 12f, mouse.y + 10f, 200f, 28f);
+            Color typeColor = WorkTypeColorRegistry.GetColor(type);
             Widgets.DrawBoxSolid(
                 rect,
                 incapable
                     ? new Color(0.36f, 0.12f, 0.12f, 0.95f)
-                    : new Color(0.10f, 0.24f, 0.32f, 0.95f));
+                    : new Color(typeColor.r * 0.55f, typeColor.g * 0.55f, typeColor.b * 0.55f, 0.95f));
 
             float x = rect.x + 4f;
             if (hoveredPawn != null && !incapable)
@@ -115,11 +162,20 @@ namespace OrderedWork.UI
                 }
             }
 
-            string label = incapable ? type.labelShort + " (Incapaz)" : type.labelShort;
+            string label = incapable ? DisplayName(type) + " (Incapaz)" : DisplayName(type);
             bool previousWrap = Text.WordWrap;
             Text.WordWrap = false;
             Widgets.LabelEllipses(new Rect(x, rect.y, Mathf.Max(10f, rect.xMax - x - 4f), rect.height), label);
             Text.WordWrap = previousWrap;
+        }
+
+        internal static void DrawGhostSlot(Rect rect)
+        {
+            Widgets.DrawBoxSolid(rect, new Color(0.16f, 0.28f, 0.34f, 0.55f));
+            Color previous = GUI.color;
+            GUI.color = new Color(0.35f, 0.85f, 1f, 0.95f);
+            Widgets.DrawBox(rect, 1);
+            GUI.color = previous;
         }
 
         internal static void ApplyDrop(WorkTypeDef type, Pawn hoveredPawn, int dropIndex, List<Pawn> selected)
@@ -157,7 +213,6 @@ namespace OrderedWork.UI
 
                 if (index >= 0)
                 {
-                    // Already present: no-op when the ghost is adjacent to its current slot.
                     if (target == index || target == index + 1)
                     {
                         continue;
@@ -180,10 +235,63 @@ namespace OrderedWork.UI
             if (skipped > 0)
             {
                 Messages.Message(
-                    "Ordered Work: " + skipped + " selected pawn(s) cannot do " + type.labelShort + " (Incapaz).",
+                    "Ordered Work: " + skipped + " selected pawn(s) cannot do " + DisplayName(type) + " (Incapaz).",
                     MessageTypeDefOf.RejectInput,
                     false);
             }
+        }
+
+        private static string PaletteTooltip(WorkTypeDef type, Pawn contextPawn)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(DisplayName(type));
+            builder.Append(" (").Append(type.defName).Append(")");
+            if (!string.IsNullOrEmpty(type.description))
+            {
+                builder.AppendLine().AppendLine(type.description);
+            }
+
+            List<WorkGiverDef> givers = DefDatabase<WorkGiverDef>.AllDefsListForReading
+                .Where(g => g.workType == type)
+                .OrderByDescending(g => g.priorityInType)
+                .ToList();
+            builder.AppendLine();
+            builder.AppendLine("Work givers:");
+            if (givers.Count == 0)
+            {
+                builder.AppendLine("- none");
+            }
+            else
+            {
+                foreach (WorkGiverDef giver in givers)
+                {
+                    builder.AppendLine("- " + giver.defName);
+                }
+            }
+
+            Passion passion = Passion.None;
+            int level = contextPawn != null ? WorkOrderService.BestSkillLevel(contextPawn, type, out passion) : -1;
+            builder.AppendLine();
+            builder.Append("Skill");
+            if (contextPawn != null)
+            {
+                builder.Append(" (").Append(contextPawn.LabelShort).Append(")");
+            }
+            builder.Append(": ").Append(level >= 0 ? level + " " + PassionText(passion) : "—");
+            return builder.ToString();
+        }
+
+        internal static string PassionText(Passion passion)
+        {
+            if (passion == Passion.Major)
+            {
+                return "major";
+            }
+            if (passion == Passion.Minor)
+            {
+                return "minor";
+            }
+            return "none";
         }
     }
 }

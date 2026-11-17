@@ -481,7 +481,8 @@ namespace OrderedWork.Services
                     // while the Work tab settles, so a partial state cannot overwrite it.
                     entry.captureSuppressedUntilTick = suppressUntil;
                     Apply(pawn, Normalize(pawn, entry.order));
-                    Log.Message("[Ordered Work] Reapplied stored order after spawn for " + pawn.LabelShort + ".");
+                    Log.Message("[Ordered Work] Reapplied stored order after spawn for " + pawn.LabelShort +
+                        " (" + (entry.order != null ? entry.order.Count : 0) + " types).");
                 }
                 else if (!AutoRecommendNewColony)
                 {
@@ -504,7 +505,7 @@ namespace OrderedWork.Services
                         created.captureSuppressedUntilTick = suppressUntil;
                     }
                     Apply(pawn, recommendation);
-                    Log.Message("[Ordered Work] Applied recommendation after spawn for " + pawn.LabelShort + ".");
+                    Log.Message("[Ordered Work] Recommended new pawn after spawn for " + pawn.LabelShort + ".");
                 }
             }
             catch (Exception ex)
@@ -514,8 +515,8 @@ namespace OrderedWork.Services
         }
 
         /// <summary>
-        /// Faction change handling. When a pawn becomes a free colonist (for example a
-        /// recruited prisoner) and has no stored order yet, recommend and apply one.
+        /// Faction change handling. An existing stored order is always reapplied first; only
+        /// a pawn with no stored order gets the auto-recommend/copy behavior.
         /// </summary>
         public static void OnPawnFactionChanged(Pawn pawn)
         {
@@ -531,8 +532,19 @@ namespace OrderedWork.Services
             try
             {
                 OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
-                if (component == null || !component.initialized || component.GetEntry(pawn) != null)
+                if (component == null || !component.initialized)
                 {
+                    return;
+                }
+
+                int suppressUntil = CurrentTick + PostSpawnCaptureSuppressionTicks;
+                PawnWorkOrder entry = component.GetEntry(pawn);
+                if (entry != null)
+                {
+                    entry.captureSuppressedUntilTick = suppressUntil;
+                    Apply(pawn, Normalize(pawn, entry.order));
+                    Log.Message("[Ordered Work] Reapplied stored order after faction change for " + pawn.LabelShort +
+                        " (" + (entry.order != null ? entry.order.Count : 0) + " types).");
                     return;
                 }
 
@@ -542,8 +554,9 @@ namespace OrderedWork.Services
                     PawnWorkOrder copied = component.GetEntry(pawn);
                     if (copied != null)
                     {
-                        copied.captureSuppressedUntilTick = CurrentTick + PostSpawnCaptureSuppressionTicks;
+                        copied.captureSuppressedUntilTick = suppressUntil;
                     }
+                    Log.Message("[Ordered Work] Copied vanilla order after faction change for " + pawn.LabelShort + " (auto-recommend off).");
                     return;
                 }
 
@@ -552,9 +565,10 @@ namespace OrderedWork.Services
                 PawnWorkOrder created = component.GetEntry(pawn);
                 if (created != null)
                 {
-                    created.captureSuppressedUntilTick = CurrentTick + PostSpawnCaptureSuppressionTicks;
+                    created.captureSuppressedUntilTick = suppressUntil;
                 }
                 Apply(pawn, recommendation);
+                Log.Message("[Ordered Work] Recommended new pawn after faction change for " + pawn.LabelShort + ".");
             }
             catch (Exception ex)
             {

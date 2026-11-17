@@ -47,6 +47,10 @@ namespace OrderedWork
                 "Auto recommend new colony",
                 ref Settings.autoRecommendNewColony,
                 "On: new/default colonies and new pawns get a skill recommendation applied. Off: copy the current vanilla order instead; the top Recommend button still works.");
+            list.CheckboxLabeled(
+                "Auto-hide scrollbars",
+                ref Settings.autoHideScrollbars,
+                "Show Work Control scrollbars only while hovering or scrolling, so the matrix keeps its space.");
             list.Gap(6f);
 
             list.Label("Work type order (top = first):");

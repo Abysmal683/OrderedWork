@@ -11,6 +11,8 @@ namespace OrderedWork
         public List<MergeEntry> merges = new List<MergeEntry>();
         public bool initialized;
         public bool autoRecommendNewColony = true;
+        public bool autoHideScrollbars = true;
+        public List<WorkTypeColorEntry> workTypeColors = new List<WorkTypeColorEntry>();
 
         public override void ExposeData()
         {
@@ -20,6 +22,8 @@ namespace OrderedWork
             Scribe_Collections.Look(ref merges, "merges", LookMode.Deep);
             Scribe_Values.Look(ref initialized, "initialized", false);
             Scribe_Values.Look(ref autoRecommendNewColony, "autoRecommendNewColony", true);
+            Scribe_Values.Look(ref autoHideScrollbars, "autoHideScrollbars", true);
+            Scribe_Collections.Look(ref workTypeColors, "workTypeColors", LookMode.Deep);
 
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
@@ -27,6 +31,7 @@ namespace OrderedWork
                 if (giverOrder == null) giverOrder = new List<GiverOrderEntry>();
                 if (splits == null) splits = new List<SplitEntry>();
                 if (merges == null) merges = new List<MergeEntry>();
+                if (workTypeColors == null) workTypeColors = new List<WorkTypeColorEntry>();
             }
         }
     }
@@ -72,6 +77,22 @@ namespace OrderedWork
             Scribe_Collections.Look(ref givers, "givers", LookMode.Value);
             Scribe_Values.Look(ref targetWorkType, "targetWorkType");
             if (Scribe.mode == LoadSaveMode.LoadingVars && givers == null) givers = new List<string>();
+        }
+    }
+
+    public class WorkTypeColorEntry : IExposable
+    {
+        public string defName;
+        public float r;
+        public float g;
+        public float b;
+
+        public void ExposeData()
+        {
+            Scribe_Values.Look(ref defName, "defName");
+            Scribe_Values.Look(ref r, "r");
+            Scribe_Values.Look(ref g, "g");
+            Scribe_Values.Look(ref b, "b");
         }
     }
 }
