@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.91] - 2026-11-17
+
+### Fixed — deterministic nested wheel routing
+- Sections use `Mouse.IsOver` instead of raw rect containment, matching the proven Work Control hit testing.
+- Plain wheel over the passion table or Split/Merge columns is consumed and forwarded to the outer settings scroll.
+- Shift+wheel is consumed by the inner table/column.
+- This removes reliance on nested scroll-view wheel ownership.
+
 ## [0.3.0-alpha.90] - 2026-11-17
 
 ### Added — learn-rate based defaults for modded passions

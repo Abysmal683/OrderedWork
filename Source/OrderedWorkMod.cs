@@ -37,6 +37,7 @@ namespace OrderedWork
         // Measured from Listing_Standard.CurHeight after each draw and reused next frame so
         // the outer settings scroll is only as tall as the current tab content.
         private float settingsContentHeight;
+        private float settingsViewportHeight;
 
         // Tab selection is intentionally UI-only; it is not scribed to settings.
         private int settingsTab = TabRules;
@@ -110,16 +111,32 @@ namespace OrderedWork
             {
                 return;
             }
-            bool shift = current.shift
-                || Input.GetKey(KeyCode.LeftShift)
-                || Input.GetKey(KeyCode.RightShift);
-            if (!shift || settingsTab != TabRules)
+            if (settingsTab != TabRules)
             {
                 return;
             }
 
-            Vector2 mouse = current.mousePosition;
-            if (passionWeightsArea.Contains(mouse))
+            bool overPassion = Mouse.IsOver(passionWeightsArea);
+            bool splitMode = settingsEditorMode == EditorSplit;
+            bool mergeMode = settingsEditorMode == EditorMerge;
+            bool overOrigin = (splitMode || mergeMode) && Mouse.IsOver(smOriginArea);
+            bool overDest = (splitMode || mergeMode) && Mouse.IsOver(smDestArea);
+            if (!overPassion && !overOrigin && !overDest)
+            {
+                return;
+            }
+
+            bool shift = current.shift
+                || Input.GetKey(KeyCode.LeftShift)
+                || Input.GetKey(KeyCode.RightShift);
+            if (!shift)
+            {
+                ScrollSettingsOuter(current.delta.y);
+                current.Use();
+                return;
+            }
+
+            if (overPassion)
             {
                 int count = PassionWeightCatalog.Registered.Count;
                 float max = Mathf.Max(0f, count * PassionRowHeight - passionWeightsArea.height);
@@ -132,7 +149,7 @@ namespace OrderedWork
                 return;
             }
 
-            if (settingsEditorMode == EditorSplit)
+            if (splitMode)
             {
                 if (ScrollColumnWheel(smOriginArea, smOriginMaxScroll, ref splitOriginScroll, current))
                 {
@@ -141,7 +158,7 @@ namespace OrderedWork
                 ScrollColumnWheel(smDestArea, smDestMaxScroll, ref splitDraftScroll, current);
                 return;
             }
-            if (settingsEditorMode == EditorMerge)
+            if (mergeMode)
             {
                 if (ScrollColumnWheel(smOriginArea, smOriginMaxScroll, ref mergeOriginScroll, current))
                 {
@@ -153,7 +170,7 @@ namespace OrderedWork
 
         private static bool ScrollColumnWheel(Rect area, float maxScroll, ref float scroll, Event current)
         {
-            if (maxScroll <= 0f || !area.Contains(current.mousePosition))
+            if (maxScroll <= 0f || !Mouse.IsOver(area))
             {
                 return false;
             }
@@ -175,6 +192,7 @@ namespace OrderedWork
                 tabsRect.yMax + 4f,
                 inRect.width,
                 Mathf.Max(40f, inRect.height - tabsRect.height - 4f));
+            settingsViewportHeight = body.height;
 
             // Use the height measured after last frame's draw. Zero means "not measured yet",
             // so fall back to the body height and let this frame measure the real content.
@@ -200,6 +218,12 @@ namespace OrderedWork
             list.End();
             settingsContentHeight = list.CurHeight + 8f;
             Widgets.EndScrollView();
+        }
+
+        private void ScrollSettingsOuter(float delta)
+        {
+            float max = Mathf.Max(0f, settingsContentHeight - settingsViewportHeight);
+            scroll.y = Mathf.Clamp(scroll.y + delta * 20f, 0f, max);
         }
 
 
