@@ -160,19 +160,15 @@ namespace OrderedWork
             List<PassionWeightCatalog.PassionInfo> registered = PassionWeightCatalog.Registered;
             float viewHeight = Mathf.Min(registered.Count, VisiblePassionRows) * PassionRowHeight;
             Rect outRect = list.GetRect(viewHeight);
-            Rect viewRect = new Rect(0f, 0f, outRect.width - 20f, registered.Count * PassionRowHeight);
-            bool wheelWithoutShift = Event.current.type == EventType.ScrollWheel
-                && !Event.current.shift
-                && !Input.GetKey(KeyCode.LeftShift)
-                && !Input.GetKey(KeyCode.RightShift);
-            float wheelDelta = Event.current.delta.y;
-            Vector2 scrollBefore = passionWeightScroll;
-            Widgets.BeginScrollView(outRect, ref passionWeightScroll, viewRect);
-            if (wheelWithoutShift)
-            {
-                passionWeightScroll = scrollBefore;
-                ScrollSettingsOuter(wheelDelta);
-            }
+            passionWeightsArea = outRect;
+            float barWidth = WorkGridScrollView.Thickness;
+            Rect viewport = new Rect(outRect.x, outRect.y, outRect.width - barWidth - 2f, outRect.height);
+            Rect content = new Rect(0f, 0f, viewport.width, registered.Count * PassionRowHeight);
+            Rect track = new Rect(viewport.xMax + 2f, outRect.y, barWidth, outRect.height);
+            float maxScroll = Mathf.Max(0f, content.height - viewport.height);
+            passionWeightScroll.y = Mathf.Clamp(passionWeightScroll.y, 0f, maxScroll);
+            WorkGridScrollView.HandleVertical(track, viewport, content, ref passionWeightScroll);
+            GUI.BeginGroup(viewport);
             for (int i = 0; i < registered.Count; i++)
             {
                 PassionWeightCatalog.PassionInfo info = registered[i];
@@ -181,7 +177,7 @@ namespace OrderedWork
                 {
                     continue;
                 }
-                Rect row = new Rect(0f, i * PassionRowHeight, viewRect.width, 24f);
+                Rect row = new Rect(0f, i * PassionRowHeight - passionWeightScroll.y, viewport.width, 24f);
                 WorkTypePaletteView.PassionVisual visual = WorkTypePaletteView.ResolvePassionVisual(info.Passion);
                 if (visual.Texture != null)
                 {
@@ -204,7 +200,8 @@ namespace OrderedWork
                 Widgets.TextFieldNumeric(new Rect(row.x + 182f + fieldWidth * 2f, row.y, fieldWidth, 24f),
                     ref entry.minLevel, ref entry.minLevelBuffer, 0, 20);
             }
-            Widgets.EndScrollView();
+            GUI.EndGroup();
+            WorkGridScrollView.DrawVertical(track, viewport, content, ref passionWeightScroll);
             if (list.ButtonText("Reset recommendation weights"))
             {
                 PassionWeightCatalog.ResetToDefaults(Settings);

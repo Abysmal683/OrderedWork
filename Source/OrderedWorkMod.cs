@@ -37,7 +37,6 @@ namespace OrderedWork
         // Measured from Listing_Standard.CurHeight after each draw and reused next frame so
         // the outer settings scroll is only as tall as the current tab content.
         private float settingsContentHeight;
-        private float settingsViewportHeight;
 
         // Tab selection is intentionally UI-only; it is not scribed to settings.
         private int settingsTab = TabRules;
@@ -68,6 +67,9 @@ namespace OrderedWork
         private bool smDragMoved;
         private Rect smOriginArea;
         private Rect smDestArea;
+        private float smOriginMaxScroll;
+        private float smDestMaxScroll;
+        private Rect passionWeightsArea;
 
         // Per-column scrollbar drag owner (0 = none, 1 = origin column, 2 = destination).
         private int smScrollDragColumn;
@@ -101,6 +103,66 @@ namespace OrderedWork
             return "Ordered Work";
         }
 
+        private void HandleNestedSettingsWheel()
+        {
+            Event current = Event.current;
+            if (current.type != EventType.ScrollWheel)
+            {
+                return;
+            }
+            bool shift = current.shift
+                || Input.GetKey(KeyCode.LeftShift)
+                || Input.GetKey(KeyCode.RightShift);
+            if (!shift || settingsTab != TabRules)
+            {
+                return;
+            }
+
+            Vector2 mouse = current.mousePosition;
+            if (passionWeightsArea.Contains(mouse))
+            {
+                int count = PassionWeightCatalog.Registered.Count;
+                float max = Mathf.Max(0f, count * PassionRowHeight - passionWeightsArea.height);
+                if (max > 0f)
+                {
+                    passionWeightScroll.y = Mathf.Clamp(
+                        passionWeightScroll.y + current.delta.y * 20f, 0f, max);
+                    current.Use();
+                }
+                return;
+            }
+
+            if (settingsEditorMode == EditorSplit)
+            {
+                if (ScrollColumnWheel(smOriginArea, smOriginMaxScroll, ref splitOriginScroll, current))
+                {
+                    return;
+                }
+                ScrollColumnWheel(smDestArea, smDestMaxScroll, ref splitDraftScroll, current);
+                return;
+            }
+            if (settingsEditorMode == EditorMerge)
+            {
+                if (ScrollColumnWheel(smOriginArea, smOriginMaxScroll, ref mergeOriginScroll, current))
+                {
+                    return;
+                }
+                ScrollColumnWheel(smDestArea, smDestMaxScroll, ref mergeTargetScroll, current);
+            }
+        }
+
+        private static bool ScrollColumnWheel(Rect area, float maxScroll, ref float scroll, Event current)
+        {
+            if (maxScroll <= 0f || !area.Contains(current.mousePosition))
+            {
+                return false;
+            }
+            scroll = Mathf.Clamp(scroll + (current.delta.y > 0f ? -SplitMergeRowHeight : SplitMergeRowHeight),
+                0f, maxScroll);
+            current.Use();
+            return true;
+        }
+
         public override void DoSettingsWindowContents(Rect inRect)
         {
             EnsureProfileNameInitialized();
@@ -113,10 +175,10 @@ namespace OrderedWork
                 tabsRect.yMax + 4f,
                 inRect.width,
                 Mathf.Max(40f, inRect.height - tabsRect.height - 4f));
-            settingsViewportHeight = body.height;
 
             // Use the height measured after last frame's draw. Zero means "not measured yet",
             // so fall back to the body height and let this frame measure the real content.
+            HandleNestedSettingsWheel();
             float contentHeight = Mathf.Max(body.height, settingsContentHeight);
             Rect viewRect = new Rect(0f, 0f, body.width - 24f, contentHeight);
             Widgets.BeginScrollView(body, ref scroll, viewRect);
@@ -140,11 +202,6 @@ namespace OrderedWork
             Widgets.EndScrollView();
         }
 
-        private void ScrollSettingsOuter(float delta)
-        {
-            float max = Mathf.Max(0f, settingsContentHeight - settingsViewportHeight);
-            scroll.y = Mathf.Clamp(scroll.y + delta * 20f, 0f, max);
-        }
 
 
 

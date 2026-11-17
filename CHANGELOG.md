@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.89] - 2026-11-17
+
+### Fixed — nested wheel capture
+- Passion weights no longer use a nested scroll view that steals the plain wheel.
+- Nested scroll input is handled before the outer settings scroll: only Shift+wheel is consumed.
+- The passion table uses a custom clipped viewport and scrollbar.
+- Split/Merge column wheel state is processed before the outer scroll as well.
+- Plain wheel over both sections now moves the outer settings panel.
+
 ## [0.3.0-alpha.88] - 2026-11-17
 
 ### Changed — nested scroll input

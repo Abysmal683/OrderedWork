@@ -241,6 +241,14 @@ namespace OrderedWork
             float maxScroll = hasRows
                 ? Mathf.Max(0f, names.Count * SplitMergeRowHeight - area.height)
                 : 0f;
+            if (columnId == 1)
+            {
+                smOriginMaxScroll = maxScroll;
+            }
+            else
+            {
+                smDestMaxScroll = maxScroll;
+            }
             float contentWidth = area.width - (maxScroll > 0f ? SplitMergeScrollbarWidth + 2f : 0f);
             Rect track = new Rect(area.xMax - SplitMergeScrollbarWidth, area.y, SplitMergeScrollbarWidth, area.height);
 
@@ -311,6 +319,7 @@ namespace OrderedWork
             float maxScroll = total > 0
                 ? Mathf.Max(0f, total * SplitMergeRowHeight - area.height)
                 : 0f;
+            smDestMaxScroll = maxScroll;
             float contentWidth = area.width - (maxScroll > 0f ? SplitMergeScrollbarWidth + 2f : 0f);
             Rect track = new Rect(area.xMax - SplitMergeScrollbarWidth, area.y, SplitMergeScrollbarWidth, area.height);
 
