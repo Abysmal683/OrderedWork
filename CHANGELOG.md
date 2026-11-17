@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.25] - 2026-11-16
+
+### Fixed
+- Shift+wheel now uses `laneViewport` (not the full grid viewport) for its horizontal maximum. The old call subtracted the pawn-column width from the available space, so it stopped that exact amount before the manual bar.
+- Resize drag now polls `Input.GetMouseButton(0)` and the screen mouse position, so it continues after the cursor leaves the tab/window and stops only when the physical button is released.
+- Reset config confirms on restart; the general reset does not touch pawn 1..N priorities.
+
+### Pending design
+- Per-pawn giver movement needs an override layer; changing global `WorkGiverDef.workType` would affect everyone, so no hot move is exposed yet.
+
 ## [0.3.0-alpha.24] - 2026-11-16
 
 ### Fixed

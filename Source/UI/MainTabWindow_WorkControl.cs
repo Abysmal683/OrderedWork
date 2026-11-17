@@ -213,7 +213,8 @@ namespace OrderedWork.UI
             Rect laneContent = new Rect(0f, 0f, laneContentWidth, contentHeight);
 
             // Wheel works over both the fixed names and the lanes.
-            WorkGridScrollView.HandleWheel(bodyRect, gridViewport, laneContent, ref gridScroll);
+            // laneViewport, not gridViewport: the horizontal max must match the manual lane bar.
+            WorkGridScrollView.HandleWheel(bodyRect, laneViewport, laneContent, ref gridScroll);
             if (Event.current.type == EventType.ScrollWheel && Event.current.shift)
             {
                 Log.Message("[OrderedWork][Scroll] shiftGeometry maxLane=" + maxLane
@@ -304,23 +305,32 @@ namespace OrderedWork.UI
                 resizeStartHeight = windowRect.height;
                 Log.Message("[OrderedWork][Resize] down mouse=" + current.mousePosition + " height=" + inRect.height);
                 current.Use();
+                return;
             }
-            else if (resizingPanel && current.type == EventType.MouseDrag)
+
+            if (!resizingPanel)
             {
-                if (OrderedWorkMod.Settings != null)
-                {
-                    float max = Mathf.Max(MinPanelHeight, Verse.UI.screenHeight - 35f);
-                    float newHeight = resizeStartHeight + (resizeStartMouseY - Verse.UI.MousePositionOnUIInverted.y);
-                    OrderedWorkMod.Settings.workControlHeight = Mathf.Clamp(newHeight, MinPanelHeight, max);
-                    Log.Message("[OrderedWork][Resize] drag mouse=" + current.mousePosition
-                        + " requested=" + OrderedWorkMod.Settings.workControlHeight);
-                }
-                current.Use();
+                return;
             }
-            else if (resizingPanel && current.type == EventType.MouseUp)
+
+            // Poll the physical mouse button so the drag survives leaving the tab/window;
+            // waiting for MouseDrag/MouseUp events only inside the window is what cut it off.
+            if (!Input.GetMouseButton(0))
             {
-                Log.Message("[OrderedWork][Resize] up saved=" + (OrderedWorkMod.Settings != null ? OrderedWorkMod.Settings.workControlHeight : -1f));
+                Log.Message("[OrderedWork][Resize] up saved="
+                    + (OrderedWorkMod.Settings != null ? OrderedWorkMod.Settings.workControlHeight : -1f));
                 resizingPanel = false;
+                return;
+            }
+
+            if (OrderedWorkMod.Settings != null)
+            {
+                float max = Mathf.Max(MinPanelHeight, Verse.UI.screenHeight - 35f);
+                float newHeight = resizeStartHeight + (resizeStartMouseY - Verse.UI.MousePositionOnUIInverted.y);
+                OrderedWorkMod.Settings.workControlHeight = Mathf.Clamp(newHeight, MinPanelHeight, max);
+            }
+            if (current.type != EventType.Repaint && current.type != EventType.Layout)
+            {
                 current.Use();
             }
         }
