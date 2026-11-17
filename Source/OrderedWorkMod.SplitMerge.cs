@@ -196,15 +196,12 @@ namespace OrderedWork
             {
                 SaveMerge(originNames);
             }
-            bool previousMergeEnabled = GUI.enabled;
-            GUI.enabled = previousMergeEnabled && mergeDirty;
-            if (Widgets.ButtonText(cancelRect, "Cancel draft"))
+            if (DrawActionButton(cancelRect, "Cancel draft", mergeDirty))
             {
                 mergeDraft.Clear();
                 mergeTargetScroll = 0f;
                 mergeDirty = false;
             }
-            GUI.enabled = previousMergeEnabled;
             if (!string.IsNullOrEmpty(selectedWarning))
             {
                 DrawInlineWarning(list, "Merge selected: " + selectedWarning);
@@ -553,7 +550,7 @@ namespace OrderedWork
             {
                 onSave();
             }
-            if (Widgets.ButtonText(cancelRect, "Cancel draft"))
+            if (DrawActionButton(cancelRect, "Cancel draft", canCancel))
             {
                 onCancel();
             }

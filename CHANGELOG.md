@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.56] - 2026-11-16
+
+### Fixed
+- Order now draws the same visible dark disabled button shape as Split/Merge via `DrawActionButton`; Apply/Cancel never disappear when unchanged and never steal clicks.
+- Order origin side now shows `Origin (last applied)` from the last confirmed baseline; after Apply it updates to the new order while Reset still compares `reference.json`.
+- Split and Merge Cancel draft now use the same visible disabled button and hard guard; no `GUI.enabled`-only controls remain in these actions.
+- Giver drag dirty flag and Order action logs remain active.
+
 ## [0.3.0-alpha.55] - 2026-11-16
 
 ### Fixed
