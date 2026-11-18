@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.122] - 2026-11-18
+
+### Added — focused layout components
+- Added `UiFlex` for weighted columns.
+- Added `UiSection` for header + inset body sections.
+- Added `UiFieldRow` for label/field alignment.
+- Added `UiButtonBar` for enabled/disabled action buttons.
+- Split metadata now uses `UiFieldRow`/`UiButtonBar`.
+- Kept `UiInset`, `UiRows`, `UiGrid`, `UiTable` and `UiTabBar`; skipped low-evidence `UiWrap`, `UiCard`, `UiBadge`, `UiDivider` and `UiScroll`.
+
 ## [0.3.0-alpha.121] - 2026-11-18
 
 ### Fixed — stale giver-order panel after split/merge/mode switch
