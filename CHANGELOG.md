@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.98] - 2026-11-17
+
+### Added — basic Schedule view
+- Work Control now has `Work` / `Schedule` views.
+- Schedule view lists global presets, captures the first selected pawn timetable, saves a named preset, previews current vs draft by hour and applies to selected pawns.
+- Hour editing uses vanilla `TimeAssignmentDef` options.
+- Applying a schedule writes `Pawn.timetable` through `ScheduleAdapter`; the pawn record stores only `schedulePresetId`.
+- Presets remain one JSON file each under `Config/OrderedWork/schedules/<id>.json`.
+- No zone UI, clothing UI or apply-on-load yet.
+
 ## [0.3.0-alpha.97] - 2026-11-17
 
 ### Added — policy storage foundation

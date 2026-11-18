@@ -51,6 +51,15 @@ namespace OrderedWork.Config
             return result.OrderBy(p => p.Name, StringComparer.OrdinalIgnoreCase).ToList();
         }
 
+        public static SchedulePreset TryLoadById(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return null;
+            }
+            return TryLoad(PathFor(id));
+        }
+
         public static SchedulePreset TryLoad(string path)
         {
             try

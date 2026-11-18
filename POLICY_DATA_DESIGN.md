@@ -1,6 +1,6 @@
 # Ordered Work — Policy Data Design
 
-Status: approved design direction, not implemented. Target: `0.3.0-alpha.97+`.
+Status: storage foundation and basic Schedule view implemented in `0.3.0-alpha.98`; zone, clothing and apply-on-load are not implemented.
 
 This document defines the logical data model for per-pawn policy:
 work order, schedule, zone and the later clothing layer. It is a relational

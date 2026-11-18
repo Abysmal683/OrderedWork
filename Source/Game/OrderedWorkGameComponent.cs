@@ -73,6 +73,26 @@ namespace OrderedWork.Data
             return entry != null ? entry.order : null;
         }
 
+        public PawnWorkOrder GetOrCreateEntry(Pawn pawn)
+        {
+            if (pawn == null)
+            {
+                return null;
+            }
+            PawnWorkOrder entry = GetEntry(pawn);
+            if (entry == null)
+            {
+                entry = new PawnWorkOrder { pawn = pawn, pawnId = pawn.GetUniqueLoadID() };
+                if (entries == null)
+                {
+                    entries = new List<PawnWorkOrder>();
+                }
+                entries.Add(entry);
+            }
+            entry.NormalizePolicy();
+            return entry;
+        }
+
         public void SetOrder(Pawn pawn, List<string> order)
         {
             if (pawn == null)

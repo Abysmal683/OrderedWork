@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.97)
+# Ordered Work — Current Checklist (0.3.0-alpha.98)
 
 Status: architecture cleanup complete; build 0/0 and 7/7 tests pass. Runtime checks remain for the final profile-only path.
 
@@ -69,13 +69,17 @@ Status: architecture cleanup complete; build 0/0 and 7/7 tests pass. Runtime che
 - [x] `WorkTypePaletteView` split into core, tooltip and passion partials.
 - [ ] Runtime smoke test after the refactor: settings, pins, weights, split/merge, save/load.
 
-## Future scope\n\nSee `POLICY_DATA_DESIGN.md` for the relational policy model.
+## Future scope
+
+See `POLICY_DATA_DESIGN.md` for the relational policy model.
 
 - [ ] Define `PawnPolicy` and sparse override contract before policy UI.
 - [ ] Zone policy: assign existing `Area_Allowed` per pawn and map; no zone creation.
 - [ ] Zone alert: semi-persistent warning when the assigned area is missing on the current map.
 - [ ] Zone UI: bulk/emergency assignment; no block-WorkType warning.
-- [ ] Schedule presets: named 24-slot `TimeAssignmentDef` presets in `Config/OrderedWork/schedules/<id>.json` (one file per preset).
+- [x] Schedule presets: named 24-slot `TimeAssignmentDef` presets in `Config/OrderedWork/schedules/<id>.json` (one file per preset).
+- [x] Basic Schedule view: preset list, capture, save, preview and apply to selected.
+- [ ] Full two-lane schedule editor and apply-on-load.
 - [ ] Schedule UI: two parallel lanes (current vanilla timetable + selected preset/draft ghost).
 - [ ] Schedule apply: choose/load preset, preview, apply to selected pawns.
 - [ ] Clothing policy: clothing by WorkType; per-pawn clothing override in pawn detail.

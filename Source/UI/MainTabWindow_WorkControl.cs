@@ -126,6 +126,12 @@ namespace OrderedWork.UI
             Rect detailsRect = new Rect(viewRect.x - 4f - 80f, titleY + 2f, 80f, 24f);
             Rect recommendRect = new Rect(detailsRect.x - 4f - 98f, titleY + 2f, 98f, 24f);
             DrawTopControls(recommendRect, detailsRect, viewRect);
+            DrawViewTabs(titleY, inRect);
+            if (workView == WorkView.Schedule)
+            {
+                DrawScheduleView(inRect);
+                return;
+            }
 
             List<WorkTypeDef> available = WorkOrderService.GetAvailableWorkTypes();
             List<WorkTypeDef> paletteTypes = GetPaletteOrder(available)
