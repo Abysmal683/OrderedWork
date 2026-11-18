@@ -104,7 +104,7 @@ namespace OrderedWork
         {
             EnsureProfileNameInitialized();
 
-            Rect tabsRect = new Rect(inRect.x, inRect.y + 46f, inRect.width, 28f);
+            Rect tabsRect = new Rect(inRect.x, inRect.y + 60f, inRect.width, 28f);
             DrawSettingsTabs(tabsRect);
 
             Rect body = new Rect(

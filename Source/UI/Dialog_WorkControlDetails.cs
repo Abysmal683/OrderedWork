@@ -104,7 +104,7 @@ namespace OrderedWork.UI
                     detailTabScroll = Vector2.zero;
                 });
 
-            Rect content = new Rect(8f, 100f, inRect.width - 16f, inRect.height - 180f);
+            Rect content = new Rect(8f, tabRow.y + 8f, inRect.width - 16f, inRect.height - tabRow.y - 48f);
 
             switch (detailTab)
             {

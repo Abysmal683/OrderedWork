@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.119] - 2026-11-18
+
+### Changed — tab/body flush and layout spacing
+- Details tabs now sit directly above the content body; content gets an 8px inner margin.
+- Config tabs/body now share the same top edge; content is inset by 8px.
+- Config tabs moved down to clear the window title.
+- Added restore/delete split feedback and saved/overwritten/deleted preset messages.
+- Added layout primitives (`UiInset`, `UiRows`, `UiGrid`, `UiTable`) as the base for the next refactor.
+
 ## [0.3.0-alpha.118] - 2026-11-18
 
 ### Added — layout primitives and restore/delete feedback
