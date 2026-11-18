@@ -279,6 +279,7 @@ namespace OrderedWork
                         profileStatus = "Reset written to pending and applied now.";
                         OrderedWorkMod.DebugLog("[Reset] " + defName + " profile=" + display.Profile);
                         OrderedWorkStartup.ApplyProfileNow(display, Settings, this);
+                        Messages.Message(isSplit ? "Split deleted: " + defName : "Restored: " + defName, MessageTypeDefOf.TaskCompletion, false);
                         giverOrderDraftInitialized = false;
                         giverOrderDraft.Clear();
                         giverOrderInitial.Clear();

@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.118] - 2026-11-18
+
+### Added — layout primitives and restore/delete feedback
+- Added IMGUI layout helpers: `UiInset`, `UiRows`, `UiGrid`, `UiTable` under `Source/UI/Layout`.
+- These are the base for migrating dense panels away from hardcoded Rects.
+- Added temporary messages for config Restore and Delete split actions.
+- Native tabs, compact labels, date column, duplicate overwrite and title/config spacing from .117 remain.
+
 ## [0.3.0-alpha.117] - 2026-11-17
 
 ### Changed — tab/body spacing and feedback
