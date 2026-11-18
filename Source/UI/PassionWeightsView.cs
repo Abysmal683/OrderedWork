@@ -49,9 +49,14 @@ namespace OrderedWork.UI
             }
             WorkGridScrollView.DrawVertical(track, viewport, content, ref scroll);
 
-            if (list.ButtonText("Reset recommendation weights"))
+            bool canReset = PassionWeightPolicy.HasChangesFromDefaults(settings);
+            if (UiButtonBar.Button(list.GetRect(28f), "Reset recommendation weights", canReset,
+                canReset
+                    ? "Restore all passion weights to their defaults."
+                    : "Weights already match the current defaults."))
             {
                 PassionWeightPolicy.ResetToDefaults(settings);
+                Messages.Message("Recommendation weights reset.", MessageTypeDefOf.TaskCompletion, false);
             }
         }
 

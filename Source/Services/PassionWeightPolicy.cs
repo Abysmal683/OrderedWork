@@ -44,6 +44,33 @@ namespace OrderedWork.Services
             settings.passionDefaultsVersion = DefaultsVersion;
         }
 
+        public static bool HasChangesFromDefaults(OrderedWorkSettings settings)
+        {
+            if (settings == null)
+            {
+                return false;
+            }
+            EnsureDefaults(settings);
+            List<PassionSource.PassionInfo> registered = PassionSource.Registered;
+            if (settings.passionWeights.Count != registered.Count)
+            {
+                return true;
+            }
+            foreach (PassionSource.PassionInfo info in registered)
+            {
+                PassionWeightEntry current = settings.passionWeights
+                    .FirstOrDefault(e => e != null && e.defName == info.DefName);
+                PassionWeightEntry expected = DefaultEntry(info);
+                if (current == null
+                    || current.level0Score != expected.level0Score
+                    || current.perLevelBonus != expected.perLevelBonus
+                    || current.minLevel != expected.minLevel)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         public static void ResetToDefaults(OrderedWorkSettings settings)
         {
             if (settings == null)
