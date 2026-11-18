@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.117] - 2026-11-17
+
+### Changed — tab/body spacing and feedback
+- Removed the heavy body tint from the pawn Details panel.
+- Config body now meets the tab strip directly and content is inset by 8px.
+- Details content is inset from the panel edge; tabs remain below the title.
+- Added temporary completion messages for Save, Overwrite, Delete, config reset, Split, Merge and Giver order.
+- Presets keep native tabs, date column, duplicate-name overwrite and owner-name fallback.
+- Schedule drag is disabled on the Horario tab; native drag remains available on Overview/Zona.
+
 ## [0.3.0-alpha.116] - 2026-11-17
 
 ### Changed — tab spacing, body and schedule drag policy

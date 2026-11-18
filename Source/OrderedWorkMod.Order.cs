@@ -142,6 +142,7 @@ namespace OrderedWork
             WorkConfigStore.SavePending(profile);
             OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
             profileStatus = "Giver order for " + selectedGiverType + " applied.";
+            Messages.Message("Giver order saved for " + selectedGiverType + ".", MessageTypeDefOf.TaskCompletion, false);
             giverOrderDraftInitialized = false;
             giverOrderDirty = false;
         }

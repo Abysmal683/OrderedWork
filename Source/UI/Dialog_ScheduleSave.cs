@@ -167,6 +167,7 @@ namespace OrderedWork.UI
             if (SchedulePresetStore.Save(saved))
             {
                 OrderedWorkMod.DebugLog("Schedule preset created: " + saved.Name + " [" + saved.Id + "]");
+                Messages.Message("Schedule preset saved: " + saved.Name, MessageTypeDefOf.TaskCompletion, false);
                 onSaved?.Invoke(saved);
                 Close(true);
             }
@@ -187,6 +188,7 @@ namespace OrderedWork.UI
             if (SchedulePresetStore.Save(target))
             {
                 OrderedWorkMod.DebugLog("Schedule preset replaced: " + target.Name + " [" + target.Id + "]");
+                Messages.Message("Schedule preset overwritten: " + target.Name, MessageTypeDefOf.TaskCompletion, false);
                 onSaved?.Invoke(target);
                 Close(true);
             }
@@ -208,6 +210,7 @@ namespace OrderedWork.UI
             {
                 OrderedWorkMod.DebugLog("Schedule preset deleted: " + target.Name + " [" + target.Id + "]");
                 allPresets = SchedulePresetStore.LoadAll();
+                Messages.Message("Schedule preset deleted: " + target.Name, MessageTypeDefOf.TaskCompletion, false);
                 visiblePresets = Filter(allPresets, search);
                 selectedIndex = -1;
             }

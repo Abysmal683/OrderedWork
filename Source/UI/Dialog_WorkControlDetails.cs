@@ -104,8 +104,8 @@ namespace OrderedWork.UI
                     detailTabScroll = Vector2.zero;
                 });
 
-            Rect content = new Rect(0f, 100f, inRect.width, inRect.height - 172f);
-            Widgets.DrawBoxSolid(content, new Color(0.13f, 0.14f, 0.17f, 1f));
+            Rect content = new Rect(8f, 100f, inRect.width - 16f, inRect.height - 180f);
+
             switch (detailTab)
             {
                 case DetailTab.Schedule:
