@@ -3,6 +3,19 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.105] - 2026-11-17
+
+### Safety and UI fixes
+- Missing schedule preset: resolver falls back to the pawn's current timetable; the link is preserved.
+- Missing zone area: binding is preserved, UI falls back to the current applied area and Apply is disabled until an existing area is chosen.
+- Missing defs and links are skipped without deleting stored references.
+- Schedule rows now show hour labels and full assignment tooltips.
+- Save dialog row selection no longer overlays the Overwrite/Delete buttons; Overwrite and Delete close/refresh correctly and Delete asks for confirmation.
+- Schedule save dialog inherits the current name.
+- Zone section was compacted (map/area/apply/manage buttons).
+- Modded assignment colors fall back to a deterministic generated color when the def color is missing.
+- Tab widths fit the 300px minimum; detail window clamps to 300x300.
+
 ## [0.3.0-alpha.104] - 2026-11-17
 
 ### Changed — schedule save/load dialog and window behavior

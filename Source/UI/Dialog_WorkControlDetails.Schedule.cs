@@ -85,6 +85,12 @@ namespace OrderedWork.UI
             y += line + 8f;
 
             float hourWidth = Mathf.Max(22f, (content.width - 76f) / SchedulePreset.SlotCount);
+            Widgets.Label(new Rect(0f, y, 72f, 18f), "Hora");
+            for (int hour = 0; hour < SchedulePreset.SlotCount; hour++)
+            {
+                Widgets.Label(new Rect(76f + hour * hourWidth, y, hourWidth, 18f), hour.ToString("00"));
+            }
+            y += 20f;
             DrawScheduleRow(content, y, hourWidth, "Origen", false, true);
             y += 42f;
             DrawScheduleRow(content, y, hourWidth, "Modif", true, false);

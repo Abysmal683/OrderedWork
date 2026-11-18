@@ -13,6 +13,7 @@ namespace OrderedWork.UI
         private Map detailZoneMap;
         private Area detailZoneArea;
         private bool detailZoneInitialized;
+        private bool detailZoneMissing;
 
         private void DrawZoneTab(Rect content)
         {
@@ -32,7 +33,7 @@ namespace OrderedWork.UI
             }
             y += 32f;
 
-            Rect areaRect = new Rect(0f, y, 300f, 28f);
+            Rect areaRect = new Rect(0f, y, 230f, 26f);
             Rect swatch = new Rect(areaRect.x, areaRect.y + 5f, 16f, 16f);
             if (detailZoneArea == null)
             {
@@ -49,7 +50,7 @@ namespace OrderedWork.UI
                 ShowAreaMenu();
             }
             bool zoneChanged = ZoneHasChanges();
-            if (DrawActionButton(new Rect(306f, y, 120f, 28f), "Apply zone", zoneChanged))
+            if (DrawActionButton(new Rect(236f, y, 96f, 26f), "Apply zone", zoneChanged && !detailZoneMissing))
             {
                 ApplyZone();
             }
@@ -75,16 +76,16 @@ namespace OrderedWork.UI
             Widgets.Label(new Rect(0f, y, content.width, 20f), "Last applied on this map: " + lastZone);
             y += 24f;
 
-            if (Widgets.ButtonText(new Rect(0f, y, 220f, 26f), "Manage zones"))
+            if (Widgets.ButtonText(new Rect(0f, y, 130f, 26f), "Manage zones"))
             {
                 if (detailZoneMap != null)
                 {
                     Find.WindowStack.Add(new Dialog_ManageAreas(detailZoneMap));
                 }
             }
-            if (Mouse.IsOver(new Rect(0f, y, 220f, 26f)))
+            if (Mouse.IsOver(new Rect(0f, y, 130f, 26f)))
             {
-                TooltipHandler.TipRegion(new Rect(0f, y, 220f, 26f),
+                TooltipHandler.TipRegion(new Rect(0f, y, 130f, 26f),
                     "Open the vanilla area manager. Create, delete, expand or reduce areas there; Ordered Work only assigns existing areas.");
             }
             y += 36f;
@@ -114,6 +115,11 @@ namespace OrderedWork.UI
                 if (binding != null)
                 {
                     detailZoneArea = ResolveArea(detailZoneMap, binding);
+                    detailZoneMissing = !binding.unrestricted && detailZoneArea == null;
+                    if (detailZoneMissing && detailZoneMap == pawn.Map && pawn.playerSettings != null)
+                    {
+                        detailZoneArea = pawn.playerSettings.AreaRestrictionInPawnCurrentMap;
+                    }
                 }
                 else if (detailZoneMap == pawn?.Map && pawn?.playerSettings != null)
                 {
