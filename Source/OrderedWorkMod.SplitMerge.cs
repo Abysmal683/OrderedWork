@@ -7,6 +7,7 @@ using OrderedWork.Config;
 using OrderedWork.Core;
 using OrderedWork.Services;
 using OrderedWork.UI;
+using OrderedWork.UI.Layout;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -19,33 +20,17 @@ namespace OrderedWork
         private void DrawSplitMergeEditor(Listing_Standard list)
         {
             list.Label("Split / Merge / Order editor. Drafts are temporary; saved entries apply on restart.");
+            list.Gap(28f);
 
             Rect modeRect = list.GetRect(28f);
-            float modeThird = (modeRect.width - 16f) / 3f;
-            Rect splitRect = new Rect(modeRect.x, modeRect.y, modeThird, 28f);
-            Rect mergeRect = new Rect(splitRect.xMax + 8f, modeRect.y, modeThird, 28f);
-            Rect orderRect = new Rect(mergeRect.xMax + 8f, modeRect.y, modeThird, 28f);
-
-            if (Widgets.ButtonText(splitRect, "Split mode") && settingsEditorMode != EditorSplit)
-            {
-                settingsEditorMode = EditorSplit;
-                ResetGiverOrderDraft();
-            }
-            if (Widgets.ButtonText(mergeRect, "Merge mode") && settingsEditorMode != EditorMerge)
-            {
-                settingsEditorMode = EditorMerge;
-                ResetGiverOrderDraft();
-            }
-            if (Widgets.ButtonText(orderRect, "Order mode") && settingsEditorMode != EditorOrder)
-            {
-                settingsEditorMode = EditorOrder;
-                ResetGiverOrderDraft();
-            }
-
-            Rect marker = settingsEditorMode == EditorMerge ? mergeRect
-                : settingsEditorMode == EditorOrder ? orderRect
-                : splitRect;
-            DrawTabMarker(marker);
+            UiTabBar.Draw(modeRect, new[] { "Split", "Merge", "Order" }, settingsEditorMode,
+                delegate(int index)
+                {
+                    if (settingsEditorMode == index) return;
+                    settingsEditorMode = index;
+                    ResetEditorUiState();
+                    ResetGiverOrderDraft();
+                });
             list.Label("Tip: Ctrl+wheel or drag a column scrollbar to scroll that column; a plain wheel scrolls the settings.");
             list.Gap(4f);
 

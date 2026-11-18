@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.132] - 2026-11-18
+
+### Refactor — Split/Merge/Order tabs and Overview columns
+- Split/Merge/Order mode selector now uses native `UiTabBar`/`TabDrawer` tabs instead of ordinary buttons.
+- Split name/description use `UiFieldRow`.
+- Order columns and Apply/Cancel use `UiFlex`/`UiButtonBar`.
+- Details Overview table columns use `UiFlex`; skill/status alignment no longer depends on manual widths.
+- Existing split refresh, metadata and config behavior remain.
+
 ## [0.3.0-alpha.131] - 2026-11-18
 
 ### Refactor — Profiles panel uses layout helpers

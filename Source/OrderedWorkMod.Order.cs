@@ -7,6 +7,7 @@ using OrderedWork.Config;
 using OrderedWork.Core;
 using OrderedWork.Services;
 using OrderedWork.UI;
+using OrderedWork.UI.Layout;
 using RimWorld;
 using UnityEngine;
 using Verse;
