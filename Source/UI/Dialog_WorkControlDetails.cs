@@ -22,6 +22,8 @@ namespace OrderedWork.UI
 
         private readonly Pawn pawn;
         private DetailTab detailTab;
+        private bool titleDragging;
+        private Vector2 titleDragLast;
         private Vector2 overviewScroll;
         private Vector2 detailTabScroll;
 
@@ -31,7 +33,7 @@ namespace OrderedWork.UI
             doCloseX = true;
             doCloseButton = false;
             resizeable = true;
-            draggable = true;
+            draggable = false;
             absorbInputAroundWindow = true;
             closeOnClickedOutside = false;
             forcePause = false;
@@ -40,20 +42,46 @@ namespace OrderedWork.UI
 
         public override Vector2 InitialSize => new Vector2(1100f, 720f);
 
+        private void HandleTitleDrag(Rect inRect)
+        {
+            Rect titleRect = new Rect(windowRect.x, windowRect.y, windowRect.width, 34f);
+            if (Event.current.type == EventType.MouseDown && titleRect.Contains(Event.current.mousePosition))
+            {
+                titleDragging = true;
+                titleDragLast = Event.current.mousePosition;
+                Event.current.Use();
+            }
+            else if (titleDragging && Event.current.type == EventType.MouseDrag)
+            {
+                Vector2 delta = Event.current.mousePosition - titleDragLast;
+                windowRect.x += delta.x;
+                windowRect.y += delta.y;
+                titleDragLast = Event.current.mousePosition;
+                Event.current.Use();
+            }
+            else if (Event.current.type == EventType.MouseUp)
+            {
+                titleDragging = false;
+            }
+        }
+
         private void EnforceMinimumWindowSize()
         {
-            if (windowRect.width < 300f)
+            if (windowRect.width < 500f)
             {
-                windowRect.width = 300f;
+                windowRect.width = 500f;
             }
-            if (windowRect.height < 300f)
+            if (windowRect.height < 700f)
             {
-                windowRect.height = 300f;
+                windowRect.height = 700f;
             }
+            windowRect.width = Mathf.Min(windowRect.width, Screen.width - 20f);
+            windowRect.height = Mathf.Min(windowRect.height, Screen.height - 20f);
         }
 
         public override void DoWindowContents(Rect inRect)
         {
+            HandleTitleDrag(inRect);
             EnforceMinimumWindowSize();
             if (pawn == null || pawn.Destroyed)
             {
@@ -71,7 +99,7 @@ namespace OrderedWork.UI
             DrawDetailTab(new Rect(tabRow.x + 88f, tabRow.y, 84f, 24f), DetailTab.Schedule, "Horario");
             DrawDetailTab(new Rect(tabRow.x + 176f, tabRow.y, 64f, 24f), DetailTab.Zone, "Zona");
 
-            Rect content = new Rect(0f, 78f, inRect.width, inRect.height - 110f);
+            Rect content = new Rect(0f, 78f, inRect.width, inRect.height - 150f);
             switch (detailTab)
             {
                 case DetailTab.Schedule:

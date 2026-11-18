@@ -3,6 +3,17 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.107] - 2026-11-17
+
+### Fixed — window movement and schedule clarity
+- Detail window now uses a custom title-only drag with `draggable = false`; dragging the schedule no longer moves the window.
+- Minimum size raised to 500x700 and clamped to the screen maximum.
+- Content leaves bottom space for Close and scrollbars; hour labels are centered and columns alternate.
+- Added explicit working click path and logs for Save-dialog Overwrite/Delete; Delete still asks for confirmation.
+- Save dialog no longer inherits a stale draft name when the parent name is empty.
+- Zone Apply/Manage are on the same row with equal widths; map/area controls were compacted.
+- Missing area fallback remains active and disables Apply.
+
 ## [0.3.0-alpha.106] - 2026-11-17
 
 ### Fixed — schedule dialog and panel interaction

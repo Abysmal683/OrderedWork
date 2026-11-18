@@ -88,7 +88,9 @@ namespace OrderedWork.UI
             Widgets.Label(new Rect(0f, y, 72f, 18f), "Hora");
             for (int hour = 0; hour < SchedulePreset.SlotCount; hour++)
             {
+                Text.Anchor = TextAnchor.MiddleCenter;
                 Widgets.Label(new Rect(76f + hour * hourWidth, y, hourWidth, 18f), hour.ToString("00"));
+                Text.Anchor = TextAnchor.UpperLeft;
             }
             y += 20f;
             DrawScheduleRow(content, y, hourWidth, "Origen", false, true);

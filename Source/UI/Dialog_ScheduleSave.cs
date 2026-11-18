@@ -84,12 +84,16 @@ namespace OrderedWork.UI
                     string.IsNullOrWhiteSpace(preset.ModifiedUtc) ? "v" + preset.SchemaVersion : preset.ModifiedUtc);
                 if (Widgets.ButtonText(new Rect(row.xMax - 110f, row.y + 3f, 80f, 28f), "Overwrite"))
                 {
+                    OrderedWorkMod.DebugLog("Schedule overwrite clicked: " + preset.Name);
                     Replace(preset);
                 }
-                if (Widgets.ButtonImage(new Rect(row.xMax - 24f, row.y + 3f, 22f, 22f), TexButton.Delete))
+                Rect deleteRect = new Rect(row.xMax - 28f, row.y + 3f, 26f, 26f);
+                if (Widgets.ButtonInvisible(deleteRect))
                 {
+                    OrderedWorkMod.DebugLog("Schedule delete clicked: " + preset.Name);
                     ConfirmDelete(preset);
                 }
+                GUI.DrawTexture(deleteRect, TexButton.Delete);
             }
             Widgets.EndScrollView();
 
