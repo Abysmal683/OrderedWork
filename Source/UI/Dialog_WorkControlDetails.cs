@@ -88,7 +88,6 @@ namespace OrderedWork.UI
             if (pawn == null || pawn.Destroyed)
             {
                 Widgets.Label(inRect, "Pawn unavailable.");
-                DrawCloseButton(inRect);
                 return;
             }
 
@@ -118,7 +117,6 @@ namespace OrderedWork.UI
                     DrawOverview(content);
                     break;
             }
-            DrawCloseButton(inRect);
         }
 
         private void DrawDetailTab(Rect rect, DetailTab tab, string label)
@@ -138,14 +136,6 @@ namespace OrderedWork.UI
             Widgets.BeginScrollView(content, ref detailTabScroll, view);
             draw(view);
             Widgets.EndScrollView();
-        }
-
-        private void DrawCloseButton(Rect inRect)
-        {
-            if (Widgets.ButtonText(new Rect(inRect.xMax - 130f, inRect.yMax - 34f, 120f, 28f), "Close"))
-            {
-                Close(true);
-            }
         }
 
         private void DrawOverview(Rect content)

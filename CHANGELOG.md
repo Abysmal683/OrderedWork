@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.124] - 2026-11-18
+
+### Added — collapsible sections and close cleanup
+- Config now exposes actual collapsible sections with title, +/- and divider.
+- Removed the duplicate manual Close buttons from the pawn Details and Save dialog; both rely on the native X.
+- Kept native Close on RimWorld's mod settings window.
+- Sections: Rules, Work types and order, Recommendation pins, Recommendation passion weights, Split/Merge/Order.
+- Added `UiCollapsibleSection` and section state in the mod settings view.
+
 ## [0.3.0-alpha.123] - 2026-11-18
 
 ### Added — collapsible config sections

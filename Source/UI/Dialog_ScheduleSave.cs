@@ -113,7 +113,7 @@ namespace OrderedWork.UI
                 return;
             }
 
-            Rect nameRect = new Rect(0f, inRect.yMax - 76f, inRect.width - 190f, 28f);
+            Rect nameRect = new Rect(0f, inRect.yMax - 76f, inRect.width - 100f, 28f);
             presetName = Widgets.TextField(nameRect, presetName ?? "");
             bool canSave = !string.IsNullOrWhiteSpace(presetName);
             if (Widgets.ButtonText(new Rect(nameRect.xMax + 8f, nameRect.y, 90f, 28f), "Save", true, true, canSave))
@@ -126,10 +126,6 @@ namespace OrderedWork.UI
                 {
                     SaveAsNew();
                 }
-            }
-            if (Widgets.ButtonText(new Rect(nameRect.xMax + 104f, nameRect.y, 90f, 28f), "Close"))
-            {
-                Close(true);
             }
         }
 

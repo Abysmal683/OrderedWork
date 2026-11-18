@@ -67,91 +67,102 @@ namespace OrderedWork
         {
             EnsureSplitMergeDefaults();
 
-            list.Label("Ordered Work (Core) - changes apply on restart.");
-            list.Label("Split copies work tags, skills, life stages and mech availability.");
-            list.CheckboxLabeled(
-                "Allow empty origin (Rules-wide)",
-                ref Settings.allowEmptyOrigin,
-                "Applies to both Split and Merge. Vanilla origins hide; splits delete. Disable to require at least one giver left in the origin.");
+            if (DrawCollapsibleSection(list, "rules-core", "Rules"))
+            {
+                list.Label("Ordered Work (Core) - changes apply on restart.");
+                list.Label("Split copies work tags, skills, life stages and mech availability.");
+                list.CheckboxLabeled(
+                    "Allow empty origin (Rules-wide)",
+                    ref Settings.allowEmptyOrigin,
+                    "Applies to both Split and Merge. Vanilla origins hide; splits delete. Disable to require at least one giver left in the origin.");
+            }
             list.Gap(6f);
 
-            list.Label("Work type order (top = first). Drag rows to reorder:");
-            WorkConfigProfile rulesProfile = WorkConfigStore.LoadEditingProfile(activeProfileName);
-            List<WorkTypeDef> orderedTypes = WorkConfigStore.GetOrderedVisibleWorkTypes(rulesProfile);
-            List<Rect> workRows = new List<Rect>();
-            for (int i = 0; i < orderedTypes.Count; i++)
+            if (DrawCollapsibleSection(list, "work-order", "Work types and order"))
             {
-                WorkTypeDef wt = orderedTypes[i];
-                string defName = wt.defName;
-                Rect row = list.GetRect(24f);
-                DrawReorderRow(row, i + 1 + ". " + wt.labelShort, 1, i, WorkTypeTooltip(defName));
-                workRows.Add(row);
-            }
-            HandleReorderDrag(1, workRows, delegate(int from, int to)
-            {
-                MoveWorkTypeProfile(orderedTypes, from, to);
-            });
-
-            list.Gap(10f);
-            list.CheckboxLabeled(
-                "Prioritize low-level passion over work without skill",
-                ref Settings.prioritizeLowSkillPassion,
-                "When on, a low skill with Minor/Major passion can rank above a WorkType without a relevant skill. When off, only level and naturalPriority decide.");
-            list.Label("Automatic recommendation pins (top = first). Drag to reorder:");
-            List<Rect> pinRows = new List<Rect>();
-            for (int i = 0; i < Settings.recommendationPins.Count; i++)
-            {
-                string id = Settings.recommendationPins[i];
-                WorkTypeDef pin = DefDatabase<WorkTypeDef>.GetNamedSilentFail(id);
-                string label = pin != null ? pin.labelShort : id;
-                Rect row = list.GetRect(24f);
-                DrawReorderRow(row, i + 1 + ". " + label, 6, i, WorkTypeTooltip(id));
-                Rect pinRemove = new Rect(row.xMax - 22f, row.y + 2f, 18f, 20f);
-                if (Widgets.ButtonText(pinRemove, "x"))
+                list.Label("Work type order (top = first). Drag rows to reorder:");
+                WorkConfigProfile rulesProfile = WorkConfigStore.LoadEditingProfile(activeProfileName);
+                List<WorkTypeDef> orderedTypes = WorkConfigStore.GetOrderedVisibleWorkTypes(rulesProfile);
+                List<Rect> workRows = new List<Rect>();
+                for (int i = 0; i < orderedTypes.Count; i++)
                 {
-                    Settings.recommendationPins.RemoveAt(i);
-                    break;
+                    WorkTypeDef wt = orderedTypes[i];
+                    string defName = wt.defName;
+                    Rect row = list.GetRect(24f);
+                    DrawReorderRow(row, i + 1 + ". " + wt.labelShort, 1, i, WorkTypeTooltip(defName));
+                    workRows.Add(row);
                 }
-                pinRows.Add(row);
-            }
-            HandleReorderDrag(6, pinRows, MoveRecommendationPin);
-            Rect pinButtonRect = list.GetRect(24f);
-            if (Widgets.ButtonText(pinButtonRect, "Add recommendation pin"))
-            {
-                List<WorkTypeDef> candidates = WorkConfigStore.GetOrderedVisibleWorkTypes(
-                        WorkConfigStore.LoadEditingProfile(activeProfileName))
-                    .Where(w => !Settings.recommendationPins.Contains(w.defName))
-                    .ToList();
-                if (candidates.Count > 0)
+                HandleReorderDrag(1, workRows, delegate(int from, int to)
                 {
-                    Find.WindowStack.Add(new WorkTypeDropdownWindow(
-                        "Add recommendation pin",
-                        candidates,
-                        null,
-                        delegate(WorkTypeDef wt)
-                        {
-                            if (wt != null && !Settings.recommendationPins.Contains(wt.defName))
+                    MoveWorkTypeProfile(orderedTypes, from, to);
+                });
+            }
+
+            if (DrawCollapsibleSection(list, "recommendation-pins", "Recommendation pins"))
+            {
+                list.CheckboxLabeled(
+                    "Prioritize low-level passion over work without skill",
+                    ref Settings.prioritizeLowSkillPassion,
+                    "When on, a low skill with Minor/Major passion can rank above a WorkType without a relevant skill. When off, only level and naturalPriority decide.");
+                list.Label("Automatic recommendation pins (top = first). Drag to reorder:");
+                List<Rect> pinRows = new List<Rect>();
+                for (int i = 0; i < Settings.recommendationPins.Count; i++)
+                {
+                    string id = Settings.recommendationPins[i];
+                    WorkTypeDef pin = DefDatabase<WorkTypeDef>.GetNamedSilentFail(id);
+                    string label = pin != null ? pin.labelShort : id;
+                    Rect row = list.GetRect(24f);
+                    DrawReorderRow(row, i + 1 + ". " + label, 6, i, WorkTypeTooltip(id));
+                    Rect pinRemove = new Rect(row.xMax - 22f, row.y + 2f, 18f, 20f);
+                    if (Widgets.ButtonText(pinRemove, "x"))
+                    {
+                        Settings.recommendationPins.RemoveAt(i);
+                        break;
+                    }
+                    pinRows.Add(row);
+                }
+                HandleReorderDrag(6, pinRows, MoveRecommendationPin);
+                Rect pinButtonRect = list.GetRect(24f);
+                if (Widgets.ButtonText(pinButtonRect, "Add recommendation pin"))
+                {
+                    List<WorkTypeDef> candidates = WorkConfigStore.GetOrderedVisibleWorkTypes(
+                            WorkConfigStore.LoadEditingProfile(activeProfileName))
+                        .Where(w => !Settings.recommendationPins.Contains(w.defName))
+                        .ToList();
+                    if (candidates.Count > 0)
+                    {
+                        Find.WindowStack.Add(new WorkTypeDropdownWindow(
+                            "Add recommendation pin",
+                            candidates,
+                            null,
+                            delegate(WorkTypeDef wt)
                             {
-                                Settings.recommendationPins.Add(wt.defName);
-                            }
-                        }));
+                                if (wt != null && !Settings.recommendationPins.Contains(wt.defName))
+                                {
+                                    Settings.recommendationPins.Add(wt.defName);
+                                }
+                            }));
+                    }
                 }
+                TooltipHandler.TipRegion(
+                    pinButtonRect,
+                    "Default pins: Patient, PatientBedRest, Firefighter. Pins are global and applied in this order before scoring.");
             }
-            TooltipHandler.TipRegion(
-                pinButtonRect,
-                "Default pins: Patient, PatientBedRest, Firefighter. Pins are global and applied in this order before scoring.");
 
-            list.Gap(10f);
-            PassionWeightsView.Draw(list, Settings, ref passionWeightScroll);
+            if (DrawCollapsibleSection(list, "recommendation-weights", "Recommendation passion weights"))
+            {
+                PassionWeightsView.Draw(list, Settings, ref passionWeightScroll, false);
+            }
 
-            list.Gap(14f);
-            DrawSplitMergeEditor(list);
+            if (DrawCollapsibleSection(list, "split-merge-order", "Split / Merge / Order"))
+            {
+                DrawSplitMergeEditor(list);
+            }
 
             list.Gap(10f);
             list.Label("No work type or giver is ever deleted. Back up your save before applying.");
             list.Label("Split/Merge changes take effect after a restart.");
         }
-
         private void DrawProfilePanel(Listing_Standard list)
         {
             list.Label("Global JSON profiles (pending edits apply on restart):");
