@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.138] - 2026-11-18
+
+### Fixed — exact giver-column color, Profiles spacing and Zone map width
+- `UiColors.ColumnBackground` now matches the surface actually used by Split/Merge columns.
+- Split/Merge column surface and Order background use the same `UiColors` constant.
+- Profiles adds 6/6/4px gaps between selector, Save-as field and action buttons.
+- Zone map uses a fixed 48px label + 230px map button via `UiTable`; no stretching.
+- CodeGraph index synced locally after the refactor.
+- No functional changes.
+
 ## [0.3.0-alpha.137] - 2026-11-18
 
 ### Added — shared UI colors and layout corrections

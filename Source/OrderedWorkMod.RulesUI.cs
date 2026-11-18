@@ -211,7 +211,9 @@ namespace OrderedWork
                 }
             }
 
+            list.Gap(6f);
             newProfileName = UiFieldRow.Text(list.GetRect(26f), "Save as", newProfileName, 84f);
+            list.Gap(6f);
 
 
             if (UiButtonBar.Button(list.GetRect(28f), "Save current as profile"))
@@ -233,6 +235,7 @@ namespace OrderedWork
                 {
                     profileStatus = "Failed to save " + profile + ".json";
                 }
+            list.Gap(4f);
             }
             if (UiButtonBar.Button(list.GetRect(28f), "Write pending for active profile"))
             {

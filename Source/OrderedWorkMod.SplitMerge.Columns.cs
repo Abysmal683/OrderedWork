@@ -7,6 +7,7 @@ using OrderedWork.Config;
 using OrderedWork.Core;
 using OrderedWork.Services;
 using OrderedWork.UI;
+using OrderedWork.UI.Layout;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -25,7 +26,7 @@ namespace OrderedWork
             string draftMarker,
             int columnId)
         {
-            Widgets.DrawBoxSolid(area, new Color(0.10f, 0.10f, 0.12f, 0.45f));
+            Widgets.DrawBoxSolid(area, UiColors.ColumnBackground);
 
             bool hasRows = names != null && names.Count > 0;
             float maxScroll = hasRows
@@ -93,7 +94,7 @@ namespace OrderedWork
         // saved in WorkTypeConfig.Givers and applied from the profile on restart.
         private void DrawMergeDestinationColumn(Rect area, List<string> existingNames, List<string> incomingNames, ref float scroll)
         {
-            Widgets.DrawBoxSolid(area, new Color(0.10f, 0.10f, 0.12f, 0.45f));
+            Widgets.DrawBoxSolid(area, UiColors.ColumnBackground);
 
             int fixedCount = existingNames != null ? existingNames.Count : 0;
             int incomingCount = incomingNames != null ? incomingNames.Count : 0;
