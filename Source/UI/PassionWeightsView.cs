@@ -35,11 +35,18 @@ namespace OrderedWork.UI
             WorkGridScrollView.HandleVertical(track, viewport, content, ref scroll);
 
             GUI.BeginGroup(viewport);
+            string pendingTooltip = null;
+            Rect pendingTooltipRect = default(Rect);
             for (int i = 0; i < registered.Count; i++)
             {
-                DrawRow(viewport, scroll.y, i, registered[i], settings);
+                DrawRow(viewport, scroll.y, i, registered[i], settings,
+                    ref pendingTooltip, ref pendingTooltipRect);
             }
             GUI.EndGroup();
+            if (!string.IsNullOrEmpty(pendingTooltip))
+            {
+                TooltipHandler.TipRegion(pendingTooltipRect, pendingTooltip);
+            }
             WorkGridScrollView.DrawVertical(track, viewport, content, ref scroll);
 
             if (list.ButtonText("Reset recommendation weights"))
@@ -53,7 +60,9 @@ namespace OrderedWork.UI
             float scroll,
             int index,
             PassionSource.PassionInfo info,
-            OrderedWorkSettings settings)
+            OrderedWorkSettings settings,
+            ref string pendingTooltip,
+            ref Rect pendingTooltipRect)
         {
             PassionWeightEntry entry = PassionWeightPolicy.Find(settings, info.Passion);
             if (entry == null)
@@ -62,6 +71,7 @@ namespace OrderedWork.UI
             }
 
             Rect row = new Rect(0f, index * PassionRowHeight - scroll, viewport.width, 24f);
+            UiZebra.Draw(row, index);
             WorkTypePaletteView.PassionVisual visual = WorkTypePaletteView.ResolvePassionVisual(info.Passion);
             if (visual.Texture != null)
             {
@@ -81,9 +91,10 @@ namespace OrderedWork.UI
                     ? rateLine
                     : description + "\n\n" + rateLine;
             }
-            if (!string.IsNullOrEmpty(description))
+            if (!string.IsNullOrEmpty(description) && Mouse.IsOver(row))
             {
-                TooltipHandler.TipRegion(new Rect(row.x, row.y, 170f, 24f), description);
+                pendingTooltip = description;
+                pendingTooltipRect = new Rect(viewport.x + row.x, viewport.y + row.y, 170f, 24f);
             }
 
             float fieldWidth = Mathf.Max(54f, (row.width - 170f - 24f) / 3f);

@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.142] - 2026-11-18
+
+### Fixed — unified vanilla action buttons, deferred passion tooltips and visible zebra
+- `DrawActionButton` and `UiButtonBar` now use native `Widgets.ButtonText` states: gold enabled, dark disabled, no custom black outline.
+- Work order Apply/Cancel use the same action style and disabled tooltips.
+- Passion row tooltips are collected inside the scroll group and submitted after `GUI.EndGroup`, preventing tooltip bleed into Split/Merge Apply buttons.
+- Zebra alpha is now 0.085 and is actually applied to passion rows, Work order, Diagnostics, Split/Merge and Order rows.
+- Passion list still uses 10 visible rows.
+
 ## [0.3.0-alpha.141] - 2026-11-18
 
 ### Changed — visible outlined action buttons and stronger zebra
