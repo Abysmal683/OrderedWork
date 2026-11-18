@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.128] - 2026-11-18
+
+### Changed — internal margins, Save sizing and git hygiene
+- Config content now has a real 14px internal inset inside its body; tabs touch the body.
+- Save dialog height adapts to preset count, removing the large empty lower area.
+- Added `.editorconfig` with LF endings and C# indentation.
+- Added `.githooks/pre-commit` structural checks for whitespace, conflict markers and staged bin/obj files.
+- Normalized text files to LF; CRLF-only status noise is gone.
+
 ## [0.3.0-alpha.127] - 2026-11-18
 
 ### Changed — spacing and section order

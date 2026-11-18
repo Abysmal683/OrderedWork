@@ -1,0 +1,22 @@
+#!/bin/sh
+# Ordered Work structural pre-commit checks.
+# Keep this fast: it does not build or run the game.
+
+set -eu
+
+if ! git diff --cached --check; then
+    echo "pre-commit: whitespace errors found. Fix them before committing."
+    exit 1
+fi
+
+if git diff --cached --name-only | grep -Eq '(^|/)(bin|obj)/'; then
+    echo "pre-commit: build output is staged under bin/ or obj/."
+    exit 1
+fi
+
+if git diff --cached -U0 | grep -Eq '^\+[[:space:]]*(<<<<<<<|=======|>>>>>>>)'; then
+    echo "pre-commit: conflict marker found in staged changes."
+    exit 1
+fi
+
+echo "pre-commit: structural checks passed."
