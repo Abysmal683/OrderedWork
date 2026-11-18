@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.148] - 2026-11-18
+
+### Fixed — disabled button body tint without dimming text
+- Disabled action buttons now render the native button background with a dark `GUI.color` tint, then draw the label in normal white on top.
+- This changes the body tint instead of only dimming the letters.
+- Applied through the single `UiButtonBar.Button` implementation to all action buttons.
+- No behavior changes.
+
 ## [0.3.0-alpha.147] - 2026-11-18
 
 ### Fixed — disabled button body tint and passion tooltip hit test
