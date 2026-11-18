@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.153] - 2026-11-18
+
+### Added — Reset recommendation weights state
+- `PassionWeightPolicy.HasChangesFromDefaults` compares current entries against the current defaults, including extra removed-mod entries.
+- Reset is disabled and tooltip explains "already match defaults" when there are no changes.
+- Reset uses `UiButtonBar` and reports a temporary completion message when it runs.
+- No behavior changes to scoring.
+
 ## [0.3.0-alpha.152] - 2026-11-18
 
 ### Fixed — enabled buttons now pass the real label
