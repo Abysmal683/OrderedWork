@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.156] - 2026-11-18
+
+### Refactor — code ownership cleanup
+- `RulesUI` split into `RulesTab`, `GeneralTab` and `ProfilesPanel` partials.
+- `Order` split into `OrderEditor` and `GiverOrder` partials.
+- Removed unused `UiGrid` and `UiSection` helpers.
+- Removed the last obsolete `DrawTabMarker`.
+- Previous action-button and zebra behavior remains.
+
 ## [0.3.0-alpha.155] - 2026-11-18
 
 ### Refactor — single action-button dependency
