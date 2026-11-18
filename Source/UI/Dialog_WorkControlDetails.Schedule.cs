@@ -31,9 +31,9 @@ namespace OrderedWork.UI
 
             float line = 24f;
             Widgets.Label(new Rect(0f, y, 42f, line), "Load:");
-            string loadedName = detailSchedule != null && !string.IsNullOrWhiteSpace(detailSchedule.Name)
-                ? detailSchedule.Name
-                : "(none)";
+            string loadedName = string.IsNullOrWhiteSpace(detailScheduleName)
+                ? "(none)"
+                : detailScheduleName;
             if (Widgets.ButtonText(new Rect(44f, y, 150f, line), loadedName))
             {
                 ShowPresetMenu();
@@ -46,16 +46,23 @@ namespace OrderedWork.UI
             if (Widgets.ButtonText(new Rect(258f, y, 100f, line), "Copy current"))
             {
                 detailSchedule = ScheduleAdapter.CaptureCurrent(pawn, detailScheduleName);
+                if (detailSchedule != null)
+                {
+                    detailSchedule.Name = "";
+                }
                 detailScheduleName = "";
             }
-            detailScheduleName = Widgets.TextField(new Rect(362f, y, 190f, line), detailScheduleName ?? "");
+            y += line + 4f;
+
+            Widgets.Label(new Rect(0f, y, 48f, line), "Name:");
+            detailScheduleName = Widgets.TextField(new Rect(50f, y, 220f, line), detailScheduleName ?? "");
             bool hasValidName = !string.IsNullOrWhiteSpace(detailScheduleName);
             bool hasChanges = HasScheduleChanges();
-            if (Widgets.ButtonText(new Rect(556f, y, 64f, line), "Save", true, true, hasValidName))
+            if (Widgets.ButtonText(new Rect(276f, y, 64f, line), "Save", true, true, hasValidName))
             {
                 SaveDetailSchedule();
             }
-            if (Widgets.ButtonText(new Rect(624f, y, 116f, line), "Apply to pawn", true, true, hasChanges))
+            if (Widgets.ButtonText(new Rect(344f, y, 116f, line), "Apply to pawn", true, true, hasChanges))
             {
                 if (hasValidName && SaveDetailSchedule())
                 {
@@ -66,9 +73,9 @@ namespace OrderedWork.UI
                     ScheduleAdapter.ApplyDraft(pawn, detailSchedule);
                 }
             }
-            if (Mouse.IsOver(new Rect(624f, y, 116f, line)) && !hasChanges)
+            if (Mouse.IsOver(new Rect(344f, y, 116f, line)) && !hasChanges)
             {
-                TooltipHandler.TipRegion(new Rect(624f, y, 116f, line),
+                TooltipHandler.TipRegion(new Rect(344f, y, 116f, line),
                     "Apply is enabled only when the edited timetable differs from the pawn's current timetable.");
             }
             y += line + 8f;
@@ -140,7 +147,7 @@ namespace OrderedWork.UI
             Color color = ScheduleColor(detailBrush.defName);
             Widgets.DrawBoxSolid(new Rect(rect.x, rect.y + 4f, 16f, 16f), color);
             if (Widgets.ButtonText(new Rect(rect.x + 20f, rect.y, rect.width - 20f, rect.height),
-                detailBrush.LabelCap.ToString()))
+                ShortLabel(detailBrush)))
             {
                 List<FloatMenuOption> options = new List<FloatMenuOption>();
                 foreach (TimeAssignmentDef def in DefDatabase<TimeAssignmentDef>.AllDefsListForReading
@@ -179,7 +186,7 @@ namespace OrderedWork.UI
                 Widgets.DrawBoxSolid(cell, color);
                 if (def != null)
                 {
-                    string text = def.LabelCap.ToString();
+                    string text = ShortLabel(def);
                     Text.Anchor = TextAnchor.MiddleCenter;
                     Widgets.Label(cell, text);
                     Text.Anchor = TextAnchor.UpperLeft;
@@ -190,6 +197,21 @@ namespace OrderedWork.UI
             }
         }
 
+        private static string ShortLabel(TimeAssignmentDef def)
+        {
+            if (def == null)
+            {
+                return "—";
+            }
+            string name = def.defName;
+            if (name == "Anything") return "Any";
+            if (name == "Meditate") return "Med";
+            if (name == "Work") return "Work";
+            if (name == "Joy") return "Joy";
+            if (name == "Sleep") return "Sleep";
+            string label = def.LabelCap.ToString();
+            return label.Length <= 5 ? label : label.Substring(0, 5);
+        }
         private TimeAssignmentDef ResolveDraft(int hour)
         {
             if (detailSchedule == null || detailSchedule.Slots == null || hour >= detailSchedule.Slots.Count)
@@ -212,10 +234,6 @@ namespace OrderedWork.UI
         private void ShowPresetMenu()
         {
             List<FloatMenuOption> options = new List<FloatMenuOption>();
-            options.Add(new FloatMenuOption("New schedule", delegate
-            {
-                detailSchedule = new SchedulePreset { Name = detailScheduleName };
-            }));
             foreach (SchedulePreset preset in detailPresets)
             {
                 SchedulePreset captured = preset;
@@ -230,13 +248,11 @@ namespace OrderedWork.UI
 
         private bool SaveDetailSchedule()
         {
-            if (detailSchedule == null)
+            if (detailSchedule == null || string.IsNullOrWhiteSpace(detailScheduleName))
             {
                 return false;
             }
-            detailSchedule.Name = string.IsNullOrWhiteSpace(detailScheduleName)
-                ? detailSchedule.Name
-                : detailScheduleName;
+            detailSchedule.Name = detailScheduleName.Trim();
             bool saved = SchedulePresetStore.Save(detailSchedule);
             if (saved)
             {

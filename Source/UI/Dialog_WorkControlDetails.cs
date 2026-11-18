@@ -23,6 +23,7 @@ namespace OrderedWork.UI
         private readonly Pawn pawn;
         private DetailTab detailTab;
         private Vector2 overviewScroll;
+        private Vector2 detailTabScroll;
 
         public Dialog_WorkControlDetails(Pawn pawn)
         {
@@ -50,19 +51,19 @@ namespace OrderedWork.UI
             Widgets.Label(new Rect(0f, 0f, inRect.width - 40f, 30f), PawnLabel(pawn));
             Text.Font = GameFont.Small;
 
-            Rect tabRow = new Rect(0f, 34f, inRect.width, 26f);
+            Rect tabRow = new Rect(0f, 42f, inRect.width, 26f);
             DrawDetailTab(new Rect(tabRow.x, tabRow.y, 110f, 24f), DetailTab.Overview, "Overview");
             DrawDetailTab(new Rect(tabRow.x + 114f, tabRow.y, 100f, 24f), DetailTab.Schedule, "Horario");
             DrawDetailTab(new Rect(tabRow.x + 218f, tabRow.y, 90f, 24f), DetailTab.Zone, "Zona");
 
-            Rect content = new Rect(0f, 66f, inRect.width, inRect.height - 98f);
+            Rect content = new Rect(0f, 78f, inRect.width, inRect.height - 110f);
             switch (detailTab)
             {
                 case DetailTab.Schedule:
-                    DrawScheduleTab(content);
+                    DrawScrollableTab(content, DrawScheduleTab, 860f, 340f);
                     break;
                 case DetailTab.Zone:
-                    DrawZoneTab(content);
+                    DrawScrollableTab(content, DrawZoneTab, 500f, 300f);
                     break;
                 default:
                     DrawOverview(content);
@@ -76,7 +77,18 @@ namespace OrderedWork.UI
             if (Widgets.ButtonText(rect, label) && detailTab != tab)
             {
                 detailTab = tab;
+                detailTabScroll = Vector2.zero;
             }
+        }
+
+        private void DrawScrollableTab(Rect content, System.Action<Rect> draw, float minWidth, float minHeight)
+        {
+            Rect view = new Rect(0f, 0f,
+                Mathf.Max(content.width, minWidth),
+                Mathf.Max(content.height, minHeight));
+            Widgets.BeginScrollView(content, ref detailTabScroll, view);
+            draw(view);
+            Widgets.EndScrollView();
         }
 
         private void DrawCloseButton(Rect inRect)

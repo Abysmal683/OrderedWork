@@ -74,16 +74,16 @@ namespace OrderedWork.UI
             Widgets.Label(new Rect(0f, y, content.width, 20f), "Last applied on this map: " + lastZone);
             y += 24f;
 
-            if (Widgets.ButtonText(new Rect(0f, y, 190f, 26f), "Manage zones (create/delete)"))
+            if (Widgets.ButtonText(new Rect(0f, y, 220f, 26f), "Manage zones (create/delete)"))
             {
                 if (detailZoneMap != null)
                 {
                     Find.WindowStack.Add(new Dialog_ManageAreas(detailZoneMap));
                 }
             }
-            if (Mouse.IsOver(new Rect(0f, y, 190f, 26f)))
+            if (Mouse.IsOver(new Rect(0f, y, 220f, 26f)))
             {
-                TooltipHandler.TipRegion(new Rect(0f, y, 190f, 26f),
+                TooltipHandler.TipRegion(new Rect(0f, y, 220f, 26f),
                     "Open the vanilla area manager. Create, delete, expand or reduce areas there; Ordered Work only assigns existing areas.");
             }
             y += 36f;

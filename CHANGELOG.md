@@ -3,6 +3,18 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.102] - 2026-11-17
+
+### Changed — detail panel ergonomics
+- Detail window is draggable, resizable and clamped to a 300x300 minimum.
+- Schedule and Zone content use scroll views when the window is small; the schedule keeps a minimum content width.
+- Schedule Load/New/Copy/Name/Save/Apply are in two rows to reduce density.
+- Cell labels are compact (`Any`, `Med`, etc.) with full assignment tooltips.
+- Load shows `(none)` unless a preset/name is selected; New and Copy clear the name.
+- Apply is enabled by real timetable changes; Save requires a valid name.
+- Zone selector shows regular and Home areas only for now.
+- Zone Apply is disabled when the selected area equals the applied area.
+
 ## [0.3.0-alpha.101] - 2026-11-17
 
 ### Fixed — schedule apply state
