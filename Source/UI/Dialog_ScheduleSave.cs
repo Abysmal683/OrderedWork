@@ -98,16 +98,19 @@ namespace OrderedWork.UI
 
             if (pendingDelete != null)
             {
-                Widgets.Label(new Rect(0f, inRect.yMax - 112f, inRect.width, 20f),
+                Rect footer = new Rect(0f, inRect.yMax - 82f, inRect.width, 54f);
+                Widgets.DrawBoxSolid(footer, new Color(0.12f, 0.12f, 0.14f, 1f));
+                Widgets.Label(new Rect(footer.x + 4f, footer.y + 4f, footer.width - 8f, 20f),
                     "Delete '" + pendingDelete.Name + "'?");
-                if (Widgets.ButtonText(new Rect(0f, inRect.yMax - 106f, 100f, 26f), "Confirm delete"))
+                if (Widgets.ButtonText(new Rect(footer.x + 4f, footer.y + 24f, 110f, 26f), "Confirm delete"))
                 {
                     DeletePending();
                 }
-                if (Widgets.ButtonText(new Rect(106f, inRect.yMax - 106f, 70f, 26f), "Cancel"))
+                if (Widgets.ButtonText(new Rect(footer.x + 120f, footer.y + 24f, 70f, 26f), "Cancel"))
                 {
                     pendingDelete = null;
                 }
+                return;
             }
 
             Rect nameRect = new Rect(0f, inRect.yMax - 76f, inRect.width - 190f, 28f);

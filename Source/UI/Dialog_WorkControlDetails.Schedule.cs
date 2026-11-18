@@ -223,7 +223,7 @@ namespace OrderedWork.UI
                 Widgets.DrawBoxSolid(cell, color);
                 if (def != null)
                 {
-                    string text = ShortLabel(def);
+                    string text = ShortLabel(def, hourWidth);
                     Text.Anchor = TextAnchor.MiddleCenter;
                     Widgets.Label(cell, text);
                     Text.Anchor = TextAnchor.UpperLeft;
@@ -257,16 +257,30 @@ namespace OrderedWork.UI
         }
         private static string ShortLabel(TimeAssignmentDef def)
         {
+            return ShortLabel(def, 999f);
+        }
+
+        private static string ShortLabel(TimeAssignmentDef def, float width)
+        {
             if (def == null)
             {
                 return "—";
             }
             string name = def.defName;
-            if (name == "Anything") return "Any";
-            if (name == "Meditate") return "Med";
-            if (name == "Work") return "Work";
-            if (name == "Joy") return "Joy";
-            if (name == "Sleep") return "Sleep";
+            if (width < 36f)
+            {
+                if (name == "Work") return "W";
+                if (name == "Joy") return "J";
+                if (name == "Sleep") return "S";
+                if (name == "Meditate") return "M";
+                if (name == "Anything") return "A";
+                return "·";
+            }
+            if (name == "Anything") return width < 54f ? "Any" : "Any";
+            if (name == "Meditate") return width < 54f ? "Med" : "Med";
+            if (name == "Work") return width < 54f ? "Work" : "Work";
+            if (name == "Joy") return width < 54f ? "Joy" : "Joy";
+            if (name == "Sleep") return width < 54f ? "Slp" : "Sleep";
             string label = def.LabelCap.ToString();
             return label.Length <= 5 ? label : label.Substring(0, 5);
         }

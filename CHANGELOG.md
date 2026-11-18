@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.110] - 2026-11-17
+
+### Fixed — compact schedule cells and delete footer
+- Schedule cells use one-letter labels at narrow widths and full labels only when they fit; tooltips keep the full assignment.
+- Delete confirmation is drawn as an opaque footer and temporarily hides the name/Save/Close row, removing the visual overlap behind Confirm/Cancel.
+- Preset rows keep separate Overwrite/Delete buttons.
+
 ## [0.3.0-alpha.109] - 2026-11-17
 
 ### Fixed — evidence-based schedule dialog and window
