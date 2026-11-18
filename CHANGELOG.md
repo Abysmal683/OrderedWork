@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.127] - 2026-11-18
+
+### Changed — spacing and section order
+- Save dialog is shorter, releasing unused bottom space; its list still scrolls.
+- Config scroll content inset increased to 14px and section content has more breathing room.
+- Details content inset increased to 12px.
+- Verbose diagnostics and Palette stress test moved into Diagnostics.
+- Allow empty origin moved into Split / Merge / Order as its first option.
+- Manual Close remains removed from Details and Save dialog; Config keeps RimWorld's native Cerrar with bottom padding.
+
 ## [0.3.0-alpha.126] - 2026-11-18
 
 ### Changed — Save dialog uses UiTable

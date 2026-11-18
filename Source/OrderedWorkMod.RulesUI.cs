@@ -71,10 +71,6 @@ namespace OrderedWork
             {
                 list.Label("Ordered Work (Core) - changes apply on restart.");
                 list.Label("Split copies work tags, skills, life stages and mech availability.");
-                list.CheckboxLabeled(
-                    "Allow empty origin (Rules-wide)",
-                    ref Settings.allowEmptyOrigin,
-                    "Applies to both Split and Merge. Vanilla origins hide; splits delete. Disable to require at least one giver left in the origin.");
             }
             list.Gap(6f);
 
@@ -156,6 +152,10 @@ namespace OrderedWork
 
             if (DrawCollapsibleSection(list, "split-merge-order", "Split / Merge / Order"))
             {
+                list.CheckboxLabeled(
+                    "Allow empty origin (Rules-wide)",
+                    ref Settings.allowEmptyOrigin,
+                    "Applies to both Split and Merge. Vanilla origins hide; splits delete. Disable to require at least one giver left in the origin.");
                 DrawSplitMergeEditor(list);
             }
 
@@ -270,14 +270,6 @@ namespace OrderedWork
                     ref Settings.autoHideScrollbars,
                     "Show Work Control scrollbars only while hovering or scrolling, so the matrix keeps its space.");
                 list.CheckboxLabeled(
-                    "Palette stress test (debug)",
-                    ref Settings.paletteStressTest,
-                    "Adds 60 visual-only WorkTypes to test the palette focus.");
-                list.CheckboxLabeled(
-                    "Verbose diagnostics in Player.log",
-                    ref Settings.verboseLogging,
-                    "Enables temporary Order/Reset/Scroll debug lines. Disable for normal play.");
-                list.CheckboxLabeled(
                     "Keep orders for destroyed pawns",
                     ref Settings.keepDestroyedPawnOrders,
                     "Off: remove the pawn entry when the game no longer remembers it. On: keep it for mods that can return fully deleted pawns.");
@@ -292,6 +284,14 @@ namespace OrderedWork
 
             if (DrawCollapsibleSection(list, "general-diagnostics", "Diagnostics"))
             {
+                list.CheckboxLabeled(
+                    "Palette stress test (debug)",
+                    ref Settings.paletteStressTest,
+                    "Adds 60 visual-only WorkTypes to test the palette focus.");
+                list.CheckboxLabeled(
+                    "Verbose diagnostics in Player.log",
+                    ref Settings.verboseLogging,
+                    "Enables temporary Order/Reset/Scroll debug lines. Disable for normal play.");
                 list.Label("Technical spike: writes dense rank 1..N to free colonists and logs the result.");
                 if (Find.CurrentMap == null)
                 {
