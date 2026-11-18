@@ -14,45 +14,58 @@ namespace OrderedWork.UI
         private SchedulePreset detailSchedule;
         private List<SchedulePreset> detailPresets;
         private TimeAssignmentDef detailBrush;
-        private string detailScheduleName = "New schedule";
+        private string detailScheduleName = "";
 
         private void DrawScheduleTab(Rect content)
         {
             EnsureDetailSchedule();
             float y = 0f;
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(0f, y, content.width, 24f), "Horario");
+            Widgets.Label(new Rect(0f, y, 100f, 24f), "Horario");
             Text.Font = GameFont.Small;
-            y += 28f;
-            Widgets.Label(new Rect(0f, y, content.width, 20f),
-                "Origen = timetable vanilla actual. Modif = preset editable. La tercera fila queda para prioridad de trabajo por horario (override, no preset).");
+            Rect infoRect = new Rect(104f, y + 2f, 18f, 20f);
+            Widgets.Label(infoRect, "?");
+            TooltipHandler.TipRegion(infoRect,
+                "Origen: timetable vanilla actual, solo lectura. Modif: preset editable; el brush pinta horas. Prioridad: reservado para override por WorkType.");
             y += 28f;
 
             float line = 24f;
-            Rect presetRect = new Rect(0f, y, 150f, line);
-            if (Widgets.ButtonText(presetRect, detailSchedule != null ? detailSchedule.Name : "Preset..."))
+            Widgets.Label(new Rect(0f, y, 42f, line), "Load:");
+            string loadedName = detailSchedule != null && !string.IsNullOrWhiteSpace(detailSchedule.Name)
+                ? detailSchedule.Name
+                : "(none)";
+            if (Widgets.ButtonText(new Rect(44f, y, 150f, line), loadedName))
             {
                 ShowPresetMenu();
             }
-            if (Widgets.ButtonText(new Rect(154f, y, 82f, line), "Copy current"))
+            if (Widgets.ButtonText(new Rect(198f, y, 56f, line), "New"))
+            {
+                detailSchedule = new SchedulePreset { Name = "" };
+                detailScheduleName = "";
+            }
+            if (Widgets.ButtonText(new Rect(258f, y, 100f, line), "Copy current"))
             {
                 detailSchedule = ScheduleAdapter.CaptureCurrent(pawn, detailScheduleName);
-                if (detailSchedule != null)
-                {
-                    detailSchedule.Name = detailScheduleName;
-                }
+                detailScheduleName = "";
             }
-            detailScheduleName = Widgets.TextField(new Rect(240f, y, 170f, line), detailScheduleName ?? "");
-            if (Widgets.ButtonText(new Rect(414f, y, 70f, line), "Save"))
+            detailScheduleName = Widgets.TextField(new Rect(362f, y, 190f, line), detailScheduleName ?? "");
+            bool hasValidName = !string.IsNullOrWhiteSpace(detailScheduleName);
+            bool hasChanges = HasScheduleChanges();
+            if (Widgets.ButtonText(new Rect(556f, y, 64f, line), "Save", true, true, hasValidName))
             {
                 SaveDetailSchedule();
             }
-            if (Widgets.ButtonText(new Rect(488f, y, 110f, line), "Apply to pawn"))
+            if (Widgets.ButtonText(new Rect(624f, y, 116f, line), "Apply to pawn", true, true, hasValidName && hasChanges))
             {
                 if (SaveDetailSchedule())
                 {
                     ScheduleAdapter.ApplyPreset(pawn, detailSchedule);
                 }
+            }
+            if (Mouse.IsOver(new Rect(624f, y, 116f, line)) && !hasChanges)
+            {
+                TooltipHandler.TipRegion(new Rect(624f, y, 116f, line),
+                    "Apply is enabled only when the edited timetable differs from the pawn's current timetable.");
             }
             y += line + 8f;
 
@@ -69,7 +82,26 @@ namespace OrderedWork.UI
             y += 42f;
 
             Widgets.Label(new Rect(76f, y, content.width - 76f, 20f),
-                "Trabajo prioritario por horario: reservado para la capa de override por WorkType. No se guarda en el preset.");
+                "Prioridad por hora: reservada para el override de WorkType; no se guarda en el preset.");
+        }
+
+        private bool HasScheduleChanges()
+        {
+            if (detailSchedule == null || detailSchedule.Slots == null || pawn == null || pawn.timetable == null)
+            {
+                return false;
+            }
+            for (int hour = 0; hour < SchedulePreset.SlotCount; hour++)
+            {
+                string draft = detailSchedule.Slots[hour];
+                TimeAssignmentDef current = pawn.timetable.GetAssignment(hour);
+                string currentName = current != null ? current.defName : "";
+                if (!string.IsNullOrEmpty(draft) && draft != currentName)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private void EnsureDetailSchedule()

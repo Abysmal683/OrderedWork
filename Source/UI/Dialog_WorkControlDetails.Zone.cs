@@ -33,13 +33,15 @@ namespace OrderedWork.UI
             y += 32f;
 
             Rect areaRect = new Rect(0f, y, 300f, 28f);
+            Rect swatch = new Rect(areaRect.x, areaRect.y + 5f, 16f, 16f);
             if (detailZoneArea == null)
             {
-                Widgets.Label(new Rect(areaRect.x, areaRect.y + 5f, 16f, 16f), "□");
+                Widgets.DrawBoxSolid(swatch, new Color(0.65f, 0.65f, 0.65f, 0.18f));
+                Widgets.DrawBox(swatch);
             }
             else
             {
-                Widgets.DrawBoxSolid(new Rect(areaRect.x, areaRect.y + 5f, 16f, 16f), detailZoneArea.Color);
+                Widgets.DrawBoxSolid(swatch, detailZoneArea.Color);
             }
             string areaLabel = detailZoneArea == null ? "Sin restricciones" : detailZoneArea.Label;
             if (Widgets.ButtonText(new Rect(areaRect.x + 20f, areaRect.y, areaRect.width - 20f, areaRect.height), areaLabel))
@@ -50,18 +52,38 @@ namespace OrderedWork.UI
             {
                 ApplyZone();
             }
-            y += 36f;
+            y += 30f;
 
-            if (Widgets.ButtonText(new Rect(0f, y, 150f, 26f), "Manage zones"))
+            PawnWorkOrder lastEntry = OrderedWorkGameComponent.GetOrCreate()?.GetEntry(pawn);
+            PawnZoneBinding lastBinding = lastEntry?.zones?.FirstOrDefault(
+                z => z.mapUniqueId == (detailZoneMap != null ? detailZoneMap.uniqueID : 0));
+            string lastZone;
+            if (lastBinding != null)
+            {
+                lastZone = lastBinding.unrestricted ? "Sin restricciones" : lastBinding.areaLabel;
+            }
+            else if (detailZoneMap == pawn.Map && pawn.playerSettings != null)
+            {
+                Area currentArea = pawn.playerSettings.AreaRestrictionInPawnCurrentMap;
+                lastZone = currentArea != null ? currentArea.Label : "Sin restricciones";
+            }
+            else
+            {
+                lastZone = "none";
+            }
+            Widgets.Label(new Rect(0f, y, content.width, 20f), "Last applied on this map: " + lastZone);
+            y += 24f;
+
+            if (Widgets.ButtonText(new Rect(0f, y, 190f, 26f), "Manage zones (create/delete)"))
             {
                 if (detailZoneMap != null)
                 {
                     Find.WindowStack.Add(new Dialog_ManageAreas(detailZoneMap));
                 }
             }
-            if (Mouse.IsOver(new Rect(0f, y, 150f, 26f)))
+            if (Mouse.IsOver(new Rect(0f, y, 190f, 26f)))
             {
-                TooltipHandler.TipRegion(new Rect(0f, y, 150f, 26f),
+                TooltipHandler.TipRegion(new Rect(0f, y, 190f, 26f),
                     "Open the vanilla area manager. Create, delete, expand or reduce areas there; Ordered Work only assigns existing areas.");
             }
             y += 36f;
@@ -143,7 +165,6 @@ namespace OrderedWork.UI
             if (detailZoneMap != null)
             {
                 foreach (Area area in detailZoneMap.areaManager.AllAreas
-                    .Where(a => a is Area_Allowed)
                     .OrderBy(a => a.Label, StringComparer.OrdinalIgnoreCase))
                 {
                     Area captured = area;

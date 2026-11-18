@@ -3,6 +3,17 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.100] - 2026-11-17
+
+### Changed — schedule/zone refinement
+- Schedule controls now separate `Load` from `New`; New clears the name and Save is disabled until a valid name exists.
+- Schedule cells use compact labels with full labels and defNames in tooltips.
+- Apply is enabled only when the draft actually differs from the current pawn timetable.
+- Zone selector shows a visible neutral swatch for unrestricted and includes all map areas, including Home/custom areas.
+- Zone section shows the last applied zone for the selected map.
+- Zone manager button is labelled for create/delete and opens the vanilla manager for expand/reduce/edit.
+- Fixed detail header spacing and applied the same section layout to Zona.
+
 ## [0.3.0-alpha.99] - 2026-11-17
 
 ### Changed — pawn detail schedule and zone sections
