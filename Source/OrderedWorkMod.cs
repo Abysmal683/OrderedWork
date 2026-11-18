@@ -109,16 +109,17 @@ namespace OrderedWork
 
             Rect body = new Rect(
                 inRect.x,
-                tabsRect.yMax + 4f,
+                tabsRect.yMax,
                 inRect.width,
-                Mathf.Max(40f, inRect.height - tabsRect.height - 4f));
+                Mathf.Max(40f, inRect.height - tabsRect.height));
 
             // Use the height measured after last frame's draw. Zero means "not measured yet",
             // so fall back to the body height and let this frame measure the real content.
             Widgets.DrawBoxSolid(body, new Color(0.13f, 0.14f, 0.17f, 1f));
-            float contentHeight = Mathf.Max(body.height, settingsContentHeight);
-            Rect viewRect = new Rect(0f, 0f, body.width - 24f, contentHeight);
-            Widgets.BeginScrollView(body, ref scroll, viewRect);
+            Rect scrollBody = body.ContractedBy(16f);
+            float contentHeight = Mathf.Max(scrollBody.height, settingsContentHeight);
+            Rect viewRect = new Rect(0f, 0f, scrollBody.width - 24f, contentHeight);
+            Widgets.BeginScrollView(scrollBody, ref scroll, viewRect);
             Listing_Standard list = new Listing_Standard();
             // Listing_Standard otherwise starts a second column when content exceeds the first
             // frame's provisional view height, which hid the rest of the tab off-screen.

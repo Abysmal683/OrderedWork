@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.129] - 2026-11-18
+
+### Fixed — actual config margin and Save height
+- Config scroll body is now really inset by 16px before `Listing_Standard` begins; the previous body.ContractedBy edit had not been applied.
+- Save dialog row layout now really uses `UiTable`; no stale xMax offsets remain.
+- Save dialog height formula and list height leave only a normal bottom margin instead of a large empty area.
+- Config tabs/body and native Cerrar spacing remain.
+
 ## [0.3.0-alpha.128] - 2026-11-18
 
 ### Changed — internal margins, Save sizing and git hygiene

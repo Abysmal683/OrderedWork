@@ -40,7 +40,7 @@ namespace OrderedWork.UI
             closeOnClickedOutside = false;
         }
 
-        public override Vector2 InitialSize => new Vector2(620f, Mathf.Clamp(190f + ((allPresets != null ? allPresets.Count : 0) * 38f), 320f, 560f));
+        public override Vector2 InitialSize => new Vector2(620f, Mathf.Clamp(160f + ((allPresets != null ? allPresets.Count : 0) * 38f), 280f, 560f));
 
         public override void DoWindowContents(Rect inRect)
         {
@@ -63,7 +63,7 @@ namespace OrderedWork.UI
                 selectedIndex = -1;
             }
 
-            Rect listRect = new Rect(0f, 64f, inRect.width, inRect.height - 154f);
+            Rect listRect = new Rect(0f, 64f, inRect.width, Mathf.Min(inRect.height - 110f, Mathf.Max(60f, visiblePresets.Count * 38f + 6f)));
             float rowHeight = 38f;
             Rect content = new Rect(0f, 0f, listRect.width - 18f,
                 Mathf.Max(listRect.height, visiblePresets.Count * rowHeight));
@@ -76,20 +76,22 @@ namespace OrderedWork.UI
                 {
                     Widgets.DrawBoxSolid(row, new Color(0.22f, 0.30f, 0.40f, 1f));
                 }
-                Rect rowNameRect = new Rect(row.x + 4f, row.y + 3f, row.width - 338f, 28f);
+                UiTable columns = new UiTable(row, 6f);
+                columns.Flex().Add(130f).Add(84f).Add(100f);
+                Rect rowNameRect = columns.Column(0, 28f);
                 if (Widgets.ButtonText(rowNameRect, preset.Name))
                 {
                     selectedIndex = i;
                     presetName = preset.Name;
                 }
-                Widgets.Label(new Rect(row.xMax - 330f, row.y + 4f, 128f, 28f),
+                Widgets.Label(columns.Column(1, 28f),
                     string.IsNullOrWhiteSpace(preset.ModifiedUtc) ? "v" + preset.SchemaVersion : preset.ModifiedUtc);
-                if (Widgets.ButtonText(new Rect(row.xMax - 196f, row.y + 3f, 84f, 28f), "Overwrite"))
+                if (Widgets.ButtonText(columns.Column(2, 28f), "Overwrite"))
                 {
                     OrderedWorkMod.DebugLog("Schedule overwrite clicked: " + preset.Name);
                     Replace(preset);
                 }
-                if (Widgets.ButtonText(new Rect(row.xMax - 108f, row.y + 3f, 100f, 28f), "Delete"))
+                if (Widgets.ButtonText(columns.Column(3, 28f), "Delete"))
                 {
                     OrderedWorkMod.DebugLog("Schedule delete clicked: " + preset.Name);
                     pendingDelete = preset;
@@ -114,7 +116,7 @@ namespace OrderedWork.UI
                 return;
             }
 
-            Rect nameRect = new Rect(0f, inRect.yMax - 76f, inRect.width - 100f, 28f);
+            Rect nameRect = new Rect(0f, listRect.yMax + 12f, inRect.width - 100f, 28f);
             presetName = Widgets.TextField(nameRect, presetName ?? "");
             bool canSave = !string.IsNullOrWhiteSpace(presetName);
             if (Widgets.ButtonText(new Rect(nameRect.xMax + 8f, nameRect.y, 90f, 28f), "Save", true, true, canSave))
