@@ -3,6 +3,18 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.109] - 2026-11-17
+
+### Fixed — evidence-based schedule dialog and window
+- Logs showed Delete/Overwrite clicks reached the dialog but no save/delete completed.
+- Overwrite now falls back to the target preset name when the name field is empty.
+- Delete uses an inline confirm/cancel step instead of a separate modal that was not appearing.
+- Save dialog rows reserve space for the normal Delete button; the trash hitbox is gone.
+- Title drag now uses held-mouse movement, not only the MouseDrag event.
+- Minimum size is applied through WindowResizer when available; manual clamp is fallback only.
+- Zone buttons are rebalanced: map 230, area 300, Apply and Manage 130 each.
+- Hours are centered and alternate; rows retain tooltips.
+
 ## [0.3.0-alpha.108] - 2026-11-17
 
 ### Fixed — explicit buttons and window resizing

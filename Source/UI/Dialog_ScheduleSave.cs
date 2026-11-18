@@ -21,6 +21,7 @@ namespace OrderedWork.UI
         private string presetName;
         private string search = "";
         private int selectedIndex = -1;
+        private SchedulePreset pendingDelete;
         private Vector2 scroll;
 
         public Dialog_ScheduleSave(SchedulePreset draft, string initialName, Action<SchedulePreset> onSaved)
@@ -90,10 +91,24 @@ namespace OrderedWork.UI
                 if (Widgets.ButtonText(new Rect(row.xMax - 108f, row.y + 3f, 100f, 28f), "Delete"))
                 {
                     OrderedWorkMod.DebugLog("Schedule delete clicked: " + preset.Name);
-                    ConfirmDelete(preset);
+                    pendingDelete = preset;
                 }
             }
             Widgets.EndScrollView();
+
+            if (pendingDelete != null)
+            {
+                Widgets.Label(new Rect(0f, inRect.yMax - 112f, inRect.width, 20f),
+                    "Delete '" + pendingDelete.Name + "'?");
+                if (Widgets.ButtonText(new Rect(0f, inRect.yMax - 106f, 100f, 26f), "Confirm delete"))
+                {
+                    DeletePending();
+                }
+                if (Widgets.ButtonText(new Rect(106f, inRect.yMax - 106f, 70f, 26f), "Cancel"))
+                {
+                    pendingDelete = null;
+                }
+            }
 
             Rect nameRect = new Rect(0f, inRect.yMax - 76f, inRect.width - 190f, 28f);
             presetName = Widgets.TextField(nameRect, presetName ?? "");
@@ -157,7 +172,7 @@ namespace OrderedWork.UI
             {
                 return;
             }
-            target.Name = presetName.Trim();
+            target.Name = string.IsNullOrWhiteSpace(presetName) ? target.Name : presetName.Trim();
             target.Slots = draft.Slots != null ? new List<string>(draft.Slots) : SchedulePreset.NewSlots();
             if (SchedulePresetStore.Save(target))
             {
@@ -168,6 +183,23 @@ namespace OrderedWork.UI
             else
             {
                 Messages.Message("Could not replace the schedule preset.", MessageTypeDefOf.RejectInput, false);
+            }
+        }
+
+        private void DeletePending()
+        {
+            if (pendingDelete == null)
+            {
+                return;
+            }
+            SchedulePreset target = pendingDelete;
+            pendingDelete = null;
+            if (SchedulePresetStore.Delete(target.Id))
+            {
+                OrderedWorkMod.DebugLog("Schedule preset deleted: " + target.Name + " [" + target.Id + "]");
+                allPresets = SchedulePresetStore.LoadAll();
+                visiblePresets = Filter(allPresets, search);
+                selectedIndex = -1;
             }
         }
 

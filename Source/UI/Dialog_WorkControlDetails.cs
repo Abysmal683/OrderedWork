@@ -55,15 +55,19 @@ namespace OrderedWork.UI
                 OrderedWorkMod.DebugLog("Detail title drag start: mouse=" + Event.current.mousePosition + " rect=" + windowRect);
                 Event.current.Use();
             }
-            else if (titleDragging && Event.current.type == EventType.MouseDrag)
+            else if (titleDragging && Input.GetMouseButton(0))
             {
-                Vector2 delta = Event.current.mousePosition - titleDragLast;
-                windowRect.x += delta.x;
-                windowRect.y += delta.y;
-                titleDragLast = Event.current.mousePosition;
-                Event.current.Use();
+                Vector2 current = Event.current.mousePosition;
+                if (current != titleDragLast)
+                {
+                    Vector2 delta = current - titleDragLast;
+                    windowRect.x += delta.x;
+                    windowRect.y += delta.y;
+                    titleDragLast = current;
+                    Event.current.Use();
+                }
             }
-            else if (Event.current.type == EventType.MouseUp)
+            else if (!Input.GetMouseButton(0))
             {
                 titleDragging = false;
             }

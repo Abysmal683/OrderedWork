@@ -30,13 +30,13 @@ namespace OrderedWork.UI
             y += 24f;
 
             Widgets.Label(new Rect(0f, y, 48f, 26f), "Mapa:");
-            if (Widgets.ButtonText(new Rect(50f, y, 250f, 26f), MapLabel(detailZoneMap)))
+            if (Widgets.ButtonText(new Rect(50f, y, 230f, 26f), MapLabel(detailZoneMap)))
             {
                 ShowMapMenu();
             }
             y += 32f;
 
-            Rect areaRect = new Rect(0f, y, 325f, 26f);
+            Rect areaRect = new Rect(0f, y, 300f, 26f);
             Rect swatch = new Rect(areaRect.x, areaRect.y + 5f, 16f, 16f);
             if (detailZoneArea == null)
             {
@@ -75,27 +75,27 @@ namespace OrderedWork.UI
             Widgets.Label(new Rect(0f, y, content.width, 20f), "Last applied on this map: " + lastZone);
             y += 24f;
 
-            if (DrawActionButton(new Rect(0f, y, 110f, 26f), "Apply zone", zoneChanged && !detailZoneMissing))
+            if (DrawActionButton(new Rect(0f, y, 130f, 26f), "Apply zone", zoneChanged && !detailZoneMissing))
             {
                 ApplyZone();
             }
-            if (Mouse.IsOver(new Rect(0f, y, 110f, 26f)) && (!zoneChanged || detailZoneMissing))
+            if (Mouse.IsOver(new Rect(0f, y, 130f, 26f)) && (!zoneChanged || detailZoneMissing))
             {
-                TooltipHandler.TipRegion(new Rect(0f, y, 110f, 26f),
+                TooltipHandler.TipRegion(new Rect(0f, y, 130f, 26f),
                     detailZoneMissing
                         ? "The saved area no longer exists. Choose an existing area first."
                         : "Apply is enabled only when the selected zone differs from the applied zone.");
             }
-            if (Widgets.ButtonText(new Rect(114f, y, 110f, 26f), "Manage zones"))
+            if (Widgets.ButtonText(new Rect(134f, y, 130f, 26f), "Manage zones"))
             {
                 if (detailZoneMap != null)
                 {
                     Find.WindowStack.Add(new Dialog_ManageAreas(detailZoneMap));
                 }
             }
-            if (Mouse.IsOver(new Rect(114f, y, 110f, 26f)))
+            if (Mouse.IsOver(new Rect(134f, y, 130f, 26f)))
             {
-                TooltipHandler.TipRegion(new Rect(114f, y, 110f, 26f),
+                TooltipHandler.TipRegion(new Rect(134f, y, 130f, 26f),
                     "Open the vanilla area manager. Create, delete, expand or reduce areas there; Ordered Work only assigns existing areas.");
             }
             y += 36f;
