@@ -294,7 +294,7 @@ namespace OrderedWork
                 {
                     list.Label("Load a colony to run the dense-rank test.");
                 }
-                else if (list.ButtonText("Test dense rank on colonists (log)"))
+                else if (UiButtonBar.Button(list.GetRect(28f), "Test dense rank on colonists (log)"))
                 {
                     ApplyTestDenseRank();
                 }
@@ -306,7 +306,7 @@ namespace OrderedWork
                 list.Label("Reset the mod configuration without touching pawn 1..N priorities.");
                 if (!confirmResetAll)
                 {
-                    if (list.ButtonText("Reset config mod all"))
+                    if (UiButtonBar.Button(list.GetRect(28f), "Reset config mod all"))
                     {
                         confirmResetAll = true;
                     }
@@ -314,12 +314,12 @@ namespace OrderedWork
                 else
                 {
                     list.Label("This clears orders, splits, merges, colors, stress test and panel height, plus any unsaved drafts. Pawn work priorities are not touched.");
-                    if (list.ButtonText("Confirm reset config mod all"))
+                    if (UiButtonBar.Button(list.GetRect(28f), "Confirm reset config mod all"))
                     {
                         ResetAllSettings();
                         confirmResetAll = false;
                     }
-                    if (list.ButtonText("Cancel reset"))
+                    if (UiButtonBar.Button(list.GetRect(28f), "Cancel reset"))
                     {
                         confirmResetAll = false;
                     }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using OrderedWork.Data;
+using OrderedWork.UI.Layout;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -75,7 +76,7 @@ namespace OrderedWork.UI
             Widgets.Label(new Rect(0f, y, content.width, 20f), "Last applied on this map: " + lastZone);
             y += 24f;
 
-            if (DrawActionButton(new Rect(0f, y, 130f, 26f), "Apply zone", zoneChanged && !detailZoneMissing))
+            if (UiButtonBar.Button(new Rect(0f, y, 130f, 26f), "Apply zone", zoneChanged && !detailZoneMissing))
             {
                 ApplyZone();
             }
@@ -86,7 +87,7 @@ namespace OrderedWork.UI
                         ? "The saved area no longer exists. Choose an existing area first."
                         : "Apply is enabled only when the selected zone differs from the applied zone.");
             }
-            if (Widgets.ButtonText(new Rect(134f, y, 130f, 26f), "Manage zones"))
+            if (UiButtonBar.Button(new Rect(134f, y, 130f, 26f), "Manage zones"))
             {
                 if (detailZoneMap != null)
                 {

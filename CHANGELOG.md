@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.133] - 2026-11-18
+
+### Refactor — Zone, Save footer and General actions
+- Zone Apply/Manage now use `UiButtonBar` while preserving the existing zone behavior.
+- Save-delete footer uses `UiInset`, `UiRows` and `UiFlex`.
+- General Diagnostics/Danger buttons use `UiButtonBar`.
+- Split/Merge/Order tabs remain native `UiTabBar`; Overview remains on `UiFlex`.
+- No behavior changes intended.
+
 ## [0.3.0-alpha.132] - 2026-11-18
 
 ### Refactor — Split/Merge/Order tabs and Overview columns

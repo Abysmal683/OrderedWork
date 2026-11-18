@@ -103,13 +103,16 @@ namespace OrderedWork.UI
             {
                 Rect footer = new Rect(0f, inRect.yMax - 82f, inRect.width, 54f);
                 Widgets.DrawBoxSolid(footer, new Color(0.12f, 0.12f, 0.14f, 1f));
-                Widgets.Label(new Rect(footer.x + 4f, footer.y + 4f, footer.width - 8f, 20f),
-                    "Delete '" + pendingDelete.Name + "'?");
-                if (Widgets.ButtonText(new Rect(footer.x + 4f, footer.y + 24f, 110f, 26f), "Confirm delete"))
+                Rect footerInner = UiInset.All(footer, 6f);
+                UiRows footerRows = new UiRows(footerInner, 18f, 4f);
+                Widgets.Label(footerRows.Next(), "Delete '" + pendingDelete.Name + "'?");
+                Rect footerButtons = footerRows.Next(26f);
+                Rect[] footerCells = UiFlex.Columns(footerButtons, 6f, 1f, 1f);
+                if (UiButtonBar.Button(footerCells[0], "Confirm delete"))
                 {
                     DeletePending();
                 }
-                if (Widgets.ButtonText(new Rect(footer.x + 120f, footer.y + 24f, 70f, 26f), "Cancel"))
+                if (UiButtonBar.Button(footerCells[1], "Cancel"))
                 {
                     pendingDelete = null;
                 }
