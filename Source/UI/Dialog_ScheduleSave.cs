@@ -101,7 +101,7 @@ namespace OrderedWork.UI
 
             if (pendingDelete != null)
             {
-                Rect footer = new Rect(0f, inRect.yMax - 82f, inRect.width, 54f);
+                Rect footer = new Rect(0f, inRect.yMax - 60f, inRect.width, 60f);
                 Widgets.DrawBoxSolid(footer, new Color(0.12f, 0.12f, 0.14f, 1f));
                 Rect footerInner = UiInset.All(footer, 6f);
                 UiRows footerRows = new UiRows(footerInner, 18f, 4f);

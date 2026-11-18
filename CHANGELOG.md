@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.135] - 2026-11-18
+
+### Fixed — column backgrounds and delete footer alignment
+- Added column backgrounds to Split, Merge and Order giver panels so their extent is visible.
+- Delete confirmation footer is anchored to the bottom edge, matching the normal name/Save footer position.
+- Zone Apply/Manage remain compact fixed-width buttons.
+- No functional changes.
+
 ## [0.3.0-alpha.134] - 2026-11-18
 
 ### Refactor — finish Zone, Save footer and General actions

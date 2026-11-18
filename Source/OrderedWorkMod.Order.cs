@@ -74,6 +74,8 @@ namespace OrderedWork
             float columnWidth = (columns.width - 12f) * 0.5f;
             Rect left = new Rect(columns.x, columns.y, columnWidth, columns.height);
             Rect right = new Rect(columns.x + columnWidth + 12f, columns.y, columnWidth, columns.height);
+            Widgets.DrawBoxSolid(left, new Color(0.14f, 0.16f, 0.20f, 0.55f));
+            Widgets.DrawBoxSolid(right, new Color(0.14f, 0.16f, 0.20f, 0.55f));
             Widgets.Label(new Rect(left.x, left.y, left.width, 22f), "Origin (last applied)");
             Widgets.Label(new Rect(right.x, right.y, right.width, 22f), "Destination (current)");
 
