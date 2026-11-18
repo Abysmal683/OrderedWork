@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.152] - 2026-11-18
+
+### Fixed — enabled buttons now pass the real label
+- The enabled branch was still calling `Widgets.ButtonText` with an empty label; the disabled branch drew the overlay text. That produced the inverted result.
+- Enabled: native button with the real label.
+- Disabled: native atlas tinted dark, empty native label, normal label drawn on top.
+- No behavior changes.
+
 ## [0.3.0-alpha.151] - 2026-11-18
 
 ### Fixed — enabled buttons keep their labels
