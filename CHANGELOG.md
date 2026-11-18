@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.143] - 2026-11-18
+
+### Fixed — all action buttons use native vanilla states
+- `DrawActionButton` is now a thin wrapper over `Widgets.ButtonText(active)` with optional tooltip.
+- Removed the custom black background/border that caused thin lines and inconsistent disabled rendering.
+- Profiles, Diagnostics, Work order, Split/Merge, Order and Zone now share the native gold/dark button style.
+- Split/Merge Add/Cancel now expose tooltips.
+- Zebra, deferred passion tooltips and work order draft remain.
+
 ## [0.3.0-alpha.142] - 2026-11-18
 
 ### Fixed — unified vanilla action buttons, deferred passion tooltips and visible zebra

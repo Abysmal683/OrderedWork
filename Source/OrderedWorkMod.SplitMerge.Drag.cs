@@ -48,29 +48,11 @@ namespace OrderedWork
 
         private static bool DrawActionButton(Rect rect, string label, bool enabled, string tooltip = null)
         {
-            Color background = enabled
-                ? new Color(0.17f, 0.17f, 0.19f, 1f)
-                : new Color(0.11f, 0.11f, 0.13f, 1f);
-            Widgets.DrawBoxSolid(rect, background);
-            if (enabled && Mouse.IsOver(rect))
-            {
-                Widgets.DrawHighlight(rect);
-            }
-            Widgets.DrawBox(rect);
-
-            Color previous = GUI.color;
-            GUI.color = enabled ? Color.white : new Color(0.55f, 0.55f, 0.55f, 0.75f);
-            TextAnchor previousAnchor = Text.Anchor;
-            Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(rect, label);
-            Text.Anchor = previousAnchor;
-            GUI.color = previous;
-
             if (!string.IsNullOrEmpty(tooltip))
             {
                 TooltipHandler.TipRegion(rect, tooltip);
             }
-            return enabled && Widgets.ButtonInvisible(rect);
+            return Widgets.ButtonText(rect, label, true, true, enabled);
         }
         private static void DrawInlineWarning(Listing_Standard list, string warning)
         {
