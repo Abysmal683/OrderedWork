@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.113] - 2026-11-17
+
+### Fixed — title-only drag, tabs and schedule naming
+- Detail window now disables native dragging and uses `GUI.DragWindow` only on the title strip.
+- Shared large tab strip is active in Details and Config.
+- Schedule Save uses the selected preset name when empty; saving a duplicate name overwrites instead of creating duplicates.
+- Presets load a fallback modification timestamp from the file and write ModifiedUtc on save.
+- Delete remains a labelled button with an opaque inline confirmation footer.
+- Compact W/J/S/M/A labels and tooltips remain.
+
 ## [0.3.0-alpha.112] - 2026-11-17
 
 ### Fixed — tab strip, content isolation and unnamed overwrite

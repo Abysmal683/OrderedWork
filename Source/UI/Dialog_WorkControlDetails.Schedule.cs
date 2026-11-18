@@ -110,44 +110,14 @@ namespace OrderedWork.UI
             {
                 return;
             }
-            Find.WindowStack.Add(new Dialog_ScheduleSave(detailSchedule, detailScheduleName, delegate(SchedulePreset saved)
+            string initialName = string.IsNullOrWhiteSpace(detailScheduleName) ? pawn.LabelShort : detailScheduleName;
+            Find.WindowStack.Add(new Dialog_ScheduleSave(detailSchedule, initialName, delegate(SchedulePreset saved)
             {
                 detailPresets = SchedulePresetStore.LoadAll();
                 detailSchedule = saved;
                 detailScheduleName = saved.Name;
             }));
         }
-
-        private static bool DrawActionButton(Rect rect, string label, bool active)
-        {
-            Color previous = GUI.color;
-            if (!active)
-            {
-                GUI.color = new Color(0.55f, 0.55f, 0.55f, 0.7f);
-            }
-            bool clicked = Widgets.ButtonText(rect, label, true, true, active);
-            GUI.color = previous;
-            return clicked;
-        }
-        private bool HasScheduleChanges()
-        {
-            if (detailSchedule == null || detailSchedule.Slots == null || pawn == null || pawn.timetable == null)
-            {
-                return false;
-            }
-            for (int hour = 0; hour < SchedulePreset.SlotCount; hour++)
-            {
-                string draft = detailSchedule.Slots[hour];
-                TimeAssignmentDef current = pawn.timetable.GetAssignment(hour);
-                string currentName = current != null ? current.defName : "";
-                if (!string.IsNullOrEmpty(draft) && draft != currentName)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
         private void EnsureDetailSchedule()
         {
             if (detailPresets == null)
@@ -165,7 +135,7 @@ namespace OrderedWork.UI
                 detailSchedule = ScheduleAdapter.CaptureCurrent(pawn, detailScheduleName);
                 if (detailSchedule == null)
                 {
-                    detailSchedule = new SchedulePreset { Name = detailScheduleName };
+                    detailSchedule = new SchedulePreset { Name = "" };
                 }
             }
         }
@@ -179,8 +149,7 @@ namespace OrderedWork.UI
             }
             Color color = AssignmentColor(detailBrush);
             Widgets.DrawBoxSolid(new Rect(rect.x, rect.y + 4f, 16f, 16f), color);
-            if (Widgets.ButtonText(new Rect(rect.x + 20f, rect.y, rect.width - 20f, rect.height),
-                ShortLabel(detailBrush)))
+            if (Widgets.ButtonText(new Rect(rect.x + 20f, rect.y, rect.width - 20f, rect.height), ShortLabel(detailBrush)))
             {
                 List<FloatMenuOption> options = new List<FloatMenuOption>();
                 foreach (TimeAssignmentDef def in DefDatabase<TimeAssignmentDef>.AllDefsListForReading
@@ -194,7 +163,7 @@ namespace OrderedWork.UI
                 }
                 Find.WindowStack.Add(new FloatMenu(options));
             }
-            TooltipHandler.TipRegion(rect, "Active schedule brush. Click or drag over the Modif row to paint this assignment.");
+            TooltipHandler.TipRegion(rect, "Active schedule brush. Click or drag over Modif to paint this assignment.");
         }
 
         private void DrawScheduleRow(Rect content, float y, float hourWidth, string label, bool editable, bool origin)
@@ -210,6 +179,7 @@ namespace OrderedWork.UI
                     && (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag))
                 {
                     detailSchedule.Slots[hour] = detailBrush != null ? detailBrush.defName : "";
+                    Event.current.Use();
                 }
                 Color color = def != null ? AssignmentColor(def) : new Color(0.18f, 0.18f, 0.20f, 1f);
                 if ((hour & 1) == 1)
@@ -234,27 +204,61 @@ namespace OrderedWork.UI
             }
         }
 
-        private static Color AssignmentColor(TimeAssignmentDef def)
+        private bool HasScheduleChanges()
         {
-            if (def == null)
+            if (detailSchedule == null || detailSchedule.Slots == null || pawn == null || pawn.timetable == null)
             {
-                return new Color(0.18f, 0.18f, 0.20f, 1f);
+                return false;
             }
-            Color color = def.color;
-            if (color.a <= 0.01f || (color.r <= 0.01f && color.g <= 0.01f && color.b <= 0.01f))
+            for (int hour = 0; hour < SchedulePreset.SlotCount; hour++)
             {
-                int hash = 0;
-                string name = def.defName ?? def.label ?? "unknown";
-                for (int i = 0; i < name.Length; i++)
+                string draft = detailSchedule.Slots[hour];
+                TimeAssignmentDef current = pawn.timetable.GetAssignment(hour);
+                string currentName = current != null ? current.defName : "";
+                if (!string.IsNullOrEmpty(draft) && draft != currentName)
                 {
-                    hash = (hash * 31 + name[i]) & 0x7fffffff;
+                    return true;
                 }
-                float hue = (hash % 360) / 360f;
-                color = Color.HSVToRGB(hue, 0.55f, 0.75f);
             }
-            color.a = 1f;
-            return color;
+            return false;
         }
+
+        private static bool DrawActionButton(Rect rect, string label, bool active)
+        {
+            Color previous = GUI.color;
+            if (!active)
+            {
+                GUI.color = new Color(0.55f, 0.55f, 0.55f, 0.7f);
+            }
+            bool clicked = Widgets.ButtonText(rect, label, true, true, active);
+            GUI.color = previous;
+            return clicked;
+        }
+
+        private void ShowPresetMenu()
+        {
+            List<FloatMenuOption> options = new List<FloatMenuOption>();
+            foreach (SchedulePreset preset in detailPresets)
+            {
+                SchedulePreset captured = preset;
+                options.Add(new FloatMenuOption(captured.Name, delegate
+                {
+                    detailSchedule = captured;
+                    detailScheduleName = captured.Name;
+                }));
+            }
+            Find.WindowStack.Add(new FloatMenu(options));
+        }
+
+        private TimeAssignmentDef ResolveDraft(int hour)
+        {
+            if (detailSchedule == null || detailSchedule.Slots == null || hour >= detailSchedule.Slots.Count)
+            {
+                return null;
+            }
+            return SchedulePolicyResolver.ResolveDef(detailSchedule.Slots[hour]);
+        }
+
         private static string ShortLabel(TimeAssignmentDef def)
         {
             return ShortLabel(def, 999f);
@@ -276,38 +280,35 @@ namespace OrderedWork.UI
                 if (name == "Anything") return "A";
                 return "·";
             }
-            if (name == "Anything") return width < 54f ? "Any" : "Any";
-            if (name == "Meditate") return width < 54f ? "Med" : "Med";
-            if (name == "Work") return width < 54f ? "Work" : "Work";
-            if (name == "Joy") return width < 54f ? "Joy" : "Joy";
+            if (name == "Anything") return "Any";
+            if (name == "Meditate") return "Med";
+            if (name == "Work") return "Work";
+            if (name == "Joy") return "Joy";
             if (name == "Sleep") return width < 54f ? "Slp" : "Sleep";
             string label = def.LabelCap.ToString();
             return label.Length <= 5 ? label : label.Substring(0, 5);
         }
-        private TimeAssignmentDef ResolveDraft(int hour)
-        {
-            if (detailSchedule == null || detailSchedule.Slots == null || hour >= detailSchedule.Slots.Count)
-            {
-                return null;
-            }
-            return SchedulePolicyResolver.ResolveDef(detailSchedule.Slots[hour]);
-        }
 
-        private void ShowPresetMenu()
+        private static Color AssignmentColor(TimeAssignmentDef def)
         {
-            List<FloatMenuOption> options = new List<FloatMenuOption>();
-            foreach (SchedulePreset preset in detailPresets)
+            if (def == null)
             {
-                SchedulePreset captured = preset;
-                options.Add(new FloatMenuOption(captured.Name, delegate
+                return new Color(0.18f, 0.18f, 0.20f, 1f);
+            }
+            Color color = def.color;
+            if (color.a <= 0.01f || (color.r <= 0.01f && color.g <= 0.01f && color.b <= 0.01f))
+            {
+                int hash = 0;
+                string name = def.defName ?? def.label ?? "unknown";
+                for (int i = 0; i < name.Length; i++)
                 {
-                    detailSchedule = captured;
-                    detailScheduleName = captured.Name;
-                }));
+                    hash = (hash * 31 + name[i]) & 0x7fffffff;
+                }
+                color = Color.HSVToRGB((hash % 360) / 360f, 0.55f, 0.75f);
             }
-            Find.WindowStack.Add(new FloatMenu(options));
+            color.a = 1f;
+            return color;
         }
-
         private bool SaveDetailSchedule()
         {
             if (detailSchedule == null || string.IsNullOrWhiteSpace(detailScheduleName))

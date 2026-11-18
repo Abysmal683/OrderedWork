@@ -152,6 +152,13 @@ namespace OrderedWork.UI
             {
                 return;
             }
+            SchedulePreset existing = allPresets.FirstOrDefault(
+                p => p != null && string.Equals(p.Name, presetName.Trim(), StringComparison.OrdinalIgnoreCase));
+            if (existing != null)
+            {
+                Replace(existing);
+                return;
+            }
             SchedulePreset saved = new SchedulePreset
             {
                 Name = presetName.Trim(),
@@ -171,7 +178,7 @@ namespace OrderedWork.UI
 
         private void Replace(SchedulePreset target)
         {
-            if (target == null || draft == null || string.IsNullOrWhiteSpace(presetName))
+            if (target == null || draft == null)
             {
                 return;
             }

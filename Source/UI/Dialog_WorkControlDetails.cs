@@ -32,7 +32,7 @@ namespace OrderedWork.UI
             doCloseX = true;
             doCloseButton = false;
             resizeable = true;
-            draggable = true;
+            draggable = false;
             absorbInputAroundWindow = true;
             closeOnClickedOutside = false;
             forcePause = false;
@@ -60,6 +60,15 @@ namespace OrderedWork.UI
 
         private Vector2 lastWindowSize;
 
+        private static void HandleWindowDrag(Rect inRect)
+        {
+            if (Event.current.type == EventType.MouseDown
+                && Mouse.IsOver(new Rect(0f, 0f, inRect.width, 34f)))
+            {
+                GUI.DragWindow(new Rect(0f, 0f, inRect.width, 34f));
+            }
+        }
+
         private void EnforceMinimumWindowSize()
         {
             ConfigureResizer();
@@ -84,6 +93,7 @@ namespace OrderedWork.UI
         public override void DoWindowContents(Rect inRect)
         {
             EnforceMinimumWindowSize();
+            HandleWindowDrag(inRect);
             if (pawn == null || pawn.Destroyed)
             {
                 Widgets.Label(inRect, "Pawn unavailable.");

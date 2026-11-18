@@ -76,6 +76,10 @@ namespace OrderedWork.Config
                     return null;
                 }
                 preset.Normalize();
+                if (string.IsNullOrEmpty(preset.ModifiedUtc))
+                {
+                    preset.ModifiedUtc = File.GetLastWriteTime(path).ToString("yyyy-MM-dd HH:mm");
+                }
                 return preset;
             }
             catch (Exception exception)
@@ -94,6 +98,7 @@ namespace OrderedWork.Config
             try
             {
                 preset.SchemaVersion = SchedulePreset.CurrentSchemaVersion;
+                preset.ModifiedUtc = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm");
                 preset.Normalize();
                 Directory.CreateDirectory(DirectoryPath);
                 string path = PathFor(preset.Id);
