@@ -135,7 +135,7 @@ namespace OrderedWork
             }
 
             list.End();
-            settingsContentHeight = list.CurHeight + 8f;
+            settingsContentHeight = list.CurHeight + 72f;
             Widgets.EndScrollView();
         }
 

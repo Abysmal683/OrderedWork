@@ -253,73 +253,84 @@ namespace OrderedWork
 
         private void DrawGeneralTab(Listing_Standard list)
         {
-            list.Label("Ordered Work (Core) - changes apply on restart.");
-            string version = Content != null && Content.ModMetaData != null
-                ? Content.ModMetaData.ModVersion
-                : "unknown";
-            list.Label("Mod version: " + version);
-            list.Gap(6f);
-
-            list.CheckboxLabeled(
-                "Auto recommend new colony",
-                ref Settings.autoRecommendNewColony,
-                "On: new/default colonies and new pawns get a skill recommendation applied. Off: copy the current vanilla order instead; the top Recommend button still works.");
-            list.CheckboxLabeled(
-                "Auto-hide scrollbars",
-                ref Settings.autoHideScrollbars,
-                "Show Work Control scrollbars only while hovering or scrolling, so the matrix keeps its space.");
-            list.CheckboxLabeled(
-                "Palette stress test (debug)",
-                ref Settings.paletteStressTest,
-                "Adds 60 visual-only WorkTypes to test the palette's own horizontal scrollbar. They cannot be dragged or assigned.");
-            list.CheckboxLabeled(
-                "Verbose diagnostics in Player.log",
-                ref Settings.verboseLogging,
-                "Enables temporary Order/Reset/Scroll debug lines. Disable for normal play.");
-            list.CheckboxLabeled(
-                "Keep orders for destroyed pawns",
-                ref Settings.keepDestroyedPawnOrders,
-                "Off: remove the pawn entry when the game no longer remembers it. On: keep it for mods that can return fully deleted pawns.");
-
-            list.Gap(12f);
-            DrawProfilePanel(list);
-            list.Gap(12f);
-            list.Label("Technical spike: writes dense rank 1..N to free colonists and logs the result.");
-            if (Find.CurrentMap == null)
+            if (DrawCollapsibleSection(list, "general-core", "Core settings"))
             {
-                list.Label("Load a colony to run the dense-rank test.");
+                list.Label("Ordered Work (Core) - changes apply on restart.");
+                string version = Content != null && Content.ModMetaData != null
+                    ? Content.ModMetaData.ModVersion
+                    : "unknown";
+                list.Label("Mod version: " + version);
+                list.Gap(6f);
+                list.CheckboxLabeled(
+                    "Auto recommend new colony",
+                    ref Settings.autoRecommendNewColony,
+                    "On: new/default colonies and new pawns get a skill recommendation applied. Off: copy the current vanilla order instead; the top Recommend button still works.");
+                list.CheckboxLabeled(
+                    "Auto-hide scrollbars",
+                    ref Settings.autoHideScrollbars,
+                    "Show Work Control scrollbars only while hovering or scrolling, so the matrix keeps its space.");
+                list.CheckboxLabeled(
+                    "Palette stress test (debug)",
+                    ref Settings.paletteStressTest,
+                    "Adds 60 visual-only WorkTypes to test the palette focus.");
+                list.CheckboxLabeled(
+                    "Verbose diagnostics in Player.log",
+                    ref Settings.verboseLogging,
+                    "Enables temporary Order/Reset/Scroll debug lines. Disable for normal play.");
+                list.CheckboxLabeled(
+                    "Keep orders for destroyed pawns",
+                    ref Settings.keepDestroyedPawnOrders,
+                    "Off: remove the pawn entry when the game no longer remembers it. On: keep it for mods that can return fully deleted pawns.");
             }
-            else if (list.ButtonText("Test dense rank on colonists (log)"))
-            {
-                ApplyTestDenseRank();
-            }
-
             list.Gap(12f);
-            list.Label("Danger zone: reset the mod configuration without touching pawn 1..N priorities.");
-            if (!confirmResetAll)
+
+            if (DrawCollapsibleSection(list, "general-profiles", "Profiles"))
             {
-                if (list.ButtonText("Reset config mod all"))
+                DrawProfilePanel(list);
+            }
+            list.Gap(12f);
+
+            if (DrawCollapsibleSection(list, "general-diagnostics", "Diagnostics"))
+            {
+                list.Label("Technical spike: writes dense rank 1..N to free colonists and logs the result.");
+                if (Find.CurrentMap == null)
                 {
-                    confirmResetAll = true;
+                    list.Label("Load a colony to run the dense-rank test.");
+                }
+                else if (list.ButtonText("Test dense rank on colonists (log)"))
+                {
+                    ApplyTestDenseRank();
                 }
             }
-            else
+            list.Gap(12f);
+
+            if (DrawCollapsibleSection(list, "general-danger", "Danger zone"))
             {
-                list.Label("This clears orders, splits, merges, colors, stress test and panel height, plus any unsaved drafts. Pawn work priorities are not touched.");
-                if (list.ButtonText("Confirm reset config mod all"))
+                list.Label("Reset the mod configuration without touching pawn 1..N priorities.");
+                if (!confirmResetAll)
                 {
-                    ResetAllSettings();
-                    confirmResetAll = false;
+                    if (list.ButtonText("Reset config mod all"))
+                    {
+                        confirmResetAll = true;
+                    }
                 }
-                if (list.ButtonText("Cancel reset"))
+                else
                 {
-                    confirmResetAll = false;
+                    list.Label("This clears orders, splits, merges, colors, stress test and panel height, plus any unsaved drafts. Pawn work priorities are not touched.");
+                    if (list.ButtonText("Confirm reset config mod all"))
+                    {
+                        ResetAllSettings();
+                        confirmResetAll = false;
+                    }
+                    if (list.ButtonText("Cancel reset"))
+                    {
+                        confirmResetAll = false;
+                    }
                 }
             }
 
-            list.Gap(10f);
+            list.Gap(64f);
             list.Label("No work type or giver is ever deleted. Back up your save before applying.");
         }
-
     }
 }

@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.125] - 2026-11-18
+
+### Fixed — Config sections and native close spacing
+- Applied real collapsible sections to Rules and General.
+- General grouped into Core settings, Profiles, Diagnostics and Danger zone.
+- Added bottom content padding so RimWorld's native Cerrar button no longer cuts the final text.
+- Removed the manual Close buttons from Details and the Save dialog; both use the native X.
+- Kept Config's native Cerrar because it belongs to RimWorld's mod settings window.
+- Split metadata remains in Order mode; no new layout components without evidence.
+
 ## [0.3.0-alpha.124] - 2026-11-18
 
 ### Added — collapsible sections and close cleanup
