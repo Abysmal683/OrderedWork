@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.123] - 2026-11-18
+
+### Added — collapsible config sections
+- Added `UiCollapsibleSection`: title, +/- control and divider.
+- Config sections are now collapsible: Work types and order, Recommendation pins, Recommendation passion weights, Split/Merge/Order.
+- `PassionWeightsView` can omit its duplicate internal title when hosted in a section.
+- Kept only high-evidence layout helpers; skipped low-evidence wrappers.
+
 ## [0.3.0-alpha.122] - 2026-11-18
 
 ### Added — focused layout components

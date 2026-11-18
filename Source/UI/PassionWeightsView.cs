@@ -15,9 +15,12 @@ namespace OrderedWork.UI
         private const int VisiblePassionRows = 10;
         private const float PassionRowHeight = 26f;
 
-        public static void Draw(Listing_Standard list, OrderedWorkSettings settings, ref Vector2 scroll)
+        public static void Draw(Listing_Standard list, OrderedWorkSettings settings, ref Vector2 scroll, bool drawHeader = true)
         {
-            list.Label("Recommendation passion weights (global). Level 0 / per level / min level:");
+            if (drawHeader)
+            {
+                list.Label("Recommendation passion weights (global). Level 0 / per level / min level:");
+            }
             PassionWeightPolicy.EnsureDefaults(settings);
             List<PassionSource.PassionInfo> registered = PassionSource.Registered;
             float viewHeight = Mathf.Min(registered.Count, VisiblePassionRows) * PassionRowHeight;

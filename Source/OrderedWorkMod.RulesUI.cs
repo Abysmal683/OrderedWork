@@ -7,6 +7,7 @@ using OrderedWork.Config;
 using OrderedWork.Core;
 using OrderedWork.Services;
 using OrderedWork.UI;
+using OrderedWork.UI.Layout;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -17,6 +18,19 @@ namespace OrderedWork
     public partial class OrderedWorkMod : Mod
     {
         private Vector2 passionWeightScroll;
+        private readonly HashSet<string> collapsedSections = new HashSet<string>();
+
+        private bool DrawCollapsibleSection(Listing_Standard list, string key, string title)
+        {
+            bool expanded = !collapsedSections.Contains(key);
+            bool next = UiCollapsibleSection.Header(list, title, expanded);
+            if (next != expanded)
+            {
+                if (next) collapsedSections.Remove(key);
+                else collapsedSections.Add(key);
+            }
+            return next;
+        }
 
         private void EnsureProfileNameInitialized()
         {
