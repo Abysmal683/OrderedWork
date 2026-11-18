@@ -57,16 +57,42 @@ Status: architecture cleanup complete; build 0/0 and 7/7 tests pass. Runtime che
 - [ ] Confirm no `Collection was modified` or profile fallback log.
 - [ ] Confirm no legacy lists are read after load.
 
-## Refactor checkpoint (alpha.94)\n\n- [x] `PassionSource` owns VSE/Alpha discovery and metadata.\n- [x] `PassionWeightPolicy` owns defaults, migration and reset.\n- [x] `PassionWeightsView` owns the weight table, sprites, tooltips, scrollbar and reset.\n- [x] `RecommendationScorer` owns skill selection and score composition.\n- [x] Pure `RecommendationScorePolicy` has automated tests.\n- [x] `SplitMerge` split into orchestration, columns, drag and persistence partials.\n- [x] `WorkOrderService` split into core, apply and lifecycle partials.\n- [ ] Runtime smoke test after the refactor: settings, pins, weights, split/merge, save/load.\n\n## Future scope
+## Refactor checkpoint (alpha.96)
 
-- [ ] Per-pawn WorkGiver overrides (normal list only; no emergency/forced).\n- [ ] Pawn detail UI: skills, passions, current order, overrides and incapabilities.\n- [ ] Clothing policy tab.\n- [ ] Zone policy tab.\n- [ ] Schedule policy tab.\n- [ ] WorkGiverDef clones: rejected as a design path; do not add runtime Def clones.
-- [ ] Profile-backed split metadata editor (name/description) after the legacy removal.
-- [ ] Optional `Filter palette` control if the global 3-state scope proves insufficient.
-- [ ] Compact per-save pawn override format and migration.
-- [ ] Emergency WorkGiver behavior, only if explicitly requested.
-- [ ] Custom Job/JobDriver work, only if explicitly requested.
+- [x] `PassionSource` owns VSE/Alpha discovery and metadata.
+- [x] `PassionWeightPolicy` owns defaults, migration and reset.
+- [x] `PassionWeightsView` owns the weight table, sprites, tooltips, scrollbar and reset.
+- [x] `RecommendationScorer` owns skill selection and score composition.
+- [x] Pure `RecommendationScorePolicy` has automated tests.
+- [x] `SplitMerge` split into orchestration, columns, drag and persistence partials.
+- [x] `WorkOrderService` split into core, apply and lifecycle partials.
+- [x] `WorkTypePaletteView` split into core, tooltip and passion partials.
+- [ ] Runtime smoke test after the refactor: settings, pins, weights, split/merge, save/load.
+
+## Future scope
+
+- [ ] Define `PawnPolicy` and sparse override contract before policy UI.
+- [ ] Zone policy: assign existing `Area_Allowed` per pawn and map; no zone creation.
+- [ ] Zone alert: semi-persistent warning when the assigned area is missing on the current map.
+- [ ] Zone UI: bulk/emergency assignment; no block-WorkType warning.
+- [ ] Schedule presets: named 24-slot `TimeAssignmentDef` presets in `Config/OrderedWork/schedules.json`.
+- [ ] Schedule UI: two parallel lanes (current vanilla timetable + selected preset/draft ghost).
+- [ ] Schedule apply: choose/load preset, preview, apply to selected pawns.
+- [ ] Clothing policy: clothing by WorkType; per-pawn clothing override in pawn detail.
+- [ ] Pawn detail UI: skills, passions, current order, schedule, zone, clothing and overrides.
+- [ ] Per-WorkType hour windows: optional later layer, not in first schedule implementation.
+- [ ] WorkGiverDef clones: rejected as a design path; do not add runtime Def clones.
+- [ ] Compact per-save pawn policy format and migration.
 
 ## Non-goals
+
+- [ ] No full compatibility while replacing the vanilla Work tab.
+- [ ] No runtime `WorkGiverDef` cloning.
+- [ ] No zone creation; only existing allowed areas.
+- [ ] No per-WorkType hour windows in the first schedule implementation.
+- [ ] No parallel schedule/apparel/area system.
+- [ ] No per-pawn per-giver numeric priorities in this milestone.
+- [ ] No global shared core with Medical Hub/Security Suite yet.
 
 - No full compatibility while replacing the vanilla Work tab.
 - No runtime `WorkGiverDef` cloning. Schedules, apparel and areas are planned policy tabs, not runtime Def clones.

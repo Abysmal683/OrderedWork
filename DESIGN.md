@@ -1,6 +1,6 @@
 # Ordered Work — Design Notebook
 
-Status: design, not implemented. v0.1 remains a def-layer prototype.
+Status: `0.3.0-alpha.96` implementation plus design notebook. Policy tabs (Zones/Schedule) are approved but not implemented.
 
 ## Goal
 
@@ -14,6 +14,67 @@ One RimWorld 1.7 work mod that combines:
 6. Split/merge of work types without ever deleting work.
 
 Primary UX: order, not numbers. Fast to configure, readable, optionally autonomous.
+
+## Approved policy decisions (alpha.96)
+
+These decisions supersede older exploratory notes below.
+
+### UI
+
+- Work Control keeps one integrated tab; no separate global `Original` view.
+- Top-level views: `Work`, `Policies` (`Scheduler` + `Zones`), and later `Clothing`.
+- Returning to vanilla is an integrated per-view control, not a separate mode.
+- Clothing policy configures clothing by WorkType; per-pawn clothing overrides belong in pawn detail.
+- Scheduler and Zones are grouped because both are per-pawn policy views.
+
+### Zone
+
+- Do not create zones. Only assign existing `Area_Allowed` areas.
+- One allowed area per pawn, per map.
+- Store per `Map.uniqueID` and area identity.
+- Missing assigned area on the current map produces one semi-persistent alert:
+  `<pawn>: assigned zone <zone> is missing on the current map.`
+- Do not warn that an area blocks WorkTypes.
+- Room assignment is discarded.
+- Bulk/emergency assignment is allowed; no automatic per-WorkType zone.
+
+### Schedule
+
+- Vanilla `Pawn.timetable` (24 `TimeAssignmentDef` slots) is the source of truth.
+- The editor uses two parallel lanes (approved Option B): current vanilla timetable plus a selected preset/working draft ghost.
+- Save/load named `SchedulePreset` objects containing only the 24 vanilla assignments.
+- Presets are global in `Config/OrderedWork/schedules.json`; apply to selected pawns.
+- The workflow is: load/choose preset -> preview -> apply to selected pawns.
+- Do not add per-WorkType hour windows in the first schedule implementation; keep that as a later optional layer.
+- Do not create a second parallel timetable.
+
+### Override foundation
+
+Define the sparse per-pawn override model before the schedule UI:
+
+```text
+PawnPolicyOverride
+  pawnId
+  manualLocks
+  source: Manual | Schedule | Zone | Emergency
+  areaByMap
+  schedulePresetId
+```
+
+Precedence:
+
+```text
+Manual lock > Emergency > Schedule/Zone policy > base lane
+```
+
+Full override UI is later; the contract and persistence come first.
+
+### Restoration
+
+- Disabling Ordered Work removes our configuration, not the last vanilla state applied.
+- Scheduled work windows are cleared.
+- The last applied zone remains if it was the dynamic/current zone; automatic zones are removed.
+- Manual player changes are never overwritten during restoration.
 
 ## Layers
 
@@ -294,9 +355,12 @@ Principle: one source of truth per domain. Our mod owns presets, bindings, overr
    - Equipment is a reference from the preset; application is opt-in and asynchronous (pawns equip over time; no instant guarantee).
    - Do not reimplement apparel resolution.
 
-4. **Zone (optional)**
-   - Vanilla target: `Pawn.playerSettings.AreaRestrictionInPawnCurrentMap` / `EffectiveAreaRestrictionInPawnCurrentMap` (one allowed area).
-   - Preset references an area; application opt-in; useful for hunters, slaves, restricted workers.
+4. **Zone**
+   - Vanilla target: `Pawn_PlayerSettings.allowedAreas` (`Dictionary<Map, Area>`), exposed as `AreaRestrictionInPawnCurrentMap` / `EffectiveAreaRestrictionInPawnCurrentMap`.
+   - One allowed area per pawn, per map. Assign only existing `Area_Allowed`; never create a zone.
+   - Store per `Map.uniqueID` plus stable area identity.
+   - Missing assigned area on the current map = semi-persistent alert, not a temporary message/card.
+   - Do not warn that an area blocks WorkTypes.
    - Do not create a parallel zone system; maps/areas are vanilla.
 
 ### Precedence and conflicts
@@ -325,7 +389,7 @@ Principle: one source of truth per domain. Our mod owns presets, bindings, overr
 - v0.3: opt-in equipment/area application via adapters; RoleSlots.
 - v0.4: automation rules.
 - v0.5: full tab UI.
-- Out of scope: own schedule tab, own apparel/loadout system, own area/drug/food system, own work-permission system, Grouped Pawns clone, WorkRoles compatibility, full tab/priority mod compatibility.
+- Out of scope: parallel schedule/apparel/area/drug/food systems, zone creation, Grouped Pawns clone, WorkRoles compatibility, full tab/priority mod compatibility. Policy tabs assign vanilla state only.
 
 ## WorkRoles openness and license
 
@@ -786,16 +850,11 @@ Design implication:
   - The **Profile/Role** owns the actual outfit/loadout and area; WorkType cards show recommendations and conflicts.
   - Do not auto-switch outfits per job by default; it is slow and produces churn. Optional explicit apply later.
   - Medicine/drug policies are deferred to the Medical Hub, not this mod.
-- **Zones**:
-  - Vanilla has one allowed area per pawn; a zone is a constraint, not a priority.
-  - Support easy area assignment at Profile/Role/pawn level; WorkType cards may show a recommended area (e.g., hunting zone) but do not auto-apply per WorkType.
-  - Warn when the current area can block all jobs of the active WorkTypes (avoid loop/idle surprises).
-- **Schedule as a boost layer, not a second full worktab**:
-  - Two **views** in the same Work Control: **Global** (overall lane order) and **Schedule** (24-hour boost windows).
-  - A Schedule window lists one or more WorkTypes to **prioritize**, not to limit. They are prepended to the effective order; if they have no jobs, the pawn falls back to the global order.
-  - Multiple WorkTypes per window; no single-job lock. Boosts apply only to active/visible WorkTypes (off WorkTypes stay off unless the user enables them).
-  - Vanilla timetable still decides Work/Joy/Sleep; schedule boosts apply during Work hours. Effective order is recompiled per window with dense ranks and no duplicates.
-  - This enables “smart schedules” (e.g., 8–12 Smithing/Crafting, 12–18 Hauling/Cleaning) without locking the pawn to one job.
+- **Zones and Schedule**:
+  - See **Approved policy decisions (alpha.96)** at the top of this file.
+  - Zones assign existing allowed areas only; no zone creation, no block-WorkType warning.
+  - Schedule v1 edits the vanilla 24-slot timetable with a two-lane preset/draft view.
+  - Per-WorkType hour windows are deferred and are not part of the first schedule implementation.
 
 ## Latest refinements v4: auto-equip stations, zones, per-WorkType windows
 
@@ -820,18 +879,21 @@ Design implication:
 
 ### Zones
 
-- Remove the WorkType zone recommendation.
-- One allowed area per pawn; easy assignment at pawn/profile level.
-- Add a **bulk/emergency zone tab** to change many pawns at once; no per-WorkType auto.
-- Warn when the area can block the active WorkTypes (loop/idle risk).
+- Assign existing allowed areas only; **do not create zones**.
+- One allowed area per pawn, per map.
+- Bulk/emergency assignment of an existing area.
+- No per-WorkType zone recommendation.
+- Missing area on the current map produces a semi-persistent alert; no temporary cards.
+- Do **not** warn that an area blocks WorkTypes.
 
-### Per-WorkType time windows (replaces the schedule matrix)
+### Schedule
 
-- Keep the global lane as the pawn’s base order.
-- In the advanced per-pawn detail, each WorkType can have one or more **start/end windows** where it gains priority.
-- If a window is active and that WorkType has jobs, it jumps ahead; if several windows overlap, the **global lane order** decides.
-- If the boosted WorkType has no job, the pawn falls back to normal global order; nothing is limited.
-- No separate 24h matrix; a regular Schedule view shows the vanilla Work/Joy/Sleep timetable, and the advanced detail edits WorkType windows.
+- Vanilla `Pawn.timetable` is the source of truth: 24 `TimeAssignmentDef` slots.
+- Two parallel lanes: current vanilla timetable + selected preset/working draft ghost.
+- Named `SchedulePreset` objects store only the 24 vanilla assignments.
+- Presets are global in `Config/OrderedWork/schedules.json`; select a preset, preview, then apply to selected pawns.
+- No per-WorkType hour windows in the first implementation; defer them as an optional layer.
+- No separate 24h matrix and no second parallel timetable.
 
 ## Latest refinements v5: Outfit Stand, room/workplace, advanced pawn tab
 

@@ -1,6 +1,6 @@
 # Ordered Work — Consolidated Design Summary
 
-Status: `0.3.0-alpha.80`; profile-backed Split/Merge/Order and Work Control UI implemented. Legacy work lists removed; final deep runtime test pending.
+Status: `0.3.0-alpha.96`; profile-backed Split/Merge/Order and Work Control UI implemented; passion pipeline, SplitMerge, WorkOrderService and palette refactored. Policy tabs (Zones/Schedule) are designed but not implemented.
 
 ## 1. Vision
 
@@ -29,13 +29,17 @@ Part of a three-mod suite (standalone-first, optional integration): Work Control
 - Full-screen **bottom tab** (`MainTabWindow`) “Work Control”.
 - Primary lane: WorkType cards, add (`+`) or drag, left→right priority; absent = off; grey = incapable.
 - Secondary: **Overview** comparison (choose a skill of interest, then one WorkType; rank pawns) and a read-only result table.
-- Advanced per-pawn tab:
+- Work Control top-level views:
+  - `Work`: current lane and result table;
+  - `Policies`: grouped `Scheduler` and `Zones` sub-tabs;
+  - `Clothing` later, configures clothing by WorkType;
+  - no separate global `Original` view; returning to vanilla is an integrated per-view control.
+- Advanced per-pawn detail:
   - WorkTypes list;
-  - outfit + tool rule;
-  - special priority time windows;
-  - general schedule (vanilla Work/Joy/Sleep + modded assignments);
+  - clothing/outfit override;
+  - schedule override;
   - key WorkType info (skills, speed, capacities, task count, derived recipe skills/requirements);
-  - general restricted zone.
+  - assigned zone and override status.
 - Selection/hover states; responsive layout; horizontal slide/scroll for long names.
 - Visual options: passion flame/quality estimate, compact icon + full name, skill level always or hover.
 - No matrix as primary input; no dual editing.
@@ -48,9 +52,10 @@ Part of a three-mod suite (standalone-first, optional integration): Work Control
 - `PawnOverrides`: sparse per-pawn changes.
 - `RoleSlot`: colony-level durable slot; survives pawn death; auto-assign.
 - `CompiledPawnOrder`: runtime effective order; not saved.
-- `WorkTypeRule` (new): per pawn/WorkType outfit/tool/stand/time rule.
-- `ScheduleTemplate`/`WorkTypeTimeWindow`: per-WorkType priority windows.
-- `BulkZonePolicy`: zone assignment to groups/emergency.
+- `PawnPolicy`: per-pawn, per-map zone assignment and schedule preset; saved sparsely.
+- `SchedulePreset`: 24 vanilla `TimeAssignmentDef` slots; global, named, save/load.
+- `WorkTypeRule` (new): per pawn/WorkType clothing/outfit/time rule; deferred.
+- `BulkZonePolicy`: bulk/emergency assignment to existing areas only.
 - Save presets/roles/bindings/overrides/settings; recompute effective order/ranks/giver lists.
 - Death: park bindings/overrides; restore on resurrection; new pawns auto-assign.
 
@@ -74,22 +79,30 @@ Part of a three-mod suite (standalone-first, optional integration): Work Control
 - Armor Racks is an optional provider if a 1.7-compatible version exists.
 - Medicine/drugs are deferred to Medical Hub.
 
-## 7. Zones and rooms
+## 7. Zones
 
-- One allowed area per pawn; zone is a constraint, not a priority.
-- No WorkType zone recommendation.
-- Easy pawn/profile zone assignment plus a bulk/emergency zone tab.
+- One allowed area per pawn, per map; zone is a constraint, not a priority.
+- The mod does **not create zones**. It only assigns existing `Area_Allowed` areas.
+- No per-WorkType zone recommendation.
+- Bulk/emergency assignment of an existing area.
+- The assignment is stored per `Map.uniqueID` + area identity.
+- If an assigned area no longer exists on the current map, show a **semi-persistent alert**, not a temporary message or card:
+  - `<pawn>: assigned zone <zone> is missing on the current map.`
+- Do **not** warn that an area blocks WorkTypes. That warning is removed.
 - Room assignment is discarded; assigned workbenches/rooms decide who works where.
-- Warn if the current area can block the active WorkTypes.
 
 ## 8. Schedule
 
-- Keep the global lane as the base order.
-- In the advanced per-pawn tab, each WorkType can have start/end windows where it gains priority.
-- Active windows jump ahead if jobs exist; overlapping windows are resolved by the global lane order.
-- If no boosted jobs exist, fall back to normal order; never lock/limit work.
-- No separate 24h matrix; a regular Schedule view edits the vanilla Work/Joy/Sleep timetable; per-WorkType windows live in the advanced tab.
-- Unique benches per pawn can add noise; schedule stays optional.
+- The vanilla timetable (`Pawn.timetable`, 24 `TimeAssignmentDef` slots) is the source of truth.
+- The Schedule view uses **two parallel lanes** (approved Option B):
+  - current vanilla timetable;
+  - selected schedule preset / working draft, shown as a softer ghost.
+- The user can edit the draft and apply it to selected pawns, or load a saved preset first and then apply it.
+- `SchedulePreset` stores only the 24 vanilla timetable assignments. It is global and named.
+- Presets live in `Config/OrderedWork/schedules.json`; they are not per-save.
+- Applying a preset writes the selected pawns' vanilla timetable. It does not change the WorkType order lane.
+- Per-WorkType hour windows are **not part of the first schedule implementation**. They remain a later optional layer.
+- Vanilla timetable still decides Work/Joy/Sleep; no second parallel timetable.
 
 ## 9. Lane visuals
 
@@ -134,7 +147,9 @@ Part of a three-mod suite (standalone-first, optional integration): Work Control
 ## 13. Exclusions
 
 - No full compatibility with Work Tab/Better Work Tab/Enhanced Work Tab/WorkRoles/Compact Work Tab/PriorityMaster/More Work Priorities while replacing the Work tab.
-- No own schedule tab, apparel system, area system, drug/food system, or work-permission system.
+- No parallel schedule, apparel or area system; policy tabs assign vanilla state only.
+- No zone creation; only existing allowed areas.
+- No per-WorkType hour windows in the first schedule implementation.
 - No room assignment.
 - No drugs in Work Control.
 - No per-pawn per-giver numeric priorities in v1.
@@ -147,11 +162,12 @@ Part of a three-mod suite (standalone-first, optional integration): Work Control
 1. Persistence + horizontal lane.
 2. Result table + advanced per-pawn tab.
 3. Lane visuals.
-4. Per-WorkType time windows.
-5. Zones + bulk/emergency.
-6. Outfit Stand equipment/emergency.
-7. Multi-pawn compatibility/team roles.
-8. Global split/merge editor.
+4. Zones: existing areas, per-map assignment, bulk/emergency.
+5. Schedule: two-lane timetable editor, named presets, apply to selected pawns.
+6. Clothing: clothing by WorkType; per-pawn override in detail.
+7. Optional per-WorkType time windows.
+8. Outfit Stand equipment/emergency.
+9. Multi-pawn compatibility/team roles.
 
 ## 15. Open questions
 
