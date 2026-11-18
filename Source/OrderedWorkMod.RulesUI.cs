@@ -18,6 +18,9 @@ namespace OrderedWork
     public partial class OrderedWorkMod : Mod
     {
         private Vector2 passionWeightScroll;
+        private readonly List<string> workOrderDraft = new List<string>();
+        private readonly List<string> workOrderBaseline = new List<string>();
+        private bool workOrderDraftInitialized;
         private readonly HashSet<string> collapsedSections = new HashSet<string>();
 
         private bool DrawCollapsibleSection(Listing_Standard list, string key, string title)
@@ -79,21 +82,47 @@ namespace OrderedWork
                 list.Label("Work type order (top = first). Drag rows to reorder:");
                 WorkConfigProfile rulesProfile = WorkConfigStore.LoadEditingProfile(activeProfileName);
                 List<WorkTypeDef> orderedTypes = WorkConfigStore.GetOrderedVisibleWorkTypes(rulesProfile);
-                List<Rect> workRows = new List<Rect>();
-                for (int i = 0; i < orderedTypes.Count; i++)
+                if (!workOrderDraftInitialized)
                 {
-                    WorkTypeDef wt = orderedTypes[i];
-                    string defName = wt.defName;
+                    workOrderDraft.Clear();
+                    workOrderBaseline.Clear();
+                    for (int i = 0; i < orderedTypes.Count; i++)
+                    {
+                        workOrderDraft.Add(orderedTypes[i].defName);
+                        workOrderBaseline.Add(orderedTypes[i].defName);
+                    }
+                    workOrderDraftInitialized = true;
+                }
+                List<Rect> workRows = new List<Rect>();
+                for (int i = 0; i < workOrderDraft.Count; i++)
+                {
+                    WorkTypeDef wt = DefDatabase<WorkTypeDef>.GetNamedSilentFail(workOrderDraft[i]);
+                    if (wt == null) continue;
                     Rect row = list.GetRect(24f);
-                    DrawReorderRow(row, i + 1 + ". " + wt.labelShort, 1, i, WorkTypeTooltip(defName));
+                    UiZebra.Draw(row, i);
+                    DrawReorderRow(row, i + 1 + ". " + wt.labelShort, 1, i, WorkTypeTooltip(wt.defName));
+                    bool changed = i >= workOrderBaseline.Count || workOrderDraft[i] != workOrderBaseline[i];
+                    if (changed)
+                    {
+                        Widgets.Label(new Rect(row.xMax - 86f, row.y, 60f, 20f), "Changed");
+                    }
                     workRows.Add(row);
                 }
-                HandleReorderDrag(1, workRows, delegate(int from, int to)
+                HandleReorderDrag(1, workRows, MoveWorkOrderDraft);
+                list.Gap(4f);
+                Rect workButtons = list.GetRect(28f);
+                Rect[] workButtonCells = UiFlex.Columns(workButtons, 6f, 1f, 1f);
+                bool workOrderChanged = !workOrderDraft.SequenceEqual(workOrderBaseline);
+                if (UiButtonBar.Button(workButtonCells[0], "Apply work order", workOrderChanged))
                 {
-                    MoveWorkTypeProfile(orderedTypes, from, to);
-                });
+                    ApplyWorkOrderDraft();
+                }
+                if (UiButtonBar.Button(workButtonCells[1], "Cancel work order", workOrderChanged))
+                {
+                    workOrderDraft.Clear();
+                    workOrderDraft.AddRange(workOrderBaseline);
+                }
             }
-
             if (DrawCollapsibleSection(list, "recommendation-pins", "Recommendation pins"))
             {
                 list.CheckboxLabeled(

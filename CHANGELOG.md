@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.139] - 2026-11-18
+
+### Added — zebra rows and safe Work type order draft
+- Work type order is now a local draft with Changed status, Apply work order and Cancel work order.
+- Drag only edits the draft; nothing is written until Apply.
+- Zebra backgrounds added to Work type order, passion weights and Diagnostics rows.
+- Diagnostics checkboxes now carry explicit tooltips.
+- Shared `UiZebra` helper added; colors remain in `UiColors`.
+- Profiles spacing and Zone fixed map width remain.
+
 ## [0.3.0-alpha.138] - 2026-11-18
 
 ### Fixed — exact giver-column color, Profiles spacing and Zone map width

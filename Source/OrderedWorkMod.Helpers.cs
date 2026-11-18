@@ -133,6 +133,32 @@ namespace OrderedWork
             }
         }
 
+        private void MoveWorkOrderDraft(int from, int to)
+        {
+            if (from < 0 || from >= workOrderDraft.Count || to < 0 || to >= workOrderDraft.Count || from == to) return;
+            string item = workOrderDraft[from];
+            workOrderDraft.RemoveAt(from);
+            workOrderDraft.Insert(to, item);
+        }
+
+        private void ApplyWorkOrderDraft()
+        {
+            WorkConfigProfile profile = WorkConfigStore.LoadEditingProfile(activeProfileName);
+            if (profile == null) return;
+            for (int i = 0; i < workOrderDraft.Count; i++)
+            {
+                if (profile.WorkTypes.TryGetValue(workOrderDraft[i], out WorkTypeConfig config) && config != null)
+                {
+                    config.Order = i;
+                }
+            }
+            WorkConfigStore.SaveProfile(profile, true);
+            WorkConfigStore.SavePending(profile);
+            OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
+            workOrderBaseline.Clear();
+            workOrderBaseline.AddRange(workOrderDraft);
+            Messages.Message("Work type order applied.", MessageTypeDefOf.TaskCompletion, false);
+        }
         private void MoveWorkTypeProfile(List<WorkTypeDef> ordered, int from, int to)
         {
             if (ordered == null || from < 0 || from >= ordered.Count || to < 0 || to >= ordered.Count || from == to)
