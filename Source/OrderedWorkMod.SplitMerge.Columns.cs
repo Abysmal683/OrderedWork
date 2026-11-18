@@ -59,6 +59,7 @@ namespace OrderedWork
 
                 string name = names[i];
                 Rect row = new Rect(area.x + 3f, y, contentWidth - 6f, SplitMergeRowHeight - 2f);
+                UiZebra.Draw(row, i);
                 bool inDraft = originSide && draftNames.Contains(name);
                 bool dragged = smDragSide != 0
                     && smDragMergeMode == mergeMode
@@ -130,6 +131,7 @@ namespace OrderedWork
                 bool isFixed = i < fixedCount;
                 string name = isFixed ? existingNames[i] : incomingNames[i - fixedCount];
                 Rect row = new Rect(area.x + 3f, y, contentWidth - 6f, SplitMergeRowHeight - 2f);
+                UiZebra.Draw(row, i);
                 bool dragged = !isFixed
                     && smDragSide == 2
                     && smDragMergeMode

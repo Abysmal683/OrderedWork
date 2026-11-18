@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.140] - 2026-11-18
+
+### Added — zebra giver lists, unified disabled actions and action tooltips
+- Zebra rows applied to Split/Merge giver columns and Order giver lists.
+- Work order Apply/Cancel, Order Apply/Cancel, Profiles and Diagnostics actions now use the same `DrawActionButton` visual, including the dark disabled state.
+- Disabled action tooltips explain why they are unavailable.
+- Split/Merge draft actions expose their warning or save/cancel intent as a tooltip.
+- Work type order remains draft-only until Apply.
+
 ## [0.3.0-alpha.139] - 2026-11-18
 
 ### Added — zebra rows and safe Work type order draft

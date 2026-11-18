@@ -46,7 +46,7 @@ namespace OrderedWork
             }
         }
 
-        private static bool DrawActionButton(Rect rect, string label, bool enabled)
+        private static bool DrawActionButton(Rect rect, string label, bool enabled, string tooltip = null)
         {
             if (enabled)
             {

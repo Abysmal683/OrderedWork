@@ -82,6 +82,7 @@ namespace OrderedWork
             for (int i = 0; i < referenceGivers.Count; i++)
             {
                 Rect row = new Rect(left.x, left.y + 24f + i * SplitMergeRowHeight, left.width, SplitMergeRowHeight - 2f);
+                UiZebra.Draw(row, i);
                 Widgets.DrawBoxSolid(row, new Color(0.20f, 0.25f, 0.30f, 0.45f));
                 Widgets.LabelEllipses(new Rect(row.x + 4f, row.y, row.width - 8f, row.height), (i + 1) + ". " + referenceGivers[i]);
             }
@@ -90,6 +91,7 @@ namespace OrderedWork
             for (int i = 0; i < giverOrderDraft.Count; i++)
             {
                 Rect row = new Rect(right.x, right.y + 24f + i * SplitMergeRowHeight, right.width, SplitMergeRowHeight - 2f);
+                UiZebra.Draw(row, i);
                 DrawReorderRow(row, (i + 1) + ". " + giverOrderDraft[i], 5, i, null);
                 rows.Add(row);
             }
