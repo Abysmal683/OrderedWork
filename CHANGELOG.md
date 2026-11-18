@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.126] - 2026-11-18
+
+### Changed — Save dialog uses UiTable
+- Schedule preset rows now derive name/date/Overwrite/Delete widths from `UiTable`.
+- Removed the last manual xMax offsets in that row.
+- Collapsible Config sections and native close spacing remain.
+
 ## [0.3.0-alpha.125] - 2026-11-18
 
 ### Fixed — Config sections and native close spacing
