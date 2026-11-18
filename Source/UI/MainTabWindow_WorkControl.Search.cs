@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using OrderedWork.Config;
 using OrderedWork.Services;
+using OrderedWork.UI.Layout;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -43,16 +44,10 @@ namespace OrderedWork.UI
             x += 68f;
 
             Rect scopeRect = new Rect(x, searchY, 118f, SearchHeight - 2f);
-            bool previousEnabled = GUI.enabled;
-            GUI.enabled = previousEnabled && WorkFilterActive;
-            if (Widgets.ButtonText(scopeRect, "Filter: " + WorkFilterScopeLabel))
+            if (UiButtonBar.Button(scopeRect, "Filter: " + WorkFilterScopeLabel, WorkFilterActive,
+                "Where the Work filter applies: pawn rows, palette, or both"))
             {
                 workFilterScope = NextScope(workFilterScope);
-            }
-            GUI.enabled = previousEnabled;
-            if (Mouse.IsOver(scopeRect))
-            {
-                TooltipHandler.TipRegion(scopeRect, "Where the Work filter applies: pawn rows, palette, or both");
             }
             x += 122f;
 
@@ -61,19 +56,13 @@ namespace OrderedWork.UI
                 || WorkFilterActive
                 || invertWorkFilter
                 || workFilterScope != WorkFilterScope.Line;
-            GUI.enabled = previousEnabled && canClear;
-            if (Widgets.ButtonText(clearRect, "Clear"))
+            if (UiButtonBar.Button(clearRect, "Clear", canClear, "Clear the Pawn and Work filters"))
             {
                 searchText = "";
                 workFilterText = "";
                 workFilter = null;
                 invertWorkFilter = false;
                 workFilterScope = WorkFilterScope.Line;
-            }
-            GUI.enabled = previousEnabled;
-            if (Mouse.IsOver(clearRect))
-            {
-                TooltipHandler.TipRegion(clearRect, "Clear the Pawn and Work filters");
             }
         }
 

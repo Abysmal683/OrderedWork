@@ -3,19 +3,24 @@ using Verse;
 
 namespace OrderedWork.UI.Layout
 {
-    /// <summary>Action button with the same disabled treatment used in config panels.</summary>
+    /// <summary>
+    /// Single action-button implementation. GUI.enabled is what actually gives the
+    /// native button its disabled tint; the active argument alone does not.
+    /// </summary>
     public static class UiButtonBar
     {
-        public static bool Button(Rect rect, string label, bool enabled = true)
+        public static bool Button(Rect rect, string label, bool enabled = true, string tooltip = null)
         {
-            Color previous = GUI.color;
-            if (!enabled)
+            if (!string.IsNullOrEmpty(tooltip))
             {
-                GUI.color = UiColors.DisabledText;
+                TooltipHandler.TipRegion(rect, tooltip);
             }
-            bool clicked = Widgets.ButtonText(rect, label, true, true, enabled);
-            GUI.color = previous;
-            return clicked;
+
+            bool previousEnabled = GUI.enabled;
+            GUI.enabled = previousEnabled && enabled;
+            bool clicked = Widgets.ButtonText(rect, label);
+            GUI.enabled = previousEnabled;
+            return enabled && clicked;
         }
     }
 }

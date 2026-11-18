@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.146] - 2026-11-18
+
+### Fixed — single disabled renderer and Search button tint
+- `DrawActionButton` now delegates to `UiButtonBar.Button`; no duplicated implementation remains.
+- `UiButtonBar.Button` uses `GUI.enabled`, so disabled Work order, Split/Merge, Profiles, Diagnostics, Zone, Details and Recommend all share the same native dimming.
+- Search `Filter: Line` and `Clear` now use `UiButtonBar.Button` instead of local GUI.enabled blocks.
+- Native tooltips remain on disabled buttons.
+- No behavior changes.
+
 ## [0.3.0-alpha.145] - 2026-11-18
 
 ### Fixed — disabled state now uses GUI.enabled

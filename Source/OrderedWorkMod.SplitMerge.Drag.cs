@@ -7,6 +7,7 @@ using OrderedWork.Config;
 using OrderedWork.Core;
 using OrderedWork.Services;
 using OrderedWork.UI;
+using OrderedWork.UI.Layout;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -48,11 +49,7 @@ namespace OrderedWork
 
         private static bool DrawActionButton(Rect rect, string label, bool enabled, string tooltip = null)
         {
-            if (!string.IsNullOrEmpty(tooltip))
-            {
-                TooltipHandler.TipRegion(rect, tooltip);
-            }
-            return Widgets.ButtonText(rect, label, true, true, enabled);
+            return UiButtonBar.Button(rect, label, enabled, tooltip);
         }
         private static void DrawInlineWarning(Listing_Standard list, string warning)
         {
