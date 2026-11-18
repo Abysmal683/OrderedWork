@@ -3,6 +3,27 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.115] - 2026-11-17
+
+### Changed — native tabs, date layout and duplicate preset names
+- Tabs now use RimWorld `TabDrawer`/`TabRecord` for vanilla rounded atlas and colors.
+- Schedule save rows widen the date column; old presets use file modification time when ModifiedUtc is absent.
+- Loading presets deduplicates by name, keeping the newest record.
+- Saving a duplicate name overwrites the existing preset instead of creating another.
+- Empty name on Overwrite uses the selected preset name; opening Save from an unnamed pawn uses the pawn name.
+- Detail window uses native draggable=false plus `GUI.DragWindow` only on the title strip.
+
+## [0.3.0-alpha.114] - 2026-11-17
+
+### Changed — native RimWorld tabs and title-only window drag
+- `OrderedTabStrip` now wraps `Verse.TabDrawer` and `Verse.TabRecord`; tabs use the vanilla rounded atlas, border and selected color.
+- Details uses native tabs; Config uses native tabs.
+- Window uses `draggable=false` and `GUI.DragWindow` only on the title strip.
+- Window minimum/resize remains native through WindowResizer; content cannot start a window drag.
+- Save/Overwrite: empty name uses the selected preset; duplicate names overwrite; fallback owner name is passed when opening Save.
+- Schedule presets display ModifiedUtc, with filesystem fallback for old files.
+- Delete remains a labelled button with opaque inline confirmation.
+
 ## [0.3.0-alpha.113] - 2026-11-17
 
 ### Fixed — title-only drag, tabs and schedule naming

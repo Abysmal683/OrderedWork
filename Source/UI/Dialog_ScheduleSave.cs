@@ -75,13 +75,13 @@ namespace OrderedWork.UI
                 {
                     Widgets.DrawBoxSolid(row, new Color(0.22f, 0.30f, 0.40f, 1f));
                 }
-                Rect rowNameRect = new Rect(row.x + 4f, row.y + 3f, row.width - 310f, 28f);
+                Rect rowNameRect = new Rect(row.x + 4f, row.y + 3f, row.width - 338f, 28f);
                 if (Widgets.ButtonText(rowNameRect, preset.Name))
                 {
                     selectedIndex = i;
                     presetName = preset.Name;
                 }
-                Widgets.Label(new Rect(row.xMax - 214f, row.y + 4f, 100f, 28f),
+                Widgets.Label(new Rect(row.xMax - 330f, row.y + 4f, 128f, 28f),
                     string.IsNullOrWhiteSpace(preset.ModifiedUtc) ? "v" + preset.SchemaVersion : preset.ModifiedUtc);
                 if (Widgets.ButtonText(new Rect(row.xMax - 196f, row.y + 3f, 84f, 28f), "Overwrite"))
                 {
