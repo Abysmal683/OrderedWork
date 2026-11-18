@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.158] - 2026-11-18
+
+### Refactor — single optional VSE adapter
+- Removed the duplicate VSE reflection and visual API from `WorkTypePaletteView.Passion`.
+- `PassionSource` now owns optional VSE labels, icons, work-box icons and colour names; it caches the reflection API once.
+- VSE/Alpha Skills remains optional: without it, vanilla passion icons and labels still work.
+- No new hard dependency; no Harmony patch added.
+- VSE is still not referenced by the project.
+
 ## [0.3.0-alpha.157] - 2026-11-18
 
 ### Feature — pawn detail status
