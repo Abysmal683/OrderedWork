@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.151] - 2026-11-18
+
+### Fixed — enabled buttons keep their labels
+- `UiButtonBar.Button` only uses the empty native button plus overlay when disabled.
+- Enabled buttons pass the real label directly to `Widgets.ButtonText`.
+- Disabled body tint and normal text from .150 are preserved.
+- No behavior changes.
+
 ## [0.3.0-alpha.150] - 2026-11-18
 
 ### Fixed — native disabled button shape restored
