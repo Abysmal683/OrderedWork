@@ -95,10 +95,13 @@ namespace OrderedWork.UI
             Widgets.Label(new Rect(0f, 0f, inRect.width - 40f, 30f), PawnLabel(pawn));
             Text.Font = GameFont.Small;
 
-            Rect tabRow = new Rect(0f, 42f, inRect.width, 26f);
-            DrawDetailTab(new Rect(tabRow.x, tabRow.y, 84f, 24f), DetailTab.Overview, "Overview");
-            DrawDetailTab(new Rect(tabRow.x + 88f, tabRow.y, 84f, 24f), DetailTab.Schedule, "Horario");
-            DrawDetailTab(new Rect(tabRow.x + 176f, tabRow.y, 64f, 24f), DetailTab.Zone, "Zona");
+            Rect tabRow = new Rect(0f, 42f, inRect.width, 28f);
+            OrderedTabStrip.Draw(tabRow, new[] { "Overview", "Horario", "Zona" }, (int)detailTab,
+                delegate(int index)
+                {
+                    detailTab = (DetailTab)index;
+                    detailTabScroll = Vector2.zero;
+                });
 
             Rect content = new Rect(0f, 78f, inRect.width, inRect.height - 150f);
             switch (detailTab)

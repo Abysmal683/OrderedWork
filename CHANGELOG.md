@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.112] - 2026-11-17
+
+### Fixed — tab strip, content isolation and unnamed overwrite
+- Pawn detail now uses the shared large tab strip; Settings already uses it.
+- The whole content area below the title consumes mouse drag, limiting native Window drag to the title bar.
+- Schedule cells also consume paint drag.
+- Overwrite no longer requires the name field: it uses the selected preset name when the field is empty.
+- Delete uses the opaque inline confirmation footer.
+- Schedule labels remain compact with full tooltips.
+
 ## [0.3.0-alpha.111] - 2026-11-17
 
 ### Changed — native window and shared tab strip
