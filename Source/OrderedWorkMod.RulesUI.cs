@@ -31,28 +31,15 @@ namespace OrderedWork
 
         private void DrawSettingsTabs(Rect rect)
         {
-            float width = Mathf.Min(180f, (rect.width - 8f) * 0.5f);
-            Rect rulesRect = new Rect(rect.x, rect.y, width, 28f);
-            Rect generalRect = new Rect(rulesRect.xMax + 6f, rect.y, width, 28f);
-
-            if (Widgets.ButtonText(rulesRect, "Rules"))
-            {
-                if (settingsTab != TabRules)
+            OrderedTabStrip.Draw(rect, new[] { "Rules", "General" }, settingsTab,
+                delegate(int index)
                 {
-                    settingsTab = TabRules;
-                    ResetEditorUiState();
-                }
-            }
-            if (Widgets.ButtonText(generalRect, "General"))
-            {
-                if (settingsTab != TabGeneral)
-                {
-                    settingsTab = TabGeneral;
-                    ResetEditorUiState();
-                }
-            }
-
-            DrawTabMarker(settingsTab == TabRules ? rulesRect : generalRect);
+                    if (settingsTab != index)
+                    {
+                        settingsTab = index;
+                        ResetEditorUiState();
+                    }
+                });
         }
 
         private static void DrawTabMarker(Rect rect)

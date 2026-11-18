@@ -23,8 +23,6 @@ namespace OrderedWork.UI
 
         private readonly Pawn pawn;
         private DetailTab detailTab;
-        private bool titleDragging;
-        private Vector2 titleDragLast;
         private Vector2 overviewScroll;
         private Vector2 detailTabScroll;
 
@@ -34,7 +32,7 @@ namespace OrderedWork.UI
             doCloseX = true;
             doCloseButton = false;
             resizeable = true;
-            draggable = false;
+            draggable = true;
             absorbInputAroundWindow = true;
             closeOnClickedOutside = false;
             forcePause = false;
@@ -42,36 +40,6 @@ namespace OrderedWork.UI
 
 
         public override Vector2 InitialSize => new Vector2(1100f, 720f);
-
-        private void HandleTitleDrag(Rect inRect)
-        {
-            Rect titleRect = new Rect(windowRect.x, windowRect.y, windowRect.width, 34f);
-            bool overTitle = titleRect.Contains(Event.current.mousePosition)
-                || Mouse.IsOver(new Rect(0f, 0f, inRect.width, 34f));
-            if (Event.current.type == EventType.MouseDown && overTitle)
-            {
-                titleDragging = true;
-                titleDragLast = Event.current.mousePosition;
-                OrderedWorkMod.DebugLog("Detail title drag start: mouse=" + Event.current.mousePosition + " rect=" + windowRect);
-                Event.current.Use();
-            }
-            else if (titleDragging && Input.GetMouseButton(0))
-            {
-                Vector2 current = Event.current.mousePosition;
-                if (current != titleDragLast)
-                {
-                    Vector2 delta = current - titleDragLast;
-                    windowRect.x += delta.x;
-                    windowRect.y += delta.y;
-                    titleDragLast = current;
-                    Event.current.Use();
-                }
-            }
-            else if (!Input.GetMouseButton(0))
-            {
-                titleDragging = false;
-            }
-        }
 
         private bool resizerConfigured;
 
@@ -90,6 +58,8 @@ namespace OrderedWork.UI
             }
         }
 
+        private Vector2 lastWindowSize;
+
         private void EnforceMinimumWindowSize()
         {
             ConfigureResizer();
@@ -98,8 +68,11 @@ namespace OrderedWork.UI
                 if (windowRect.width < 500f) windowRect.width = 500f;
                 if (windowRect.height < 700f) windowRect.height = 700f;
             }
-            windowRect.width = Mathf.Min(windowRect.width, Screen.width - 20f);
-            windowRect.height = Mathf.Min(windowRect.height, Screen.height - 20f);
+            if (lastWindowSize != windowRect.size)
+            {
+                Widgets.mouseOverScrollViewStack.Clear();
+                lastWindowSize = windowRect.size;
+            }
         }
 
         public override void PreOpen()
@@ -110,7 +83,6 @@ namespace OrderedWork.UI
 
         public override void DoWindowContents(Rect inRect)
         {
-            HandleTitleDrag(inRect);
             EnforceMinimumWindowSize();
             if (pawn == null || pawn.Destroyed)
             {

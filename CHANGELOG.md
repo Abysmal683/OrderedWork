@@ -3,6 +3,18 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.111] - 2026-11-17
+
+### Changed — native window and shared tab strip
+- Adopted the BetterInfoCard approach for the panel: native `draggable=true`, `resizeable=true`, and `WindowResizer.minWindowSize` via reflection.
+- Removed custom title drag and per-frame windowRect minimum fighting.
+- Clears `Widgets.mouseOverScrollViewStack` when window size changes.
+- Schedule cells consume mouse drag so native window dragging is not started from the timetable.
+- Added `OrderedTabStrip` with a vanilla-like selected-tab underline; used in pawn detail and mod settings.
+- Schedule Delete is a normal button with an opaque inline confirmation footer.
+- Overwrite falls back to the selected preset name when the name field is empty.
+- Compact schedule labels use W/J/S/M/A at narrow widths with full tooltips.
+
 ## [0.3.0-alpha.110] - 2026-11-17
 
 ### Fixed — compact schedule cells and delete footer
