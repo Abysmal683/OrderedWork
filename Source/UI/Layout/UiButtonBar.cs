@@ -4,8 +4,9 @@ using Verse;
 namespace OrderedWork.UI.Layout
 {
     /// <summary>
-    /// Single action-button implementation. GUI.enabled is what actually gives the
-    /// native button its disabled tint; the active argument alone does not.
+    /// Single action-button implementation. Enabled buttons use the vanilla atlas.
+    /// Disabled buttons use CustomButtonText so the body itself is darkened while
+    /// the label stays readable.
     /// </summary>
     public static class UiButtonBar
     {
@@ -16,11 +17,24 @@ namespace OrderedWork.UI.Layout
                 TooltipHandler.TipRegion(rect, tooltip);
             }
 
-            bool previousEnabled = GUI.enabled;
-            GUI.enabled = previousEnabled && enabled;
-            bool clicked = Widgets.ButtonText(rect, label);
-            GUI.enabled = previousEnabled;
-            return enabled && clicked;
+            if (!enabled)
+            {
+                Widgets.CustomButtonText(
+                    ref rect,
+                    label,
+                    UiColors.DisabledButtonBackground,
+                    Color.white,
+                    UiColors.DisabledButtonBorder,
+                    UiColors.DisabledButtonBackground,
+                    false,
+                    0f,
+                    false,
+                    false,
+                    1f);
+                return false;
+            }
+
+            return Widgets.ButtonText(rect, label, true, true, true);
         }
     }
 }

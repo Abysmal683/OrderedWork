@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.149] - 2026-11-18
+
+### Fixed — CustomButtonText uses the correct API for disabled body tint
+- Disabled action buttons now use `Widgets.CustomButtonText` with explicit background, text, border and fill colors.
+- The body is darkened, the label stays normal white, and border size is zero (no thin internal line).
+- Enabled buttons remain native `Widgets.ButtonText`.
+- Passion tooltip hit-testing now uses the screen-space row rect instead of `Mouse.IsOver` inside the scroll group.
+- No behavior changes.
+
 ## [0.3.0-alpha.148] - 2026-11-18
 
 ### Fixed — disabled button body tint without dimming text

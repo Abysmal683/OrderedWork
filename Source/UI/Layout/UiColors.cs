@@ -13,6 +13,7 @@ namespace OrderedWork.UI.Layout
         public static readonly Color ColumnHeaderBackground = new Color(0.20f, 0.25f, 0.30f, 0.45f);
         public static readonly Color DisabledText = new Color(0.55f, 0.55f, 0.55f, 0.7f);
         public static readonly Color DisabledButtonBackground = new Color(0.32f, 0.26f, 0.16f, 1f);
+        public static readonly Color DisabledButtonBorder = new Color(0.45f, 0.40f, 0.28f, 1f);
         public static readonly Color WarningText = new Color(1f, 0.75f, 0.35f, 1f);
         public static readonly Color EmptyColumn = new Color(0.18f, 0.18f, 0.20f, 1f);
     }
