@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.120] - 2026-11-18
+
+### Added — layout wrapper and split metadata
+- Added `UiTabBar`, the tab/body wrapper over native `TabDrawer`.
+- Details and Config tabs now use the wrapper; tab body and content share the same top.
+- Added split metadata editing in Order mode for custom split WorkTypes: label, description and readonly defName.
+- Restore and Delete split now emit temporary messages.
+- Layout primitives and native tab wrapper are ready for migration of Save dialog, Schedule and Zone.
+
 ## [0.3.0-alpha.119] - 2026-11-18
 
 ### Changed — tab/body flush and layout spacing
