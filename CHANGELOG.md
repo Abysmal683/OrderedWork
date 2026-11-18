@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.116] - 2026-11-17
+
+### Changed — tab spacing, body and schedule drag policy
+- Native tabs are moved down so their rounded top no longer covers the title.
+- Added a lighter body background below the tabs in Details and Config.
+- Details now toggles native `draggable`: enabled on Overview/Zona, disabled while Horario is active.
+- Removed the failing custom title drag path; no content-drag interception remains.
+- Save dialog date column and duplicate-name overwrite remain in place.
+
 ## [0.3.0-alpha.115] - 2026-11-17
 
 ### Changed — native tabs, date layout and duplicate preset names

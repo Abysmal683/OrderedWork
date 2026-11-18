@@ -60,15 +60,6 @@ namespace OrderedWork.UI
 
         private Vector2 lastWindowSize;
 
-        private static void HandleWindowDrag(Rect inRect)
-        {
-            if (Event.current.type == EventType.MouseDown
-                && Mouse.IsOver(new Rect(0f, 0f, inRect.width, 34f)))
-            {
-                GUI.DragWindow(new Rect(0f, 0f, inRect.width, 34f));
-            }
-        }
-
         private void EnforceMinimumWindowSize()
         {
             ConfigureResizer();
@@ -93,7 +84,7 @@ namespace OrderedWork.UI
         public override void DoWindowContents(Rect inRect)
         {
             EnforceMinimumWindowSize();
-            HandleWindowDrag(inRect);
+            draggable = detailTab != DetailTab.Schedule;
             if (pawn == null || pawn.Destroyed)
             {
                 Widgets.Label(inRect, "Pawn unavailable.");
@@ -105,7 +96,7 @@ namespace OrderedWork.UI
             Widgets.Label(new Rect(0f, 0f, inRect.width - 40f, 30f), PawnLabel(pawn));
             Text.Font = GameFont.Small;
 
-            Rect tabRow = new Rect(0f, 42f, inRect.width, 28f);
+            Rect tabRow = new Rect(0f, 64f, inRect.width, 28f);
             OrderedTabStrip.Draw(tabRow, new[] { "Overview", "Horario", "Zona" }, (int)detailTab,
                 delegate(int index)
                 {
@@ -113,7 +104,8 @@ namespace OrderedWork.UI
                     detailTabScroll = Vector2.zero;
                 });
 
-            Rect content = new Rect(0f, 78f, inRect.width, inRect.height - 150f);
+            Rect content = new Rect(0f, 100f, inRect.width, inRect.height - 172f);
+            Widgets.DrawBoxSolid(content, new Color(0.13f, 0.14f, 0.17f, 1f));
             switch (detailTab)
             {
                 case DetailTab.Schedule:

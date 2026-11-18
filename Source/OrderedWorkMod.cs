@@ -104,7 +104,7 @@ namespace OrderedWork
         {
             EnsureProfileNameInitialized();
 
-            Rect tabsRect = new Rect(inRect.x, inRect.y, inRect.width, 28f);
+            Rect tabsRect = new Rect(inRect.x, inRect.y + 46f, inRect.width, 28f);
             DrawSettingsTabs(tabsRect);
 
             Rect body = new Rect(
@@ -115,6 +115,7 @@ namespace OrderedWork
 
             // Use the height measured after last frame's draw. Zero means "not measured yet",
             // so fall back to the body height and let this frame measure the real content.
+            Widgets.DrawBoxSolid(body, new Color(0.13f, 0.14f, 0.17f, 1f));
             float contentHeight = Mathf.Max(body.height, settingsContentHeight);
             Rect viewRect = new Rect(0f, 0f, body.width - 24f, contentHeight);
             Widgets.BeginScrollView(body, ref scroll, viewRect);
