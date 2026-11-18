@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.155] - 2026-11-18
+
+### Refactor — single action-button dependency
+- Removed the `DrawActionButton` alias; all mod partials call `UiButtonBar.Button` directly.
+- Split/Merge, Order and Zone action buttons regained contextual tooltips.
+- No visual or behavioral change beyond tooltips.
+- CodeGraph retains one button implementation to locate.
+
 ## [0.3.0-alpha.154] - 2026-11-18
 
 ### Fixed — Reset recommendation weights state

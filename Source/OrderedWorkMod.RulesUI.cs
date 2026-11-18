@@ -113,11 +113,11 @@ namespace OrderedWork
                 Rect workButtons = list.GetRect(28f);
                 Rect[] workButtonCells = UiFlex.Columns(workButtons, 6f, 1f, 1f);
                 bool workOrderChanged = !workOrderDraft.SequenceEqual(workOrderBaseline);
-                if (DrawActionButton(workButtonCells[0], "Apply work order", workOrderChanged, workOrderChanged ? "Apply the reordered WorkTypes." : "No work order changes to apply."))
+                if (UiButtonBar.Button(workButtonCells[0], "Apply work order", workOrderChanged, workOrderChanged ? "Apply the reordered WorkTypes." : "No work order changes to apply."))
                 {
                     ApplyWorkOrderDraft();
                 }
-                if (DrawActionButton(workButtonCells[1], "Cancel work order", workOrderChanged, workOrderChanged ? "Discard the work order draft." : "No work order changes to cancel."))
+                if (UiButtonBar.Button(workButtonCells[1], "Cancel work order", workOrderChanged, workOrderChanged ? "Discard the work order draft." : "No work order changes to cancel."))
                 {
                     workOrderDraft.Clear();
                     workOrderDraft.AddRange(workOrderBaseline);
@@ -245,7 +245,7 @@ namespace OrderedWork
             list.Gap(6f);
 
 
-            if (DrawActionButton(list.GetRect(28f), "Save current as profile", true, "Save the active profile as JSON."))
+            if (UiButtonBar.Button(list.GetRect(28f), "Save current as profile", true, "Save the active profile as JSON."))
             {
                 string profile = string.IsNullOrWhiteSpace(newProfileName) ? activeProfileName : newProfileName.Trim();
                 if (string.IsNullOrWhiteSpace(profile))
@@ -266,7 +266,7 @@ namespace OrderedWork
                 }
             list.Gap(4f);
             }
-            if (DrawActionButton(list.GetRect(28f), "Write pending for active profile", true, "Write pending edits for the active profile."))
+            if (UiButtonBar.Button(list.GetRect(28f), "Write pending for active profile", true, "Write pending edits for the active profile."))
             {
                 WorkConfigProfile captured = WorkConfigProfileBuilder.Capture(Settings, activeProfileName);
                 profileStatus = WorkConfigStore.SavePending(captured)
@@ -327,7 +327,7 @@ namespace OrderedWork
                 {
                     list.Label("Load a colony to run the dense-rank test.");
                 }
-                else if (DrawActionButton(list.GetRect(28f), "Test dense rank on colonists (log)", true, "Run the dense-rank technical spike."))
+                else if (UiButtonBar.Button(list.GetRect(28f), "Test dense rank on colonists (log)", true, "Run the dense-rank technical spike."))
                 {
                     ApplyTestDenseRank();
                 }
@@ -339,7 +339,7 @@ namespace OrderedWork
                 list.Label("Reset the mod configuration without touching pawn 1..N priorities.");
                 if (!confirmResetAll)
                 {
-                    if (DrawActionButton(list.GetRect(28f), "Reset config mod all", true, "Reset all Ordered Work configuration."))
+                    if (UiButtonBar.Button(list.GetRect(28f), "Reset config mod all", true, "Reset all Ordered Work configuration."))
                     {
                         confirmResetAll = true;
                     }
@@ -347,12 +347,12 @@ namespace OrderedWork
                 else
                 {
                     list.Label("This clears orders, splits, merges, colors, stress test and panel height, plus any unsaved drafts. Pawn work priorities are not touched.");
-                    if (DrawActionButton(list.GetRect(28f), "Confirm reset config mod all", true, "Confirm the full configuration reset."))
+                    if (UiButtonBar.Button(list.GetRect(28f), "Confirm reset config mod all", true, "Confirm the full configuration reset."))
                     {
                         ResetAllSettings();
                         confirmResetAll = false;
                     }
-                    if (DrawActionButton(list.GetRect(28f), "Cancel reset", true, "Cancel the pending configuration reset."))
+                    if (UiButtonBar.Button(list.GetRect(28f), "Cancel reset", true, "Cancel the pending configuration reset."))
                     {
                         confirmResetAll = false;
                     }

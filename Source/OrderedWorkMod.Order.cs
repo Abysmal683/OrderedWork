@@ -101,11 +101,11 @@ namespace OrderedWork
             float half = (buttons.width - 8f) * 0.5f;
             bool changed = !giverOrderDraft.SequenceEqual(giverOrderInitial);
             giverOrderDirty = changed;
-            if (DrawActionButton(new Rect(buttons.x, buttons.y, half, 28f), "Apply giver order", changed))
+            if (UiButtonBar.Button(new Rect(buttons.x, buttons.y, half, 28f), "Apply giver order", changed))
             {
                 ApplyGiverOrderDraft(active.Profile);
             }
-            if (DrawActionButton(new Rect(buttons.x + half + 8f, buttons.y, half, 28f), "Cancel giver order", changed))
+            if (UiButtonBar.Button(new Rect(buttons.x + half + 8f, buttons.y, half, 28f), "Cancel giver order", changed))
             {
                 giverOrderDraft = new List<string>(giverOrderInitial);
                 giverOrderDirty = false;

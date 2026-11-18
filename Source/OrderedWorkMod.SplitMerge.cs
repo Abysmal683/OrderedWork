@@ -188,15 +188,15 @@ namespace OrderedWork
 
             string selectedWarning = MergeValidationWarning(false);
             string allWarning = MergeValidationWarning(true);
-            if (DrawActionButton(selectedRect, "Merge selected", string.IsNullOrEmpty(selectedWarning)))
+            if (UiButtonBar.Button(selectedRect, "Merge selected", string.IsNullOrEmpty(selectedWarning)))
             {
                 SaveMerge(mergeDraft);
             }
-            if (DrawActionButton(allRect, "Merge all", string.IsNullOrEmpty(allWarning)))
+            if (UiButtonBar.Button(allRect, "Merge all", string.IsNullOrEmpty(allWarning)))
             {
                 SaveMerge(originNames);
             }
-            if (DrawActionButton(cancelRect, "Cancel draft", mergeDirty))
+            if (UiButtonBar.Button(cancelRect, "Cancel draft", mergeDirty))
             {
                 mergeDraft.Clear();
                 mergeTargetScroll = 0f;

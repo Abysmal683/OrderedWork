@@ -50,7 +50,7 @@ namespace OrderedWork
 
             bool changed = splitMetaLabel != (split.Label ?? "")
                 || splitMetaDescription != (split.Description ?? "");
-            if (DrawActionButton(list.GetRect(26f), "Save split metadata", changed))
+            if (UiButtonBar.Button(list.GetRect(26f), "Save split metadata", changed))
             {
                 WorkConfigProfile editing = LoadEditingProfile();
                 if (editing != null && editing.WorkTypes.TryGetValue(selectedGiverType, out WorkTypeConfig target)

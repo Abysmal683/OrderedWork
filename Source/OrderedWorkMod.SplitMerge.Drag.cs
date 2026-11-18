@@ -33,11 +33,11 @@ namespace OrderedWork
             Rect actionRect = new Rect(actionsRect.x, actionsRect.y, buttonWidth, 28f);
             Rect cancelRect = new Rect(actionRect.xMax + 6f, actionsRect.y, buttonWidth, 28f);
 
-            if (DrawActionButton(actionRect, actionLabel, string.IsNullOrEmpty(warning)))
+            if (UiButtonBar.Button(actionRect, actionLabel, string.IsNullOrEmpty(warning)))
             {
                 onSave();
             }
-            if (DrawActionButton(cancelRect, "Cancel draft", canCancel))
+            if (UiButtonBar.Button(cancelRect, "Cancel draft", canCancel))
             {
                 onCancel();
             }
@@ -47,10 +47,6 @@ namespace OrderedWork
             }
         }
 
-        private static bool DrawActionButton(Rect rect, string label, bool enabled, string tooltip = null)
-        {
-            return UiButtonBar.Button(rect, label, enabled, tooltip);
-        }
         private static void DrawInlineWarning(Listing_Standard list, string warning)
         {
             Color previous = GUI.color;
