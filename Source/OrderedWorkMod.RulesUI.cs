@@ -113,11 +113,11 @@ namespace OrderedWork
                 Rect workButtons = list.GetRect(28f);
                 Rect[] workButtonCells = UiFlex.Columns(workButtons, 6f, 1f, 1f);
                 bool workOrderChanged = !workOrderDraft.SequenceEqual(workOrderBaseline);
-                if (UiButtonBar.Button(workButtonCells[0], "Apply work order", workOrderChanged))
+                if (DrawActionButton(workButtonCells[0], "Apply work order", workOrderChanged, workOrderChanged ? "Apply the reordered WorkTypes." : "No work order changes to apply."))
                 {
                     ApplyWorkOrderDraft();
                 }
-                if (UiButtonBar.Button(workButtonCells[1], "Cancel work order", workOrderChanged))
+                if (DrawActionButton(workButtonCells[1], "Cancel work order", workOrderChanged, workOrderChanged ? "Discard the work order draft." : "No work order changes to cancel."))
                 {
                     workOrderDraft.Clear();
                     workOrderDraft.AddRange(workOrderBaseline);

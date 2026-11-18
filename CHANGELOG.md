@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.141] - 2026-11-18
+
+### Changed — visible outlined action buttons and stronger zebra
+- `DrawActionButton` now uses a dark outlined surface for both enabled and disabled states; text stays bright when enabled and muted when blocked.
+- Work order, Split/Merge, Order, Profiles, Diagnostics and Zone use that same action style.
+- Zebra alpha increased from 0.035 to 0.085 so alternating rows are actually visible.
+- Work order Apply/Cancel receive disabled-state tooltips.
+- This is a visual-only batch; no behavior changes.
+
 ## [0.3.0-alpha.140] - 2026-11-18
 
 ### Added — zebra giver lists, unified disabled actions and action tooltips

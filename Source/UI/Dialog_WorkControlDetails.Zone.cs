@@ -78,7 +78,7 @@ namespace OrderedWork.UI
             Rect buttonRow = rows.Next(26f);
             Rect applyRect = new Rect(buttonRow.x, buttonRow.y, 130f, buttonRow.height);
             Rect manageRect = new Rect(buttonRow.x + 134f, buttonRow.y, 130f, buttonRow.height);
-            if (UiButtonBar.Button(applyRect, "Apply zone", zoneChanged && !detailZoneMissing))
+            if (DrawActionButton(applyRect, "Apply zone", zoneChanged && !detailZoneMissing))
             {
                 ApplyZone();
             }
@@ -89,7 +89,7 @@ namespace OrderedWork.UI
                         ? "The saved area no longer exists. Choose an existing area first."
                         : "Apply is enabled only when the selected zone differs from the applied zone.");
             }
-            if (UiButtonBar.Button(manageRect, "Manage zones"))
+            if (DrawActionButton(manageRect, "Manage zones", true))
             {
                 if (detailZoneMap != null)
                 {

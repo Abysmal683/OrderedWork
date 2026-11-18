@@ -10,7 +10,7 @@ namespace OrderedWork.UI.Layout
         {
             if ((index & 1) == 0)
             {
-                Widgets.DrawBoxSolid(row, new Color(1f, 1f, 1f, 0.035f));
+                Widgets.DrawBoxSolid(row, new Color(1f, 1f, 1f, 0.085f));
             }
         }
     }
