@@ -58,11 +58,11 @@ namespace OrderedWork.UI
             detailScheduleName = Widgets.TextField(new Rect(50f, y, 220f, line), detailScheduleName ?? "");
             bool hasValidName = !string.IsNullOrWhiteSpace(detailScheduleName);
             bool hasChanges = HasScheduleChanges();
-            if (Widgets.ButtonText(new Rect(276f, y, 64f, line), "Save", true, true, hasValidName))
+            if (Widgets.ButtonText(new Rect(276f, y, 64f, line), "Save"))
             {
-                SaveDetailSchedule();
+                OpenSaveDialog();
             }
-            if (Widgets.ButtonText(new Rect(344f, y, 116f, line), "Apply to pawn", true, true, hasChanges))
+            if (DrawActionButton(new Rect(344f, y, 116f, line), "Apply to pawn", hasChanges))
             {
                 if (hasValidName && SaveDetailSchedule())
                 {
@@ -96,6 +96,31 @@ namespace OrderedWork.UI
                 "Prioridad por hora: reservada para el override de WorkType; no se guarda en el preset.");
         }
 
+        private void OpenSaveDialog()
+        {
+            if (detailSchedule == null)
+            {
+                return;
+            }
+            Find.WindowStack.Add(new Dialog_ScheduleSave(detailSchedule, delegate(SchedulePreset saved)
+            {
+                detailPresets = SchedulePresetStore.LoadAll();
+                detailSchedule = saved;
+                detailScheduleName = saved.Name;
+            }));
+        }
+
+        private static bool DrawActionButton(Rect rect, string label, bool active)
+        {
+            Color previous = GUI.color;
+            if (!active)
+            {
+                GUI.color = new Color(0.55f, 0.55f, 0.55f, 0.7f);
+            }
+            bool clicked = Widgets.ButtonText(rect, label, true, true, active);
+            GUI.color = previous;
+            return clicked;
+        }
         private bool HasScheduleChanges()
         {
             if (detailSchedule == null || detailSchedule.Slots == null || pawn == null || pawn.timetable == null)
@@ -144,7 +169,7 @@ namespace OrderedWork.UI
                 Widgets.Label(rect, "No assignment defs");
                 return;
             }
-            Color color = ScheduleColor(detailBrush.defName);
+            Color color = detailBrush.color;
             Widgets.DrawBoxSolid(new Rect(rect.x, rect.y + 4f, 16f, 16f), color);
             if (Widgets.ButtonText(new Rect(rect.x + 20f, rect.y, rect.width - 20f, rect.height),
                 ShortLabel(detailBrush)))
@@ -178,7 +203,7 @@ namespace OrderedWork.UI
                 {
                     detailSchedule.Slots[hour] = detailBrush != null ? detailBrush.defName : "";
                 }
-                Color color = def != null ? ScheduleColor(def.defName) : new Color(0.18f, 0.18f, 0.20f, 1f);
+                Color color = def != null ? def.color : new Color(0.18f, 0.18f, 0.20f, 1f);
                 if (origin)
                 {
                     color = new Color(color.r, color.g, color.b, 0.55f);
@@ -219,16 +244,6 @@ namespace OrderedWork.UI
                 return null;
             }
             return SchedulePolicyResolver.ResolveDef(detailSchedule.Slots[hour]);
-        }
-
-        private static Color ScheduleColor(string defName)
-        {
-            if (defName == "Work") return new Color(0.30f, 0.55f, 0.25f, 1f);
-            if (defName == "Joy") return new Color(0.55f, 0.30f, 0.65f, 1f);
-            if (defName == "Sleep") return new Color(0.25f, 0.35f, 0.70f, 1f);
-            if (defName == "Meditate") return new Color(0.25f, 0.65f, 0.35f, 1f);
-            if (defName == "Anything") return new Color(0.55f, 0.55f, 0.55f, 1f);
-            return new Color(0.45f, 0.45f, 0.50f, 1f);
         }
 
         private void ShowPresetMenu()

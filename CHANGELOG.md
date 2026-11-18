@@ -3,6 +3,18 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.103] - 2026-11-17
+
+### Changed — save dialog, colors and zone filtering
+- Schedule Save now opens a dialog with Save as new, Replace, Delete and Cancel.
+- Schedule Save/Apply use the standard disabled visual state; Apply is enabled only by real timetable changes.
+- Assignment cells use the original `TimeAssignmentDef.color`, fixing the Work color mismatch.
+- Zone Apply is disabled until the selected area differs from the applied area.
+- Zone picker is restricted to `Area_Allowed` and `Area_Home`; built-in roof/pollution/snow areas are excluded.
+- Zone management button is renamed to `Manage zones`.
+- Detail panel is explicitly draggable/resizable with a 300x300 minimum; content scrolls when resized.
+- Added verbose logs for schedule save/replace/delete and zone area enumeration.
+
 ## [0.3.0-alpha.102] - 2026-11-17
 
 ### Changed — detail panel ergonomics

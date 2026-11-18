@@ -48,7 +48,8 @@ namespace OrderedWork.UI
             {
                 ShowAreaMenu();
             }
-            if (Widgets.ButtonText(new Rect(306f, y, 120f, 28f), "Apply zone"))
+            bool zoneChanged = ZoneHasChanges();
+            if (DrawActionButton(new Rect(306f, y, 120f, 28f), "Apply zone", zoneChanged))
             {
                 ApplyZone();
             }
@@ -74,7 +75,7 @@ namespace OrderedWork.UI
             Widgets.Label(new Rect(0f, y, content.width, 20f), "Last applied on this map: " + lastZone);
             y += 24f;
 
-            if (Widgets.ButtonText(new Rect(0f, y, 220f, 26f), "Manage zones (create/delete)"))
+            if (Widgets.ButtonText(new Rect(0f, y, 220f, 26f), "Manage zones"))
             {
                 if (detailZoneMap != null)
                 {
@@ -165,6 +166,7 @@ namespace OrderedWork.UI
             if (detailZoneMap != null)
             {
                 foreach (Area area in detailZoneMap.areaManager.AllAreas
+                    .Where(a => a is Area_Allowed || a is Area_Home)
                     .OrderBy(a => a.Label, StringComparer.OrdinalIgnoreCase))
                 {
                     Area captured = area;
@@ -177,6 +179,43 @@ namespace OrderedWork.UI
             Find.WindowStack.Add(new FloatMenu(options));
         }
 
+        private bool ZoneHasChanges()
+        {
+            if (detailZoneMap == null)
+            {
+                return false;
+            }
+            PawnWorkOrder entry = OrderedWorkGameComponent.GetOrCreate()?.GetEntry(pawn);
+            PawnZoneBinding binding = entry?.zones?.FirstOrDefault(z => z.mapUniqueId == detailZoneMap.uniqueID);
+            if (binding != null)
+            {
+                if (binding.unrestricted != (detailZoneArea == null))
+                {
+                    return true;
+                }
+                if (detailZoneArea == null)
+                {
+                    return false;
+                }
+                return binding.areaId != detailZoneArea.ID
+                    && binding.areaUniqueId != detailZoneArea.GetUniqueLoadID();
+            }
+            if (detailZoneMap == pawn.Map && pawn.playerSettings != null)
+            {
+                Area current = pawn.playerSettings.AreaRestrictionInPawnCurrentMap;
+                if (current == null && detailZoneArea == null)
+                {
+                    return false;
+                }
+                if (current == null || detailZoneArea == null)
+                {
+                    return true;
+                }
+                return current.ID != detailZoneArea.ID
+                    || current.GetUniqueLoadID() != detailZoneArea.GetUniqueLoadID();
+            }
+            return true;
+        }
         private void ApplyZone()
         {
             if (detailZoneMap == null)
