@@ -63,7 +63,7 @@ namespace OrderedWork.UI
             {
                 OpenSaveDialog();
             }
-            if (DrawActionButton(new Rect(344f, y, 116f, line), "Apply to pawn", hasChanges))
+            if (UiButtonBar.Button(new Rect(344f, y, 116f, line), "Apply to pawn", hasChanges))
             {
                 if (hasValidName && SaveDetailSchedule())
                 {
@@ -222,18 +222,6 @@ namespace OrderedWork.UI
                 }
             }
             return false;
-        }
-
-        private static bool DrawActionButton(Rect rect, string label, bool active)
-        {
-            Color previous = GUI.color;
-            if (!active)
-            {
-                GUI.color = new Color(0.55f, 0.55f, 0.55f, 0.7f);
-            }
-            bool clicked = Widgets.ButtonText(rect, label, true, true, active);
-            GUI.color = previous;
-            return clicked;
         }
 
         private void ShowPresetMenu()

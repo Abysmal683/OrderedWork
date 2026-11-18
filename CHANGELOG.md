@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.144] - 2026-11-18
+
+### Fixed — single action button implementation
+- Removed the duplicate `DrawActionButton` overload from Schedule; all actions now resolve to `UiButtonBar.Button`.
+- `UiButtonBar.Button` is a single native `Widgets.ButtonText` wrapper with optional tooltip.
+- Split/Merge Add/Cancel, Work order, Profiles, Diagnostics and Zone now share one enabled/disabled representation.
+- Added disabled explanations for Add split/Cancel draft.
+- Removed custom borders/backgrounds responsible for the thin line over disabled buttons.
+- No behavior changes.
+
 ## [0.3.0-alpha.143] - 2026-11-18
 
 ### Fixed — all action buttons use native vanilla states
