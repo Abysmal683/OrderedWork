@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace OrderedWork.Services
@@ -51,20 +52,83 @@ namespace OrderedWork.Services
 
         public static string LabelOf(Passion passion)
         {
+            string label = VseLabelOf(passion);
+            if (!string.IsNullOrEmpty(label))
+            {
+                return label;
+            }
+            return passion == Passion.Major ? "Major" : passion == Passion.Minor ? "Minor" : "None";
+        }
+
+        /// <summary>Returns the VSE label only when the optional mod is present.</summary>
+        public static string VseLabelOf(Passion passion)
+        {
             object def = GetVseDef(passion);
-            if (def != null)
+            if (def == null)
+            {
+                return null;
+            }
+            try
             {
                 string label = GetStringMember(def, "LabelCap");
                 if (string.IsNullOrEmpty(label))
                 {
                     label = GetStringMember(def, "label");
                 }
-                if (!string.IsNullOrEmpty(label))
-                {
-                    return label;
-                }
+                return string.IsNullOrEmpty(label) ? null : label;
             }
-            return passion == Passion.Major ? "Major" : passion == Passion.Minor ? "Minor" : "None";
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>Optional VSE passion icon. Returns null without VSE.</summary>
+        public static Texture2D IconOf(Passion passion)
+        {
+            return VseTextureOf(passion, "Icon");
+        }
+
+        /// <summary>Optional VSE work-box icon. Returns null without VSE.</summary>
+        public static Texture2D WorkBoxIconOf(Passion passion)
+        {
+            return VseTextureOf(passion, "WorkBoxIcon");
+        }
+
+        /// <summary>Optional VSE passion colour enum name. Returns null without VSE.</summary>
+        public static string ColorNameOf(Passion passion)
+        {
+            object def = GetVseDef(passion);
+            if (def == null)
+            {
+                return null;
+            }
+            try
+            {
+                object value = GetMember<object>(def, "color");
+                return value != null ? value.ToString() : null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        private static Texture2D VseTextureOf(Passion passion, string memberName)
+        {
+            object def = GetVseDef(passion);
+            if (def == null)
+            {
+                return null;
+            }
+            try
+            {
+                return GetMember<object>(def, memberName) as Texture2D;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public static string DescriptionOf(Passion passion)
@@ -126,6 +190,8 @@ namespace OrderedWork.Services
             }
         }
 
+        private static bool vseApiResolved;
+        private static MethodInfo passionToDefMethod;
         private static void EnsureInitialized()
         {
             if (initialized)
@@ -254,19 +320,41 @@ namespace OrderedWork.Services
 
         private static object GetVseDef(Passion passion)
         {
-            Type managerType = FindType("VSE.Passions.PassionManager");
-            if (managerType == null)
+            ResolveVseApi();
+            if (passionToDefMethod == null)
             {
                 return null;
             }
             try
             {
-                MethodInfo method = managerType.GetMethod("PassionToDef", BindingFlags.Public | BindingFlags.Static);
-                return method != null ? method.Invoke(null, new object[] { passion }) : null;
+                return passionToDefMethod.Invoke(null, new object[] { passion });
             }
             catch
             {
                 return null;
+            }
+        }
+
+        private static void ResolveVseApi()
+        {
+            if (vseApiResolved)
+            {
+                return;
+            }
+            vseApiResolved = true;
+            Type managerType = FindType("VSE.Passions.PassionManager");
+            if (managerType == null)
+            {
+                return;
+            }
+            MethodInfo[] methods = managerType.GetMethods(BindingFlags.Public | BindingFlags.Static);
+            for (int i = 0; i < methods.Length; i++)
+            {
+                if (methods[i].Name == "PassionToDef" && methods[i].GetParameters().Length == 1)
+                {
+                    passionToDefMethod = methods[i];
+                    return;
+                }
             }
         }
 

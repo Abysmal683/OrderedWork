@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 using OrderedWork.Services;
 using RimWorld;
 using UnityEngine;
@@ -13,7 +10,7 @@ namespace OrderedWork.UI
     internal static partial class WorkTypePaletteView
     {        internal static string PassionText(Passion passion)
         {
-            string vseLabel = TryGetVseLabel(passion);
+            string vseLabel = PassionSource.VseLabelOf(passion);
             if (!string.IsNullOrEmpty(vseLabel))
             {
                 return vseLabel;
@@ -93,26 +90,22 @@ namespace OrderedWork.UI
 
         private static PassionVisual ComputePassionVisual(Passion passion)
         {
-            object passionDef = GetVsePassionDef(passion);
-            if (passionDef != null)
+            Texture2D colored = PassionSource.IconOf(passion);
+            if (colored != null)
             {
-                Texture2D colored = GetDefTexture(iconProperty, passionDef);
-                if (colored != null)
-                {
-                    PassionVisual result = new PassionVisual();
-                    result.Texture = colored;
-                    result.Tint = Color.white;
-                    return result;
-                }
+                PassionVisual result = new PassionVisual();
+                result.Texture = colored;
+                result.Tint = Color.white;
+                return result;
+            }
 
-                Texture2D workBox = GetDefTexture(workBoxIconProperty, passionDef);
-                if (workBox != null)
-                {
-                    PassionVisual result = new PassionVisual();
-                    result.Texture = workBox;
-                    result.Tint = TintForPassionColor(passionDef);
-                    return result;
-                }
+            Texture2D workBox = PassionSource.WorkBoxIconOf(passion);
+            if (workBox != null)
+            {
+                PassionVisual result = new PassionVisual();
+                result.Texture = workBox;
+                result.Tint = TintForPassionColor(passion);
+                return result;
             }
 
             // Vanilla colored textures first, then the vanilla gray work-box icons.
@@ -183,25 +176,9 @@ namespace OrderedWork.UI
             }
         }
 
-        private static Texture2D GetDefTexture(PropertyInfo property, object passionDef)
+        private static Color TintForPassionColor(Passion passion)
         {
-            if (property == null || passionDef == null)
-            {
-                return null;
-            }
-            try
-            {
-                return property.GetValue(passionDef, null) as Texture2D;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-
-        private static Color TintForPassionColor(object passionDef)
-        {
-            string colorName = PassionColorName(passionDef);
+            string colorName = PassionSource.ColorNameOf(passion);
             switch (colorName)
             {
                 case "Minor":
@@ -216,23 +193,6 @@ namespace OrderedWork.UI
             }
         }
 
-        private static string PassionColorName(object passionDef)
-        {
-            if (passionDef == null || colorField == null)
-            {
-                return "";
-            }
-            try
-            {
-                object value = colorField.GetValue(passionDef);
-                return value != null ? value.ToString() : "";
-            }
-            catch (Exception)
-            {
-                return "";
-            }
-        }
-
         private static int ColorRankOf(Passion passion)
         {
             int key = ToInt(passion);
@@ -243,147 +203,28 @@ namespace OrderedWork.UI
             }
 
             int rank = 0;
-            object passionDef = GetVsePassionDef(passion);
-            if (passionDef != null)
+            switch (PassionSource.ColorNameOf(passion))
             {
-                switch (PassionColorName(passionDef))
-                {
-                    case "Major":
-                        rank = 4;
-                        break;
-                    case "Minor":
-                        rank = 3;
-                        break;
-                    case "Main":
-                        rank = 2;
-                        break;
-                    case "Disabled":
-                        rank = 1;
-                        break;
-                }
+                case "Major":
+                    rank = 4;
+                    break;
+                case "Minor":
+                    rank = 3;
+                    break;
+                case "Main":
+                    rank = 2;
+                    break;
+                case "Disabled":
+                    rank = 1;
+                    break;
             }
 
             colorRankCache[key] = rank;
             return rank;
         }
 
-        private static string TryGetVseLabel(Passion passion)
-        {
-            object passionDef = GetVsePassionDef(passion);
-            if (passionDef == null)
-            {
-                return null;
-            }
 
-            // PassionDef extends Verse.Def; the inherited LabelCap is the reliable source.
-            Def def = passionDef as Def;
-            if (def != null && !string.IsNullOrEmpty(def.LabelCap))
-            {
-                return def.LabelCap;
-            }
 
-            try
-            {
-                PropertyInfo property = labelCapProperty ?? passionDef.GetType().GetProperty("LabelCap");
-                if (property != null)
-                {
-                    string labelCap = property.GetValue(passionDef, null) as string;
-                    if (!string.IsNullOrEmpty(labelCap))
-                    {
-                        return labelCap;
-                    }
-                }
-
-                FieldInfo labelField = passionDef.GetType().GetField("label", BindingFlags.Public | BindingFlags.Instance);
-                string label = labelField != null ? labelField.GetValue(passionDef) as string : null;
-                return string.IsNullOrEmpty(label) ? null : label.CapitalizeFirst();
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-
-        private static object GetVsePassionDef(Passion passion)
-        {
-            if (passion == Passion.None)
-            {
-                return null;
-            }
-            ResolveVseApi();
-            if (!vseAvailable || passionToDefMethod == null)
-            {
-                return null;
-            }
-            try
-            {
-                return passionToDefMethod.Invoke(null, new object[] { passion });
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-
-        private static void ResolveVseApi()
-        {
-            if (vseResolved)
-            {
-                return;
-            }
-            vseResolved = true;
-
-            try
-            {
-                Type managerType = null;
-                Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-                for (int i = 0; i < assemblies.Length; i++)
-                {
-                    try
-                    {
-                        managerType = assemblies[i].GetType("VSE.Passions.PassionManager", false);
-                    }
-                    catch (Exception)
-                    {
-                        managerType = null;
-                    }
-                    if (managerType != null)
-                    {
-                        break;
-                    }
-                }
-
-                if (managerType == null)
-                {
-                    return;
-                }
-
-                MethodInfo[] methods = managerType.GetMethods(BindingFlags.Public | BindingFlags.Static);
-                for (int i = 0; i < methods.Length; i++)
-                {
-                    if (methods[i].Name == "PassionToDef" && methods[i].GetParameters().Length == 1)
-                    {
-                        passionToDefMethod = methods[i];
-                        break;
-                    }
-                }
-
-                Type passionDefType = managerType.Assembly.GetType("VSE.Passions.PassionDef", false);
-                if (passionDefType != null)
-                {
-                    iconProperty = passionDefType.GetProperty("Icon", BindingFlags.Public | BindingFlags.Instance);
-                    workBoxIconProperty = passionDefType.GetProperty("WorkBoxIcon", BindingFlags.Public | BindingFlags.Instance);
-                    colorField = passionDefType.GetField("color", BindingFlags.Public | BindingFlags.Instance);
-                    labelCapProperty = passionDefType.GetProperty("LabelCap", BindingFlags.Public | BindingFlags.Instance);
-                }
-
-                vseAvailable = passionToDefMethod != null;
-            }
-            catch (Exception)
-            {
-                vseAvailable = false;
-            }
-        }
 
         private static int ToInt(Passion passion)
         {
@@ -396,14 +237,6 @@ namespace OrderedWork.UI
                 return (int)passion;
             }
         }
-
-        private static bool vseResolved;
-        private static bool vseAvailable;
-        private static MethodInfo passionToDefMethod;
-        private static PropertyInfo iconProperty;
-        private static PropertyInfo workBoxIconProperty;
-        private static PropertyInfo labelCapProperty;
-        private static FieldInfo colorField;
 
         private static bool vanillaTexturesResolved;
         private static Texture2D vanillaMinorColored;
