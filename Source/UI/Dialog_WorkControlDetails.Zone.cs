@@ -19,26 +19,26 @@ namespace OrderedWork.UI
         private void DrawZoneTab(Rect content)
         {
             EnsureZoneState();
-            float y = 0f;
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(0f, y, content.width, 24f), "Zona");
+            Widgets.Label(new Rect(0f, 0f, content.width, 24f), "Zona");
             Text.Font = GameFont.Small;
-            y += 30f;
-            Rect zoneInfo = new Rect(0f, y, content.width, 20f);
+            UiRows rows = new UiRows(new Rect(0f, 30f, content.width, Mathf.Max(0f, content.height - 30f)), 26f, 6f);
+
+            Rect zoneInfo = rows.Next(20f);
             Widgets.Label(zoneInfo, "Asigna un área existente. Usa Manage zones para crear o editar.");
             TooltipHandler.TipRegion(zoneInfo,
                 "No se crean zonas desde esta sección. El gestor vanilla permite crear, borrar, expandir y reducir áreas.");
-            y += 24f;
 
-            Widgets.Label(new Rect(0f, y, 48f, 26f), "Mapa:");
-            if (Widgets.ButtonText(new Rect(50f, y, 230f, 26f), MapLabel(detailZoneMap)))
+            Rect mapRow = rows.Next(26f);
+            Rect[] mapCells = UiFlex.Columns(mapRow, 4f, 48f, 230f, 1f);
+            Widgets.Label(mapCells[0], "Mapa:");
+            if (Widgets.ButtonText(mapCells[1], MapLabel(detailZoneMap)))
             {
                 ShowMapMenu();
             }
-            y += 32f;
 
-            Rect areaRect = new Rect(0f, y, 300f, 26f);
-            Rect swatch = new Rect(areaRect.x, areaRect.y + 5f, 16f, 16f);
+            Rect areaRow = rows.Next(26f);
+            Rect swatch = new Rect(areaRow.x, areaRow.y + 5f, 16f, 16f);
             if (detailZoneArea == null)
             {
                 Widgets.DrawBoxSolid(swatch, new Color(0.65f, 0.65f, 0.65f, 0.18f));
@@ -49,12 +49,11 @@ namespace OrderedWork.UI
                 Widgets.DrawBoxSolid(swatch, detailZoneArea.Color);
             }
             string areaLabel = detailZoneArea == null ? "Sin restricciones" : detailZoneArea.Label;
-            if (Widgets.ButtonText(new Rect(areaRect.x + 20f, areaRect.y, areaRect.width - 20f, areaRect.height), areaLabel))
+            if (Widgets.ButtonText(new Rect(areaRow.x + 20f, areaRow.y, Mathf.Max(40f, areaRow.width - 20f), areaRow.height), areaLabel))
             {
                 ShowAreaMenu();
             }
             bool zoneChanged = ZoneHasChanges();
-            y += 30f;
 
             PawnWorkOrder lastEntry = OrderedWorkGameComponent.GetOrCreate()?.GetEntry(pawn);
             PawnZoneBinding lastBinding = lastEntry?.zones?.FirstOrDefault(
@@ -73,45 +72,43 @@ namespace OrderedWork.UI
             {
                 lastZone = "none";
             }
-            Widgets.Label(new Rect(0f, y, content.width, 20f), "Last applied on this map: " + lastZone);
-            y += 24f;
+            Widgets.Label(rows.Next(20f), "Last applied on this map: " + lastZone);
 
-            if (UiButtonBar.Button(new Rect(0f, y, 130f, 26f), "Apply zone", zoneChanged && !detailZoneMissing))
+            Rect buttonRow = rows.Next(26f);
+            Rect[] buttonCells = UiFlex.Columns(buttonRow, 6f, 1f, 1f);
+            if (UiButtonBar.Button(buttonCells[0], "Apply zone", zoneChanged && !detailZoneMissing))
             {
                 ApplyZone();
             }
-            if (Mouse.IsOver(new Rect(0f, y, 130f, 26f)) && (!zoneChanged || detailZoneMissing))
+            if (Mouse.IsOver(buttonCells[0]) && (!zoneChanged || detailZoneMissing))
             {
-                TooltipHandler.TipRegion(new Rect(0f, y, 130f, 26f),
+                TooltipHandler.TipRegion(buttonCells[0],
                     detailZoneMissing
                         ? "The saved area no longer exists. Choose an existing area first."
                         : "Apply is enabled only when the selected zone differs from the applied zone.");
             }
-            if (UiButtonBar.Button(new Rect(134f, y, 130f, 26f), "Manage zones"))
+            if (UiButtonBar.Button(buttonCells[1], "Manage zones"))
             {
                 if (detailZoneMap != null)
                 {
                     Find.WindowStack.Add(new Dialog_ManageAreas(detailZoneMap));
                 }
             }
-            if (Mouse.IsOver(new Rect(134f, y, 130f, 26f)))
+            if (Mouse.IsOver(buttonCells[1]))
             {
-                TooltipHandler.TipRegion(new Rect(134f, y, 130f, 26f),
+                TooltipHandler.TipRegion(buttonCells[1],
                     "Open the vanilla area manager. Create, delete, expand or reduce areas there; Ordered Work only assigns existing areas.");
             }
-            y += 36f;
 
             PawnWorkOrder entry = OrderedWorkGameComponent.GetOrCreate()?.GetOrCreateEntry(pawn);
             PawnZoneBinding binding = entry?.zones?.FirstOrDefault(z => z.mapUniqueId == (detailZoneMap != null ? detailZoneMap.uniqueID : 0));
-            if (binding != null && detailZoneArea == null && !binding.unrestricted)
+            if (detailZoneMissing || (binding != null && detailZoneArea == null && !binding.unrestricted))
             {
                 GUI.color = new Color(1f, 0.75f, 0.35f, 1f);
-                Widgets.Label(new Rect(0f, y, content.width, 20f),
-                    "Aviso: la zona guardada ya no existe en este mapa. Se conserva la referencia.");
+                Widgets.Label(rows.Next(20f), "Aviso: la zona guardada ya no existe en este mapa. Se conserva la referencia.");
                 GUI.color = Color.white;
             }
         }
-
         private void EnsureZoneState()
         {
             if (detailZoneMap == null)
