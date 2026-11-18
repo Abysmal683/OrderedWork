@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.137] - 2026-11-18
+
+### Added — shared UI colors and layout corrections
+- Added `UiColors` as the shared palette for panel body, column background, column headers, warnings, disabled text and empty cells.
+- Order giver columns use the same column color as Split/Merge.
+- Profiles section gets breathing room before/after its content.
+- Zone map selector uses fixed 48px label + 230px map button from `UiTable`; it no longer stretches.
+- CodeGraph index initialized locally; `.codegraph/` ignored by Git.
+- Split/Merge/Order tabs remain native; no functional changes.
+
 ## [0.3.0-alpha.136] - 2026-11-18
 
 ### Fixed — Order column contrast, Profiles spacing and Zone map width

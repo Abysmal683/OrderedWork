@@ -87,8 +87,8 @@ namespace OrderedWork
             Rect columnsRect = list.GetRect(SplitMergeColumnHeight);
             Rect left = new Rect(columnsRect.x, columnsRect.y, columnWidth, SplitMergeColumnHeight);
             Rect right = new Rect(columnsRect.x + columnWidth + 12f, columnsRect.y, columnWidth, SplitMergeColumnHeight);
-            Widgets.DrawBoxSolid(left, new Color(0.14f, 0.16f, 0.20f, 0.55f));
-            Widgets.DrawBoxSolid(right, new Color(0.14f, 0.16f, 0.20f, 0.55f));
+            Widgets.DrawBoxSolid(left, UiColors.ColumnBackground);
+            Widgets.DrawBoxSolid(right, UiColors.ColumnBackground);
             smOriginArea = left;
             smDestArea = right;
 
@@ -166,8 +166,8 @@ namespace OrderedWork
             Rect columnsRect = list.GetRect(SplitMergeColumnHeight);
             Rect left = new Rect(columnsRect.x, columnsRect.y, columnWidth, SplitMergeColumnHeight);
             Rect right = new Rect(columnsRect.x + columnWidth + 12f, columnsRect.y, columnWidth, SplitMergeColumnHeight);
-            Widgets.DrawBoxSolid(left, new Color(0.14f, 0.16f, 0.20f, 0.55f));
-            Widgets.DrawBoxSolid(right, new Color(0.14f, 0.16f, 0.20f, 0.55f));
+            Widgets.DrawBoxSolid(left, UiColors.ColumnBackground);
+            Widgets.DrawBoxSolid(right, UiColors.ColumnBackground);
             smOriginArea = left;
             smDestArea = right;
             smMergeDropIndex = -1;

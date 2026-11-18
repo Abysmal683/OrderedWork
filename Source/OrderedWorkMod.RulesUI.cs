@@ -165,6 +165,7 @@ namespace OrderedWork
         }
         private void DrawProfilePanel(Listing_Standard list)
         {
+            list.Gap(8f);
             list.Label("Global JSON profiles (pending edits apply on restart):");
             if (!profileNameInitialized)
             {
@@ -246,8 +247,8 @@ namespace OrderedWork
             {
                 list.Label(profileStatus);
             }
+            list.Gap(8f);
         }
-
         private void DrawGeneralTab(Listing_Standard list)
         {
             if (DrawCollapsibleSection(list, "general-core", "Core settings"))

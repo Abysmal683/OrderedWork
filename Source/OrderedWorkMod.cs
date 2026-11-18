@@ -7,6 +7,7 @@ using OrderedWork.Config;
 using OrderedWork.Core;
 using OrderedWork.Services;
 using OrderedWork.UI;
+using OrderedWork.UI.Layout;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -115,7 +116,7 @@ namespace OrderedWork
 
             // Use the height measured after last frame's draw. Zero means "not measured yet",
             // so fall back to the body height and let this frame measure the real content.
-            Widgets.DrawBoxSolid(body, new Color(0.13f, 0.14f, 0.17f, 1f));
+            Widgets.DrawBoxSolid(body, UiColors.PanelBody);
             Rect scrollBody = body.ContractedBy(16f);
             float contentHeight = Mathf.Max(scrollBody.height, settingsContentHeight);
             Rect viewRect = new Rect(0f, 0f, scrollBody.width - 24f, contentHeight);

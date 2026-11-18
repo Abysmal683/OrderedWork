@@ -11,7 +11,7 @@ namespace OrderedWork.UI.Layout
             Color previous = GUI.color;
             if (!enabled)
             {
-                GUI.color = new Color(0.55f, 0.55f, 0.55f, 0.7f);
+                GUI.color = UiColors.DisabledText;
             }
             bool clicked = Widgets.ButtonText(rect, label, true, true, enabled);
             GUI.color = previous;

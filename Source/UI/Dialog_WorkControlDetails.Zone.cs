@@ -30,9 +30,10 @@ namespace OrderedWork.UI
                 "No se crean zonas desde esta sección. El gestor vanilla permite crear, borrar, expandir y reducir áreas.");
 
             Rect mapRow = rows.Next(26f);
-            Rect[] mapCells = UiFlex.Columns(mapRow, 4f, 48f, 230f, 1f);
-            Widgets.Label(mapCells[0], "Mapa:");
-            if (Widgets.ButtonText(mapCells[1], MapLabel(detailZoneMap)))
+            UiTable mapColumns = new UiTable(mapRow, 4f);
+            mapColumns.Add(48f).Add(230f).Flex();
+            Widgets.Label(mapColumns.Column(0), "Mapa:");
+            if (Widgets.ButtonText(mapColumns.Column(1), MapLabel(detailZoneMap)))
             {
                 ShowMapMenu();
             }
