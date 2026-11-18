@@ -8,3 +8,5 @@ obj/
 Thumbs.db
 desktop.ini
 Assemblies/
+
+.codegraph/

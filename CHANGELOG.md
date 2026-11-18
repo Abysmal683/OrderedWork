@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.136] - 2026-11-18
+
+### Fixed — Order column contrast, Profiles spacing and Zone map width
+- Order giver columns use a darker background so they contrast with the section.
+- Profiles panel gets vertical breathing room inside its collapsible section.
+- Zone map selector uses a fixed 230px column from `UiTable` instead of a relative flex width; it no longer stretches.
+- `.codegraph/` added to `.gitignore`; local CodeGraph index initialized for OrderedWork.
+- No functional changes.
+
 ## [0.3.0-alpha.135] - 2026-11-18
 
 ### Fixed — column backgrounds and delete footer alignment
