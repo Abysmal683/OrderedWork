@@ -64,6 +64,20 @@ namespace OrderedWork.Data
         }
     }
 
+    public class PawnScheduleWorkOverride : IExposable
+    {
+        public int hour;
+        public string workTypeDefName;
+        public PolicySource source = PolicySource.Manual;
+
+        public void ExposeData()
+        {
+            Scribe_Values.Look(ref hour, "hour", 0);
+            Scribe_Values.Look(ref workTypeDefName, "workTypeDefName");
+            Scribe_Values.Look(ref source, "source", PolicySource.Manual);
+        }
+    }
+
     public class PawnClothingOverride : IExposable
     {
         public string workTypeDefName;
@@ -133,6 +147,26 @@ namespace OrderedWork.Data
                     continue;
                 }
                 unique[value.mapUniqueId] = value;
+            }
+            values.Clear();
+            values.AddRange(unique.Values);
+        }
+
+        public static void NormalizeScheduleWork(List<PawnScheduleWorkOverride> values)
+        {
+            if (values == null)
+            {
+                return;
+            }
+            Dictionary<string, PawnScheduleWorkOverride> unique = new Dictionary<string, PawnScheduleWorkOverride>();
+            foreach (PawnScheduleWorkOverride value in values)
+            {
+                if (value == null || value.hour < 0 || value.hour > 23
+                    || string.IsNullOrEmpty(value.workTypeDefName))
+                {
+                    continue;
+                }
+                unique[value.hour + "|" + value.workTypeDefName] = value;
             }
             values.Clear();
             values.AddRange(unique.Values);

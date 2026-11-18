@@ -22,6 +22,7 @@ namespace OrderedWork.Data
 
         public string schedulePresetId;
         public List<PawnScheduleOverride> scheduleOverrides = new List<PawnScheduleOverride>();
+        public List<PawnScheduleWorkOverride> scheduleWorkOverrides = new List<PawnScheduleWorkOverride>();
 
         public List<PawnZoneBinding> zones = new List<PawnZoneBinding>();
 
@@ -46,6 +47,7 @@ namespace OrderedWork.Data
             Scribe_Collections.Look(ref workOverrides, "workOverrides", LookMode.Deep);
             Scribe_Values.Look(ref schedulePresetId, "schedulePresetId");
             Scribe_Collections.Look(ref scheduleOverrides, "scheduleOverrides", LookMode.Deep);
+            Scribe_Collections.Look(ref scheduleWorkOverrides, "scheduleWorkOverrides", LookMode.Deep);
             Scribe_Collections.Look(ref zones, "zones", LookMode.Deep);
             Scribe_Values.Look(ref clothingPresetId, "clothingPresetId");
             Scribe_Collections.Look(ref clothingOverrides, "clothingOverrides", LookMode.Deep);
@@ -55,7 +57,7 @@ namespace OrderedWork.Data
                 if (order == null) order = new List<string>();
                 if (workOverrides == null) workOverrides = new List<PawnWorkOverride>();
                 if (scheduleOverrides == null) scheduleOverrides = new List<PawnScheduleOverride>();
-                if (zones == null) zones = new List<PawnZoneBinding>();
+                if (scheduleWorkOverrides == null) scheduleWorkOverrides = new List<PawnScheduleWorkOverride>();
                 if (clothingOverrides == null) clothingOverrides = new List<PawnClothingOverride>();
             }
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
@@ -77,11 +79,13 @@ namespace OrderedWork.Data
             if (order == null) order = new List<string>();
             if (workOverrides == null) workOverrides = new List<PawnWorkOverride>();
             if (scheduleOverrides == null) scheduleOverrides = new List<PawnScheduleOverride>();
+            if (scheduleWorkOverrides == null) scheduleWorkOverrides = new List<PawnScheduleWorkOverride>();
             if (zones == null) zones = new List<PawnZoneBinding>();
             if (clothingOverrides == null) clothingOverrides = new List<PawnClothingOverride>();
 
             PolicyValidation.Normalize(workOverrides);
             PolicyValidation.Normalize(scheduleOverrides);
+            PolicyValidation.NormalizeScheduleWork(scheduleWorkOverrides);
             PolicyValidation.Normalize(zones);
             PolicyValidation.Normalize(clothingOverrides);
         }

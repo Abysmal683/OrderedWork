@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.98)
+# Ordered Work — Current Checklist (0.3.0-alpha.99)
 
 Status: architecture cleanup complete; build 0/0 and 7/7 tests pass. Runtime checks remain for the final profile-only path.
 
@@ -74,16 +74,20 @@ Status: architecture cleanup complete; build 0/0 and 7/7 tests pass. Runtime che
 See `POLICY_DATA_DESIGN.md` for the relational policy model.
 
 - [ ] Define `PawnPolicy` and sparse override contract before policy UI.
-- [ ] Zone policy: assign existing `Area_Allowed` per pawn and map; no zone creation.
-- [ ] Zone alert: semi-persistent warning when the assigned area is missing on the current map.
+- [x] Zone policy: assign existing `Area_Allowed` per pawn and map; no zone creation.
+- [x] Zone section in pawn detail: map selector, colored area selector, vanilla area manager link.
+- [ ] Zone alert: semi-persistent alert when the assigned area is missing on the current map.
+- [ ] Zone bulk apply to selected pawns.
 - [ ] Zone UI: bulk/emergency assignment; no block-WorkType warning.
 - [x] Schedule presets: named 24-slot `TimeAssignmentDef` presets in `Config/OrderedWork/schedules/<id>.json` (one file per preset).
-- [x] Basic Schedule view: preset list, capture, save, preview and apply to selected.
-- [ ] Full two-lane schedule editor and apply-on-load.
-- [ ] Schedule UI: two parallel lanes (current vanilla timetable + selected preset/draft ghost).
-- [ ] Schedule apply: choose/load preset, preview, apply to selected pawns.
+- [x] Detail Horario section: Origen read-only, Modif editable, compact assignment brush, preset save/apply.
+- [ ] Priority-by-hour row editing (storage exists).
+- [ ] Apply-on-load policy.
+- [ ] Full scheduler polish and selected-pawn apply.
+- [x] Schedule apply to the current pawn from the detail section.
 - [ ] Clothing policy: clothing by WorkType; per-pawn clothing override in pawn detail.
-- [ ] Pawn detail UI: skills, passions, current order, schedule, zone, clothing and overrides.
+- [x] Pawn detail UI foundation: Overview, Horario and Zona.
+- [ ] Clothing and override sections in pawn detail.
 - [ ] Per-WorkType hour windows: optional later layer, not in first schedule implementation.
 - [ ] WorkGiverDef clones: rejected as a design path; do not add runtime Def clones.
 - [ ] Compact per-save pawn policy format and migration.

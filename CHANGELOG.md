@@ -3,6 +3,18 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.99] - 2026-11-17
+
+### Changed — pawn detail schedule and zone sections
+- Removed the top-level Work/Schedule switch and the old vertical schedule test view.
+- `Details` is now a larger sectioned panel: Overview, Horario, Zona.
+- Horario has three rows: read-only Origen, editable Modif and reserved priority-by-hour.
+- Modif uses a compact colored assignment brush with per-cell tooltips; click/drag paints hours.
+- Schedule presets remain global JSON files; Apply writes the pawn timetable.
+- Zona has a map selector, colored area selector and a link to the vanilla area manager for create/delete/expand/reduce.
+- Zone bindings are stored per map; assigning a different map stores the link without writing the current map.
+- Added `PawnScheduleWorkOverride` storage for the future priority-by-hour layer (not edited yet).
+
 ## [0.3.0-alpha.98] - 2026-11-17
 
 ### Added — basic Schedule view
