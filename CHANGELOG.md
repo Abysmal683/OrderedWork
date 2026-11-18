@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.159] - 2026-11-18
+
+### Debug spike — per-pawn WorkGiver order
+- Added an opt-in diagnostics spike that reorders Hauling WorkGivers for one selected pawn.
+- Uses Harmony postfixes on `WorkGiversInOrderNormal` and `WorkGiversInOrderEmergency`; it does not mutate `priorityInType` or any global def.
+- Added Mod Settings controls to apply, log and clear the spike for the selected pawn.
+- Added `[OrderedWork][Spike]` logs for the applied order and the first runtime reorders.
+- External/non-target WorkGivers keep their original positions; only the target WorkType group is reordered.
+
 ## [0.3.0-alpha.158] - 2026-11-18
 
 ### Refactor — single optional VSE adapter
