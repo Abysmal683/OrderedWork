@@ -203,6 +203,8 @@ namespace OrderedWork
             Settings.autoRecommendNewColony = true;
             Settings.autoHideScrollbars = true;
             Settings.paletteStressTest = false;
+            Settings.workGiverOrderSpike = false;
+            WorkGiverOrderSpike.ClearAll();
             Settings.workControlHeight = 0f;
             selectedGiverType = WorkConfigStore.GetOrderedVisibleWorkTypes(
                 WorkConfigStore.LoadEditingProfile(activeProfileName)).FirstOrDefault()?.defName ?? "";

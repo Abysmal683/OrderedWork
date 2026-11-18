@@ -56,6 +56,35 @@ namespace OrderedWork
                     "Verbose diagnostics in Player.log",
                     ref Settings.verboseLogging,
                     "Enables temporary Order/Reset/Scroll debug lines. Disable for normal play.");
+                list.Gap(4f);
+                list.Label("WorkGiver order spike: reorders Hauling WorkGivers for one selected pawn only. No defs are changed.");
+                list.CheckboxLabeled(
+                    "Enable WorkGiver order spike (debug)",
+                    ref Settings.workGiverOrderSpike,
+                    "When enabled, the spike patch is allowed to reorder the selected pawn's runtime WorkGiver list.");
+                if (UiButtonBar.Button(list.GetRect(28f), "Apply WorkGiver spike to selected pawn", true,
+                    "Select exactly one pawn, then reverse that pawn's Hauling WorkGivers and log the result."))
+                {
+                    WorkGiverOrderSpike.ApplyToSelectedPawn();
+                }
+                if (UiButtonBar.Button(list.GetRect(28f), "Log current WorkGiver order", true,
+                    "Log the selected pawn's current normal and emergency WorkGiver order."))
+                {
+                    Pawn selected = Find.Selector != null ? Find.Selector.SingleSelectedThing as Pawn : null;
+                    if (selected != null)
+                    {
+                        WorkGiverOrderSpike.LogCurrentOrder(selected);
+                    }
+                    else
+                    {
+                        Log.Warning("[OrderedWork][Spike] Select exactly one pawn before logging the order.");
+                    }
+                }
+                if (UiButtonBar.Button(list.GetRect(28f), "Clear WorkGiver spike", true,
+                    "Remove the spike order from the selected pawn."))
+                {
+                    WorkGiverOrderSpike.ClearSelectedPawn();
+                }
                 list.Label("Technical spike: writes dense rank 1..N to free colonists and logs the result.");
                 if (Find.CurrentMap == null)
                 {

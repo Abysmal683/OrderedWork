@@ -13,6 +13,7 @@ namespace OrderedWork
         public float workControlHeight;
         public bool prioritizeLowSkillPassion = true;
         public bool verboseLogging;
+        public bool workGiverOrderSpike;
         public List<string> recommendationPins = new List<string> { "Patient", "PatientBedRest", "Firefighter" };
         public List<PassionWeightEntry> passionWeights = new List<PassionWeightEntry>();
         public int passionDefaultsVersion;
@@ -28,6 +29,7 @@ namespace OrderedWork
             Scribe_Values.Look(ref workControlHeight, "workControlHeight", 0f);
             Scribe_Values.Look(ref prioritizeLowSkillPassion, "prioritizeLowSkillPassion", true);
             Scribe_Values.Look(ref verboseLogging, "verboseLogging", false);
+            Scribe_Values.Look(ref workGiverOrderSpike, "workGiverOrderSpike", false);
             Scribe_Collections.Look(ref recommendationPins, "recommendationPins", LookMode.Value);
             Scribe_Collections.Look(ref passionWeights, "passionWeights", LookMode.Deep);
             Scribe_Values.Look(ref passionDefaultsVersion, "passionDefaultsVersion", 0);
