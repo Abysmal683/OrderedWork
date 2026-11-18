@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.147] - 2026-11-18
+
+### Fixed — disabled button body tint and passion tooltip hit test
+- Disabled action buttons tint the button background through `GUI.backgroundColor`, not only the label.
+- `UiButtonBar` is the single action-button implementation; Work order, Split/Merge, Profiles, Diagnostics, Zone, Details, Recommend and Search filters use it.
+- Search `Filter: Line` and `Clear` now use the same disabled body tint.
+- Passion row tooltip hit-testing uses the screen-space row rect after accounting for the scroll viewport; this prevents the tooltip from appearing over Split/Merge buttons.
+- No behavior changes.
+
 ## [0.3.0-alpha.146] - 2026-11-18
 
 ### Fixed — single disabled renderer and Search button tint
