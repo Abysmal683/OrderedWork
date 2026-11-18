@@ -15,6 +15,7 @@ namespace OrderedWork.Config
         public int SchemaVersion { get; set; } = CurrentSchemaVersion;
         public string Id { get; set; } = Guid.NewGuid().ToString("N");
         public string Name { get; set; } = "new schedule";
+        public string ModifiedUtc { get; set; } = "";
         public List<string> Slots { get; set; } = NewSlots();
 
         public static List<string> NewSlots()

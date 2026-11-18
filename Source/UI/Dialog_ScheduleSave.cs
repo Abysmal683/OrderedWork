@@ -9,24 +9,29 @@ using Verse;
 namespace OrderedWork.UI
 {
     /// <summary>
-    /// Small save-as/replace/delete dialog for schedule presets. It avoids writing
-    /// a preset just because the user pressed Save in the detail panel.
+    /// Schedule preset picker/save dialog. The layout follows the vanilla save/load
+    /// pattern: search, list, overwrite/delete actions, name field and one primary button.
     /// </summary>
     public class Dialog_ScheduleSave : Window
     {
         private readonly SchedulePreset draft;
         private readonly Action<SchedulePreset> onSaved;
-        private List<SchedulePreset> presets;
+        private List<SchedulePreset> allPresets;
+        private List<SchedulePreset> visiblePresets;
         private string presetName;
+        private string search = "";
         private int selectedIndex = -1;
         private Vector2 scroll;
 
-        public Dialog_ScheduleSave(SchedulePreset draft, Action<SchedulePreset> onSaved)
+        public Dialog_ScheduleSave(SchedulePreset draft, string initialName, Action<SchedulePreset> onSaved)
         {
             this.draft = draft;
             this.onSaved = onSaved;
-            presetName = draft != null ? draft.Name : "";
-            presets = SchedulePresetStore.LoadAll();
+            presetName = string.IsNullOrWhiteSpace(initialName)
+                ? (draft != null ? draft.Name : "")
+                : initialName;
+            allPresets = SchedulePresetStore.LoadAll();
+            visiblePresets = Filter(allPresets, search);
             doCloseX = true;
             doCloseButton = false;
             resizeable = false;
@@ -35,64 +40,104 @@ namespace OrderedWork.UI
             closeOnClickedOutside = false;
         }
 
-        public override Vector2 InitialSize => new Vector2(460f, 430f);
+        public override Vector2 InitialSize => new Vector2(620f, 520f);
 
         public override void DoWindowContents(Rect inRect)
         {
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(0f, 0f, inRect.width, 28f), "Save schedule");
+            Widgets.Label(new Rect(0f, 0f, inRect.width, 28f), "Save schedule preset");
             Text.Font = GameFont.Small;
-            Widgets.Label(new Rect(0f, 30f, inRect.width, 20f),
-                "Save as a new preset, replace an existing one, or delete presets.");
-            Rect nameRect = new Rect(0f, 58f, inRect.width, 24f);
-            presetName = Widgets.TextField(nameRect, presetName ?? "");
 
-            Rect listRect = new Rect(0f, 90f, inRect.width, inRect.height - 170f);
-            float rowHeight = 26f;
-            Rect content = new Rect(0f, 0f, listRect.width - 18f, Mathf.Max(listRect.height, presets.Count * rowHeight));
-            Widgets.BeginScrollView(listRect, ref scroll, content);
-            for (int i = 0; i < presets.Count; i++)
+            Rect searchRect = new Rect(0f, 34f, inRect.width, 24f);
+            search = Widgets.TextField(searchRect, search ?? "");
+            if (search != null && search.Length > 0)
             {
-                SchedulePreset preset = presets[i];
-                Rect row = new Rect(0f, i * rowHeight, content.width, rowHeight - 2f);
+                if (Widgets.ButtonText(new Rect(searchRect.xMax - 54f, searchRect.y, 54f, searchRect.height), "Clear"))
+                {
+                    search = "";
+                }
+            }
+            visiblePresets = Filter(allPresets, search);
+            if (selectedIndex >= visiblePresets.Count)
+            {
+                selectedIndex = -1;
+            }
+
+            Rect listRect = new Rect(0f, 64f, inRect.width, inRect.height - 154f);
+            float rowHeight = 38f;
+            Rect content = new Rect(0f, 0f, listRect.width - 18f,
+                Mathf.Max(listRect.height, visiblePresets.Count * rowHeight));
+            Widgets.BeginScrollView(listRect, ref scroll, content);
+            for (int i = 0; i < visiblePresets.Count; i++)
+            {
+                SchedulePreset preset = visiblePresets[i];
+                Rect row = new Rect(0f, i * rowHeight, content.width, rowHeight - 3f);
                 if (i == selectedIndex)
                 {
-                    Widgets.DrawBoxSolid(row, new Color(0.24f, 0.32f, 0.42f, 1f));
+                    Widgets.DrawBoxSolid(row, new Color(0.22f, 0.30f, 0.40f, 1f));
                 }
-                if (Widgets.ButtonText(row, preset.Name))
+                if (Widgets.ButtonInvisible(row))
                 {
                     selectedIndex = i;
                     presetName = preset.Name;
                 }
+                Widgets.Label(new Rect(row.x + 6f, row.y + 4f, row.width - 220f, 28f), preset.Name);
+                Widgets.Label(new Rect(row.xMax - 214f, row.y + 4f, 100f, 28f),
+                    string.IsNullOrWhiteSpace(preset.ModifiedUtc) ? "v" + preset.SchemaVersion : preset.ModifiedUtc);
+                if (Widgets.ButtonText(new Rect(row.xMax - 110f, row.y + 3f, 80f, 28f), "Overwrite"))
+                {
+                    Replace(preset);
+                }
+                if (Widgets.ButtonImage(new Rect(row.xMax - 24f, row.y + 3f, 22f, 22f), TexButton.Delete))
+                {
+                    ConfirmDelete(preset);
+                }
             }
             Widgets.EndScrollView();
 
-            bool hasName = !string.IsNullOrWhiteSpace(presetName);
-            bool hasSelection = selectedIndex >= 0 && selectedIndex < presets.Count;
-            if (Widgets.ButtonText(new Rect(0f, inRect.yMax - 66f, 120f, 28f), "Save as new", true, true, hasName))
+            Rect nameRect = new Rect(0f, inRect.yMax - 76f, inRect.width - 190f, 28f);
+            presetName = Widgets.TextField(nameRect, presetName ?? "");
+            bool canSave = !string.IsNullOrWhiteSpace(presetName);
+            if (Widgets.ButtonText(new Rect(nameRect.xMax + 8f, nameRect.y, 90f, 28f), "Save", true, true, canSave))
             {
-                SaveAsNew();
+                if (selectedIndex >= 0 && selectedIndex < visiblePresets.Count)
+                {
+                    Replace(visiblePresets[selectedIndex]);
+                }
+                else
+                {
+                    SaveAsNew();
+                }
             }
-            if (Widgets.ButtonText(new Rect(126f, inRect.yMax - 66f, 120f, 28f), "Replace", true, true, hasName && hasSelection))
-            {
-                ReplaceSelected();
-            }
-            if (Widgets.ButtonText(new Rect(252f, inRect.yMax - 66f, 90f, 28f), "Delete", true, true, hasSelection))
-            {
-                DeleteSelected();
-            }
-            if (Widgets.ButtonText(new Rect(348f, inRect.yMax - 66f, 100f, 28f), "Cancel"))
+            if (Widgets.ButtonText(new Rect(nameRect.xMax + 104f, nameRect.y, 90f, 28f), "Close"))
             {
                 Close(true);
             }
         }
 
+        private static List<SchedulePreset> Filter(List<SchedulePreset> presets, string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                return presets;
+            }
+            string needle = query.Trim();
+            return presets
+                .Where(p => p != null && p.Name != null
+                    && p.Name.IndexOf(needle, StringComparison.OrdinalIgnoreCase) >= 0)
+                .ToList();
+        }
+
         private void SaveAsNew()
         {
+            if (draft == null || string.IsNullOrWhiteSpace(presetName))
+            {
+                return;
+            }
             SchedulePreset saved = new SchedulePreset
             {
                 Name = presetName.Trim(),
-                Slots = new List<string>(draft.Slots)
+                Slots = draft.Slots != null ? new List<string>(draft.Slots) : SchedulePreset.NewSlots()
             };
             if (SchedulePresetStore.Save(saved))
             {
@@ -106,15 +151,14 @@ namespace OrderedWork.UI
             }
         }
 
-        private void ReplaceSelected()
+        private void Replace(SchedulePreset target)
         {
-            if (selectedIndex < 0 || selectedIndex >= presets.Count)
+            if (target == null || draft == null || string.IsNullOrWhiteSpace(presetName))
             {
                 return;
             }
-            SchedulePreset target = presets[selectedIndex];
             target.Name = presetName.Trim();
-            target.Slots = new List<string>(draft.Slots);
+            target.Slots = draft.Slots != null ? new List<string>(draft.Slots) : SchedulePreset.NewSlots();
             if (SchedulePresetStore.Save(target))
             {
                 OrderedWorkMod.DebugLog("Schedule preset replaced: " + target.Name + " [" + target.Id + "]");
@@ -127,19 +171,23 @@ namespace OrderedWork.UI
             }
         }
 
-        private void DeleteSelected()
+        private void ConfirmDelete(SchedulePreset target)
         {
-            if (selectedIndex < 0 || selectedIndex >= presets.Count)
-            {
-                return;
-            }
-            SchedulePreset target = presets[selectedIndex];
-            if (SchedulePresetStore.Delete(target.Id))
-            {
-                OrderedWorkMod.DebugLog("Schedule preset deleted: " + target.Name + " [" + target.Id + "]");
-                presets.RemoveAt(selectedIndex);
-                selectedIndex = -1;
-            }
+            Dialog_MessageBox.CreateConfirmation(
+                "Delete schedule preset '" + target.Name + "'?",
+                delegate
+                {
+                    if (SchedulePresetStore.Delete(target.Id))
+                    {
+                        OrderedWorkMod.DebugLog("Schedule preset deleted: " + target.Name + " [" + target.Id + "]");
+                        allPresets = SchedulePresetStore.LoadAll();
+                        visiblePresets = Filter(allPresets, search);
+                        selectedIndex = -1;
+                    }
+                },
+                true,
+                "Delete schedule",
+                WindowLayer.Dialog);
         }
     }
 }

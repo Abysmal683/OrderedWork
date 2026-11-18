@@ -102,7 +102,7 @@ namespace OrderedWork.UI
             {
                 return;
             }
-            Find.WindowStack.Add(new Dialog_ScheduleSave(detailSchedule, delegate(SchedulePreset saved)
+            Find.WindowStack.Add(new Dialog_ScheduleSave(detailSchedule, detailScheduleName, delegate(SchedulePreset saved)
             {
                 detailPresets = SchedulePresetStore.LoadAll();
                 detailSchedule = saved;
@@ -169,7 +169,7 @@ namespace OrderedWork.UI
                 Widgets.Label(rect, "No assignment defs");
                 return;
             }
-            Color color = detailBrush.color;
+            Color color = AssignmentColor(detailBrush);
             Widgets.DrawBoxSolid(new Rect(rect.x, rect.y + 4f, 16f, 16f), color);
             if (Widgets.ButtonText(new Rect(rect.x + 20f, rect.y, rect.width - 20f, rect.height),
                 ShortLabel(detailBrush)))
@@ -203,7 +203,7 @@ namespace OrderedWork.UI
                 {
                     detailSchedule.Slots[hour] = detailBrush != null ? detailBrush.defName : "";
                 }
-                Color color = def != null ? def.color : new Color(0.18f, 0.18f, 0.20f, 1f);
+                Color color = def != null ? AssignmentColor(def) : new Color(0.18f, 0.18f, 0.20f, 1f);
                 if (origin)
                 {
                     color = new Color(color.r, color.g, color.b, 0.55f);
@@ -222,6 +222,27 @@ namespace OrderedWork.UI
             }
         }
 
+        private static Color AssignmentColor(TimeAssignmentDef def)
+        {
+            if (def == null)
+            {
+                return new Color(0.18f, 0.18f, 0.20f, 1f);
+            }
+            Color color = def.color;
+            if (color.a <= 0.01f || (color.r <= 0.01f && color.g <= 0.01f && color.b <= 0.01f))
+            {
+                int hash = 0;
+                string name = def.defName ?? def.label ?? "unknown";
+                for (int i = 0; i < name.Length; i++)
+                {
+                    hash = (hash * 31 + name[i]) & 0x7fffffff;
+                }
+                float hue = (hash % 360) / 360f;
+                color = Color.HSVToRGB(hue, 0.55f, 0.75f);
+            }
+            color.a = 1f;
+            return color;
+        }
         private static string ShortLabel(TimeAssignmentDef def)
         {
             if (def == null)

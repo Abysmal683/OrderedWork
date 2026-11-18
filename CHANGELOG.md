@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.104] - 2026-11-17
+
+### Changed — schedule save/load dialog and window behavior
+- Schedule Save now opens a vanilla-style dialog with search, preset rows, per-row Overwrite, delete confirmation and a bottom Save/Close bar.
+- The save dialog inherits the current schedule name.
+- Delete requires confirmation and no longer leaves a disabled row artifact.
+- Modded TimeAssignmentDef colors fall back to a deterministic generated color when the def color is missing.
+- Detail window explicitly enforces a 300x300 minimum and logs draggable/resizable/min-size state in verbose mode.
+- Zone picker remains limited to Area_Allowed and Area_Home.
+
 ## [0.3.0-alpha.103] - 2026-11-17
 
 ### Changed — save dialog, colors and zone filtering
