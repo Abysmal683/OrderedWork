@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.130] - 2026-11-18
+
+### Fixed — real config inset and compact Save
+- Config now actually wraps `Listing_Standard` in a 16px inset scroll body; the previous body inset had not compiled into the running view.
+- Save dialog height is calculated from preset count and its list stops above the name row; the oversized empty bottom is removed.
+- Schedule grid now derives hour column width from `UiGrid`.
+- Config keeps native Cerrar with bottom padding; Details/Save keep only native X.
+- Collapsible sections and Diagnostics grouping remain.
+
 ## [0.3.0-alpha.129] - 2026-11-18
 
 ### Fixed — actual config margin and Save height

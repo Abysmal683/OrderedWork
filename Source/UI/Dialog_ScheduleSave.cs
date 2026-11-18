@@ -40,7 +40,7 @@ namespace OrderedWork.UI
             closeOnClickedOutside = false;
         }
 
-        public override Vector2 InitialSize => new Vector2(620f, Mathf.Clamp(160f + ((allPresets != null ? allPresets.Count : 0) * 38f), 280f, 560f));
+        public override Vector2 InitialSize => new Vector2(620f, Mathf.Clamp(124f + ((allPresets != null ? allPresets.Count : 0) * 38f), 240f, 560f));
 
         public override void DoWindowContents(Rect inRect)
         {
