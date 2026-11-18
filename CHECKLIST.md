@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.156)
+# Ordered Work — Current Checklist (0.3.0-alpha.157)
 
 Status: architecture cleanup complete; build 0/0 and 7/7 tests pass. Runtime checks remain for the final profile-only path.
 
@@ -86,8 +86,9 @@ See `POLICY_DATA_DESIGN.md` for the relational policy model.
 - [ ] Full scheduler polish and selected-pawn apply.
 - [x] Schedule apply to the current pawn from the detail section.
 - [ ] Clothing policy: clothing by WorkType; per-pawn clothing override in pawn detail.
-- [x] Pawn detail UI foundation: Overview, Horario and Zona.
-- [ ] Clothing and override sections in pawn detail.
+- [x] Pawn detail UI foundation: Overview, Horario, Zona, Overrides and Ropa.
+- [x] Pawn detail override status: work, schedule, hourly-work and clothing overrides are visible read-only.
+- [ ] Clothing assignment editing and automatic application from the detail panel.
 - [ ] Per-WorkType hour windows: optional later layer, not in first schedule implementation.
 - [ ] WorkGiverDef clones: rejected as a design path; do not add runtime Def clones.
 - [ ] Compact per-save pawn policy format and migration.

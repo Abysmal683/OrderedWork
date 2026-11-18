@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.157] - 2026-11-18
+
+### Feature — pawn detail status
+- Overview now summarises work, schedule and clothing presets plus override and zone counts.
+- New `Overrides` tab lists work, schedule, hourly-work and clothing overrides with their source.
+- New `Ropa` tab shows the vanilla apparel policy, worn apparel, stored clothing preset and clothing overrides read-only.
+- Clothing application remains intentionally pending; the panel reports stored policy without pretending it is applied.
+
 ## [0.3.0-alpha.156] - 2026-11-18
 
 ### Refactor — code ownership cleanup

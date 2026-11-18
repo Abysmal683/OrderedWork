@@ -1,6 +1,6 @@
 # Ordered Work — Current Status
 
-Version: `0.3.0-alpha.156` (refactor checkpoint). Build 0/0; tests 15/15.
+Version: `0.3.0-alpha.157` (refactor checkpoint). Build 0/0; tests 15/15.
 
 ## Completed architecture
 
@@ -55,7 +55,7 @@ Version: `0.3.0-alpha.156` (refactor checkpoint). Build 0/0; tests 15/15.
 - `test_1`/pending/reference alignment after a full create→restart→delete→restart cycle.
 - No startup/profile fallback anomalies.
 - No in-game exceptions; logs remain clean.
-- Zone/schedule UI not implemented yet.
+- Pawn detail now exposes schedule, zone, override and read-only clothing status; clothing application is still pending.
 
 ## Next scope
 
