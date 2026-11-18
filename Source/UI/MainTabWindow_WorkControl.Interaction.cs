@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using OrderedWork.Config;
 using OrderedWork.Services;
+using OrderedWork.UI.Layout;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -79,7 +80,7 @@ namespace OrderedWork.UI
             List<Pawn> selected = GetSelectedColonists();
             bool hasSelection = selected.Count > 0;
 
-            if (Widgets.ButtonText(recommendRect, "Recommend", true, true, hasSelection))
+            if (UiButtonBar.Button(recommendRect, "Recommend", hasSelection))
             {
                 for (int i = 0; i < selected.Count; i++)
                 {
@@ -91,7 +92,7 @@ namespace OrderedWork.UI
                 TooltipHandler.TipRegion(recommendRect, "Generate recommendation for selected pawn(s)");
             }
 
-            if (Widgets.ButtonText(detailsRect, "Details", true, true, hasSelection))
+            if (UiButtonBar.Button(detailsRect, "Details", hasSelection))
             {
                 Find.WindowStack.Add(new Dialog_WorkControlDetails(selected[0]));
             }

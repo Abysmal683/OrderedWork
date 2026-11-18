@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.145] - 2026-11-18
+
+### Fixed — disabled state now uses GUI.enabled
+- `UiButtonBar.Button` wraps the native button with `GUI.enabled`, so disabled actions are visually dimmed and non-interactive.
+- Details and Recommend top controls now use `UiButtonBar`; disabled state matches Schedule/Apply and config actions.
+- Consolidated the duplicate action-button implementations; CodeGraph confirms one `DrawActionButton` plus one `UiButtonBar.Button`.
+- Existing tooltips remain available while disabled.
+- No behavior changes when enabled.
+
 ## [0.3.0-alpha.144] - 2026-11-18
 
 ### Fixed — single action button implementation
