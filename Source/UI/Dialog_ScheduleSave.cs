@@ -74,7 +74,7 @@ namespace OrderedWork.UI
                 {
                     Widgets.DrawBoxSolid(row, new Color(0.22f, 0.30f, 0.40f, 1f));
                 }
-                Rect rowNameRect = new Rect(row.x + 4f, row.y + 3f, row.width - 232f, 28f);
+                Rect rowNameRect = new Rect(row.x + 4f, row.y + 3f, row.width - 310f, 28f);
                 if (Widgets.ButtonText(rowNameRect, preset.Name))
                 {
                     selectedIndex = i;
@@ -82,18 +82,16 @@ namespace OrderedWork.UI
                 }
                 Widgets.Label(new Rect(row.xMax - 214f, row.y + 4f, 100f, 28f),
                     string.IsNullOrWhiteSpace(preset.ModifiedUtc) ? "v" + preset.SchemaVersion : preset.ModifiedUtc);
-                if (Widgets.ButtonText(new Rect(row.xMax - 110f, row.y + 3f, 80f, 28f), "Overwrite"))
+                if (Widgets.ButtonText(new Rect(row.xMax - 196f, row.y + 3f, 84f, 28f), "Overwrite"))
                 {
                     OrderedWorkMod.DebugLog("Schedule overwrite clicked: " + preset.Name);
                     Replace(preset);
                 }
-                Rect deleteRect = new Rect(row.xMax - 28f, row.y + 3f, 26f, 26f);
-                if (Widgets.ButtonInvisible(deleteRect))
+                if (Widgets.ButtonText(new Rect(row.xMax - 108f, row.y + 3f, 100f, 28f), "Delete"))
                 {
                     OrderedWorkMod.DebugLog("Schedule delete clicked: " + preset.Name);
                     ConfirmDelete(preset);
                 }
-                GUI.DrawTexture(deleteRect, TexButton.Delete);
             }
             Widgets.EndScrollView();
 

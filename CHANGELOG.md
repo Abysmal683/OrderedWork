@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.108] - 2026-11-17
+
+### Fixed — explicit buttons and window resizing
+- Schedule preset Delete is now a normal labelled button; no trash icon hitbox.
+- Save rows reserve separate space for Overwrite and Delete.
+- Zone section has a separate `Mapa:` label, a larger map button, a wider area selector, and Apply/Manage on one row with equal widths.
+- Detail window uses a reflected WindowResizer minimum of 500x700, avoiding per-frame minimum fights.
+- Title drag also accepts the local title rectangle; dragging the schedule must not move the window.
+- Scheduled hours use centered headers and alternating column tints.
+
 ## [0.3.0-alpha.107] - 2026-11-17
 
 ### Fixed — window movement and schedule clarity

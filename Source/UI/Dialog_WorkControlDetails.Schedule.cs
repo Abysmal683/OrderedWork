@@ -212,6 +212,10 @@ namespace OrderedWork.UI
                     detailSchedule.Slots[hour] = detailBrush != null ? detailBrush.defName : "";
                 }
                 Color color = def != null ? AssignmentColor(def) : new Color(0.18f, 0.18f, 0.20f, 1f);
+                if ((hour & 1) == 1)
+                {
+                    color = new Color(color.r * 0.82f, color.g * 0.82f, color.b * 0.82f, color.a);
+                }
                 if (origin)
                 {
                     color = new Color(color.r, color.g, color.b, 0.55f);

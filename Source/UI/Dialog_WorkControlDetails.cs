@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Reflection;
 using System.Linq;
 using OrderedWork.Services;
 using RimWorld;
@@ -45,10 +46,13 @@ namespace OrderedWork.UI
         private void HandleTitleDrag(Rect inRect)
         {
             Rect titleRect = new Rect(windowRect.x, windowRect.y, windowRect.width, 34f);
-            if (Event.current.type == EventType.MouseDown && titleRect.Contains(Event.current.mousePosition))
+            bool overTitle = titleRect.Contains(Event.current.mousePosition)
+                || Mouse.IsOver(new Rect(0f, 0f, inRect.width, 34f));
+            if (Event.current.type == EventType.MouseDown && overTitle)
             {
                 titleDragging = true;
                 titleDragLast = Event.current.mousePosition;
+                OrderedWorkMod.DebugLog("Detail title drag start: mouse=" + Event.current.mousePosition + " rect=" + windowRect);
                 Event.current.Use();
             }
             else if (titleDragging && Event.current.type == EventType.MouseDrag)
@@ -65,18 +69,39 @@ namespace OrderedWork.UI
             }
         }
 
+        private bool resizerConfigured;
+
+        private void ConfigureResizer()
+        {
+            if (resizerConfigured)
+            {
+                return;
+            }
+            FieldInfo field = typeof(Window).GetField("resizer", BindingFlags.Instance | BindingFlags.NonPublic);
+            WindowResizer resizer = field != null ? field.GetValue(this) as WindowResizer : null;
+            if (resizer != null)
+            {
+                resizer.minWindowSize = new Vector2(500f, 700f);
+                resizerConfigured = true;
+            }
+        }
+
         private void EnforceMinimumWindowSize()
         {
-            if (windowRect.width < 500f)
+            ConfigureResizer();
+            if (!resizerConfigured)
             {
-                windowRect.width = 500f;
-            }
-            if (windowRect.height < 700f)
-            {
-                windowRect.height = 700f;
+                if (windowRect.width < 500f) windowRect.width = 500f;
+                if (windowRect.height < 700f) windowRect.height = 700f;
             }
             windowRect.width = Mathf.Min(windowRect.width, Screen.width - 20f);
             windowRect.height = Mathf.Min(windowRect.height, Screen.height - 20f);
+        }
+
+        public override void PreOpen()
+        {
+            base.PreOpen();
+            ConfigureResizer();
         }
 
         public override void DoWindowContents(Rect inRect)
