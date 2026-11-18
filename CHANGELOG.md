@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.150] - 2026-11-18
+
+### Fixed — native disabled button shape restored
+- Disabled action buttons no longer use flat `CustomButtonText`.
+- They draw the native button atlas with a dimmed `GUI.color`, then redraw the label in normal white.
+- This restores the rounded native body and removes the custom hover-gold label behavior.
+- All action buttons continue through `UiButtonBar.Button`.
+- No behavior changes.
+
 ## [0.3.0-alpha.149] - 2026-11-18
 
 ### Fixed — CustomButtonText uses the correct API for disabled body tint
