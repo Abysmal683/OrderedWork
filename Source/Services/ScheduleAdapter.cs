@@ -59,6 +59,38 @@ namespace OrderedWork.Services
             return Apply(pawn, entry);
         }
 
+        public static bool ApplyDraft(Pawn pawn, SchedulePreset preset)
+        {
+            if (pawn == null || preset == null || pawn.timetable == null)
+            {
+                return false;
+            }
+            OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
+            PawnWorkOrder entry = component?.GetOrCreateEntry(pawn);
+            if (entry == null)
+            {
+                return false;
+            }
+            entry.schedulePresetId = null;
+            int changed = 0;
+            for (int hour = 0; hour < SchedulePreset.SlotCount; hour++)
+            {
+                string slot = preset.Slots != null && hour < preset.Slots.Count ? preset.Slots[hour] : null;
+                TimeAssignmentDef def = SchedulePolicyResolver.ResolveDef(slot);
+                if (def == null)
+                {
+                    continue;
+                }
+                if (pawn.timetable.GetAssignment(hour) != def)
+                {
+                    pawn.timetable.SetAssignment(hour, def);
+                    changed++;
+                }
+            }
+            OrderedWorkMod.DebugLog("Schedule draft applied to " + pawn.LabelShort + ": " + changed + " slot(s) changed.");
+            return true;
+        }
+
         public static SchedulePreset CaptureCurrent(Pawn pawn, string name)
         {
             if (pawn == null || pawn.timetable == null)

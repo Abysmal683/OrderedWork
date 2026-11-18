@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.101] - 2026-11-17
+
+### Fixed — schedule apply state
+- Apply is enabled by real timetable changes only; a valid preset name is not required to apply a draft.
+- Saving still requires a valid name.
+- Draft apply writes the timetable without creating a dangling preset link.
+
 ## [0.3.0-alpha.100] - 2026-11-17
 
 ### Changed — schedule/zone refinement

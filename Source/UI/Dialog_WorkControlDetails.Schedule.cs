@@ -55,11 +55,15 @@ namespace OrderedWork.UI
             {
                 SaveDetailSchedule();
             }
-            if (Widgets.ButtonText(new Rect(624f, y, 116f, line), "Apply to pawn", true, true, hasValidName && hasChanges))
+            if (Widgets.ButtonText(new Rect(624f, y, 116f, line), "Apply to pawn", true, true, hasChanges))
             {
-                if (SaveDetailSchedule())
+                if (hasValidName && SaveDetailSchedule())
                 {
                     ScheduleAdapter.ApplyPreset(pawn, detailSchedule);
+                }
+                else
+                {
+                    ScheduleAdapter.ApplyDraft(pawn, detailSchedule);
                 }
             }
             if (Mouse.IsOver(new Rect(624f, y, 116f, line)) && !hasChanges)
