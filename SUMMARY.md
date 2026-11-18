@@ -44,7 +44,7 @@ Part of a three-mod suite (standalone-first, optional integration): Work Control
 - Visual options: passion flame/quality estimate, compact icon + full name, skill level always or hover.
 - No matrix as primary input; no dual editing.
 
-## 4. Data model
+## 4. Data model\n\nDetailed relational model: `POLICY_DATA_DESIGN.md`.
 
 - `BaseOrder`: global WorkType/WorkGiver defaults; optional editor.
 - `ProfilePreset`: role/ordered jobs, loadout, area, schedule, rules.
@@ -99,7 +99,7 @@ Part of a three-mod suite (standalone-first, optional integration): Work Control
   - selected schedule preset / working draft, shown as a softer ghost.
 - The user can edit the draft and apply it to selected pawns, or load a saved preset first and then apply it.
 - `SchedulePreset` stores only the 24 vanilla timetable assignments. It is global and named.
-- Presets live in `Config/OrderedWork/schedules.json`; they are not per-save.
+- Presets live in `Config/OrderedWork/schedules/<id>.json` (one file per preset); they are not per-save.
 - Applying a preset writes the selected pawns' vanilla timetable. It does not change the WorkType order lane.
 - Per-WorkType hour windows are **not part of the first schedule implementation**. They remain a later optional layer.
 - Vanilla timetable still decides Work/Joy/Sleep; no second parallel timetable.

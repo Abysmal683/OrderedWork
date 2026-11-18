@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.97] - 2026-11-17
+
+### Added — policy storage foundation
+- `PawnWorkOrder` now carries a schema version, stable pawn ID, work preset link, sparse work overrides, schedule preset link, sparse schedule overrides, zone bindings and clothing placeholders.
+- Per-save policy lists are normalized on load; invalid hours, duplicate keys and null rows are dropped, while missing defs/areas/presets are preserved.
+- `SchedulePreset` and `SchedulePresetStore` added; one JSON file per preset in `Config/OrderedWork/schedules/<id>.json`.
+- Schedule JSON writes use temp+replace, keep a `.bak`, validate schema and isolate corrupt presets.
+- Save component records a policy schema version.
+- No policy UI or application adapter yet.
+
 ## [0.3.0-alpha.96] - 2026-11-17
 
 ### Refactor — palette split

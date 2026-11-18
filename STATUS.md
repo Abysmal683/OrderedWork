@@ -1,6 +1,6 @@
 # Ordered Work — Current Status
 
-Version: `0.3.0-alpha.96` (refactor checkpoint). Build 0/0; tests 15/15.
+Version: `0.3.0-alpha.97` (refactor checkpoint). Build 0/0; tests 15/15.
 
 ## Completed architecture
 
@@ -44,7 +44,7 @@ Version: `0.3.0-alpha.96` (refactor checkpoint). Build 0/0; tests 15/15.
 - Do not warn that an area blocks WorkTypes.
 - Schedule source of truth is the vanilla 24-slot `Pawn.timetable`.
 - Schedule view uses two parallel lanes: current timetable and selected preset/draft ghost.
-- Schedule presets are named, global, 24-slot `TimeAssignmentDef` files in `Config/OrderedWork/schedules.json`.
+- Schedule presets are named, global, 24-slot `TimeAssignmentDef` files in `Config/OrderedWork/schedules/<id>.json` (one file per preset).
 - Apply a chosen preset to selected pawns; no per-WorkType hour windows in v1.
 - Override contract comes before policy UI; manual lock > emergency > schedule/zone > base lane.
 - Full override UI and clothing policy are later; clothing is by WorkType, per-pawn override in detail.

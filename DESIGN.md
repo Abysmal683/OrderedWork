@@ -43,7 +43,7 @@ These decisions supersede older exploratory notes below.
 - Vanilla `Pawn.timetable` (24 `TimeAssignmentDef` slots) is the source of truth.
 - The editor uses two parallel lanes (approved Option B): current vanilla timetable plus a selected preset/working draft ghost.
 - Save/load named `SchedulePreset` objects containing only the 24 vanilla assignments.
-- Presets are global in `Config/OrderedWork/schedules.json`; apply to selected pawns.
+- Presets are global in `Config/OrderedWork/schedules/<id>.json` (one file per preset); apply to selected pawns.
 - The workflow is: load/choose preset -> preview -> apply to selected pawns.
 - Do not add per-WorkType hour windows in the first schedule implementation; keep that as a later optional layer.
 - Do not create a second parallel timetable.
@@ -891,7 +891,7 @@ Design implication:
 - Vanilla `Pawn.timetable` is the source of truth: 24 `TimeAssignmentDef` slots.
 - Two parallel lanes: current vanilla timetable + selected preset/working draft ghost.
 - Named `SchedulePreset` objects store only the 24 vanilla assignments.
-- Presets are global in `Config/OrderedWork/schedules.json`; select a preset, preview, then apply to selected pawns.
+- Presets are global in `Config/OrderedWork/schedules/<id>.json` (one file per preset); select a preset, preview, then apply to selected pawns.
 - No per-WorkType hour windows in the first implementation; defer them as an optional layer.
 - No separate 24h matrix and no second parallel timetable.
 

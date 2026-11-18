@@ -60,6 +60,7 @@ namespace OrderedWork.Data
                 PawnWorkOrder entry = entries[i];
                 if (entry != null && entry.pawn == pawn)
                 {
+                    entry.NormalizePolicy();
                     return entry;
                 }
             }
