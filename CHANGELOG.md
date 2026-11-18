@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.131] - 2026-11-18
+
+### Refactor — Profiles panel uses layout helpers
+- Save-as row now uses `UiFieldRow`.
+- Save profile and Write pending actions use `UiButtonBar`.
+- Removed the last manual label/text-field X offsets in the Profiles panel.
+- No behavior change; internal config inset and collapsible sections remain.
+
 ## [0.3.0-alpha.130] - 2026-11-18
 
 ### Fixed — real config inset and compact Save

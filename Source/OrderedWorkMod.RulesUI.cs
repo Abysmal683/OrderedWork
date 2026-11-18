@@ -210,13 +210,10 @@ namespace OrderedWork
                 }
             }
 
-            Rect nameRow = list.GetRect(26f);
-            Widgets.Label(new Rect(nameRow.x, nameRow.y, 84f, 24f), "Save as");
-            newProfileName = Widgets.TextField(
-                new Rect(nameRow.x + 88f, nameRow.y, Mathf.Max(80f, nameRow.width - 88f), 24f),
-                newProfileName ?? "");
+            newProfileName = UiFieldRow.Text(list.GetRect(26f), "Save as", newProfileName, 84f);
 
-            if (list.ButtonText("Save current as profile"))
+
+            if (UiButtonBar.Button(list.GetRect(28f), "Save current as profile"))
             {
                 string profile = string.IsNullOrWhiteSpace(newProfileName) ? activeProfileName : newProfileName.Trim();
                 if (string.IsNullOrWhiteSpace(profile))
@@ -236,7 +233,7 @@ namespace OrderedWork
                     profileStatus = "Failed to save " + profile + ".json";
                 }
             }
-            if (list.ButtonText("Write pending for active profile"))
+            if (UiButtonBar.Button(list.GetRect(28f), "Write pending for active profile"))
             {
                 WorkConfigProfile captured = WorkConfigProfileBuilder.Capture(Settings, activeProfileName);
                 profileStatus = WorkConfigStore.SavePending(captured)
