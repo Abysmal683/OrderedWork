@@ -101,6 +101,7 @@ namespace OrderedWork
             WorkConfigStore.SavePending(profile);
             OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
             Messages.Message("Split saved: " + splitName + " (restart to apply).", MessageTypeDefOf.TaskCompletion, false);
+            ResetGiverOrderDraft();
 
             splitName = "";
             splitDescription = "";
@@ -189,6 +190,7 @@ namespace OrderedWork
             OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
             Messages.Message("Merge saved for " + mergeTarget + " (restart to apply).", MessageTypeDefOf.TaskCompletion, false);
             mergeDraft.Clear();
+            ResetGiverOrderDraft();
             mergeTargetScroll = 0f;
             mergeDirty = false;
         }

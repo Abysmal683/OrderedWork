@@ -108,6 +108,15 @@ namespace OrderedWork
             }
         }
 
+        private void ResetGiverOrderDraft()
+        {
+            giverOrderDraftInitialized = false;
+            giverOrderDirty = false;
+            giverOrderDraft.Clear();
+            giverOrderInitial.Clear();
+            giverOrderDraftType = "";
+        }
+
         private void MoveGiverOrderDraft(int from, int to)
         {
             if (from < 0 || from >= giverOrderDraft.Count || to < 0 || to >= giverOrderDraft.Count || from == to)
@@ -280,6 +289,7 @@ namespace OrderedWork
                         OrderedWorkMod.DebugLog("[Reset] " + defName + " profile=" + display.Profile);
                         OrderedWorkStartup.ApplyProfileNow(display, Settings, this);
                         Messages.Message(isSplit ? "Split deleted: " + defName : "Restored: " + defName, MessageTypeDefOf.TaskCompletion, false);
+                        ResetGiverOrderDraft();
                         giverOrderDraftInitialized = false;
                         giverOrderDraft.Clear();
                         giverOrderInitial.Clear();

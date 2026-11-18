@@ -29,17 +29,17 @@ namespace OrderedWork
             if (Widgets.ButtonText(splitRect, "Split mode") && settingsEditorMode != EditorSplit)
             {
                 settingsEditorMode = EditorSplit;
-                ResetEditorUiState();
+                ResetGiverOrderDraft();
             }
             if (Widgets.ButtonText(mergeRect, "Merge mode") && settingsEditorMode != EditorMerge)
             {
                 settingsEditorMode = EditorMerge;
-                ResetEditorUiState();
+                ResetGiverOrderDraft();
             }
             if (Widgets.ButtonText(orderRect, "Order mode") && settingsEditorMode != EditorOrder)
             {
                 settingsEditorMode = EditorOrder;
-                ResetEditorUiState();
+                ResetGiverOrderDraft();
             }
 
             Rect marker = settingsEditorMode == EditorMerge ? mergeRect

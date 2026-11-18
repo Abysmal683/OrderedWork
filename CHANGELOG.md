@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.121] - 2026-11-18
+
+### Fixed — stale giver-order panel after split/merge/mode switch
+- Added `ResetGiverOrderDraft` to invalidate the draft, origin snapshot and cached WorkType.
+- Split, Merge, mode switches, Profile Restore/Delete and WorkType selection now reset the draft immediately.
+- Split and Merge save paths refresh Order mode without requiring a WorkType round-trip.
+- Config tab/body spacing, split metadata and restore/delete messages from .120 remain.
+
 ## [0.3.0-alpha.120] - 2026-11-18
 
 ### Added — layout wrapper and split metadata
