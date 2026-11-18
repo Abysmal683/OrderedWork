@@ -31,15 +31,30 @@ namespace OrderedWork.UI
             doCloseX = true;
             doCloseButton = false;
             resizeable = true;
+            draggable = true;
             absorbInputAroundWindow = true;
             closeOnClickedOutside = false;
             forcePause = false;
         }
 
+
         public override Vector2 InitialSize => new Vector2(1100f, 720f);
+
+        private void EnforceMinimumWindowSize()
+        {
+            if (windowRect.width < 300f)
+            {
+                windowRect.width = 300f;
+            }
+            if (windowRect.height < 300f)
+            {
+                windowRect.height = 300f;
+            }
+        }
 
         public override void DoWindowContents(Rect inRect)
         {
+            EnforceMinimumWindowSize();
             if (pawn == null || pawn.Destroyed)
             {
                 Widgets.Label(inRect, "Pawn unavailable.");

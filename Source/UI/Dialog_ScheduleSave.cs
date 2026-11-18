@@ -27,9 +27,7 @@ namespace OrderedWork.UI
         {
             this.draft = draft;
             this.onSaved = onSaved;
-            presetName = string.IsNullOrWhiteSpace(initialName)
-                ? (draft != null ? draft.Name : "")
-                : initialName;
+            presetName = initialName ?? "";
             allPresets = SchedulePresetStore.LoadAll();
             visiblePresets = Filter(allPresets, search);
             doCloseX = true;
@@ -76,12 +74,12 @@ namespace OrderedWork.UI
                 {
                     Widgets.DrawBoxSolid(row, new Color(0.22f, 0.30f, 0.40f, 1f));
                 }
-                if (Widgets.ButtonInvisible(row))
+                Rect rowNameRect = new Rect(row.x + 4f, row.y + 3f, row.width - 232f, 28f);
+                if (Widgets.ButtonText(rowNameRect, preset.Name))
                 {
                     selectedIndex = i;
                     presetName = preset.Name;
                 }
-                Widgets.Label(new Rect(row.x + 6f, row.y + 4f, row.width - 220f, 28f), preset.Name);
                 Widgets.Label(new Rect(row.xMax - 214f, row.y + 4f, 100f, 28f),
                     string.IsNullOrWhiteSpace(preset.ModifiedUtc) ? "v" + preset.SchemaVersion : preset.ModifiedUtc);
                 if (Widgets.ButtonText(new Rect(row.xMax - 110f, row.y + 3f, 80f, 28f), "Overwrite"))

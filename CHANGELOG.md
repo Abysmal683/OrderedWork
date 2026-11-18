@@ -3,6 +3,17 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.106] - 2026-11-17
+
+### Fixed — schedule dialog and panel interaction
+- Schedule hour headers are centered and alternate column backgrounds improve readability.
+- Save dialog row selection no longer consumes clicks meant for Overwrite/Delete; actions now close or refresh correctly.
+- The save dialog no longer inherits a stale draft name when the parent name is empty.
+- Schedule `Overwrite` and `Delete` have working callbacks and logs.
+- Detail window sets `draggable`, clamps to 300x300, and clamps to the screen maximum.
+- Tabs fit the minimum width; schedule/zone content scrolls when the window is resized.
+- Missing schedule preset falls back to the current timetable; missing zone falls back to the current applied area and disables Apply.
+
 ## [0.3.0-alpha.105] - 2026-11-17
 
 ### Safety and UI fixes
