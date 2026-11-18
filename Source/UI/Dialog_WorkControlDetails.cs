@@ -19,7 +19,9 @@ namespace OrderedWork.UI
         {
             Overview,
             Schedule,
-            Zone
+            Zone,
+            Overrides,
+            Clothing
         }
 
         private readonly Pawn pawn;
@@ -97,7 +99,7 @@ namespace OrderedWork.UI
             Text.Font = GameFont.Small;
 
             Rect tabRow = new Rect(0f, 64f, inRect.width, 28f);
-            OrderedTabStrip.Draw(tabRow, new[] { "Overview", "Horario", "Zona" }, (int)detailTab,
+            OrderedTabStrip.Draw(tabRow, new[] { "Overview", "Horario", "Zona", "Overrides", "Ropa" }, (int)detailTab,
                 delegate(int index)
                 {
                     detailTab = (DetailTab)index;
@@ -114,18 +116,15 @@ namespace OrderedWork.UI
                 case DetailTab.Zone:
                     DrawScrollableTab(content, DrawZoneTab, 500f, 300f);
                     break;
+                case DetailTab.Overrides:
+                    DrawOverridesTab(content);
+                    break;
+                case DetailTab.Clothing:
+                    DrawClothingTab(content);
+                    break;
                 default:
                     DrawOverview(content);
                     break;
-            }
-        }
-
-        private void DrawDetailTab(Rect rect, DetailTab tab, string label)
-        {
-            if (Widgets.ButtonText(rect, label) && detailTab != tab)
-            {
-                detailTab = tab;
-                detailTabScroll = Vector2.zero;
             }
         }
 

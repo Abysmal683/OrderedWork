@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using OrderedWork.Data;
 using OrderedWork.Services;
 using RimWorld;
 using UnityEngine;
@@ -15,9 +16,10 @@ namespace OrderedWork.UI
                 ? pawn.skills.skills.Where(s => s != null).OrderByDescending(s => s.Level).Take(8).ToList()
                 : new List<SkillRecord>();
             List<string> order = WorkOrderService.GetOrder(pawn);
+            PawnWorkOrder entry = OrderedWorkGameComponent.GetOrCreate()?.GetEntry(pawn);
 
             float contentHeight = 32f + 22f + 22f + (topSkills.Count * 20f) + 10f + 22f
-                + (Mathf.Max(1, order.Count) * 20f) + 10f;
+                + (Mathf.Max(1, order.Count) * 20f) + 132f;
             Rect scrollContent = new Rect(0f, 0f, content.width - 20f, Mathf.Max(content.height, contentHeight));
 
             Widgets.BeginScrollView(content, ref overviewScroll, scrollContent);
@@ -93,6 +95,35 @@ namespace OrderedWork.UI
                         y += 20f;
                     }
                 }
+
+                y += 10f;
+                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), "Policy");
+                y += 22f;
+                string workPreset = entry == null || string.IsNullOrEmpty(entry.workPresetId)
+                    ? "legacy snapshot"
+                    : entry.workPresetId;
+                string schedulePreset = entry == null || string.IsNullOrEmpty(entry.schedulePresetId)
+                    ? "not configured"
+                    : entry.schedulePresetId;
+                string clothingPreset = entry == null || string.IsNullOrEmpty(entry.clothingPresetId)
+                    ? "not configured"
+                    : entry.clothingPresetId;
+                int workOverrides = entry?.workOverrides?.Count ?? 0;
+                int scheduleOverrides = entry?.scheduleOverrides?.Count ?? 0;
+                int hourlyOverrides = entry?.scheduleWorkOverrides?.Count ?? 0;
+                int clothingOverrides = entry?.clothingOverrides?.Count ?? 0;
+                int zones = entry?.zones?.Count ?? 0;
+                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), "Work preset: " + workPreset);
+                y += 20f;
+                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), "Schedule preset: " + schedulePreset);
+                y += 20f;
+                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), "Clothing preset: " + clothingPreset);
+                y += 20f;
+                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f),
+                    "Overrides: " + workOverrides + " work, " + scheduleOverrides + " schedule, "
+                    + hourlyOverrides + " hourly, " + clothingOverrides + " clothing");
+                y += 20f;
+                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), "Zones: " + zones);
             }
             finally
             {
