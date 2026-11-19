@@ -25,12 +25,12 @@ namespace OrderedWork.UI
             return preset;
         }
 
-        private void ApplyFocusPreset(WorkFocusPreset preset)
+        private bool ApplyFocusPreset(WorkFocusPreset preset)
         {
             PawnWorkOrder entry = DetailEntry();
             if (entry == null || preset == null)
             {
-                return;
+                return false;
             }
 
             List<string> baseOrder = WorkOrderService.GetOrder(pawn) ?? new List<string>();
@@ -68,7 +68,7 @@ namespace OrderedWork.UI
             {
                 Messages.Message(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.LoadCancelled",
                     "Focus preset not loaded: no entry is valid for this pawn."), MessageTypeDefOf.RejectInput, false);
-                return;
+                return false;
             }
 
             entry.hourFocusOverrides.Clear();
@@ -82,6 +82,7 @@ namespace OrderedWork.UI
                 message += " · " + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.Omitted", "omitted: ") + omitted;
             }
             Messages.Message(message, MessageTypeDefOf.TaskCompletion, false);
+            return true;
         }
     }
 }

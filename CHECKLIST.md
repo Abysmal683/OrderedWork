@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.247)
+# Ordered Work — Current Checklist (0.3.0-alpha.248)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -70,6 +70,13 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] `WorkTypePaletteView` split into core, tooltip and passion partials.
 - [ ] Runtime smoke test after the refactor: settings, pins, weights, split/merge, save/load.
 
+## Focus preset error toast (alpha.248)
+
+- [x] Invalid preset load uses a reject toast only.
+- [x] No duplicate "preset loaded" success message.
+- [x] Dialog closes without opening another panel.
+- [x] Build 0/0 and tests pass.
+- [ ] Confirm with BakTest runtime.
 ## Dead code cleanup (alpha.246)
 
 - [x] Seven unused localisation keys removed.

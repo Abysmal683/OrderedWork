@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.248] - 2026-11-19
+
+### Fixed — focus preset error feedback
+- Invalid focus preset loads now return through the normal reject message only.
+- Removed the duplicate success toast when the load is rejected.
+- The preset dialog closes without opening a second panel.
+
 ## [0.3.0-alpha.247] - 2026-11-19
 
 ### Fixed — backup recovery repairs the main file
