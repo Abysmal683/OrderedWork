@@ -616,11 +616,11 @@ namespace OrderedWork.UI
             }
             if (row.IsExpertise)
             {
-                string expertise = row.Label + "\\nExpertise";
-                if (!string.IsNullOrEmpty(row.Description)) expertise += "\\n" + row.Description;
+                string expertise = row.Label + "\nExpertise";
+                if (!string.IsNullOrEmpty(row.Description)) expertise += "\n" + row.Description;
                 expertise += row.XpRequired > 0.01f
-                    ? "\\nXP: " + row.XpCurrent.ToString("0") + " / " + row.XpRequired.ToString("0")
-                    : "\\nXP: max / uncapped";
+                    ? "\nXP: " + row.XpCurrent.ToString("0") + " / " + row.XpRequired.ToString("0")
+                    : "\nXP: max / uncapped";
                 skillTooltipCache[row.Label] = expertise;
                 return expertise;
             }
@@ -632,9 +632,18 @@ namespace OrderedWork.UI
             string result = row.Label
                 + "\nPassion: " + WorkTypePaletteView.PassionText(row.Passion)
                 + "\nLearning multiplier: x" + multiplier.ToString("0.00")
+                + "\nNegative passion: " + (PassionSource.IsBadOf(row.Passion) ? "yes" : "no")
                 + (row.XpRequired > 0.01f
                     ? "\nXP: " + row.XpCurrent.ToString("0") + " / " + row.XpRequired.ToString("0")
                     : "\nXP: max / uncapped");
+            PassionWeightEntry weight = PassionWeightPolicy.Find(OrderedWorkMod.Settings, row.Passion);
+            if (weight != null)
+            {
+                result += "\nRecommendation weight:"
+                    + "\n  Level 0: " + weight.level0Score
+                    + "\n  Per level: " + weight.perLevelBonus
+                    + "\n  Min level: " + weight.minLevel;
+            }
             skillTooltipCache[row.Label] = result;
             return result;
         }
@@ -733,19 +742,21 @@ namespace OrderedWork.UI
             RefreshStatTooltipCache();
             Widgets.Label(new Rect(rect.x, rect.y, rect.width, 20f), "Specialized stats");
             Rect body = new Rect(rect.x, rect.y + 24f, rect.width, Mathf.Max(0f, rect.height - 24f));
-            Rect view = new Rect(0f, 0f, body.width - 16f, Mathf.Max(body.height, 28f));
+            WorkTypeDef selected = SelectedWorkType();
+            List<StatDef> selectedStats = selected != null ? StatIndex.GetFor(selected) : new List<StatDef>();
+            Rect view = new Rect(0f, 0f, body.width - 16f,
+                Mathf.Max(body.height, (selectedStats.Count + 2) * 20f + 8f));
             Widgets.BeginScrollView(body, ref scroll, view);
             try
             {
                 float y = 0f;
-                WorkTypeDef selected = SelectedWorkType();
                 if (selected == null)
                 {
                     Widgets.Label(new Rect(0f, y + 6f, view.width, 20f), "Select a WorkType.");
                 }
                 else
                 {
-                    List<StatDef> stats = StatIndex.GetFor(selected);
+                    List<StatDef> stats = selectedStats;
                     if (stats.Count == 0)
                     {
                         StatDef fallback = RelevantWorkStat(selected);

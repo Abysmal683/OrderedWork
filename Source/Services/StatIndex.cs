@@ -70,7 +70,7 @@ namespace OrderedWork.Services
             built = true;
             foreach (StatDef stat in DefDatabase<StatDef>.AllDefsListForReading)
             {
-                if (stat == null || !stat.showOnPawns || stat.forInformationOnly || stat.alwaysHide)
+                if (stat == null || stat.forInformationOnly || stat.alwaysHide)
                 {
                     continue;
                 }
