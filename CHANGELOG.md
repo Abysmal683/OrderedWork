@@ -3,6 +3,18 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.176] - 2026-11-19
+
+### Fix — stats, navigation and final polish
+- Generic capacities now really use `PawnCapacityDefOf`; the previous replacements had not persisted.
+- WorkType rows show best relevant skill level and passion icon directly.
+- Added best-skill summary to specialized stats.
+- Removed the `Vacío` brush entry; right-click clears an hour and left-click paints.
+- Removed zebra from the pawn picker because its rows are buttons.
+- Improved the top-right lock glyph and kept its tooltip.
+- Search selection clears prior selection before selecting the current pawn.
+- Recreated the WorkPanel after arrow navigation to avoid the NullReferenceException.
+
 ## [0.3.0-alpha.175] - 2026-11-19
 
 ### Fix — pawn navigation and remaining Work feedback
