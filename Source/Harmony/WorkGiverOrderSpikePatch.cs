@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using HarmonyLib;
 using OrderedWork.Services;
@@ -20,25 +21,31 @@ namespace OrderedWork.Patches
         [HarmonyPatch("WorkGiversInOrderNormal", MethodType.Getter)]
         private static void NormalPostfix(Pawn_WorkSettings __instance, ref List<WorkGiver> __result)
         {
-            Pawn pawn = PawnField(__instance);
-            List<WorkGiver> reordered;
-            if (WorkGiverOrderSpike.TryReorder(pawn, __result, false, out reordered)
-                || WorkGiverOrderService.TryReorder(pawn, __result, out reordered))
-            {
-                __result = reordered;
-            }
+            SafeApply(__instance, ref __result, false);
         }
 
         [HarmonyPostfix]
         [HarmonyPatch("WorkGiversInOrderEmergency", MethodType.Getter)]
         private static void EmergencyPostfix(Pawn_WorkSettings __instance, ref List<WorkGiver> __result)
         {
-            Pawn pawn = PawnField(__instance);
-            List<WorkGiver> reordered;
-            if (WorkGiverOrderSpike.TryReorder(pawn, __result, true, out reordered)
-                || WorkGiverOrderService.TryReorder(pawn, __result, out reordered))
+            SafeApply(__instance, ref __result, true);
+        }
+
+        private static void SafeApply(Pawn_WorkSettings instance, ref List<WorkGiver> result, bool emergency)
+        {
+            try
             {
-                __result = reordered;
+                Pawn pawn = PawnField(instance);
+                List<WorkGiver> reordered;
+                if (WorkGiverOrderSpike.TryReorder(pawn, result, emergency, out reordered)
+                    || WorkGiverOrderService.TryReorder(pawn, result, out reordered))
+                {
+                    result = reordered;
+                }
+            }
+            catch (Exception exception)
+            {
+                Log.Warning("[Ordered Work] WorkGiver ordering failed: " + exception.Message);
             }
         }
     }

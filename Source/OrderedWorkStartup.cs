@@ -48,7 +48,14 @@ namespace OrderedWork
         /// </summary>
         public static void ApplyProfileNow(WorkConfigProfile profile, OrderedWorkSettings settings, OrderedWorkMod mod)
         {
-            ApplyProfile(profile, settings, mod);
+            try
+            {
+                ApplyProfile(profile, settings, mod);
+            }
+            catch (Exception exception)
+            {
+                Log.Error("[Ordered Work] Failed to apply profile immediately: " + exception);
+            }
         }
 
         private static void ApplyProfile(WorkConfigProfile profile, OrderedWorkSettings settings, OrderedWorkMod mod)
