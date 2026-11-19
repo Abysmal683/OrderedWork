@@ -356,12 +356,19 @@ namespace OrderedWork.UI
 
         private void DrawScrollableTab(Rect content, System.Action<Rect> draw, float minWidth, float minHeight)
         {
+            const float gap = 4f;
+            float trackWidth = WorkGridScrollView.Thickness;
+            Rect viewport = new Rect(content.x, content.y,
+                Mathf.Max(0f, content.width - trackWidth - gap), content.height);
+            Rect track = new Rect(content.xMax - trackWidth, content.y, trackWidth, content.height);
             Rect view = new Rect(0f, 0f,
-                Mathf.Max(content.width - 24f, minWidth),
-                Mathf.Max(content.height, minHeight));
-            Widgets.BeginScrollView(content, ref detailTabScroll, view);
+                Mathf.Max(viewport.width, minWidth),
+                Mathf.Max(viewport.height, minHeight));
+            WorkGridScrollView.HandleVertical(track, viewport, view, ref detailTabScroll);
+            Widgets.BeginScrollView(viewport, ref detailTabScroll, view, false);
             draw(view);
             Widgets.EndScrollView();
+            WorkGridScrollView.DrawVertical(track, viewport, view, ref detailTabScroll);
         }
 
 

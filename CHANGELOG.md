@@ -3,6 +3,18 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.230] - 2026-11-19
+
+### Fixed — external scrollbar and local schedule labels
+- Replaced the detail scroll view's built-in scrollbar with the reusable external `WorkGridScrollView`; the track now lives outside the content viewport.
+- Removed the WorkType hardcoded `x` removal path; right-click is the only removal gesture.
+- Restored Work detail columns; no stacked Work layout is forced.
+- Moved the Schedule title outside the panel background.
+- Added a single panel background and a 6 px content inset.
+- Replaced hardcoded schedule hour labels with localized `TimeAssignmentDef` labels.
+- Widened the WorkType add dialog and added ellipsis plus full-text tooltips.
+- Added camera root reflection fallbacks for the detail WASD handler.
+
 ## [0.3.0-alpha.229] - 2026-11-19
 
 ### Fixed — scrollbar margins, labels and camera
