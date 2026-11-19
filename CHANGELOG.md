@@ -3,6 +3,17 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.198] - 2026-11-19
+
+### Refactor — controllers and shared UI
+- Extracted skill filter state/persistence into `WorkSkillFilter`.
+- Extracted per-pawn stat explanation caching into `StatTooltipService`.
+- Extracted the read-only Profile body into `ProfileSummaryPanel`.
+- Unified Schedule header buttons on `UiButtonBar`.
+- Removed leftover unused `NamedStat`.
+- WorkPanel remains split into WorkTypes, Givers, Skills, Stats, Actions and shell.
+- Formal translation-key migration remains the next cleanup step.
+
 ## [0.3.0-alpha.197] - 2026-11-19
 
 ### Refactor — split remaining Work panel concerns
