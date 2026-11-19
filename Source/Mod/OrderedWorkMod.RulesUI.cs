@@ -42,7 +42,6 @@ namespace OrderedWork
                 return;
             }
             activeProfileName = WorkConfigStore.LoadSelectedProfileName();
-            newProfileName = activeProfileName;
             profileNameInitialized = true;
         }
 

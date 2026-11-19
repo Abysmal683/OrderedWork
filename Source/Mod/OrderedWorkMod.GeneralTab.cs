@@ -58,7 +58,11 @@ namespace OrderedWork
             if (DrawCollapsibleSection(list, "general-profiles",
                 ConfigText("OrderedWork.Config.General.ProfilesSection", "Profiles")))
             {
-                DrawProfilePanel(list);
+                profilesPanel.Draw(list, Settings, activeProfileName,
+                    delegate(string profile) { activeProfileName = profile; },
+                    profileStatus,
+                    delegate(string message) { profileStatus = message; },
+                    PersistLivePending);
             }
             list.Gap(12f);
 

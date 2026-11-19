@@ -87,9 +87,9 @@ namespace OrderedWork
         private bool splitDirty;
         private bool giverOrderDirty;
         private bool mergeDirty;
-        private string newProfileName = "";
         private bool profileNameInitialized;
         private string profileStatus = "";
+        private readonly ProfilesPanel profilesPanel = new ProfilesPanel();
 
         public OrderedWorkMod(ModContentPack content) : base(content)
         {

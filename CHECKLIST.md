@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.243)
+# Ordered Work — Current Checklist (0.3.0-alpha.244)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -70,6 +70,13 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] `WorkTypePaletteView` split into core, tooltip and passion partials.
 - [ ] Runtime smoke test after the refactor: settings, pins, weights, split/merge, save/load.
 
+## ProfilesPanel component (alpha.244)
+
+- [x] Profile list/save/pending UI moved into a component.
+- [x] Local name/initialization state owned by the panel.
+- [x] Old profile partial removed.
+- [x] Build 0/0 and tests pass.
+- [ ] Runtime check of select/save/write-pending.
 ## Log categories (alpha.243)
 
 - [x] Diagnostic categories added.

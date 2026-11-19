@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.244] - 2026-11-19
+
+### Refactor — ProfilesPanel component
+- Extracted profile list, selection, save and pending UI into `ProfilesPanel`.
+- The panel owns its local profile name and initialization state.
+- Removed `newProfileName` and the old profile partial from `OrderedWorkMod`.
+- Preserved shared active profile/status coordination with the other config tabs.
+
 ## [0.3.0-alpha.243] - 2026-11-19
 
 ### Diagnostics — category-based logging

@@ -9,3 +9,7 @@
 - `Add split` is enabled only with a non-empty name, a valid origin, and at least one draft giver that belongs to that origin. `Merge selected` and `Merge all` require a target different from the origin. Disabled actions show an inline warning.
 - Drafts are UI-only (not scribed). Saved `SplitEntry` / `MergeEntry` entries remain scribed and apply on restart. Resets only remove the saved entry; no WorkType is created or deleted in the editor.
 - `Reset split` stops recreating the split WorkType after restart. `Reset merge` returns foreign givers to their original type after restart. `Reset order` removes the saved giver override and restores the original def order after restart. All three need a restart and use two-step confirmation.
+
+## Profile panel component
+
+`ProfilesPanel` owns the local profile name and initialization state. It receives the active profile, shared status, and persist callback from the settings host so profile selection and pending writes remain coordinated with the other tabs.
