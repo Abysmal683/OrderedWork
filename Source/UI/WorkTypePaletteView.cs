@@ -297,7 +297,7 @@ namespace OrderedWork.UI
             if (skipped > 0)
             {
                 Messages.Message(
-                    "Ordered Work: " + skipped + " selected pawn(s) cannot do " + DisplayName(type) + " (Incapable).",
+                    OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Palette.CannotDo", "Ordered Work: ") + skipped + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Palette.CannotDoSuffix", " selected pawn(s) cannot do ") + DisplayName(type) + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Palette.IncapableSuffix", " (Incapable)."),
                     MessageTypeDefOf.RejectInput,
                     false);
             }

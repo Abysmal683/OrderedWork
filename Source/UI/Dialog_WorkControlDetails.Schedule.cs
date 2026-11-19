@@ -31,7 +31,7 @@ namespace OrderedWork.UI
             y += 28f;
 
             float line = 24f;
-            if (UiButtonBar.Button(new Rect(0f, y, 64f, line), "Load"))
+            if (UiButtonBar.Button(new Rect(0f, y, 64f, line), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Load", "Load")))
             {
                 Find.WindowStack.Add(new Dialog_SchedulePreset(true, null, delegate(SchedulePreset loaded)
                 {
@@ -49,7 +49,7 @@ namespace OrderedWork.UI
                 detailSchedule = ScheduleAdapter.CaptureCurrent(pawn, "");
                 detailScheduleName = "";
             }
-            if (UiButtonBar.Button(new Rect(232f, y, 64f, line), "Save"))
+            if (UiButtonBar.Button(new Rect(232f, y, 64f, line), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Save", "Save")))
             {
                 OpenSaveDialog();
             }
@@ -204,7 +204,7 @@ namespace OrderedWork.UI
                 }
                 TooltipHandler.TipRegion(cell, def != null
                     ? def.LabelCap + "\n" + def.defName
-                    : (editable ? "Click to paint " + (detailBrush != null ? detailBrush.LabelCap.ToString() : "—") : "—"));
+                    : (editable ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.ClickPaint", "Click to paint ") + (detailBrush != null ? detailBrush.LabelCap.ToString() : "—") : "—"));
             }
         }
 
