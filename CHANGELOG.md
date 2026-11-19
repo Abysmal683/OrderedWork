@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.196] - 2026-11-19
+
+### Refactor — split Work panel concerns
+- Extracted stat rendering, breakdown tooltips and capacity helpers into `WorkPanel.Stats.cs`.
+- Extracted skill list, ranking, expertise star, filter and skill tooltips into `WorkPanel.Skills.cs`.
+- Specialized stat view height now follows actual content and hides the scrollbar when everything fits.
+- Removed the unused legacy `Dialog_ScheduleSave`.
+- Removed the unused `NamedStat` helper.
+- Preserved the dynamic `StatIndex`, passion detail tooltip and zebra behavior.
+
 ## [0.3.0-alpha.195] - 2026-11-19
 
 ### Fix — stat scrolling, VSE quality and passion details
