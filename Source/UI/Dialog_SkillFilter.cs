@@ -43,10 +43,13 @@ namespace OrderedWork.UI
             Widgets.Label(new Rect(0f, 0f, inRect.width, 28f), "Skill filters");
             Text.Font = GameFont.Small;
 
+            bool oldLevel = level;
+            bool oldPassion = passion;
+            bool oldMods = mods;
+            bool oldExpertise = expertise;
             Widgets.CheckboxLabeled(new Rect(8f, 38f, inRect.width - 16f, 24f), "Level", ref level);
             Widgets.CheckboxLabeled(new Rect(8f, 66f, inRect.width - 16f, 24f), "Passion", ref passion);
             Widgets.CheckboxLabeled(new Rect(8f, 94f, inRect.width - 16f, 24f), "Include mods", ref mods);
-
             Widgets.CheckboxLabeled(new Rect(8f, 122f, inRect.width - 16f, 24f),
                 "Expertise (VSE)", ref expertise, !expertiseAvailable);
             if (!expertiseAvailable)
@@ -55,18 +58,12 @@ namespace OrderedWork.UI
                     "Expertise will be enabled when the VSE adapter is active.");
             }
 
-            Rect buttons = new Rect(0f, inRect.yMax - 30f, inRect.width, 28f);
-            Rect[] cells = new Rect[]
-            {
-                new Rect(buttons.x, buttons.y, 110f, 28f),
-                new Rect(buttons.xMax - 90f, buttons.y, 90f, 28f)
-            };
-            if (Widgets.ButtonText(cells[0], "Apply"))
+            if (level != oldLevel || passion != oldPassion || mods != oldMods || expertise != oldExpertise)
             {
                 apply?.Invoke(level, passion, expertise, mods);
-                Close();
             }
-            if (Widgets.ButtonText(cells[1], "Close"))
+
+            if (Widgets.ButtonText(new Rect(0f, inRect.yMax - 30f, inRect.width, 28f), "Close"))
             {
                 Close();
             }
