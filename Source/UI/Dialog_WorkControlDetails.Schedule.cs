@@ -27,7 +27,7 @@ namespace OrderedWork.UI
             Rect infoRect = new Rect(104f, y + 2f, 18f, 20f);
             Widgets.Label(infoRect, "?");
             TooltipHandler.TipRegion(infoRect,
-                "Origin: current vanilla timetable, read-only. Edit: editable preset; the brush paints hours. Priority: reserved for WorkType overrides.");
+                OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.Info", "Origin: current vanilla timetable, read-only. Edit: editable preset; the brush paints hours. Priority: reserved for WorkType overrides."));
             y += 28f;
 
             float line = 24f;
@@ -57,7 +57,7 @@ namespace OrderedWork.UI
             if (UiButtonBar.Button(new Rect(300f, y, 116f, line), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.ApplyToPawn", "Apply to pawn"), hasChanges))
             {
                 ScheduleAdapter.ApplyDraft(pawn, detailSchedule);
-                Messages.Message("Schedule applied to " + pawn.LabelShort + ".",
+                Messages.Message(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.AppliedPrefix", "Schedule applied to ") + pawn.LabelShort + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.AppliedSuffix", "."),
                     MessageTypeDefOf.TaskCompletion, false);
             }
             if (Mouse.IsOver(new Rect(300f, y, 116f, line)) && !hasChanges)

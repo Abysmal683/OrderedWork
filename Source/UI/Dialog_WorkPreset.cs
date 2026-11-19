@@ -142,7 +142,7 @@ namespace OrderedWork.UI
             preset.CreatedUtc = DateTime.UtcNow.ToString("o");
             if (WorkPresetStore.Save(preset))
             {
-                Messages.Message("Work preset saved: " + preset.Name, MessageTypeDefOf.TaskCompletion, false);
+                Messages.Message(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Presets.WorkSavedPrefix", "Work preset saved: ") + preset.Name, MessageTypeDefOf.TaskCompletion, false);
                 presets = WorkPresetStore.List();
                 closeAfterSave = true;
             }
@@ -155,7 +155,7 @@ namespace OrderedWork.UI
                 return;
             }
             apply(preset);
-            Messages.Message("Work preset applied: " + preset.Name, MessageTypeDefOf.TaskCompletion, false);
+            Messages.Message(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Presets.WorkAppliedPrefix", "Work preset applied: ") + preset.Name, MessageTypeDefOf.TaskCompletion, false);
             Close();
         }
 

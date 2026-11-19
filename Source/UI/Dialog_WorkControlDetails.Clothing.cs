@@ -26,12 +26,12 @@ namespace OrderedWork.UI
                 ApparelPolicy policy = pawn.outfits?.CurrentApparelPolicy;
                 string policyLabel = policy != null
                     ? (string.IsNullOrEmpty(policy.RenamableLabel) ? policy.BaseLabel : policy.RenamableLabel)
-                    : "None";
+                    : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Clothing.None", "None");
 
                 DrawSectionTitle(rows, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Clothing.Vanilla", "Vanilla apparel policy"));
                 Widgets.Label(rows.Next(), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Clothing.Current", "Current: ") + policyLabel);
 
-                DrawSectionTitle(rows, "Worn apparel (" + worn.Count + ")");
+                DrawSectionTitle(rows, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Clothing.WornPrefix", "Worn apparel (") + worn.Count + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Clothing.WornSuffix", ")"));
                 if (worn.Count == 0)
                 {
                     Widgets.Label(rows.Next(), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.None", "None."));
@@ -47,7 +47,7 @@ namespace OrderedWork.UI
 
                 DrawSectionTitle(rows, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Clothing.Policy", "Ordered Work clothing policy"));
                 string preset = entry == null || string.IsNullOrEmpty(entry.clothingPresetId)
-                    ? "not configured"
+                    ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Clothing.NotConfigured", "not configured")
                     : entry.clothingPresetId;
                 Widgets.Label(rows.Next(), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Clothing.Preset", "Preset: ") + preset);
 

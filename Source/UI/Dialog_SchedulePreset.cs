@@ -101,7 +101,7 @@ namespace OrderedWork.UI
                 SchedulePreset toLoad = pendingLoad;
                 pendingLoad = null;
                 onLoad?.Invoke(toLoad);
-                Messages.Message("Schedule preset loaded into the editor: " + toLoad.Name,
+                Messages.Message(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Presets.ScheduleLoadedPrefix", "Schedule preset loaded into the editor: ") + toLoad.Name,
                     MessageTypeDefOf.TaskCompletion, false);
                 Close();
                 return;
@@ -144,7 +144,7 @@ namespace OrderedWork.UI
             preset.Name = name.Trim();
             if (SchedulePresetStore.Save(preset))
             {
-                Messages.Message("Schedule preset saved: " + preset.Name,
+                Messages.Message(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Presets.ScheduleSavedPrefix", "Schedule preset saved: ") + preset.Name,
                     MessageTypeDefOf.TaskCompletion, false);
                 presets = SchedulePresetStore.LoadAll();
                 closeAfterSave = true;

@@ -41,7 +41,7 @@ namespace OrderedWork.UI
                     foreach (PawnWorkOverride value in entry.workOverrides)
                     {
                         string state = value.enabled ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overrides.Enabled", "enabled") : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overrides.Disabled", "disabled");
-                        string locked = value.locked ? ", locked" : "";
+                        string locked = value.locked ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overrides.LockedSuffix", ", locked") : "";
                         DrawRow(rows, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overrides.WorkType", "WorkType ") + WorkTypeLabel(value.workTypeDefName)
                             + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overrides.Rank", " | rank ") + value.rank + " | " + state + locked
                             + " | " + value.source, rowIndex++);
