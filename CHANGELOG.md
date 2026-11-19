@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.213] - 2026-11-19
+
+### Localization — Work Control and palette labels
+- Migrated Work Control title, empty states, hints, status labels and action tooltips to keyed text.
+- Migrated WorkType palette incapability/tooltip labels and passion-weight section labels.
+- Added English and Spanish entries for the new keys.
+- Remaining hardcoded text is concentrated in long dynamic tooltips and diagnostic messages.
+
 ## [0.3.0-alpha.212] - 2026-11-19
 
 ### Localization — tabs and secondary Work labels
