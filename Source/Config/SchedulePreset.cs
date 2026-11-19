@@ -18,7 +18,17 @@ namespace OrderedWork.Config
         public string ModifiedUtc { get; set; } = "";
         public List<string> Slots { get; set; } = NewSlots();
         public List<string> Mods { get; set; } = new List<string>();
-        public List<int> SlotMods { get; set; } = new List<int>();
+        public List<int> SlotMods { get; set; } = NewSlotMods();
+
+        public static List<int> NewSlotMods()
+        {
+            List<int> mods = new List<int>(SlotCount);
+            for (int i = 0; i < SlotCount; i++)
+            {
+                mods.Add(-1);
+            }
+            return mods;
+        }
 
         public static List<string> NewSlots()
         {
