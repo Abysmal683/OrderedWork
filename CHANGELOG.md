@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.215] - 2026-11-19
+
+### Localization — long skill and capacity tooltips
+- Migrated Skill tooltip labels: Expertise, Passion, Learning multiplier, Negative passion, XP, XP max, Recommendation weight and its three values.
+- Migrated the specialized skill summary and capacity tooltip labels.
+- Added the corresponding English and Spanish keys.
+- Remaining migration is limited to Schedule/Overrides/Clothing dynamic messages and diagnostic wording.
+
 ## [0.3.0-alpha.214] - 2026-11-19
 
 ### Localization — palette, tooltips and remaining Work labels
