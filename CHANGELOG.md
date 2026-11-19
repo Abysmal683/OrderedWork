@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.209] - 2026-11-19
+
+### Localization — common UI labels
+- Added English and Spanish key files for the common Work/Profile/Filter/Schedule labels.
+- Migrated buttons, section titles and primary labels across WorkPanel, Profile, filters, picker and presets to `OrderedWorkText.T`.
+- Spanish support now covers the migrated labels; untranslated secondary strings fall back to English.
+- Remaining tooltips, dynamic messages and detailed section copy are the next localization pass.
+
 ## [0.3.0-alpha.208] - 2026-11-19
 
 ### Hardening — stat index and split creation
