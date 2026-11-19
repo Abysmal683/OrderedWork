@@ -61,7 +61,7 @@ namespace OrderedWork.UI
         {
             if (pawn == null || pawn.Destroyed)
             {
-                Widgets.Label(area, "Pawn unavailable.");
+                Widgets.Label(area, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Main.PawnUnavailable", "Pawn unavailable."));
                 return;
             }
             EnsureInitialized();

@@ -79,8 +79,8 @@ namespace OrderedWork.UI
                     }
                 }
                 Widgets.Label(columns.Column(1, 28f),
-                    string.IsNullOrWhiteSpace(preset.ModifiedUtc) ? "unknown" : preset.ModifiedUtc);
-                if (Widgets.ButtonText(columns.Column(2, 28f), loadMode ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Load", "Load") : "Overwrite"))
+                    string.IsNullOrWhiteSpace(preset.ModifiedUtc) ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Unknown", "unknown") : preset.ModifiedUtc);
+                if (Widgets.ButtonText(columns.Column(2, 28f), loadMode ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Load", "Load") : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Overwrite", "Overwrite")))
                 {
                     if (loadMode)
                     {

@@ -22,7 +22,7 @@ namespace OrderedWork.UI
             EnsureDetailSchedule();
             float y = 0f;
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(0f, y, 100f, 24f), "Schedule");
+            Widgets.Label(new Rect(0f, y, 100f, 24f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.Title", "Schedule"));
             Text.Font = GameFont.Small;
             Rect infoRect = new Rect(104f, y + 2f, 18f, 20f);
             Widgets.Label(infoRect, "?");
@@ -39,12 +39,12 @@ namespace OrderedWork.UI
                     detailScheduleName = loaded.Name;
                 }));
             }
-            if (UiButtonBar.Button(new Rect(68f, y, 56f, line), "New"))
+            if (UiButtonBar.Button(new Rect(68f, y, 56f, line), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.New", "New")))
             {
                 detailSchedule = new SchedulePreset { Name = "" };
                 detailScheduleName = "";
             }
-            if (UiButtonBar.Button(new Rect(128f, y, 100f, line), "Copy current"))
+            if (UiButtonBar.Button(new Rect(128f, y, 100f, line), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.CopyCurrent", "Copy current")))
             {
                 detailSchedule = ScheduleAdapter.CaptureCurrent(pawn, "");
                 detailScheduleName = "";
@@ -54,7 +54,7 @@ namespace OrderedWork.UI
                 OpenSaveDialog();
             }
             bool hasChanges = HasScheduleChanges();
-            if (UiButtonBar.Button(new Rect(300f, y, 116f, line), "Apply to pawn", hasChanges))
+            if (UiButtonBar.Button(new Rect(300f, y, 116f, line), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.ApplyToPawn", "Apply to pawn"), hasChanges))
             {
                 ScheduleAdapter.ApplyDraft(pawn, detailSchedule);
                 Messages.Message("Schedule applied to " + pawn.LabelShort + ".",
@@ -63,18 +63,18 @@ namespace OrderedWork.UI
             if (Mouse.IsOver(new Rect(300f, y, 116f, line)) && !hasChanges)
             {
                 TooltipHandler.TipRegion(new Rect(300f, y, 116f, line),
-                    "Apply is enabled only when a non-empty hour differs from the current timetable.");
+                    OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.ApplyTip", "Apply is enabled only when a non-empty hour differs from the current timetable."));
             }
             y += line + 8f;
 
             Rect brushRect = new Rect(0f, y, 210f, line);
             DrawBrush(brushRect);
             Widgets.LabelEllipses(new Rect(brushRect.xMax + 8f, y, content.width - brushRect.width - 8f, line),
-                "Left click: paint · Right click: clear");
+                OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.PaintHint", "Left click: paint · Right click: clear"));
             y += line + 8f;
 
             float hourWidth = Mathf.Max(22f, (content.width - 76f) / SchedulePreset.SlotCount);
-            Widgets.Label(new Rect(0f, y, 72f, 18f), "Hour");
+            Widgets.Label(new Rect(0f, y, 72f, 18f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.Hour", "Hour"));
             for (int hour = 0; hour < SchedulePreset.SlotCount; hour++)
             {
                 Text.Anchor = TextAnchor.MiddleCenter;
@@ -82,11 +82,11 @@ namespace OrderedWork.UI
                 Text.Anchor = TextAnchor.UpperLeft;
             }
             y += 20f;
-            DrawScheduleRow(content, y, hourWidth, "Origin", false, true);
+            DrawScheduleRow(content, y, hourWidth, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.Origin", "Origin"), false, true);
             y += 42f;
-            DrawScheduleRow(content, y, hourWidth, "Edit", true, false);
+            DrawScheduleRow(content, y, hourWidth, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.Edit", "Edit"), true, false);
             y += 42f;
-            DrawScheduleRow(content, y, hourWidth, "Priority", false, false);
+            DrawScheduleRow(content, y, hourWidth, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.Priority", "Priority"), false, false);
             y += 42f;
 
             Widgets.Label(new Rect(76f, y, content.width - 76f, 20f),
@@ -291,7 +291,7 @@ namespace OrderedWork.UI
             if (color.a <= 0.01f || (color.r <= 0.01f && color.g <= 0.01f && color.b <= 0.01f))
             {
                 int hash = 0;
-                string name = def.defName ?? def.label ?? "unknown";
+                string name = def.defName ?? def.label ?? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Unknown", "unknown");
                 for (int i = 0; i < name.Length; i++)
                 {
                     hash = (hash * 31 + name[i]) & 0x7fffffff;

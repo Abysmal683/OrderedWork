@@ -26,15 +26,15 @@ namespace OrderedWork.UI
                 UiRows rows = new UiRows(view, 20f, 4f);
                 if (entry == null)
                 {
-                    Widgets.Label(rows.Next(24f), "No Ordered Work policy saved for this pawn.");
+                    Widgets.Label(rows.Next(24f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overrides.NoPolicy", "No Ordered Work policy saved for this pawn."));
                     return;
                 }
 
-                DrawSectionTitle(rows, "Work overrides");
+                DrawSectionTitle(rows, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overrides.Work", "Work overrides"));
                 int rowIndex = 0;
                 if (entry.workOverrides.Count == 0)
                 {
-                    Widgets.Label(rows.Next(), "None.");
+                    Widgets.Label(rows.Next(), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.None", "None."));
                 }
                 else
                 {
@@ -48,11 +48,11 @@ namespace OrderedWork.UI
                     }
                 }
 
-                DrawSectionTitle(rows, "Schedule overrides");
+                DrawSectionTitle(rows, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overrides.Schedule", "Schedule overrides"));
                 rowIndex = 0;
                 if (entry.scheduleOverrides.Count == 0)
                 {
-                    Widgets.Label(rows.Next(), "None.");
+                    Widgets.Label(rows.Next(), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.None", "None."));
                 }
                 else
                 {
@@ -65,11 +65,11 @@ namespace OrderedWork.UI
                     }
                 }
 
-                DrawSectionTitle(rows, "Hourly work overrides");
+                DrawSectionTitle(rows, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overrides.Hourly", "Hourly work overrides"));
                 rowIndex = 0;
                 if (entry.scheduleWorkOverrides.Count == 0)
                 {
-                    Widgets.Label(rows.Next(), "None.");
+                    Widgets.Label(rows.Next(), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.None", "None."));
                 }
                 else
                 {
@@ -81,11 +81,11 @@ namespace OrderedWork.UI
                     }
                 }
 
-                DrawSectionTitle(rows, "Clothing overrides");
+                DrawSectionTitle(rows, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overrides.Clothing", "Clothing overrides"));
                 rowIndex = 0;
                 if (entry.clothingOverrides.Count == 0)
                 {
-                    Widgets.Label(rows.Next(), "None.");
+                    Widgets.Label(rows.Next(), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.None", "None."));
                 }
                 else
                 {
@@ -132,7 +132,7 @@ namespace OrderedWork.UI
         private static string WorkTypeLabel(string defName)
         {
             WorkTypeDef workType = DefDatabase<WorkTypeDef>.GetNamedSilentFail(defName);
-            return workType != null ? workType.label : (defName ?? "unknown");
+            return workType != null ? workType.label : (defName ?? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Unknown", "unknown"));
         }
     }
 }

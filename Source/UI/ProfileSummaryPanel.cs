@@ -84,7 +84,7 @@ namespace OrderedWork.UI
             }
 
             if (UiButtonBar.Button(new Rect(content.xMax - 150f, content.y + 2f, 132f, 24f),
-                OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Profile.Open", OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.OpenDetails", "Open details")), true, "Open the full Ordered Work editor."))
+                OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Profile.Open", "Open details"), true, "Open the full Ordered Work editor."))
             {
                 openDetails?.Invoke();
             }

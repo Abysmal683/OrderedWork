@@ -102,7 +102,7 @@ namespace OrderedWork.UI
             }
             if (pawn == null || pawn.Destroyed)
             {
-                Widgets.Label(inRect, "Pawn unavailable.");
+                Widgets.Label(inRect, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Main.PawnUnavailable", "Pawn unavailable."));
                 return;
             }
 
@@ -117,7 +117,7 @@ namespace OrderedWork.UI
             Text.Font = GameFont.Small;
 
             Rect tabRow = new Rect(0f, 64f, inRect.width, 28f);
-            OrderedTabStrip.Draw(tabRow, new[] { "Work", "Overview", "Schedule", "Zone", "Overrides", "Clothing" }, (int)detailTab,
+            OrderedTabStrip.Draw(tabRow, new[] { OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Tab.Work", "Work"), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Tab.Overview", "Overview"), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.Title", "Schedule"), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Zone.Title", "Zone"), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Tab.Overrides", "Overrides"), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Tab.Clothing", "Clothing") }, (int)detailTab,
                 delegate(int index)
                 {
                     detailTab = (DetailTab)index;
@@ -193,7 +193,7 @@ namespace OrderedWork.UI
             Widgets.DrawBoxSolid(new Rect(lockRect.x + 11f, lockRect.y + 3f, 2f, 7f), gold);
             Widgets.DrawBoxSolid(new Rect(lockRect.x + 5f, lockRect.y + 3f, 8f, 2f), gold);
             Widgets.DrawBoxSolid(new Rect(lockRect.x + 8f, lockRect.y + 11f, 2f, 3f), new Color(0.16f, 0.14f, 0.10f));
-            TooltipHandler.TipRegion(lockRect, "Panel movement is locked in this tab.");
+            TooltipHandler.TipRegion(lockRect, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Main.PanelLocked", "Panel movement is locked in this tab."));
         }
 
         private void DrawPawnNavigation(Rect inRect)
@@ -201,7 +201,7 @@ namespace OrderedWork.UI
             Rect search = new Rect(inRect.xMax - 152f, 0f, 68f, 24f);
             Rect left = new Rect(inRect.xMax - 82f, 0f, 26f, 24f);
             Rect right = new Rect(inRect.xMax - 52f, 0f, 26f, 24f);
-            if (Widgets.ButtonText(search, "Find"))
+            if (Widgets.ButtonText(search, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Main.Find", "Find")))
             {
                 Find.WindowStack.Add(new Dialog_PawnPicker(detailPawns, SetPawn));
             }
@@ -213,9 +213,9 @@ namespace OrderedWork.UI
             {
                 StepPawn(1);
             }
-            TooltipHandler.TipRegion(left, "Previous colonist");
-            TooltipHandler.TipRegion(right, "Next colonist");
-            TooltipHandler.TipRegion(search, "Search another colonist without closing details");
+            TooltipHandler.TipRegion(left, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Main.Previous", "Previous colonist"));
+            TooltipHandler.TipRegion(right, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Main.Next", "Next colonist"));
+            TooltipHandler.TipRegion(search, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Main.SearchTip", "Search another colonist without closing details"));
         }
 
         private void StepPawn(int delta)

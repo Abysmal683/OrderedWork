@@ -32,11 +32,11 @@ namespace OrderedWork.UI
                 }
                 y += 22f;
 
-                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), "Top skills");
+                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.TopSkills", "Top skills"));
                 y += 22f;
                 if (topSkills.Count == 0)
                 {
-                    Widgets.Label(new Rect(6f, y, scrollContent.width - 6f, 20f), "No skills.");
+                    Widgets.Label(new Rect(6f, y, scrollContent.width - 6f, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.NoSkills", "No skills."));
                     y += 20f;
                 }
                 else
@@ -53,7 +53,7 @@ namespace OrderedWork.UI
                 }
 
                 y += 10f;
-                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), "Work order");
+                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.WorkOrder", "Work order"));
                 y += 22f;
                 if (order.Count == 0)
                 {
@@ -65,10 +65,10 @@ namespace OrderedWork.UI
                     float statusWidth = 110f;
                     float skillWidth = 90f;
                     float nameWidth = scrollContent.width - rankWidth - statusWidth - skillWidth - 12f;
-                    Widgets.Label(new Rect(0f, y, rankWidth, 18f), "Priority");
-                    Widgets.Label(new Rect(rankWidth, y, nameWidth, 18f), "Work type");
-                    Widgets.Label(new Rect(rankWidth + nameWidth, y, skillWidth, 18f), "Skill");
-                    Widgets.Label(new Rect(rankWidth + nameWidth + skillWidth, y, statusWidth, 18f), "Status");
+                    Widgets.Label(new Rect(0f, y, rankWidth, 18f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.Priority", "Priority"));
+                    Widgets.Label(new Rect(rankWidth, y, nameWidth, 18f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.WorkType", "Work type"));
+                    Widgets.Label(new Rect(rankWidth + nameWidth, y, skillWidth, 18f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.Skill", "Skill"));
+                    Widgets.Label(new Rect(rankWidth + nameWidth + skillWidth, y, statusWidth, 18f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.Status", "Status"));
                     y += 20f;
 
                     for (int i = 0; i < order.Count; i++)
@@ -97,7 +97,7 @@ namespace OrderedWork.UI
                 }
 
                 y += 10f;
-                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), "Policy");
+                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.Policy", "Policy"));
                 y += 22f;
                 string workPreset = entry == null || string.IsNullOrEmpty(entry.workPresetId)
                     ? "legacy snapshot"
@@ -113,17 +113,17 @@ namespace OrderedWork.UI
                 int hourlyOverrides = entry?.scheduleWorkOverrides?.Count ?? 0;
                 int clothingOverrides = entry?.clothingOverrides?.Count ?? 0;
                 int zones = entry?.zones?.Count ?? 0;
-                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), "Work preset: " + workPreset);
+                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.WorkPreset", "Work preset: ") + workPreset);
                 y += 20f;
-                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), "Schedule preset: " + schedulePreset);
+                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.SchedulePreset", "Schedule preset: ") + schedulePreset);
                 y += 20f;
-                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), "Clothing preset: " + clothingPreset);
+                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.ClothingPreset", "Clothing preset: ") + clothingPreset);
                 y += 20f;
                 Widgets.Label(new Rect(0f, y, scrollContent.width, 20f),
-                    "Overrides: " + workOverrides + " work, " + scheduleOverrides + " schedule, "
+                    OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.Overrides", "Overrides: ") + workOverrides + " work, " + scheduleOverrides + " schedule, "
                     + hourlyOverrides + " hourly, " + clothingOverrides + " clothing");
                 y += 20f;
-                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), "Zones: " + zones);
+                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.Zones", "Zones: ") + zones);
             }
             finally
             {

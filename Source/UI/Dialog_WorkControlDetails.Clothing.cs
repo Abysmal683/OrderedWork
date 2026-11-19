@@ -28,13 +28,13 @@ namespace OrderedWork.UI
                     ? (string.IsNullOrEmpty(policy.RenamableLabel) ? policy.BaseLabel : policy.RenamableLabel)
                     : "None";
 
-                DrawSectionTitle(rows, "Vanilla apparel policy");
-                Widgets.Label(rows.Next(), "Current: " + policyLabel);
+                DrawSectionTitle(rows, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Clothing.Vanilla", "Vanilla apparel policy"));
+                Widgets.Label(rows.Next(), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Clothing.Current", "Current: ") + policyLabel);
 
                 DrawSectionTitle(rows, "Worn apparel (" + worn.Count + ")");
                 if (worn.Count == 0)
                 {
-                    Widgets.Label(rows.Next(), "None.");
+                    Widgets.Label(rows.Next(), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.None", "None."));
                 }
                 else
                 {
@@ -45,16 +45,16 @@ namespace OrderedWork.UI
                     }
                 }
 
-                DrawSectionTitle(rows, "Ordered Work clothing policy");
+                DrawSectionTitle(rows, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Clothing.Policy", "Ordered Work clothing policy"));
                 string preset = entry == null || string.IsNullOrEmpty(entry.clothingPresetId)
                     ? "not configured"
                     : entry.clothingPresetId;
-                Widgets.Label(rows.Next(), "Preset: " + preset);
+                Widgets.Label(rows.Next(), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Clothing.Preset", "Preset: ") + preset);
 
-                DrawSectionTitle(rows, "Clothing overrides");
+                DrawSectionTitle(rows, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overrides.Clothing", "Clothing overrides"));
                 if (entry == null || entry.clothingOverrides.Count == 0)
                 {
-                    Widgets.Label(rows.Next(), "None.");
+                    Widgets.Label(rows.Next(), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.None", "None."));
                 }
                 else
                 {
@@ -68,7 +68,7 @@ namespace OrderedWork.UI
                 }
 
                 Widgets.Label(rows.Next(22f),
-                    "Clothing overrides are stored in the policy record; automatic application is not implemented yet.");
+                    OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Clothing.Note", "Clothing overrides are stored in the policy record; automatic application is not implemented yet."));
             }
             finally
             {

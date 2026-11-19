@@ -48,4 +48,52 @@
   <OrderedWork.Work.AddTip>Add a capable WorkType that is not currently in this pawn's list.</OrderedWork.Work.AddTip>
   <OrderedWork.Givers.ResetTip>Reset this WorkType's giver order to the saved global JSON order.</OrderedWork.Givers.ResetTip>
   <OrderedWork.Givers.ResetAllTip>Reset every WorkGiver override for this pawn. Requires confirmation.</OrderedWork.Givers.ResetAllTip>
-  <OrderedWork.Givers.ConfirmResetTip>Click again within 5 seconds to reset every WorkGiver override.</OrderedWork.Givers.ConfirmResetTip></LanguageData>
+  <OrderedWork.Givers.ConfirmResetTip>Click again within 5 seconds to reset every WorkGiver override.</OrderedWork.Givers.ConfirmResetTip>  <OrderedWork.Common.Overwrite>Overwrite</OrderedWork.Common.Overwrite>
+  <OrderedWork.Common.Unknown>unknown</OrderedWork.Common.Unknown>
+  <OrderedWork.Common.Map>Map</OrderedWork.Common.Map>
+  <OrderedWork.Common.ManageZones>Manage zones</OrderedWork.Common.ManageZones>
+  <OrderedWork.Common.Unrestricted>Unrestricted</OrderedWork.Common.Unrestricted>
+  <OrderedWork.Schedule.Title>Schedule</OrderedWork.Schedule.Title>
+  <OrderedWork.Schedule.Info>Origin: current vanilla timetable, read-only. Edit: editable preset; the brush paints hours. Priority: reserved for WorkType overrides.</OrderedWork.Schedule.Info>
+  <OrderedWork.Schedule.New>New</OrderedWork.Schedule.New>
+  <OrderedWork.Schedule.CopyCurrent>Copy current</OrderedWork.Schedule.CopyCurrent>
+  <OrderedWork.Schedule.Hour>Hour</OrderedWork.Schedule.Hour>
+  <OrderedWork.Schedule.Origin>Origin</OrderedWork.Schedule.Origin>
+  <OrderedWork.Schedule.Edit>Edit</OrderedWork.Schedule.Edit>
+  <OrderedWork.Schedule.Priority>Priority</OrderedWork.Schedule.Priority>
+  <OrderedWork.Schedule.PaintHint>Left click: paint · Right click: clear</OrderedWork.Schedule.PaintHint>
+  <OrderedWork.Schedule.ApplyTip>Apply is enabled only when a non-empty hour differs from the current timetable.</OrderedWork.Schedule.ApplyTip>
+  <OrderedWork.Zone.Title>Zone</OrderedWork.Zone.Title>
+  <OrderedWork.Zone.Info>Assign an existing area. Use Manage zones to create or edit.</OrderedWork.Zone.Info>
+  <OrderedWork.Zone.ManagerInfo>Zones are not created here. The vanilla manager can create, delete, expand and reduce areas.</OrderedWork.Zone.ManagerInfo>
+  <OrderedWork.Zone.Warning>Warning: the saved area no longer exists on this map. The reference is preserved.</OrderedWork.Zone.Warning>
+  <OrderedWork.Overrides.NoPolicy>No Ordered Work policy saved for this pawn.</OrderedWork.Overrides.NoPolicy>
+  <OrderedWork.Overrides.Work>Work overrides</OrderedWork.Overrides.Work>
+  <OrderedWork.Overrides.Schedule>Schedule overrides</OrderedWork.Overrides.Schedule>
+  <OrderedWork.Overrides.Hourly>Hourly work overrides</OrderedWork.Overrides.Hourly>
+  <OrderedWork.Overrides.Clothing>Clothing overrides</OrderedWork.Overrides.Clothing>
+  <OrderedWork.Clothing.Vanilla>Vanilla apparel policy</OrderedWork.Clothing.Vanilla>
+  <OrderedWork.Clothing.Current>Current: </OrderedWork.Clothing.Current>
+  <OrderedWork.Clothing.Worn>Worn apparel</OrderedWork.Clothing.Worn>
+  <OrderedWork.Clothing.Policy>Ordered Work clothing policy</OrderedWork.Clothing.Policy>
+  <OrderedWork.Clothing.Preset>Preset: </OrderedWork.Clothing.Preset>
+  <OrderedWork.Clothing.Note>Clothing overrides are stored in the policy record; automatic application is not implemented yet.</OrderedWork.Clothing.Note>
+  <OrderedWork.Overview.TopSkills>Top skills</OrderedWork.Overview.TopSkills>
+  <OrderedWork.Overview.NoSkills>No skills.</OrderedWork.Overview.NoSkills>
+  <OrderedWork.Overview.WorkOrder>Work order</OrderedWork.Overview.WorkOrder>
+  <OrderedWork.Overview.Priority>Priority</OrderedWork.Overview.Priority>
+  <OrderedWork.Overview.WorkType>Work type</OrderedWork.Overview.WorkType>
+  <OrderedWork.Overview.Skill>Skill</OrderedWork.Overview.Skill>
+  <OrderedWork.Overview.Status>Status</OrderedWork.Overview.Status>
+  <OrderedWork.Overview.Policy>Policy</OrderedWork.Overview.Policy>
+  <OrderedWork.Overview.WorkPreset>Work preset: </OrderedWork.Overview.WorkPreset>
+  <OrderedWork.Overview.SchedulePreset>Schedule preset: </OrderedWork.Overview.SchedulePreset>
+  <OrderedWork.Overview.ClothingPreset>Clothing preset: </OrderedWork.Overview.ClothingPreset>
+  <OrderedWork.Overview.Overrides>Overrides: </OrderedWork.Overview.Overrides>
+  <OrderedWork.Overview.Zones>Zones: </OrderedWork.Overview.Zones>
+  <OrderedWork.Main.PawnUnavailable>Pawn unavailable.</OrderedWork.Main.PawnUnavailable>
+  <OrderedWork.Main.Find>Find</OrderedWork.Main.Find>
+  <OrderedWork.Main.Previous>Previous colonist</OrderedWork.Main.Previous>
+  <OrderedWork.Main.Next>Next colonist</OrderedWork.Main.Next>
+  <OrderedWork.Main.SearchTip>Search another colonist without closing details</OrderedWork.Main.SearchTip>
+  <OrderedWork.Main.PanelLocked>Panel movement is locked in this tab.</OrderedWork.Main.PanelLocked>  <OrderedWork.Zone.Info>Assign an existing area. Use Manage zones to create or edit.</OrderedWork.Zone.Info>
