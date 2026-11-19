@@ -37,7 +37,10 @@ namespace OrderedWork.UI
         private Vector2 skillsScroll;
         private Vector2 genericStatsScroll;
         private Vector2 specializedStatsScroll;
-        private int relevantMode;
+        private bool filterLevel = true;
+        private bool filterPassion = true;
+        private bool filterExpertise;
+        private bool filterMods = true;
         private readonly UiDragList workList = new UiDragList();
         private readonly UiDragList giverList = new UiDragList();
         private readonly Dictionary<string, string> workTypeTooltipCache =
@@ -482,29 +485,26 @@ namespace OrderedWork.UI
             Rect stats = new Rect(rect.x + 6f, skills.yMax + 6f, rect.width - 12f,
                 Mathf.Max(0f, rect.height - skillsHeight - 18f));
 
-            Widgets.Label(new Rect(skills.x, skills.y, skills.width - 70f, 20f), "Habilidades");
-            Rect filter = new Rect(skills.xMax - 62f, skills.y, 62f, 20f);
-            string modeLabel = relevantMode == 0 ? "Lv" : relevantMode == 1 ? "" : "Lv+";
-            if (Widgets.ButtonText(filter, modeLabel))
+            Widgets.Label(new Rect(skills.x, skills.y, skills.width - 82f, 20f), "Habilidades");
+            Rect filter = new Rect(skills.xMax - 74f, skills.y, 74f, 20f);
+            if (Widgets.ButtonText(filter, "Filtro"))
             {
-                relevantMode = (relevantMode + 1) % 3;
+                Find.WindowStack.Add(new Dialog_SkillFilter(
+                    filterLevel, filterPassion, filterExpertise, filterMods, ApplySkillFilter));
             }
-            if (relevantMode == 1)
-            {
-                WorkTypePaletteView.DrawPassionIcon(
-                    new Rect(filter.center.x - 8f, filter.y + 2f, 16f, 16f), Passion.Major);
-            }
-            else if (relevantMode == 2)
-            {
-                WorkTypePaletteView.DrawPassionIcon(
-                    new Rect(filter.xMax - 18f, filter.y + 2f, 16f, 16f), Passion.Major);
-            }
-            TooltipHandler.TipRegion(filter,
-                "Order: Lv = level, flame = passion weight, Lv+flame = combined recommendation score.");
+            TooltipHandler.TipRegion(filter, "Abrir filtros de habilidades.");
             DrawTopSkills(skills);
             Widgets.DrawBoxSolid(new Rect(rect.x + 6f, skills.yMax + 2f, rect.width - 12f, 2f),
                 UiColors.SectionSeparator);
             DrawGenericStats(stats);
+        }
+
+        private void ApplySkillFilter(bool level, bool passion, bool expertise, bool mods)
+        {
+            filterLevel = level;
+            filterPassion = passion;
+            filterExpertise = expertise;
+            filterMods = mods;
         }
 
         private void DrawTopSkills(Rect rect)
@@ -593,6 +593,10 @@ namespace OrderedWork.UI
                 {
                     continue;
                 }
+                if (!filterMods && skill.modContentPack != null && !skill.modContentPack.IsCoreMod)
+                {
+                    continue;
+                }
                 candidates.Add(new SkillRow
                 {
                     Label = skill.label,
@@ -600,19 +604,26 @@ namespace OrderedWork.UI
                     Passion = record.passion,
                     XpCurrent = record.xpSinceLastLevel,
                     XpRequired = record.XpRequiredForLevelUp,
+                    MaxLevel = SkillRecord.MaxLevel,
                     LearnFactor = record.passion == Passion.Major ? SkillRecord.LearnFactorPassionMajor
                         : record.passion == Passion.Minor ? SkillRecord.LearnFactorPassionMinor
                         : SkillRecord.LearnFactorPassionNone
                 });
             }
 
-            if (relevantMode == 0)
+            if (filterLevel && filterPassion)
+            {
+                return candidates.OrderByDescending(SkillScore)
+                    .ThenByDescending(r => r.Level)
+                    .ToList();
+            }
+            if (filterLevel)
             {
                 return candidates.OrderByDescending(r => r.Level)
                     .ThenByDescending(r => PassionRank(r.Passion))
                     .ToList();
             }
-            if (relevantMode == 1)
+            if (filterPassion)
             {
                 return candidates
                     .OrderBy(r => PassionSource.IsBadOf(r.Passion) ? 2 : r.Passion == Passion.None ? 1 : 0)
@@ -620,9 +631,7 @@ namespace OrderedWork.UI
                     .ThenByDescending(r => r.Level)
                     .ToList();
             }
-            return candidates.OrderByDescending(SkillScore)
-                .ThenByDescending(r => r.Level)
-                .ToList();
+            return candidates.OrderBy(r => r.Label, StringComparer.OrdinalIgnoreCase).ToList();
         }
 
         private int SkillScore(SkillRow row)
@@ -658,7 +667,7 @@ namespace OrderedWork.UI
                     if (skill != null && record != null)
                     {
                         Widgets.Label(new Rect(0f, y, view.width, 20f),
-                            "Skill " + skill.label + ": " + record.Level + " / 20");
+                            "Skill " + skill.label + ": " + record.Level + " / " + SkillRecord.MaxLevel);
                         y += 20f;
                     }
                 }
@@ -851,20 +860,6 @@ namespace OrderedWork.UI
             SkillDef skill = BestSkillDef(workType);
             return workType.labelShort + " · " + (skill != null ? skill.label : "skill")
                 + " " + record.Level + " · " + WorkTypePaletteView.PassionText(record.passion);
-        }
-
-        private bool MatchesRelevantFilter(WorkTypeDef workType)
-        {
-            SkillRecord record = BestSkill(workType);
-            if (record == null)
-            {
-                return false;
-            }
-            bool level = record.Level > 0;
-            bool passion = record.passion != Passion.None;
-            if (relevantMode == 0) return level;
-            if (relevantMode == 1) return passion;
-            return level && passion;
         }
 
         private static StatDef RelevantWorkStat(WorkTypeDef workType)
@@ -1234,6 +1229,7 @@ namespace OrderedWork.UI
             public float XpCurrent;
             public float XpRequired;
             public float LearnFactor;
+            public int MaxLevel;
         }
     }
 }

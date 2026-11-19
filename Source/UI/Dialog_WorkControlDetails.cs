@@ -107,7 +107,7 @@ namespace OrderedWork.UI
             }
 
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(0f, 0f, inRect.width - 150f, 30f), PawnLabel(pawn));
+            Widgets.Label(new Rect(0f, 0f, inRect.width - 160f, 30f), PawnLabel(pawn));
             DrawPawnNavigation(inRect);
             DrawPanelLock(inRect);
             if (workPanel == null && pawn != null)
@@ -198,7 +198,7 @@ namespace OrderedWork.UI
 
         private void DrawPawnNavigation(Rect inRect)
         {
-            Rect search = new Rect(inRect.xMax - 150f, 0f, 66f, 24f);
+            Rect search = new Rect(inRect.xMax - 156f, 0f, 72f, 24f);
             Rect left = new Rect(inRect.xMax - 82f, 0f, 26f, 24f);
             Rect right = new Rect(inRect.xMax - 52f, 0f, 26f, 24f);
             if (Widgets.ButtonText(search, "Buscar"))
