@@ -2,6 +2,8 @@
 
 The hourly focus is a temporary priority overlay for the pawn's existing work order. It lets the player promote up to three WorkTypes in a given hour without rewriting the pawn's saved order. Schedule and focus are independent: either can be used without the other.
 
+Layout mechanics are documented in `docs/UI_LAYOUT_RULES.md`; this file keeps only the focus contract.
+
 ## Quick path
 
 1. Open a pawn's detail panel and select **Horario**.

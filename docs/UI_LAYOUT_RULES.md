@@ -43,13 +43,9 @@ Short rules for RimWorld IMGUI. Read this before changing layout, padding or scr
 - Reserve resizer height when a background must have symmetrical margins.
 - Test at 1.0× and 2.0× UI scale.
 
-## Schedule/Focus specifics
+## Related docs
 
-- Schedule title stays outside the panel background.
-- The panel has one background color and one inner padding.
-- Focus hour cells show a count, not clipped names.
-- Right-click an hour cell clears that hour with a message.
-- Clear-all only removes focus overrides; the pawn's base order is never touched.
+- `docs/SCHEDULE_FOCUS.md` — behavior, data model, storage and focus-specific UI contract.
 
 ## Verification checklist
 
