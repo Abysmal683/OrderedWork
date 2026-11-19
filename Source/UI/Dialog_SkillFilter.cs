@@ -9,18 +9,20 @@ namespace OrderedWork.UI
     public sealed class Dialog_SkillFilter : Window
     {
         private readonly Action<bool, bool, bool, bool> apply;
+        private readonly bool expertiseAvailable;
         private bool level;
         private bool passion;
         private bool expertise;
         private bool mods;
 
         public Dialog_SkillFilter(bool level, bool passion, bool expertise, bool mods,
-            Action<bool, bool, bool, bool> apply)
+            bool expertiseAvailable, Action<bool, bool, bool, bool> apply)
         {
             this.level = level;
             this.passion = passion;
             this.expertise = expertise;
             this.mods = mods;
+            this.expertiseAvailable = expertiseAvailable;
             this.apply = apply;
             doCloseX = true;
             doCloseButton = false;
@@ -45,7 +47,6 @@ namespace OrderedWork.UI
             Widgets.CheckboxLabeled(new Rect(8f, 66f, inRect.width - 16f, 24f), "Passion", ref passion);
             Widgets.CheckboxLabeled(new Rect(8f, 94f, inRect.width - 16f, 24f), "Include mods", ref mods);
 
-            bool expertiseAvailable = false;
             Widgets.CheckboxLabeled(new Rect(8f, 122f, inRect.width - 16f, 24f),
                 "Expertise (VSE)", ref expertise, expertiseAvailable);
             if (!expertiseAvailable)

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using OrderedWork.Services;
+using OrderedWork.UI.Layout;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -25,58 +26,68 @@ namespace OrderedWork.UI
             get { return SelPawn != null && SelPawn.IsFreeColonist && !SelPawn.Dead; }
         }
 
-        public override void OnOpen()
-        {
-            OpenDetail();
-        }
-
         protected override void FillTab()
         {
-            Rect area = new Rect(0f, 0f, size.x, size.y).ContractedBy(12f);
-            Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(area.x, area.y, area.width, 24f), "Ordered Work");
-            Text.Font = GameFont.Small;
+            Rect area = UiInset.All(new Rect(0f, 0f, size.x, size.y), 12f);
+            Rect content = new Rect(area.x, area.y, area.width, Mathf.Max(0f, area.height - 32f));
+            try
+            {
+                Text.Font = GameFont.Medium;
+                Widgets.Label(new Rect(content.x, content.y, content.width, 24f), "Ordered Work");
+                Text.Font = GameFont.Small;
 
-            List<string> order = WorkOrderService.GetOrder(SelPawn) ?? new List<string>();
-            float y = area.y + 32f;
-            Widgets.Label(new Rect(area.x, y, area.width, 20f), "Assigned work");
-            y += 20f;
-            if (order.Count == 0)
-            {
-                Widgets.Label(new Rect(area.x, y, area.width, 18f), "No active WorkTypes.");
-                y += 18f;
-            }
-            else
-            {
-                foreach (string defName in order.Take(10))
+                List<string> order = WorkOrderService.GetOrder(SelPawn) ?? new List<string>();
+                float y = content.y + 30f;
+                Widgets.Label(new Rect(content.x, y, content.width, 18f), "Assigned work");
+                y += 20f;
+                if (order.Count == 0)
                 {
-                    WorkTypeDef workType = DefDatabase<WorkTypeDef>.GetNamedSilentFail(defName);
-                    Widgets.Label(new Rect(area.x + 4f, y, area.width - 4f, 18f),
-                        (order.IndexOf(defName) + 1) + ". " + (workType != null ? workType.labelShort : defName));
+                    Widgets.Label(new Rect(content.x, y, content.width, 18f), "No active WorkTypes.");
                     y += 18f;
                 }
+                else
+                {
+                    for (int i = 0; i < order.Count && i < 9; i++)
+                    {
+                        string defName = order[i];
+                        WorkTypeDef workType = DefDatabase<WorkTypeDef>.GetNamedSilentFail(defName);
+                        Widgets.Label(new Rect(content.x + 4f, y, content.width - 4f, 18f),
+                            (i + 1) + ". " + (workType != null ? workType.labelShort : defName));
+                        y += 18f;
+                    }
+                }
+
+                y += 4f;
+                Widgets.Label(new Rect(content.x, y, content.width, 18f), "Schedule");
+                y += 18f;
+                Text.Font = GameFont.Tiny;
+                if (SelPawn != null && SelPawn.timetable != null)
+                {
+                    for (int row = 0; row < 4; row++)
+                    {
+                        string line = string.Join("  ", Enumerable.Range(row * 6, 6)
+                            .Select(hour => hour.ToString("00") + " " + ShortAssignment(SelPawn.timetable.GetAssignment(hour))));
+                        Widgets.Label(new Rect(content.x, y, content.width, 14f), line);
+                        y += 16f;
+                    }
+                }
+                else
+                {
+                    Widgets.Label(new Rect(content.x, y, content.width, 18f), "No timetable.");
+                }
+            }
+            finally
+            {
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.UpperLeft;
             }
 
-            y += 6f;
-            Widgets.Label(new Rect(area.x, y, area.width, 20f), "Schedule");
-            y += 20f;
-            if (SelPawn != null && SelPawn.timetable != null)
-            {
-                string schedule = string.Join("  ", Enumerable.Range(0, 24)
-                    .Select(hour => hour.ToString("00") + " " + ShortAssignment(SelPawn.timetable.GetAssignment(hour))));
-                Widgets.Label(new Rect(area.x, y, area.width, 42f), schedule);
-            }
-            else
-            {
-                Widgets.Label(new Rect(area.x, y, area.width, 18f), "No timetable.");
-            }
-
-            if (Widgets.ButtonText(new Rect(area.x, area.yMax - 28f, 150f, 26f), "Open details"))
+            if (UiButtonBar.Button(new Rect(area.xMax - 132f, area.yMax - 26f, 132f, 24f), "Open details", true,
+                "Open the full Ordered Work editor."))
             {
                 OpenDetail();
             }
         }
-
         private static string ShortAssignment(TimeAssignmentDef def)
         {
             if (def == null) return "—";

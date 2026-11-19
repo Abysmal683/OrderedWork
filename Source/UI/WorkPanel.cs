@@ -485,12 +485,23 @@ namespace OrderedWork.UI
             Rect stats = new Rect(rect.x + 6f, skills.yMax + 6f, rect.width - 12f,
                 Mathf.Max(0f, rect.height - skillsHeight - 18f));
 
-            Widgets.Label(new Rect(skills.x, skills.y, skills.width - 82f, 20f), "Skills");
+            bool hasVse = VseExpertiseAdapter.IsAvailable;
+            Widgets.Label(new Rect(skills.x, skills.y, skills.width - (hasVse ? 156f : 82f), 20f), "Skills");
+            if (hasVse)
+            {
+                Rect expertiseButton = new Rect(skills.xMax - 146f, skills.y, 70f, 20f);
+                if (Widgets.ButtonText(expertiseButton, "Expertise"))
+                {
+                    VseExpertiseAdapter.OpenPanel(pawn);
+                }
+                TooltipHandler.TipRegion(expertiseButton, "Open the VSE expertise interface for this pawn.");
+            }
             Rect filter = new Rect(skills.xMax - 74f, skills.y, 74f, 20f);
             if (Widgets.ButtonText(filter, "Filter"))
             {
                 Find.WindowStack.Add(new Dialog_SkillFilter(
-                    filterLevel, filterPassion, filterExpertise, filterMods, ApplySkillFilter));
+                    filterLevel, filterPassion, filterExpertise, filterMods,
+                    hasVse, ApplySkillFilter));
             }
             TooltipHandler.TipRegion(filter, "Open skill filters.");
             DrawTopSkills(skills);
@@ -533,7 +544,14 @@ namespace OrderedWork.UI
                     UiZebra.Draw(row, i);
                     Widgets.LabelEllipses(new Rect(row.x + 2f, row.y + 2f, row.width - 132f, 18f), entry.Label);
                     Rect icon = new Rect(row.xMax - 110f, row.y + 3f, 16f, 16f);
-                    WorkTypePaletteView.DrawPassionIcon(icon, entry.Passion);
+                    if (entry.IsExpertise)
+                    {
+                        DrawExpertiseStar(icon);
+                    }
+                    else
+                    {
+                        WorkTypePaletteView.DrawPassionIcon(icon, entry.Passion);
+                    }
                     Widgets.Label(new Rect(row.xMax - 90f, row.y + 2f, 24f, 18f), entry.Level.ToString());
                     DrawSkillBar(new Rect(row.xMax - 62f, row.y + 7f, 58f, 8f), entry);
                     if (Mouse.IsOver(row)) TooltipHandler.TipRegion(row, SkillTooltip(entry));
@@ -542,6 +560,19 @@ namespace OrderedWork.UI
             finally
             {
                 Widgets.EndScrollView();
+            }
+        }
+
+        private static void DrawExpertiseStar(Rect rect)
+        {
+            Texture2D star = ContentFinder<Texture2D>.Get("UI/Passion_Expertise", false);
+            if (star != null)
+            {
+                GUI.DrawTexture(rect, star);
+            }
+            else
+            {
+                Widgets.Label(rect, "★");
             }
         }
 
@@ -565,6 +596,16 @@ namespace OrderedWork.UI
             if (skillTooltipCache.TryGetValue(row.Label, out cached))
             {
                 return cached;
+            }
+            if (row.IsExpertise)
+            {
+                string expertise = row.Label + "\\nExpertise";
+                if (!string.IsNullOrEmpty(row.Description)) expertise += "\\n" + row.Description;
+                expertise += row.XpRequired > 0.01f
+                    ? "\\nXP: " + row.XpCurrent.ToString("0") + " / " + row.XpRequired.ToString("0")
+                    : "\\nXP: max / uncapped";
+                skillTooltipCache[row.Label] = expertise;
+                return expertise;
             }
             float multiplier = PassionSource.LearnRateOf(row.Passion);
             if (multiplier <= 0f)
@@ -610,6 +651,24 @@ namespace OrderedWork.UI
                         : record.passion == Passion.Minor ? SkillRecord.LearnFactorPassionMinor
                         : SkillRecord.LearnFactorPassionNone
                 });
+            }
+
+            if (filterExpertise && VseExpertiseAdapter.IsAvailable)
+            {
+                foreach (VseExpertiseAdapter.Row row in VseExpertiseAdapter.GetRows(pawn))
+                {
+                    candidates.Add(new SkillRow
+                    {
+                        Label = row.Label,
+                        Level = row.Level,
+                        Passion = Passion.None,
+                        XpCurrent = row.XpCurrent,
+                        XpRequired = row.XpRequired,
+                        LearnFactor = 1f,
+                        IsExpertise = true,
+                        Description = row.Description
+                    });
+                }
             }
 
             if (filterLevel && filterPassion)
@@ -1230,6 +1289,8 @@ namespace OrderedWork.UI
             public float XpCurrent;
             public float XpRequired;
             public float LearnFactor;
+            public bool IsExpertise;
+            public string Description;
         }
     }
 }
