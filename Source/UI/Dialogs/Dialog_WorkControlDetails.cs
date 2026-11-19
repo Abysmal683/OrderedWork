@@ -134,7 +134,7 @@ namespace OrderedWork.UI
                     workPanel.Draw(content);
                     break;
                 case DetailTab.Schedule:
-                    DrawScrollableTab(content, DrawScheduleTab, 860f, 500f);
+                    DrawScrollableTab(content, DrawScheduleTab, 860f, 540f);
                     break;
                 case DetailTab.Zone:
                     DrawScrollableTab(content, DrawZoneTab, 500f, 300f);
@@ -260,13 +260,15 @@ namespace OrderedWork.UI
             typeof(CameraDriver).GetField("RootPos", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
         private static readonly FieldInfo CameraRootSizeField =
             typeof(CameraDriver).GetField("rootSize", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        private static readonly PropertyInfo CameraRootSizeProperty =
+            typeof(CameraDriver).GetProperty("rootSize", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
         private static readonly MethodInfo CameraSetRootMethod =
             typeof(CameraDriver).GetMethod("SetRootPosAndSize", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
         private static void HandleCameraHotkeys()
         {
             if (Find.CameraDriver == null || !string.IsNullOrEmpty(GUI.GetNameOfFocusedControl())
-                || CameraSetRootMethod == null || CameraRootSizeField == null)
+                || CameraSetRootMethod == null || (CameraRootSizeField == null && CameraRootSizeProperty == null))
             {
                 return;
             }
@@ -278,7 +280,10 @@ namespace OrderedWork.UI
                 return;
             }
             Vector3 position = (Vector3)rootValue;
-            float speed = (float)CameraRootSizeField.GetValue(Find.CameraDriver) * 0.9f * Time.unscaledDeltaTime;
+            object sizeValue = CameraRootSizeField != null
+                ? CameraRootSizeField.GetValue(Find.CameraDriver)
+                : CameraRootSizeProperty.GetValue(Find.CameraDriver, null);
+            float speed = (float)sizeValue * 0.9f * Time.unscaledDeltaTime;
             bool moved = false;
             if (Input.GetKey(KeyCode.W)) { position += Vector3.forward * speed; moved = true; }
             if (Input.GetKey(KeyCode.S)) { position += Vector3.back * speed; moved = true; }
@@ -286,7 +291,7 @@ namespace OrderedWork.UI
             if (Input.GetKey(KeyCode.D)) { position += Vector3.right * speed; moved = true; }
             if (moved)
             {
-                CameraSetRootMethod.Invoke(Find.CameraDriver, new object[] { position, CameraRootSizeField.GetValue(Find.CameraDriver) });
+                CameraSetRootMethod.Invoke(Find.CameraDriver, new object[] { position, sizeValue });
             }
         }
         private static void HandleTimeHotkeys()
@@ -352,7 +357,7 @@ namespace OrderedWork.UI
         private void DrawScrollableTab(Rect content, System.Action<Rect> draw, float minWidth, float minHeight)
         {
             Rect view = new Rect(0f, 0f,
-                Mathf.Max(content.width, minWidth),
+                Mathf.Max(content.width - 24f, minWidth),
                 Mathf.Max(content.height, minHeight));
             Widgets.BeginScrollView(content, ref detailTabScroll, view);
             draw(view);

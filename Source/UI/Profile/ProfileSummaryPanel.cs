@@ -67,7 +67,7 @@ namespace OrderedWork.UI
                             Widgets.DrawBoxSolid(cell, AssignmentColor(assignment));
                             Widgets.Label(cell, hour.ToString("00"));
                             TooltipHandler.TipRegion(cell,
-                                hour.ToString("00") + ": " + (assignment != null ? assignment.LabelCap : "None"));
+                                hour.ToString("00") + ": " + (assignment != null ? assignment.LabelCap : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.NoneShort", "None")));
                         }
                         y += 19f;
                     }

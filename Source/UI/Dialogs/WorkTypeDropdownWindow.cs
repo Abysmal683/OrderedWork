@@ -42,7 +42,7 @@ namespace OrderedWork.UI
 
         public override Vector2 InitialSize
         {
-            get { return new Vector2(260f, (MaxVisibleRows + 1) * RowHeight + 36f); }
+            get { return new Vector2(340f, (MaxVisibleRows + 1) * RowHeight + 36f); }
         }
 
         public override void DoWindowContents(Rect inRect)
@@ -60,7 +60,9 @@ namespace OrderedWork.UI
                     WorkTypeDef type = types[i];
                     Rect row = new Rect(0f, i * RowHeight, viewport.width - 16f, RowHeight - 2f);
                     string text = label != null ? label(type) : WorkTypePaletteView.DisplayName(type);
-                    if (Widgets.ButtonText(row, text))
+                    Widgets.LabelEllipses(row, text);
+                    TooltipHandler.TipRegion(row, text);
+                    if (Widgets.ButtonInvisible(row))
                     {
                         if (onSelect != null)
                         {

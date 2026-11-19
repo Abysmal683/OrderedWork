@@ -19,20 +19,32 @@ namespace OrderedWork.UI
 
         private void DrawScheduleTab(Rect content)
         {
-            Rect panel = content;
-            content = UiInset.All(panel, 6f);
-            EnsureDetailSchedule();
-            Widgets.DrawBoxSolid(new Rect(0f, 0f, panel.width, panel.height), UiColors.PanelBody);
-            float y = 0f;
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(0f, y, 100f, 24f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.Title", "Schedule"));
+            Widgets.Label(new Rect(0f, 0f, 100f, 24f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.Title", "Schedule"));
             Text.Font = GameFont.Small;
-            Rect infoRect = new Rect(104f, y + 2f, 18f, 20f);
+            Rect infoRect = new Rect(104f, 2f, 18f, 20f);
             Widgets.Label(infoRect, "?");
             TooltipHandler.TipRegion(infoRect,
                 OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.Info", "Origin: current vanilla timetable, read-only. Edit: editable preset; the brush paints hours. Priority: reserved for WorkType overrides."));
-            y += 28f;
 
+            Rect panel = new Rect(0f, 28f, content.width, Mathf.Max(0f, content.height - 28f));
+            GUI.BeginGroup(panel);
+            try
+            {
+                Widgets.DrawBoxSolid(new Rect(0f, 0f, panel.width, panel.height), UiColors.PanelBody);
+                DrawSchedulePanel(UiInset.All(new Rect(0f, 0f, panel.width, panel.height), 6f));
+            }
+            finally
+            {
+                GUI.EndGroup();
+                Text.Font = GameFont.Small;
+            }
+        }
+
+        private void DrawSchedulePanel(Rect content)
+        {
+            EnsureDetailSchedule();
+            float y = 0f;
             float line = 24f;
             if (UiButtonBar.Button(new Rect(0f, y, 64f, line), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Load", "Load")))
             {
@@ -283,22 +295,19 @@ namespace OrderedWork.UI
             {
                 return "—";
             }
-            string name = def.defName;
+            string label = def.LabelCap.ToString();
+            if (string.IsNullOrEmpty(label))
+            {
+                label = def.defName ?? "—";
+            }
             if (width < 36f)
             {
-                if (name == "Work") return "W";
-                if (name == "Joy") return "J";
-                if (name == "Sleep") return "S";
-                if (name == "Meditate") return "M";
-                if (name == "Anything") return "A";
-                return "·";
+                return label.Length <= 1 ? label : label.Substring(0, 1).ToUpperInvariant();
             }
-            if (name == "Anything") return "Any";
-            if (name == "Meditate") return "Med";
-            if (name == "Work") return "Work";
-            if (name == "Joy") return "Joy";
-            if (name == "Sleep") return width < 54f ? "Slp" : "Sleep";
-            string label = def.LabelCap.ToString();
+            if (width < 54f && label.Length > 3)
+            {
+                return label.Substring(0, 3);
+            }
             return label.Length <= 5 ? label : label.Substring(0, 5);
         }
 

@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.229] - 2026-11-19
+
+### Fixed — scrollbar margins, labels and camera
+- Reserved right-side space for the detail scrollbar so it no longer covers local content.
+- Moved the Schedule title outside the colored panel, matching the Work tab.
+- Unified the Schedule panel to one background color and kept a 6 px inner margin.
+- Reworked assignment labels to use RimWorld's localized TimeAssignmentDef labels instead of hardcoded Work/Joy/Sleep/Anything strings.
+- Widened the WorkType add dropdown and added ellipsis plus full-text tooltip.
+- Added camera-root fallbacks for the detail WASD handler.
+
 ## [0.3.0-alpha.228] - 2026-11-19
 
 ### Fixed — final visual alignment pass
