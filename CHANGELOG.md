@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.199] - 2026-11-19
+
+### Fix — dynamic split WorkTypes in the Work tab
+- Split WorkTypes now create a `PawnColumnDef` and insert it into `PawnTableDefOf.Work.columns`, matching the runtime Work tab contract.
+- The custom WorkType populates `workGiversByPriority` from its configured givers.
+- Added optional WorkTab controller column-list refresh via reflection.
+- This fixes custom splits such as `OrderedWork_merge_24` / HaulMerge not appearing in the Work tab after a restart.
+- Column creation is guarded and logged if the vanilla/WorkTab structure changes.
+
 ## [0.3.0-alpha.198] - 2026-11-19
 
 ### Refactor — controllers and shared UI
