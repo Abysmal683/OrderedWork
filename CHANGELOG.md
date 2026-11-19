@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.236] - 2026-11-19
+
+### Refactor — shared atomic JSON stores
+- Added `AtomicJsonRecordStore<T>` in Core for temp-write, replace, backup, schema validation, normalization and load/save/delete.
+- Migrated `SchedulePresetStore`, `WorkFocusPresetStore` and `WorkPresetStore` without changing their schemas, id policies or sort order.
+- Added roundtrip, backup and unsupported-schema tests.
+- Documented the shared preset storage contract.
+
 ## [0.3.0-alpha.235] - 2026-11-19
 
 ### Localization — Config mod strings

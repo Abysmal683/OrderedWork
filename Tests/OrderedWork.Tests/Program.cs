@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using OrderedWork.Core;
 
@@ -32,6 +33,8 @@ namespace OrderedWork.Tests
             Run("HourFocusStack ignores focus outside base order", TestFocusOutsideBase);
             Run("HourFocusStack normalizes max three and deduplicates", TestFocusNormalize);
             Run("HourFocusStack leaves base order unchanged", TestFocusBaseUnchanged);
+            Run("AtomicJsonRecordStore roundtrips and backs up", TestAtomicStoreRoundtrip);
+            Run("AtomicJsonRecordStore rejects unsupported schema", TestAtomicStoreSchema);
 
             Console.WriteLine(failures == 0 ? "All tests passed." : failures + " test(s) failed.");
             return failures == 0 ? 0 : 1;
@@ -154,6 +157,85 @@ namespace OrderedWork.Tests
             AssertEqual(20, RecommendationScorePolicy.Score(10, false, -3, 0, 0, true));
         }
 
+        private sealed class AtomicTestRecord
+        {
+            public int SchemaVersion { get; set; } = 1;
+            public string Id { get; set; } = "";
+            public string Name { get; set; } = "";
+        }
+
+        private static void TestAtomicStoreRoundtrip()
+        {
+            string root = Path.Combine(Path.GetTempPath(), "orderedwork-store-" + Guid.NewGuid().ToString("N"));
+            try
+            {
+                AtomicJsonRecordStore<AtomicTestRecord> store = new AtomicJsonRecordStore<AtomicTestRecord>(
+                    root,
+                    value => value.SchemaVersion,
+                    1,
+                    1,
+                    value => value.Name = value.Name ?? "",
+                    null,
+                    null,
+                    value => value.Id,
+                    value => AtomicJsonRecordStore<AtomicTestRecord>.SanitizeFileName(value, "record", false),
+                    value => value.Name,
+                    false,
+                    null,
+                    null);
+
+                AtomicTestRecord record = new AtomicTestRecord { Id = "one", Name = "Alpha" };
+                Assert(store.Save(record), "save first record");
+                Assert(File.Exists(Path.Combine(root, "one.json")), "record file exists");
+                Assert(store.Save(record), "save second record");
+                Assert(File.Exists(Path.Combine(root, "one.json.bak")), "backup exists");
+                AtomicTestRecord loaded = store.TryLoadById("one");
+                Assert(loaded != null && loaded.Name == "Alpha", "roundtrip");
+                Assert(store.LoadAll().Count == 1, "load all");
+                Assert(store.Delete("one"), "delete");
+                Assert(!File.Exists(Path.Combine(root, "one.json")), "delete removes file");
+            }
+            finally
+            {
+                if (Directory.Exists(root))
+                {
+                    Directory.Delete(root, true);
+                }
+            }
+        }
+
+        private static void TestAtomicStoreSchema()
+        {
+            string root = Path.Combine(Path.GetTempPath(), "orderedwork-store-" + Guid.NewGuid().ToString("N"));
+            try
+            {
+                Directory.CreateDirectory(root);
+                File.WriteAllText(Path.Combine(root, "bad.json"),
+                    "{\"SchemaVersion\":2,\"Id\":\"bad\",\"Name\":\"bad\"}");
+                AtomicJsonRecordStore<AtomicTestRecord> store = new AtomicJsonRecordStore<AtomicTestRecord>(
+                    root,
+                    value => value.SchemaVersion,
+                    1,
+                    1,
+                    null,
+                    null,
+                    null,
+                    value => value.Id,
+                    value => value,
+                    value => value.Name,
+                    false,
+                    null,
+                    null);
+                Assert(store.TryLoadById("bad") == null, "unsupported schema rejected");
+            }
+            finally
+            {
+                if (Directory.Exists(root))
+                {
+                    Directory.Delete(root, true);
+                }
+            }
+        }
         private static void TestFocusPrepends()
         {
             List<string> effective = HourFocusStack.BuildEffectiveOrder(
@@ -207,6 +289,14 @@ namespace OrderedWork.Tests
             if (!expectedArray.SequenceEqual(actualArray, StringComparer.Ordinal))
             {
                 throw new Exception("Expected [" + string.Join(", ", expectedArray) + "] but got [" + string.Join(", ", actualArray) + "].");
+            }
+        }
+
+        private static void Assert(bool condition, string message)
+        {
+            if (!condition)
+            {
+                throw new Exception(message);
             }
         }
 

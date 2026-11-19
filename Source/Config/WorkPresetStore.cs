@@ -2,15 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
+using OrderedWork.Core;
 using Verse;
 
 namespace OrderedWork.Config
 {
-    /// <summary>
-    /// Named, reusable Work layouts. Clothing is intentionally not part of this
-    /// preset yet; it will have its own denser contract later.
-    /// </summary>
     public sealed class WorkPreset
     {
         public int SchemaVersion { get; set; } = 2;
@@ -28,63 +24,46 @@ namespace OrderedWork.Config
             new Dictionary<string, int>(StringComparer.Ordinal);
     }
 
+    /// <summary>
+    /// Named, reusable Work layouts. The shared atomic store owns file mechanics;
+    /// this store owns the Work preset schema and name-based file policy.
+    /// </summary>
     public static class WorkPresetStore
     {
         private const int CurrentSchemaVersion = 2;
-        private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
-        {
-            WriteIndented = true,
-            PropertyNameCaseInsensitive = true
-        };
+        private static readonly AtomicJsonRecordStore<WorkPreset> Store =
+            new AtomicJsonRecordStore<WorkPreset>(
+                Path.Combine(WorkConfigStore.RootDirectory, "WorkPresets"),
+                preset => preset.SchemaVersion,
+                1,
+                CurrentSchemaVersion,
+                Normalize,
+                preset =>
+                {
+                    preset.Name = preset.Name.Trim();
+                    preset.SchemaVersion = CurrentSchemaVersion;
+                },
+                null,
+                preset => preset.Name,
+                name => AtomicJsonRecordStore<WorkPreset>.SanitizeFileName(name, "preset", true),
+                preset => preset.CreatedUtc,
+                true,
+                message => Log.Warning(message),
+                message => Log.Error(message));
 
         public static string PresetsDirectory
         {
-            get { return Path.Combine(WorkConfigStore.RootDirectory, "WorkPresets"); }
+            get { return Store.DirectoryPath; }
         }
 
         public static List<WorkPreset> List()
         {
-            List<WorkPreset> result = new List<WorkPreset>();
-            try
-            {
-                Directory.CreateDirectory(PresetsDirectory);
-                foreach (string path in Directory.GetFiles(PresetsDirectory, "*.json"))
-                {
-                    WorkPreset preset = TryLoad(path);
-                    if (preset != null)
-                    {
-                        result.Add(preset);
-                    }
-                }
-            }
-            catch (Exception exception)
-            {
-                Log.Warning("[Ordered Work] Could not list Work presets: " + exception.Message);
-            }
-            return result.OrderByDescending(p => p.CreatedUtc).ToList();
+            return Store.LoadAll();
         }
 
         public static WorkPreset TryLoad(string path)
         {
-            try
-            {
-                if (!File.Exists(path))
-                {
-                    return null;
-                }
-                WorkPreset preset = JsonSerializer.Deserialize<WorkPreset>(File.ReadAllText(path), JsonOptions);
-                if (preset == null || preset.SchemaVersion < 1 || preset.SchemaVersion > CurrentSchemaVersion)
-                {
-                    return null;
-                }
-                Normalize(preset);
-                return preset;
-            }
-            catch (Exception exception)
-            {
-                Log.Warning("[Ordered Work] Could not read Work preset " + path + ": " + exception.Message);
-                return null;
-            }
+            return Store.TryLoad(path);
         }
 
         public static bool Save(WorkPreset preset)
@@ -93,57 +72,17 @@ namespace OrderedWork.Config
             {
                 return false;
             }
-            try
-            {
-                Directory.CreateDirectory(PresetsDirectory);
-                preset.Name = preset.Name.Trim();
-                preset.SchemaVersion = CurrentSchemaVersion;
-                Normalize(preset);
-                string path = PathFor(preset.Name);
-                string temp = path + ".tmp";
-                File.WriteAllText(temp, JsonSerializer.Serialize(preset, JsonOptions));
-                if (File.Exists(path))
-                {
-                    File.Replace(temp, path, null);
-                }
-                else
-                {
-                    File.Move(temp, path);
-                }
-                return true;
-            }
-            catch (Exception exception)
-            {
-                Log.Error("[Ordered Work] Could not save Work preset: " + exception);
-                return false;
-            }
+            return Store.Save(preset);
         }
 
         public static bool Delete(string name)
         {
-            try
-            {
-                string path = PathFor(name);
-                if (!File.Exists(path))
-                {
-                    return false;
-                }
-                File.Delete(path);
-                return true;
-            }
-            catch (Exception exception)
-            {
-                Log.Warning("[Ordered Work] Could not delete Work preset: " + exception.Message);
-                return false;
-            }
+            return Store.Delete(name);
         }
 
         public static string PathFor(string name)
         {
-            string safe = string.IsNullOrWhiteSpace(name) ? "preset" : name.Trim();
-            char[] invalid = Path.GetInvalidFileNameChars();
-            safe = new string(safe.Select(c => invalid.Contains(c) ? '_' : c).ToArray());
-            return Path.Combine(PresetsDirectory, safe + ".json");
+            return Store.PathFor(name);
         }
 
         private static void Normalize(WorkPreset preset)

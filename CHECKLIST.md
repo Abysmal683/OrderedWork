@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.235)
+# Ordered Work — Current Checklist (0.3.0-alpha.236)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -70,6 +70,14 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] `WorkTypePaletteView` split into core, tooltip and passion partials.
 - [ ] Runtime smoke test after the refactor: settings, pins, weights, split/merge, save/load.
 
+## JSON store unification (alpha.236)
+
+- [x] Shared `AtomicJsonRecordStore<T>` in Core.
+- [x] Schedule, focus and Work presets use the shared atomic store.
+- [x] Per-store schema, normalization, id policy and sorting preserved.
+- [x] Roundtrip, backup and schema tests added.
+- [x] Build 0/0 and tests pass.
+- [ ] Runtime save/load check in game.
 ## Config localization (alpha.235)
 
 - [x] Config mod strings moved to `OrderedWork.Config.xml`.

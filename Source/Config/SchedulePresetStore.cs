@@ -1,162 +1,82 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text.Json;
+using OrderedWork.Core;
 using Verse;
 
 namespace OrderedWork.Config
 {
     /// <summary>
-    /// One JSON file per named schedule preset. One file per record keeps a corrupt
-    /// preset from taking down the whole schedule library.
+    /// One JSON file per named schedule preset. The shared atomic store owns the
+    /// file mechanics; schedule owns only schema, normalization and id policy.
     /// </summary>
     public static class SchedulePresetStore
     {
-        private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
-        {
-            WriteIndented = true,
-            PropertyNameCaseInsensitive = true
-        };
+        private static readonly AtomicJsonRecordStore<SchedulePreset> Store =
+            new AtomicJsonRecordStore<SchedulePreset>(
+                Path.Combine(WorkConfigStore.RootDirectory, "schedules"),
+                preset => preset.SchemaVersion,
+                1,
+                SchedulePreset.CurrentSchemaVersion,
+                preset => preset.Normalize(),
+                preset =>
+                {
+                    preset.SchemaVersion = SchedulePreset.CurrentSchemaVersion;
+                    preset.ModifiedUtc = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm");
+                },
+                (preset, path) =>
+                {
+                    if (string.IsNullOrEmpty(preset.ModifiedUtc))
+                    {
+                        preset.ModifiedUtc = File.GetLastWriteTime(path).ToString("yyyy-MM-dd HH:mm");
+                    }
+                },
+                preset => preset.Id,
+                NormalizeId,
+                preset => preset.Name,
+                false,
+                message => Log.Warning(message),
+                message => Log.Error(message));
 
         public static string DirectoryPath
         {
-            get { return Path.Combine(WorkConfigStore.RootDirectory, "schedules"); }
+            get { return Store.DirectoryPath; }
         }
 
         public static string PathFor(string id)
         {
-            return Path.Combine(DirectoryPath, SanitizeId(id) + ".json");
+            return Store.PathFor(id);
         }
 
         public static List<SchedulePreset> LoadAll()
         {
-            List<SchedulePreset> result = new List<SchedulePreset>();
-            try
-            {
-                Directory.CreateDirectory(DirectoryPath);
-                foreach (string path in Directory.GetFiles(DirectoryPath, "*.json"))
-                {
-                    SchedulePreset preset = TryLoad(path);
-                    if (preset != null)
-                    {
-                        result.Add(preset);
-                    }
-                }
-            }
-            catch (Exception exception)
-            {
-                Log.Warning("[Ordered Work] Could not list schedules: " + exception.Message);
-            }
-            return result.OrderBy(p => p.Name, StringComparer.OrdinalIgnoreCase).ToList();
+            return Store.LoadAll();
         }
 
         public static SchedulePreset TryLoadById(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-            {
-                return null;
-            }
-            return TryLoad(PathFor(id));
+            return Store.TryLoadById(id);
         }
 
         public static SchedulePreset TryLoad(string path)
         {
-            try
-            {
-                if (!File.Exists(path))
-                {
-                    return null;
-                }
-                SchedulePreset preset = JsonSerializer.Deserialize<SchedulePreset>(
-                    File.ReadAllText(path), JsonOptions);
-                if (preset == null || preset.SchemaVersion < 1 || preset.SchemaVersion > SchedulePreset.CurrentSchemaVersion)
-                {
-                    Log.Warning("[Ordered Work] Ignoring schedule with unsupported schema: " + path);
-                    return null;
-                }
-                preset.Normalize();
-                if (string.IsNullOrEmpty(preset.ModifiedUtc))
-                {
-                    preset.ModifiedUtc = File.GetLastWriteTime(path).ToString("yyyy-MM-dd HH:mm");
-                }
-                return preset;
-            }
-            catch (Exception exception)
-            {
-                Log.Warning("[Ordered Work] Could not read schedule " + path + ": " + exception.Message);
-                return null;
-            }
+            return Store.TryLoad(path);
         }
 
         public static bool Save(SchedulePreset preset)
         {
-            if (preset == null)
-            {
-                return false;
-            }
-            try
-            {
-                preset.SchemaVersion = SchedulePreset.CurrentSchemaVersion;
-                preset.ModifiedUtc = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm");
-                preset.Normalize();
-                Directory.CreateDirectory(DirectoryPath);
-                string path = PathFor(preset.Id);
-                if (File.Exists(path))
-                {
-                    File.Copy(path, path + ".bak", true);
-                }
-                string temp = path + ".tmp";
-                File.WriteAllText(temp, JsonSerializer.Serialize(preset, JsonOptions));
-                if (File.Exists(path))
-                {
-                    File.Replace(temp, path, null);
-                }
-                else
-                {
-                    File.Move(temp, path);
-                }
-                return true;
-            }
-            catch (Exception exception)
-            {
-                Log.Error("[Ordered Work] Could not save schedule: " + exception);
-                return false;
-            }
+            return Store.Save(preset);
         }
 
         public static bool Delete(string id)
         {
-            try
-            {
-                string path = PathFor(id);
-                if (!File.Exists(path))
-                {
-                    return false;
-                }
-                if (File.Exists(path + ".bak"))
-                {
-                    File.Delete(path + ".bak");
-                }
-                File.Delete(path);
-                return true;
-            }
-            catch (Exception exception)
-            {
-                Log.Warning("[Ordered Work] Could not delete schedule: " + exception.Message);
-                return false;
-            }
+            return Store.Delete(id);
         }
 
-        private static string SanitizeId(string id)
+        private static string NormalizeId(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-            {
-                return Guid.NewGuid().ToString("N");
-            }
-            char[] invalid = Path.GetInvalidFileNameChars();
-            string clean = new string(id.Where(c => !invalid.Contains(c) && c != '.' && c != '\\' && c != '/').ToArray());
-            return string.IsNullOrEmpty(clean) ? Guid.NewGuid().ToString("N") : clean;
+            return AtomicJsonRecordStore<SchedulePreset>.SanitizeFileName(
+                id, Guid.NewGuid().ToString("N"), false);
         }
     }
 }

@@ -2,6 +2,17 @@
 
 Status: profile JSON is wired to the Rules UI. Global rule preferences live in ModSettings XML; profile state lives in JSON; per-pawn orders live in the save.
 
+## Preset JSON stores
+
+Schedule, hourly focus and Work presets use the shared `AtomicJsonRecordStore<T>`:
+
+- one file per record;
+- schema bounds per store;
+- `.tmp` then `File.Replace`;
+- `.bak` before overwrite;
+- load normalization and explicit id/filename policy.
+
+The store owns file mechanics; each preset type owns its schema, normalization, id policy and sort order.
 ## 1. Two separate scopes
 
 ### Global / installation
