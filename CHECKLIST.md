@@ -70,6 +70,13 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] `WorkTypePaletteView` split into core, tooltip and passion partials.
 - [ ] Runtime smoke test after the refactor: settings, pins, weights, split/merge, save/load.
 
+## Config localization (alpha.235)
+
+- [x] Config mod strings moved to `OrderedWork.Config.xml`.
+- [x] English, Spanish and SpanishLatin each have 163 config keys.
+- [x] General, Rules, Profiles, Order, SplitMetadata and SplitMerge UI use keyed text.
+- [x] Build 0/0 and tests pass.
+- [ ] Verify the Config mod in game at both UI scales.
 ## Schedule focus (alpha.224)
 
 - [x] `HourFocusStack` pure policy and tests.
