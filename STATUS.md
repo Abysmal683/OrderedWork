@@ -1,6 +1,6 @@
 # Ordered Work — Current Status
 
-Version: `0.3.0-alpha.193` (refactor checkpoint). Build 0/0; tests 15/15.
+Version: `0.3.0-alpha.194` (refactor checkpoint). Build 0/0; tests 15/15.
 
 ## Completed architecture
 

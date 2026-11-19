@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.194] - 2026-11-19
+
+### Feature — dynamic WorkType stats
+- Added `StatIndex`, which inverts `StatDef` skill metadata into `SkillDef → StatDef` and `WorkTypeDef → StatDef` maps.
+- Cooking now discovers CookSpeed, FoodPoisonChance, ButcheryFleshSpeed, ButcheryFleshEfficiency and other skill-linked stats instead of only one hardcoded fallback.
+- Specialized stats list is scrollable, zebra-striped and uses the live stat breakdown tooltip.
+- Generic stats remain zebra-striped and use the same breakdown tooltip.
+- The fallback `RelevantWorkStat` remains only for a WorkType with no discovered stats.
+
 ## [0.3.0-alpha.193] - 2026-11-19
 
 ### Feature — stat breakdown tooltips and zebra
