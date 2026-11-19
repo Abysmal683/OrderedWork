@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.205] - 2026-11-19
+
+### Refactor — WorkPanel shell reduction
+- Moved shared skill helpers (`RelevantSkills`, `BestSkill`, `BestSkillDef`, `SelectedWorkType`, `PassionRank`) into `WorkPanel.Skills.cs`.
+- `WorkPanel.cs` is now a small layout/initialization shell.
+- WorkTypes, Givers, Skills, Stats, Actions and Profile stay in separate files/services.
+- Dynamic WorkType factory and split column generation remain in the startup layer.
+
 ## [0.3.0-alpha.204] - 2026-11-19
 
 ### Refactor — dynamic WorkType factory
