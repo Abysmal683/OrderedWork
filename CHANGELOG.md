@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.191] - 2026-11-19
+
+### Fix — live skill filter
+- Skill filter is now live: each checkbox change applies immediately.
+- Removed the Apply button; only Close remains.
+- Filter flags remain persisted through `OrderedWorkSettings`.
+- `Expertise` remains conditional on the VSE adapter.
+
 ## [0.3.0-alpha.190] - 2026-11-19
 
 ### Feature — persistent skill filters and expertise scoring
