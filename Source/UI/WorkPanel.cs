@@ -143,7 +143,7 @@ namespace OrderedWork.UI
             Text.Font = GameFont.Medium;
             Widgets.Label(new Rect(rect.x, rect.y, 190f, 26f), "Trabajo");
             Text.Font = GameFont.Small;
-            if (workChanged || giverChanged)
+            if (giverChanged)
             {
                 Widgets.Label(new Rect(rect.x + 104f, rect.y + 3f, 130f, 22f), "Changed");
             }
@@ -153,7 +153,16 @@ namespace OrderedWork.UI
         {
             Widgets.DrawBoxSolid(rect, UiColors.PanelBody);
             Rect header = new Rect(rect.x + 6f, rect.y + 4f, rect.width - 12f, 24f);
-            Widgets.Label(new Rect(header.x, header.y, header.width - 86f, 22f), "Work types");
+            Widgets.Label(new Rect(header.x, header.y, header.width - 168f, 22f), "Work types");
+            if (UiButtonBar.Button(new Rect(header.xMax - 164f, header.y, 78f, 22f), "Givers",
+                selectedWorkType != null, "Show or hide the WorkGiver column for the selected WorkType."))
+            {
+                giversExpanded = !giversExpanded;
+                if (giversExpanded)
+                {
+                    LoadSelectedGivers();
+                }
+            }
             if (UiButtonBar.Button(new Rect(header.xMax - 82f, header.y, 82f, 22f), "+ Agregar", true,
                 "Add a capable WorkType that is not currently in this pawn's list."))
             {
@@ -188,25 +197,26 @@ namespace OrderedWork.UI
                         continue;
                     }
                     Rect row = new Rect(0f, i * RowHeight, view.width, RowHeight - 2f);
-                    UiZebra.Draw(row, i);
+                    Rect hit = new Rect(rect.x + row.x, rect.y + row.y - workScroll.y, row.width, row.height);
+                    if (dragKind == 1 && dragIndex == i)
+                    {
+                        Widgets.DrawBoxSolid(row, new Color(0.22f, 0.42f, 0.62f, 0.65f));
+                    }
+                    else if (dragKind == 1 && dragIndex >= 0 && hit.Contains(Event.current.mousePosition))
+                    {
+                        Widgets.DrawBoxSolid(row, new Color(0.55f, 0.72f, 0.35f, 0.40f));
+                    }
+                    else
+                    {
+                        UiZebra.Draw(row, i);
+                    }
                     if (selectedWorkType == workType.defName)
                     {
                         Widgets.DrawHighlight(row);
                     }
 
                     Widgets.Label(new Rect(row.x + 4f, row.y + 3f, 22f, 18f), (i + 1).ToString());
-                    Widgets.LabelEllipses(new Rect(row.x + 26f, row.y + 3f, Mathf.Max(50f, row.width - 152f), 18f), workType.labelShort);
-                    if (WorkTypeChanged(i))
-                    {
-                        Widgets.Label(new Rect(row.xMax - 126f, row.y + 3f, 55f, 18f), "Changed");
-                    }
-                    Rect chevron = new Rect(row.xMax - 66f, row.y + 1f, 18f, 20f);
-                    if (Widgets.ButtonText(chevron, ">"))
-                    {
-                        selectedWorkType = workType.defName;
-                        giversExpanded = !giversExpanded;
-                        LoadSelectedGivers();
-                    }
+                    Widgets.LabelEllipses(new Rect(row.x + 26f, row.y + 3f, Mathf.Max(50f, row.width - 104f), 18f), workType.labelShort);
                     Rect remove = new Rect(row.xMax - 46f, row.y + 1f, 18f, 20f);
                     if (Widgets.ButtonText(remove, "x"))
                     {
@@ -220,11 +230,11 @@ namespace OrderedWork.UI
                     }
                     Rect handle = new Rect(row.xMax - 24f, row.y + 1f, 20f, 20f);
                     Widgets.Label(handle, "≡");
-                    Rect hit = new Rect(rect.x + row.x, rect.y + row.y - workScroll.y, row.width, row.height);
                     if (Event.current.type == EventType.MouseDown && Event.current.button == 0 && hit.Contains(Event.current.mousePosition)
-                        && !chevron.Contains(Event.current.mousePosition) && !remove.Contains(Event.current.mousePosition))
+                        && !remove.Contains(Event.current.mousePosition))
                     {
                         selectedWorkType = workType.defName;
+                        giversExpanded = true;
                         LoadSelectedGivers();
                     }
                     TooltipHandler.TipRegion(hit, WorkTypeTooltip(workType, i + 1));
@@ -301,7 +311,19 @@ namespace OrderedWork.UI
                 {
                     string giverName = draft[i];
                     Rect row = new Rect(0f, i * RowHeight, view.width, RowHeight - 2f);
-                    UiZebra.Draw(row, i);
+                    Rect hit = new Rect(body.x + row.x, body.y + row.y - giverScroll.y, row.width, row.height);
+                    if (dragKind == 2 && dragIndex == i)
+                    {
+                        Widgets.DrawBoxSolid(row, new Color(0.22f, 0.42f, 0.62f, 0.65f));
+                    }
+                    else if (dragKind == 2 && dragIndex >= 0 && hit.Contains(Event.current.mousePosition))
+                    {
+                        Widgets.DrawBoxSolid(row, new Color(0.55f, 0.72f, 0.35f, 0.40f));
+                    }
+                    else
+                    {
+                        UiZebra.Draw(row, i);
+                    }
                     Widgets.Label(new Rect(row.x + 4f, row.y + 3f, 22f, 18f), (i + 1).ToString());
                     Widgets.LabelEllipses(new Rect(row.x + 26f, row.y + 3f, Mathf.Max(50f, row.width - 106f), 18f), giverName);
                     if (GiverChanged(giverName, i))
@@ -309,7 +331,7 @@ namespace OrderedWork.UI
                         Widgets.Label(new Rect(row.xMax - 82f, row.y + 3f, 58f, 18f), "Changed");
                     }
                     Widgets.Label(new Rect(row.xMax - 20f, row.y + 3f, 18f, 18f), "≡");
-                    rows.Add(new Rect(body.x + row.x, body.y + row.y - giverScroll.y, row.width, row.height));
+                    rows.Add(hit);
                 }
             }
             finally
@@ -327,46 +349,83 @@ namespace OrderedWork.UI
             Rect skills = new Rect(rect.x + 6f, rect.y + 6f, rect.width - 12f, skillsHeight);
             Rect stats = new Rect(rect.x + 6f, skills.yMax + Gap, rect.width - 12f, Mathf.Max(0f, rect.height - skillsHeight - 20f));
 
-            Widgets.Label(new Rect(skills.x, skills.y, skills.width - 110f, 20f), "Skills relevantes");
+            Widgets.Label(new Rect(skills.x, skills.y, skills.width - 58f, 20f), "Top 5 trabajos");
             string modeLabel = relevantMode == 0 ? "Lv" : relevantMode == 1 ? "P" : "Lv.P";
-            if (UiButtonBar.Button(new Rect(skills.xMax - 104f, skills.y, 48f, 20f), modeLabel, true,
-                "Search filter mode: Lv = level, P = passion, Lv.P = both."))
+            if (UiButtonBar.Button(new Rect(skills.xMax - 48f, skills.y, 48f, 20f), modeLabel, true,
+                "Filter: Lv = level, P = passion, Lv.P = both."))
             {
                 relevantMode = (relevantMode + 1) % 3;
             }
-            if (UiButtonBar.Button(new Rect(skills.xMax - 52f, skills.y, 52f, 20f), "Buscar", true,
-                "List WorkTypes filtered by relevant skill level and passion."))
-            {
-                ShowRelevantSearch();
-            }
-            DrawSkills(skills, workType);
+            DrawTopWorkTypes(skills);
 
             Widgets.Label(new Rect(stats.x, stats.y, stats.width, 20f), "Stats");
             DrawStats(stats);
         }
 
-        private void DrawSkills(Rect rect, WorkTypeDef workType)
+        private void DrawTopWorkTypes(Rect rect)
         {
-            if (workType == null)
+            float y = rect.y + 24f;
+            List<WorkTypeDef> workTypes = RankedRelevantWorkTypes();
+            if (workTypes.Count == 0)
             {
-                Widgets.Label(new Rect(rect.x, rect.y + 26f, rect.width, 40f), "Seleccioná un WorkType.");
+                Widgets.Label(new Rect(rect.x, y, rect.width, 40f), "Sin coincidencias para este filtro.");
                 return;
             }
-            List<SkillRow> rows = RelevantSkills(workType).OrderByDescending(r => r.Level)
-                .ThenByDescending(r => PassionRank(r.Passion)).Take(4).ToList();
-            float y = rect.y + 26f;
-            foreach (SkillRow entry in rows)
+            for (int i = 0; i < workTypes.Count; i++)
             {
+                WorkTypeDef workType = workTypes[i];
                 Rect row = new Rect(rect.x, y, rect.width, 22f);
-                UiZebra.Draw(row, (int)(y - rect.y));
-                Widgets.LabelEllipses(new Rect(row.x + 2f, row.y + 2f, row.width - 92f, 18f), entry.Label);
-                Rect icon = new Rect(row.xMax - 82f, row.y + 3f, 16f, 16f);
-                WorkTypePaletteView.DrawPassionIcon(icon, entry.Passion);
-                Widgets.Label(new Rect(row.xMax - 62f, row.y + 2f, 28f, 18f), entry.Level.ToString());
-                Widgets.Label(new Rect(row.xMax - 32f, row.y + 2f, 30f, 18f),
-                    WorkTypePaletteView.PassionText(entry.Passion));
+                UiZebra.Draw(row, i);
+                if (workType.defName == selectedWorkType)
+                {
+                    Widgets.DrawHighlight(row);
+                }
+                Widgets.LabelEllipses(new Rect(row.x + 2f, row.y + 2f, row.width - 112f, 18f), workType.labelShort);
+                SkillRecord record = BestSkill(workType);
+                SkillDef skill = BestSkillDef(workType);
+                Rect icon = new Rect(row.xMax - 102f, row.y + 3f, 16f, 16f);
+                WorkTypePaletteView.DrawPassionIcon(icon, record != null ? record.passion : Passion.None);
+                Widgets.Label(new Rect(row.xMax - 82f, row.y + 2f, 24f, 18f),
+                    record != null ? record.Level.ToString() : "—");
+                Widgets.LabelEllipses(new Rect(row.xMax - 56f, row.y + 2f, 56f, 18f),
+                    skill != null ? skill.label : "—");
+                if (Event.current.type == EventType.MouseDown && Event.current.button == 0 && row.Contains(Event.current.mousePosition))
+                {
+                    selectedWorkType = workType.defName;
+                    giversExpanded = true;
+                    LoadSelectedGivers();
+                }
+                TooltipHandler.TipRegion(row, WorkTypeTooltip(workType, -1));
                 y += 22f;
             }
+        }
+
+        private List<WorkTypeDef> RankedRelevantWorkTypes()
+        {
+            List<WorkTypeDef> candidates = WorkOrderService.GetAvailableWorkTypes()
+                .Where(w => w != null && !WorkOrderService.IsIncapable(pawn, w))
+                .Where(w =>
+                {
+                    int level = RecommendationScorer.BestSkillLevel(pawn, w, out Passion passion);
+                    if (relevantMode == 0) return level > 0;
+                    if (relevantMode == 1) return passion != Passion.None;
+                    return level > 0 && passion != Passion.None;
+                })
+                .ToList();
+
+            if (relevantMode == 0)
+            {
+                return candidates
+                    .OrderByDescending(w => RecommendationScorer.BestSkillLevel(pawn, w, out _))
+                    .ThenByDescending(w => RecommendationScorer.Score(pawn, w, OrderedWorkMod.Settings))
+                    .Take(5)
+                    .ToList();
+            }
+            return candidates
+                .OrderByDescending(w => RecommendationScorer.Score(pawn, w, OrderedWorkMod.Settings))
+                .ThenByDescending(w => RecommendationScorer.BestSkillLevel(pawn, w, out _))
+                .Take(5)
+                .ToList();
         }
 
         private void DrawStats(Rect rect)
@@ -377,16 +436,32 @@ namespace OrderedWork.UI
             try
             {
                 float y = 0f;
-                DrawStatLine(view.width, ref y, "Work Speed", pawn.GetStatValue(StatDefOf.WorkSpeedGlobal));
-                DrawStatLine(view.width, ref y, "Move Speed", pawn.GetStatValue(StatDefOf.MoveSpeed));
+                DrawStatLine(view.width, ref y, "Work Speed", SafeStat(StatDefOf.WorkSpeedGlobal));
+                DrawStatLine(view.width, ref y, "Move Speed", SafeStat(StatDefOf.MoveSpeed));
                 StatDef relevant = RelevantWorkStat(SelectedWorkType());
-                DrawStatLine(view.width, ref y, relevant.label, pawn.GetStatValue(relevant));
+                DrawStatLine(view.width, ref y, relevant.label, SafeStat(relevant));
                 Widgets.Label(new Rect(0f, y + 8f, view.width, 40f),
                     "Stats específicos y desglose quedan para la siguiente versión.");
             }
             finally
             {
                 Widgets.EndScrollView();
+            }
+        }
+
+        private float SafeStat(StatDef stat)
+        {
+            if (stat == null)
+            {
+                return 0f;
+            }
+            try
+            {
+                return pawn.GetStatValue(stat);
+            }
+            catch (Exception)
+            {
+                return 0f;
             }
         }
 
@@ -530,7 +605,7 @@ namespace OrderedWork.UI
                     case "Construction": return StatDefOf.ConstructionSpeed;
                     case "Mining": return StatDefOf.MiningSpeed;
                     case "Growing": return StatDefOf.PlantWorkSpeed;
-                    case "Cooking": return StatDefOf.WorkTableWorkSpeedFactor;
+                    case "Cooking": return StatDefOf.GeneralLaborSpeed;
                     case "Research": return StatDefOf.ResearchSpeed;
                     case "Doctor": return StatDefOf.MedicalTendSpeed;
                     case "Cleaning": return StatDefOf.CleaningSpeed;
@@ -836,7 +911,9 @@ namespace OrderedWork.UI
                 for (int i = 0; i < rows.Count; i++)
                 {
                     Rect handle = new Rect(rows[i].xMax - 24f, rows[i].y, 20f, rows[i].height);
-                    if (handle.Contains(current.mousePosition))
+                    bool rowDrag = kind == 2 ? rows[i].Contains(current.mousePosition)
+                        : rows[i].Contains(current.mousePosition) && current.mousePosition.x < rows[i].xMax - 30f;
+                    if (handle.Contains(current.mousePosition) || rowDrag)
                     {
                         dragKind = kind;
                         dragIndex = i;
