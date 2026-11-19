@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.236)
+# Ordered Work — Current Checklist (0.3.0-alpha.237)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -70,6 +70,13 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] `WorkTypePaletteView` split into core, tooltip and passion partials.
 - [ ] Runtime smoke test after the refactor: settings, pins, weights, split/merge, save/load.
 
+## WorkConfigStore split (alpha.237)
+
+- [x] Paths, serializer, profile service and resolver isolated.
+- [x] `WorkConfigStore` reduced to compatibility facade.
+- [x] Profile schema, backups and active/pending fallback preserved.
+- [x] Build 0/0 and tests pass.
+- [ ] Runtime profile save/load and pending promotion check.
 ## JSON store unification (alpha.236)
 
 - [x] Shared `AtomicJsonRecordStore<T>` in Core.

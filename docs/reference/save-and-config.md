@@ -13,6 +13,15 @@ Schedule, hourly focus and Work presets use the shared `AtomicJsonRecordStore<T>
 - load normalization and explicit id/filename policy.
 
 The store owns file mechanics; each preset type owns its schema, normalization, id policy and sort order.
+## Work configuration services
+
+| Service | Responsibility |
+|---|---|
+| `WorkConfigPaths` | directories, file names, profile sanitization |
+| `WorkConfigSerializer` | JSON read/write, `.tmp`, `File.Replace`, backups, reference bootstrap |
+| `WorkConfigResolver` | active/pending/editing selection, fallback, selected-profile file |
+| `WorkConfigProfileService` | visible ordering, normalization, vanilla reference profile |
+| `WorkConfigStore` | compatibility facade only |
 ## 1. Two separate scopes
 
 ### Global / installation

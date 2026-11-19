@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.237] - 2026-11-19
+
+### Refactor — split WorkConfigStore
+- Added `WorkConfigPaths` for filesystem layout and profile filename sanitization.
+- Added `WorkConfigSerializer` for JSON read/write, atomic replace, backups and reference bootstrap.
+- Added `WorkConfigResolver` for active/pending/editing selection and selected-profile storage.
+- Added `WorkConfigProfileService` for visible ordering, normalization and vanilla reference construction.
+- Reduced `WorkConfigStore` to a compatibility facade.
+- Preserved schema, backup naming and active/pending fallback behavior; build 0/0 and tests pass.
+
 ## [0.3.0-alpha.236] - 2026-11-19
 
 ### Refactor — shared atomic JSON stores
