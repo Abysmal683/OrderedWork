@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.242] - 2026-11-19
+
+### Refactor — extract Schedule editor
+- Added `ScheduleEditorState`, `ScheduleBrush`, `ScheduleApplyController`, `ScheduleEditorView` and `ScheduleVisuals`.
+- Reduced `Dialog_WorkControlDetails.Schedule` to wiring.
+- Preserved paint, erase, load, copy, save, apply, preset dialogs and current-hour highlight.
+- `SetPawn` now resets schedule state through one method.
+
 ## [0.3.0-alpha.241] - 2026-11-19
 
 ### Refactor — extract WorkControl components

@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.241)
+# Ordered Work — Current Checklist (0.3.0-alpha.242)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -70,6 +70,13 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] `WorkTypePaletteView` split into core, tooltip and passion partials.
 - [ ] Runtime smoke test after the refactor: settings, pins, weights, split/merge, save/load.
 
+## Schedule editor split (alpha.242)
+
+- [x] State, brush, apply controller, view and visuals separated.
+- [x] Schedule tab reduced to wiring.
+- [x] Paint, erase, load, save and apply preserve their behavior.
+- [x] Build 0/0 and tests pass.
+- [ ] Runtime check of paint, erase, load, save and apply.
 ## WorkControl extraction (alpha.241)
 
 - [x] Metrics, row renderer, grid and interaction separated.

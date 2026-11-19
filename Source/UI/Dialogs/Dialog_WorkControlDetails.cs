@@ -240,11 +240,8 @@ namespace OrderedWork.UI
             detailPawns = BuildDetailPawnList(pawn);
             detailPawnIndex = Mathf.Max(0, detailPawns.IndexOf(pawn));
             workPanel = null;
-            detailSchedule = null;
-            detailPresets = null;
-            detailScheduleName = "";
+            ResetScheduleEditor();
             ResetFocusEditor();
-            detailBrush = null;
             detailZoneMap = null;
             detailZoneArea = null;
             detailZoneInitialized = false;

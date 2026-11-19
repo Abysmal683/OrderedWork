@@ -33,6 +33,15 @@ valid focus entries in focus order
 | Per tick | No work |
 | Current job | Never stopped |
 
+## Schedule editor components
+
+| Component | Responsibility |
+|---|---|
+| `ScheduleEditorState` | draft, name, change detection, draft resolution |
+| `ScheduleBrush` | brush selection and paint/erase |
+| `ScheduleApplyController` | load, new, copy, save, apply |
+| `ScheduleEditorView` | timetable drawing and current-hour highlight hook |
+| `ScheduleVisuals` | assignment labels and colors |
 ## UI controls
 
 | Control | Effect |
