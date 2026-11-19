@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.201] - 2026-11-19
+
+### Fix — manual priorities default
+- Ordered Work now enables the game's manual work priorities automatically during colony initialization and before applying an order.
+- This keeps the mod functional on new and existing games without requiring the player to discover the Work tab toggle.
+- A single informational log is written when it changes the setting.
+
 ## [0.3.0-alpha.200] - 2026-11-19
 
 ### Fix — split WorkType column generation
