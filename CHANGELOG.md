@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.172] - 2026-11-19
+
+### Fix — schedule metadata initialization
+- `SchedulePreset.SlotMods` is initialized to 24 entries at construction, matching `Slots`.
+- Fixes `ArgumentOutOfRangeException` in `ScheduleAdapter.CaptureCurrent` when opening Horario.
+- Prevents the cascading `BeginScrollView`/`EndScrollView` errors caused by that exception.
+
 ## [0.3.0-alpha.171] - 2026-11-19
 
 ### Feature — scheduler redesign
