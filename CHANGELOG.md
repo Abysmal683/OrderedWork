@@ -3,6 +3,21 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.224] - 2026-11-19
+
+### Added — hourly schedule focus overlay
+- Added a per-hour focus stack with up to 3 ordered WorkTypes; the pawn's stored work order remains untouched.
+- Added legacy `scheduleWorkOverrides` migration to the sparse `hourFocusOverrides` list.
+- Added pure `HourFocusStack` policy and tests for prepend, fallback, deduplication, max three and base preservation.
+- Added hour-boundary runtime application with quiet priority writes; no stop-job or per-tick work.
+- Added inline Schedule focus editor: horizontal visible order, 3 assignable rows, metadata, drag reorder, right-click removal, copy/paste hour and optional focus presets.
+- Added independent `WorkFocusPresetStore` with atomic JSON under `Config/OrderedWork/focus`.
+- Added separate English, Spanish and SpanishLatin `OrderedWork.ScheduleFocus.xml` key files.
+
+### Fixed — schedule focus isolation
+- Focus and schedule presets are separate components; either works without the other.
+- Paste cancels when no copied entry is valid and preserves the previous focus; partial invalid paste applies valid entries with a message.
+
 ## [0.3.0-alpha.223] - 2026-11-19
 
 ### Fixed — short Spanish button labels

@@ -19,6 +19,7 @@ namespace OrderedWork.Data
         // has a protected parameterless constructor, so it is called implicitly here.
         public OrderedWorkGameComponent(Game game) : base()
         {
+            HourFocusService.Reset();
         }
 
         public override void ExposeData()
@@ -42,11 +43,14 @@ namespace OrderedWork.Data
         /// </summary>
         public override void GameComponentTick()
         {
-            if (initialized || Find.CurrentMap == null)
+            if (!initialized && Find.CurrentMap != null)
             {
-                return;
+                WorkOrderService.EnsureColonyInitialized();
             }
-            WorkOrderService.EnsureColonyInitialized();
+            if (Find.TickManager != null && Find.TickManager.TicksGame % 2500 == 0)
+            {
+                HourFocusService.OnHourBoundary();
+            }
         }
 
         public PawnWorkOrder GetEntry(Pawn pawn)
@@ -119,6 +123,7 @@ namespace OrderedWork.Data
         /// </summary>
         public void Cleanup()
         {
+            HourFocusService.Reset();
             if (entries == null)
             {
                 return;

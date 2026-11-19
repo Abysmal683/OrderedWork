@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OrderedWork.Core;
 using Verse;
 
 namespace OrderedWork.Data
@@ -95,6 +96,24 @@ namespace OrderedWork.Data
             Scribe_Values.Look(ref hour, "hour", 0);
             Scribe_Values.Look(ref workTypeDefName, "workTypeDefName");
             Scribe_Values.Look(ref source, "source", PolicySource.Manual);
+        }
+    }
+
+    public class PawnHourFocusOverride : IExposable
+    {
+        public int hour;
+        public List<string> workTypeDefNames = new List<string>();
+        public PolicySource source = PolicySource.Manual;
+
+        public void ExposeData()
+        {
+            Scribe_Values.Look(ref hour, "hour", 0);
+            Scribe_Collections.Look(ref workTypeDefNames, "workTypeDefNames", LookMode.Value);
+            Scribe_Values.Look(ref source, "source", PolicySource.Manual);
+            if (Scribe.mode == LoadSaveMode.LoadingVars && workTypeDefNames == null)
+            {
+                workTypeDefNames = new List<string>();
+            }
         }
     }
 
@@ -220,6 +239,29 @@ namespace OrderedWork.Data
             values.AddRange(unique.Values);
         }
 
+        public static void NormalizeHourFocus(List<PawnHourFocusOverride> values)
+        {
+            if (values == null)
+            {
+                return;
+            }
+            Dictionary<int, PawnHourFocusOverride> unique = new Dictionary<int, PawnHourFocusOverride>();
+            foreach (PawnHourFocusOverride value in values)
+            {
+                if (value == null || value.hour < 0 || value.hour > 23)
+                {
+                    continue;
+                }
+                value.workTypeDefNames = HourFocusStack.NormalizeFocus(value.workTypeDefNames);
+                if (value.workTypeDefNames.Count == 0)
+                {
+                    continue;
+                }
+                unique[value.hour] = value;
+            }
+            values.Clear();
+            values.AddRange(unique.Values);
+        }
         public static void Normalize(List<PawnClothingOverride> values)
         {
             if (values == null)

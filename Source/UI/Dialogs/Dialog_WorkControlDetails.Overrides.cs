@@ -67,16 +67,16 @@ namespace OrderedWork.UI
 
                 DrawSectionTitle(rows, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overrides.Hourly", "Hourly work overrides"));
                 rowIndex = 0;
-                if (entry.scheduleWorkOverrides.Count == 0)
+                if (entry.hourFocusOverrides.Count == 0)
                 {
                     Widgets.Label(rows.Next(), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.None", "None."));
                 }
                 else
                 {
-                    foreach (PawnScheduleWorkOverride value in entry.scheduleWorkOverrides)
+                    foreach (PawnHourFocusOverride value in entry.hourFocusOverrides)
                     {
                         DrawRow(rows, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overrides.Hour", "Hour ") + value.hour + " | "
-                            + WorkTypeLabel(value.workTypeDefName)
+                            + string.Join(", ", value.workTypeDefNames.Select(WorkTypeLabel))
                             + " | " + value.source, rowIndex++);
                     }
                 }
@@ -112,7 +112,7 @@ namespace OrderedWork.UI
             }
             return entry.workOverrides.Count
                 + entry.scheduleOverrides.Count
-                + entry.scheduleWorkOverrides.Count
+                + entry.hourFocusOverrides.Count
                 + entry.clothingOverrides.Count;
         }
 

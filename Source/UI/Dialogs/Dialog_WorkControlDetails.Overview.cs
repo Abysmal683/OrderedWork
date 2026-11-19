@@ -110,7 +110,7 @@ namespace OrderedWork.UI
                     : entry.clothingPresetId;
                 int workOverrides = entry?.workOverrides?.Count ?? 0;
                 int scheduleOverrides = entry?.scheduleOverrides?.Count ?? 0;
-                int hourlyOverrides = entry?.scheduleWorkOverrides?.Count ?? 0;
+                int hourlyOverrides = entry?.hourFocusOverrides?.Count ?? 0;
                 int clothingOverrides = entry?.clothingOverrides?.Count ?? 0;
                 int zones = entry?.zones?.Count ?? 0;
                 Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.WorkPreset", "Work preset: ") + workPreset);

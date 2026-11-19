@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <OrderedWork.ScheduleFocus.Row>Foco</OrderedWork.ScheduleFocus.Row>
+  <OrderedWork.ScheduleFocus.Title>Foco</OrderedWork.ScheduleFocus.Title>
+  <OrderedWork.ScheduleFocus.CopyHour>Copiar hora</OrderedWork.ScheduleFocus.CopyHour>
+  <OrderedWork.ScheduleFocus.PasteHour>Pegar hora</OrderedWork.ScheduleFocus.PasteHour>
+  <OrderedWork.ScheduleFocus.Empty>Sin foco para esta hora.</OrderedWork.ScheduleFocus.Empty>
+  <OrderedWork.ScheduleFocus.Add>+ Agregar trabajo</OrderedWork.ScheduleFocus.Add>
+  <OrderedWork.ScheduleFocus.Max>Máximo 3 tipos de trabajo de foco.</OrderedWork.ScheduleFocus.Max>
+  <OrderedWork.ScheduleFocus.RightClick>Clic derecho en una fila para quitar su foco.</OrderedWork.ScheduleFocus.RightClick>
+  <OrderedWork.ScheduleFocus.Visible>Visible: cómo se lee esta hora</OrderedWork.ScheduleFocus.Visible>
+  <OrderedWork.ScheduleFocus.Passion>Pasión</OrderedWork.ScheduleFocus.Passion>
+  <OrderedWork.ScheduleFocus.Level>Nivel</OrderedWork.ScheduleFocus.Level>
+  <OrderedWork.ScheduleFocus.Change>Cambiar</OrderedWork.ScheduleFocus.Change>
+  <OrderedWork.ScheduleFocus.Pick>Elegir un tipo de trabajo</OrderedWork.ScheduleFocus.Pick>
+  <OrderedWork.ScheduleFocus.NoCandidates>No hay tipos de trabajo elegibles en la lista de este peón.</OrderedWork.ScheduleFocus.NoCandidates>
+  <OrderedWork.ScheduleFocus.Copied>Hora copiada: </OrderedWork.ScheduleFocus.Copied>
+  <OrderedWork.ScheduleFocus.ClipboardEmpty>No hay una hora copiada.</OrderedWork.ScheduleFocus.ClipboardEmpty>
+  <OrderedWork.ScheduleFocus.PasteCancelled>No se pegó: ningún tipo de trabajo copiado es válido para este peón.</OrderedWork.ScheduleFocus.PasteCancelled>
+  <OrderedWork.ScheduleFocus.Pasted>Hora pegada: </OrderedWork.ScheduleFocus.Pasted>
+  <OrderedWork.ScheduleFocus.Omitted>omitidos: </OrderedWork.ScheduleFocus.Omitted>
+  <OrderedWork.ScheduleFocus.SavePreset>Guardar preset</OrderedWork.ScheduleFocus.SavePreset>
+  <OrderedWork.ScheduleFocus.LoadPreset>Cargar preset de foco</OrderedWork.ScheduleFocus.LoadPreset>
+  <OrderedWork.ScheduleFocus.LoadPresetButton>Cargar preset</OrderedWork.ScheduleFocus.LoadPresetButton>
+  <OrderedWork.ScheduleFocus.PresetSaved>Preset de foco guardado: </OrderedWork.ScheduleFocus.PresetSaved>
+  <OrderedWork.ScheduleFocus.PresetLoaded>Preset de foco cargado: </OrderedWork.ScheduleFocus.PresetLoaded>
+  <OrderedWork.ScheduleFocus.LoadCancelled>Preset de foco no cargado: ninguna entrada es válida para este peón.</OrderedWork.ScheduleFocus.LoadCancelled>
+</LanguageData>

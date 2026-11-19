@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <OrderedWork.ScheduleFocus.Row>Focus</OrderedWork.ScheduleFocus.Row>
+  <OrderedWork.ScheduleFocus.Title>Focus</OrderedWork.ScheduleFocus.Title>
+  <OrderedWork.ScheduleFocus.CopyHour>Copy hour</OrderedWork.ScheduleFocus.CopyHour>
+  <OrderedWork.ScheduleFocus.PasteHour>Paste hour</OrderedWork.ScheduleFocus.PasteHour>
+  <OrderedWork.ScheduleFocus.Empty>No focus for this hour.</OrderedWork.ScheduleFocus.Empty>
+  <OrderedWork.ScheduleFocus.Add>+ Add work</OrderedWork.ScheduleFocus.Add>
+  <OrderedWork.ScheduleFocus.Max>Maximum 3 focus WorkTypes.</OrderedWork.ScheduleFocus.Max>
+  <OrderedWork.ScheduleFocus.RightClick>Right click a row to remove its focus.</OrderedWork.ScheduleFocus.RightClick>
+  <OrderedWork.ScheduleFocus.Visible>Visible: how this hour reads</OrderedWork.ScheduleFocus.Visible>
+  <OrderedWork.ScheduleFocus.Passion>Passion</OrderedWork.ScheduleFocus.Passion>
+  <OrderedWork.ScheduleFocus.Level>Level</OrderedWork.ScheduleFocus.Level>
+  <OrderedWork.ScheduleFocus.Change>Change</OrderedWork.ScheduleFocus.Change>
+  <OrderedWork.ScheduleFocus.Pick>Choose a WorkType</OrderedWork.ScheduleFocus.Pick>
+  <OrderedWork.ScheduleFocus.NoCandidates>No eligible WorkTypes in this pawn's work list.</OrderedWork.ScheduleFocus.NoCandidates>
+  <OrderedWork.ScheduleFocus.Copied>Hour copied: </OrderedWork.ScheduleFocus.Copied>
+  <OrderedWork.ScheduleFocus.ClipboardEmpty>No copied hour focus.</OrderedWork.ScheduleFocus.ClipboardEmpty>
+  <OrderedWork.ScheduleFocus.PasteCancelled>Nothing pasted: no copied WorkType is valid for this pawn.</OrderedWork.ScheduleFocus.PasteCancelled>
+  <OrderedWork.ScheduleFocus.Pasted>Hour pasted: </OrderedWork.ScheduleFocus.Pasted>
+  <OrderedWork.ScheduleFocus.Omitted>omitted: </OrderedWork.ScheduleFocus.Omitted>
+  <OrderedWork.ScheduleFocus.SavePreset>Save preset</OrderedWork.ScheduleFocus.SavePreset>
+  <OrderedWork.ScheduleFocus.LoadPreset>Load focus preset</OrderedWork.ScheduleFocus.LoadPreset>
+  <OrderedWork.ScheduleFocus.LoadPresetButton>Load preset</OrderedWork.ScheduleFocus.LoadPresetButton>
+  <OrderedWork.ScheduleFocus.PresetSaved>Focus preset saved: </OrderedWork.ScheduleFocus.PresetSaved>
+  <OrderedWork.ScheduleFocus.PresetLoaded>Focus preset loaded: </OrderedWork.ScheduleFocus.PresetLoaded>
+  <OrderedWork.ScheduleFocus.LoadCancelled>Focus preset not loaded: no entry is valid for this pawn.</OrderedWork.ScheduleFocus.LoadCancelled>
+</LanguageData>

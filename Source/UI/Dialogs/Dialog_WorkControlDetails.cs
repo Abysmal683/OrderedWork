@@ -132,7 +132,7 @@ namespace OrderedWork.UI
                     workPanel.Draw(content);
                     break;
                 case DetailTab.Schedule:
-                    DrawScrollableTab(content, DrawScheduleTab, 860f, 340f);
+                    DrawScrollableTab(content, DrawScheduleTab, 860f, 760f);
                     break;
                 case DetailTab.Zone:
                     DrawScrollableTab(content, DrawZoneTab, 500f, 300f);
@@ -241,6 +241,7 @@ namespace OrderedWork.UI
             detailSchedule = null;
             detailPresets = null;
             detailScheduleName = "";
+            ResetFocusEditor();
             detailBrush = null;
             detailZoneMap = null;
             detailZoneArea = null;

@@ -26,6 +26,12 @@ namespace OrderedWork.Tests
             Run("RecommendationScorePolicy supports negative weights", TestScoreNegative);
             Run("RecommendationScorePolicy disables level-zero passion", TestScoreLevelZeroDisabled);
             Run("RecommendationScorePolicy lets a bad slow passion grow", TestScoreBadSlowPassion);
+            Run("HourFocusStack prepends focus without replacing base", TestFocusPrepends);
+            Run("HourFocusStack falls back to next available focus", TestFocusFallback);
+            Run("HourFocusStack keeps base when all focus is unavailable", TestFocusAllUnavailable);
+            Run("HourFocusStack ignores focus outside base order", TestFocusOutsideBase);
+            Run("HourFocusStack normalizes max three and deduplicates", TestFocusNormalize);
+            Run("HourFocusStack leaves base order unchanged", TestFocusBaseUnchanged);
 
             Console.WriteLine(failures == 0 ? "All tests passed." : failures + " test(s) failed.");
             return failures == 0 ? 0 : 1;
@@ -148,6 +154,52 @@ namespace OrderedWork.Tests
             AssertEqual(20, RecommendationScorePolicy.Score(10, false, -3, 0, 0, true));
         }
 
+        private static void TestFocusPrepends()
+        {
+            List<string> effective = HourFocusStack.BuildEffectiveOrder(
+                new[] { "Hunter", "Doctor", "Cook", "Fish" },
+                new[] { "Fish", "Cook" });
+            AssertSequence(new[] { "Fish", "Cook", "Hunter", "Doctor" }, effective);
+        }
+
+        private static void TestFocusFallback()
+        {
+            List<string> effective = HourFocusStack.BuildEffectiveOrder(
+                new[] { "Hunter", "Doctor", "Cook", "Fish" },
+                new[] { "Fish", "Cook" },
+                id => id != "Fish");
+            AssertSequence(new[] { "Cook", "Hunter", "Doctor" }, effective);
+        }
+
+        private static void TestFocusAllUnavailable()
+        {
+            List<string> effective = HourFocusStack.BuildEffectiveOrder(
+                new[] { "Hunter", "Doctor" },
+                new[] { "Fish", "Cook" },
+                id => id == "Hunter" || id == "Doctor");
+            AssertSequence(new[] { "Hunter", "Doctor" }, effective);
+        }
+
+        private static void TestFocusOutsideBase()
+        {
+            List<string> effective = HourFocusStack.BuildEffectiveOrder(
+                new[] { "Hunter", "Doctor" },
+                new[] { "Artist" });
+            AssertSequence(new[] { "Hunter", "Doctor" }, effective);
+        }
+
+        private static void TestFocusNormalize()
+        {
+            List<string> focus = HourFocusStack.NormalizeFocus(new[] { "Fish", "Cook", "Fish", "Doctor", "Mine" });
+            AssertSequence(new[] { "Fish", "Cook", "Doctor" }, focus);
+        }
+
+        private static void TestFocusBaseUnchanged()
+        {
+            List<string> baseOrder = new List<string> { "Hunter", "Doctor", "Cook" };
+            HourFocusStack.BuildEffectiveOrder(baseOrder, new[] { "Cook" });
+            AssertSequence(new[] { "Hunter", "Doctor", "Cook" }, baseOrder);
+        }
         private static void AssertSequence(IEnumerable<string> expected, IEnumerable<string> actual)
         {
             string[] expectedArray = expected.ToArray();

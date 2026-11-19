@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.223)
+# Ordered Work — Current Checklist (0.3.0-alpha.224)
 
 Status: architecture cleanup complete; build 0/0 and 7/7 tests pass. Runtime checks remain for the final profile-only path.
 
@@ -69,6 +69,15 @@ Status: architecture cleanup complete; build 0/0 and 7/7 tests pass. Runtime che
 - [x] `WorkTypePaletteView` split into core, tooltip and passion partials.
 - [ ] Runtime smoke test after the refactor: settings, pins, weights, split/merge, save/load.
 
+## Schedule focus (alpha.224)
+
+- [x] `HourFocusStack` pure policy and tests.
+- [x] Sparse `hourFocusOverrides` with max three and legacy migration.
+- [x] Hour-boundary runtime overlay; no stop-job and no per-tick work.
+- [x] Inline focus editor: visible horizontal order, three assignable rows, metadata, right-click removal, copy/paste hour.
+- [x] Separate atomic `WorkFocusPresetStore` under `Config/OrderedWork/focus`.
+- [x] English, Spanish and SpanishLatin focus key files.
+- [ ] Runtime smoke test in RimWorld.
 ## Future scope
 
 See `POLICY_DATA_DESIGN.md` for the relational policy model.

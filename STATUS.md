@@ -1,6 +1,6 @@
 # Ordered Work — Current Status
 
-Version: `0.3.0-alpha.223` (refactor checkpoint). Build 0/0; tests 15/15.
+Version: `0.3.0-alpha.224` (refactor checkpoint). Build 0/0; tests 15/15.
 
 ## Completed architecture
 
@@ -49,6 +49,14 @@ Version: `0.3.0-alpha.223` (refactor checkpoint). Build 0/0; tests 15/15.
 - Override contract comes before policy UI; manual lock > emergency > schedule/zone > base lane.
 - Full override UI and clothing policy are later; clothing is by WorkType, per-pawn override in detail.
 
+## Schedule focus (alpha.224)
+
+- Hourly focus stack is implemented as a temporary overlay over `PawnWorkOrder.order`.
+- Up to 3 ordered WorkTypes per hour, sparse per pawn; the base order is never rewritten.
+- Runtime applies focus only at hour boundaries; it never stops jobs or interrupts sleep, food or recreation.
+- The Schedule tab has an inline focus editor with a horizontal visible effective order, drag reorder, right-click removal, copy/paste hour and independent focus presets.
+- Focus presets are separate atomic JSON files under `Config/OrderedWork/focus`; scheduler and focus work independently.
+- Legacy `scheduleWorkOverrides` entries migrate into `hourFocusOverrides`.
 ## Pending verification
 
 - Runtime smoke test after the refactor: settings, pins, weights, split/merge, save/load.

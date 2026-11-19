@@ -86,11 +86,7 @@ namespace OrderedWork.UI
             y += 42f;
             DrawScheduleRow(content, y, hourWidth, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.Edit", "Edit"), true, false);
             y += 42f;
-            DrawScheduleRow(content, y, hourWidth, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.Priority", "Priority"), false, false);
-            y += 42f;
-
-            Widgets.Label(new Rect(76f, y, content.width - 76f, 20f),
-                OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.HourlyPriority", "Hourly priority: reserved for WorkType overrides; it is not stored in the preset."));
+            DrawFocusSection(content, y, hourWidth);
         }
 
         private void OpenSaveDialog()

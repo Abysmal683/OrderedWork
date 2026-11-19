@@ -98,7 +98,7 @@ namespace OrderedWork.Services
                 : null;
         }
 
-        public static void Apply(Pawn pawn, List<string> order)
+        public static void Apply(Pawn pawn, List<string> order, bool log = true)
         {
             if (pawn == null)
             {
@@ -110,7 +110,10 @@ namespace OrderedWork.Services
                 Pawn_WorkSettings settings = pawn.workSettings;
                 if (settings == null)
                 {
-                    Log.Warning("[Ordered Work] " + pawn.LabelShort + " has no work settings; skipping apply.");
+                    if (log)
+                    {
+                        Log.Warning("[Ordered Work] " + pawn.LabelShort + " has no work settings; skipping apply.");
+                    }
                     return;
                 }
 
@@ -155,8 +158,11 @@ namespace OrderedWork.Services
 
                     settings.Notify_UseWorkPrioritiesChanged();
 
-                    Log.Message("[Ordered Work] Applied order for " + pawn.LabelShort + ": " +
-                        string.Join(", ", capableOrder.Select((id, index) => id + "=" + (index + 1))));
+                    if (log)
+                    {
+                        Log.Message("[Ordered Work] Applied order for " + pawn.LabelShort + ": " +
+                            string.Join(", ", capableOrder.Select((id, index) => id + "=" + (index + 1))));
+                    }
                 }
                 finally
                 {
