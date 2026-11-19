@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.221] - 2026-11-19
+
+### Localization — complete Spanish keyed translations
+- Translated every remaining English value in the Spanish keyed file.
+- Preserved keys, spacing and suffix fragments used by composed UI messages.
+- Verified both keyed XML files are valid, key-complete and duplicate-free.
+
 ## [0.3.0-alpha.220] - 2026-11-19
 
 ### Fixed — keyed language files
