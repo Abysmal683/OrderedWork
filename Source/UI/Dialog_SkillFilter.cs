@@ -30,6 +30,7 @@ namespace OrderedWork.UI
             draggable = true;
             absorbInputAroundWindow = true;
             closeOnClickedOutside = true;
+            closeOnCancel = true;
         }
 
         public override Vector2 InitialSize
@@ -63,10 +64,7 @@ namespace OrderedWork.UI
                 apply?.Invoke(level, passion, expertise, mods);
             }
 
-            if (Widgets.ButtonText(new Rect(0f, inRect.yMax - 30f, inRect.width, 28f), "Close"))
-            {
-                Close();
-            }
+
         }
     }
 }
