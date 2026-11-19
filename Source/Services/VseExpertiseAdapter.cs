@@ -128,8 +128,8 @@ namespace OrderedWork.Services
                 return;
             }
             nextRetryTicks = now + 300;
-            trackersType = FindType("VSE.Expertise.ExpertiseTrackers");
-            uiType = FindType("VSE.Expertise.ExpertiseUIUtility");
+            trackersType = FindType("VSE.ExpertiseTrackers") ?? FindType("VSE.Expertise.ExpertiseTrackers");
+            uiType = FindType("VSE.ExpertiseUIUtility") ?? FindType("VSE.Expertise.ExpertiseUIUtility");
             if (trackersType == null || uiType == null)
             {
                 if (!loggedUnavailable)
