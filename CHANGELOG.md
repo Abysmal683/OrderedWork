@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.185] - 2026-11-19
+
+### Fix — Profile schedule colors and VSE diagnostics
+- Profile schedule is now a 6×4 color grid using `TimeAssignmentDef.color`; labels are compact and tooltips show hour/assignment.
+- `Open details` stays bottom-right; no automatic dialog.
+- Search label shortened to `Find`; button font remains normal.
+- Added one-time VSE adapter availability logging for runtime diagnosis.
+- VSE adapter lookup falls back to matching type names in loaded assemblies.
+- `Expertise` filter/button remains conditional on a successful VSE adapter.
+
 ## [0.3.0-alpha.184] - 2026-11-19
 
 ### Feature — read-only Profile tab and VSE adapter
