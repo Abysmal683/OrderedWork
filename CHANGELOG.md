@@ -3,6 +3,19 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.175] - 2026-11-19
+
+### Fix — pawn navigation and remaining Work feedback
+- Fixed the arrow-navigation NullReference by recreating the WorkPanel after changing pawns.
+- Pawn search now clears the previous selection before selecting the new colonist.
+- WorkType rows show the best relevant skill level and passion icon directly.
+- Capacity stats now read `PawnCapacityDefOf.Manipulation/Sight/Consciousness` instead of missing StatDefs.
+- The `Lv+flame` filter group is centered in its button.
+- Schedule right-click clears a cell; left-click paints.
+- Lock indicator moved to the top-right edge so it remains visible above the tab strip.
+- Added a visible best-skill summary to specialized stats.
+- Added `Dialog_PawnPicker` search.
+
 ## [0.3.0-alpha.174] - 2026-11-19
 
 ### Feature — pawn navigation and stat correction
