@@ -294,7 +294,14 @@ namespace OrderedWork.UI
                     }
 
                     Widgets.Label(new Rect(row.x + 4f, row.y + 3f, 22f, 18f), (index + 1).ToString());
-                    Widgets.LabelEllipses(new Rect(row.x + 26f, row.y + 3f, Mathf.Max(50f, row.width - 156f), 18f), workType.labelShort);
+                    Widgets.LabelEllipses(new Rect(row.x + 26f, row.y + 3f, Mathf.Max(50f, row.width - 216f), 18f), workType.labelShort);
+                    SkillDef bestSkill = BestSkillDef(workType);
+                    SkillRecord bestRecord = bestSkill != null && pawn.skills != null ? pawn.skills.GetSkill(bestSkill) : null;
+                    WorkTypePaletteView.DrawPassionIcon(
+                        new Rect(row.xMax - 190f, row.y + 3f, 16f, 16f),
+                        bestRecord != null ? bestRecord.passion : Passion.None);
+                    Widgets.Label(new Rect(row.xMax - 168f, row.y + 3f, 24f, 18f),
+                        bestRecord != null ? bestRecord.Level.ToString() : "—");
                     if (WorkTypeGiversChanged(workType.defName))
                     {
                         Widgets.Label(new Rect(row.xMax - 126f, row.y + 3f, 58f, 18f), "Changed");

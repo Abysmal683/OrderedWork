@@ -110,6 +110,10 @@ namespace OrderedWork.UI
             Widgets.Label(new Rect(0f, 0f, inRect.width - 150f, 30f), PawnLabel(pawn));
             DrawPawnNavigation(inRect);
             DrawPanelLock(inRect);
+            if (workPanel == null && pawn != null)
+            {
+                workPanel = new WorkPanel(pawn);
+            }
             Text.Font = GameFont.Small;
 
             Rect tabRow = new Rect(0f, 64f, inRect.width, 28f);
@@ -182,7 +186,7 @@ namespace OrderedWork.UI
             {
                 return;
             }
-            Rect lockRect = new Rect(inRect.xMax - 20f, 34f, 16f, 16f);
+            Rect lockRect = new Rect(inRect.xMax - 20f, 2f, 16f, 16f);
             Widgets.DrawBoxSolid(new Rect(lockRect.x + 4f, lockRect.y + 6f, 8f, 7f), new Color(0.80f, 0.62f, 0.22f));
             Widgets.DrawBox(new Rect(lockRect.x + 5f, lockRect.y + 2f, 6f, 6f), 1);
             TooltipHandler.TipRegion(lockRect, "Movimiento del panel bloqueado en esta pestaña.");
@@ -190,7 +194,7 @@ namespace OrderedWork.UI
 
         private void DrawPawnNavigation(Rect inRect)
         {
-            Rect search = new Rect(inRect.xMax - 144f, 0f, 58f, 24f);
+            Rect search = new Rect(inRect.xMax - 136f, 0f, 52f, 24f);
             Rect left = new Rect(inRect.xMax - 82f, 0f, 26f, 24f);
             Rect right = new Rect(inRect.xMax - 52f, 0f, 26f, 24f);
             if (Widgets.ButtonText(search, "Buscar"))
@@ -240,6 +244,7 @@ namespace OrderedWork.UI
             detailZoneMissing = false;
             detailTabScroll = Vector2.zero;
             overviewScroll = Vector2.zero;
+            Find.Selector.ClearSelection();
             Find.Selector.Select(pawn, true, false);
         }
         private static void HandleTimeHotkeys()
