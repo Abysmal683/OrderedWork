@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.217] - 2026-11-19
+
+### Localization — Work Control detailed tooltip
+- Migrated Pawn detailed tooltip labels: Age, Title, Health and Work types.
+- Added the corresponding English/Spanish key entries.
+- Diagnostic logs remain English by design because they are support output, not player-facing UI.
+- Remaining hardcoded text is limited to internal diagnostics and a few long dynamic explanations.
+
 ## [0.3.0-alpha.216] - 2026-11-19
 
 ### Localization — dynamic messages and rows
