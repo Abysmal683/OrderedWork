@@ -166,79 +166,6 @@ namespace OrderedWork.UI
 
 
 
-        private List<SkillRow> RelevantSkills(WorkTypeDef workType)
-        {
-            List<SkillRow> result = new List<SkillRow>();
-            if (workType == null || workType.relevantSkills == null)
-            {
-                return result;
-            }
-            foreach (SkillDef skill in workType.relevantSkills)
-            {
-                if (skill == null)
-                {
-                    continue;
-                }
-                SkillRecord record = pawn.skills != null ? pawn.skills.GetSkill(skill) : null;
-                result.Add(new SkillRow
-                {
-                    Label = skill.label,
-                    Level = record != null ? record.Level : 0,
-                    Passion = record != null ? record.passion : Passion.None
-                });
-            }
-            return result;
-        }
-
-        private SkillRecord BestSkill(WorkTypeDef workType)
-        {
-            SkillRecord best = null;
-            if (workType == null || workType.relevantSkills == null || pawn.skills == null)
-            {
-                return null;
-            }
-            foreach (SkillDef skill in workType.relevantSkills)
-            {
-                SkillRecord record = skill != null ? pawn.skills.GetSkill(skill) : null;
-                if (record != null && (best == null || record.Level > best.Level
-                    || (record.Level == best.Level && PassionRank(record.passion) > PassionRank(best.passion))))
-                {
-                    best = record;
-                }
-            }
-            return best;
-        }
-
-        private SkillDef BestSkillDef(WorkTypeDef workType)
-        {
-            SkillDef best = null;
-            int bestLevel = -1;
-            if (workType == null || workType.relevantSkills == null || pawn.skills == null)
-            {
-                return null;
-            }
-            foreach (SkillDef skill in workType.relevantSkills)
-            {
-                SkillRecord record = skill != null ? pawn.skills.GetSkill(skill) : null;
-                if (record != null && record.Level > bestLevel)
-                {
-                    best = skill;
-                    bestLevel = record.Level;
-                }
-            }
-            return best;
-        }
-
-
-
-
-
-        private WorkTypeDef SelectedWorkType()
-        {
-            return string.IsNullOrEmpty(selectedWorkType)
-                ? null
-                : DefDatabase<WorkTypeDef>.GetNamedSilentFail(selectedWorkType);
-        }
 
 
 
@@ -257,12 +184,13 @@ namespace OrderedWork.UI
 
 
 
-        private static int PassionRank(Passion passion)
-        {
-            if (passion == Passion.Major) return 2;
-            if (passion == Passion.Minor) return 1;
-            return 0;
-        }
+
+
+
+
+
+
+
 
 
         private struct SkillRow
