@@ -92,7 +92,7 @@ namespace OrderedWork.UI
             selectedWorkType = workDraft.FirstOrDefault() ?? AddableWorkTypes().FirstOrDefault()?.defName;
             giverDrafts.Clear();
             giverBaselines.Clear();
-            LoadSelectedGivers();
+            LoadAllGiverDrafts();
         }
 
         private void Reload()
@@ -132,14 +132,49 @@ namespace OrderedWork.UI
                 {
                     continue;
                 }
+                preset.WorkTypeLabels[workTypeName] = workType.labelShort;
+                int workTypeMod = ModIndex(preset, workType);
+                if (workTypeMod >= 0)
+                {
+                    preset.WorkTypeMods[workTypeName] = workTypeMod;
+                }
                 List<string> order;
                 if (!giverDrafts.TryGetValue(workTypeName, out order))
                 {
                     order = WorkGiverOrderService.GetEffectiveOrder(pawn, workType);
                 }
                 preset.Givers[workTypeName] = new List<string>(order ?? new List<string>());
+                foreach (string giverName in preset.Givers[workTypeName])
+                {
+                    WorkGiverDef giver = DefDatabase<WorkGiverDef>.GetNamedSilentFail(giverName);
+                    int giverMod = ModIndex(preset, giver);
+                    if (giverMod >= 0)
+                    {
+                        preset.GiverMods[giverName] = giverMod;
+                    }
+                }
             }
             return preset;
+        }
+
+        private static int ModIndex(WorkPreset preset, Def def)
+        {
+            if (def == null || def.modContentPack == null)
+            {
+                return -1;
+            }
+            string packageId = def.modContentPack.PackageId;
+            if (string.IsNullOrEmpty(packageId))
+            {
+                return -1;
+            }
+            int index = preset.Mods.IndexOf(packageId);
+            if (index < 0)
+            {
+                index = preset.Mods.Count;
+                preset.Mods.Add(packageId);
+            }
+            return index;
         }
 
         private void ApplyPreset(WorkPreset preset)
@@ -182,7 +217,7 @@ namespace OrderedWork.UI
             selectedWorkType = workDraft.FirstOrDefault();
             giverDrafts.Clear();
             giverBaselines.Clear();
-            LoadSelectedGivers();
+            LoadAllGiverDrafts();
             InvalidateTooltips();
         }
 
@@ -887,10 +922,26 @@ namespace OrderedWork.UI
         private void LoadSelectedGivers()
         {
             WorkTypeDef workType = SelectedWorkType();
-            if (workType == null)
+            if (workType != null)
             {
-                return;
+                LoadGiversFor(workType);
             }
+        }
+
+        private void LoadAllGiverDrafts()
+        {
+            foreach (string workTypeName in workDraft)
+            {
+                WorkTypeDef workType = DefDatabase<WorkTypeDef>.GetNamedSilentFail(workTypeName);
+                if (workType != null)
+                {
+                    LoadGiversFor(workType);
+                }
+            }
+        }
+
+        private void LoadGiversFor(WorkTypeDef workType)
+        {
             List<string> baseline = WorkGiverOrderService.GetGlobalOrder(pawn, workType);
             giverBaselines[workType.defName] = baseline;
             workTypeTooltipCache.Clear();

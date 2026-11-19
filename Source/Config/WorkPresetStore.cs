@@ -13,17 +13,24 @@ namespace OrderedWork.Config
     /// </summary>
     public sealed class WorkPreset
     {
-        public int SchemaVersion { get; set; } = 1;
+        public int SchemaVersion { get; set; } = 2;
         public string Name { get; set; } = "";
         public string CreatedUtc { get; set; } = DateTime.UtcNow.ToString("o");
         public List<string> WorkTypes { get; set; } = new List<string>();
         public Dictionary<string, List<string>> Givers { get; set; } =
             new Dictionary<string, List<string>>(StringComparer.Ordinal);
+        public List<string> Mods { get; set; } = new List<string>();
+        public Dictionary<string, int> WorkTypeMods { get; set; } =
+            new Dictionary<string, int>(StringComparer.Ordinal);
+        public Dictionary<string, string> WorkTypeLabels { get; set; } =
+            new Dictionary<string, string>(StringComparer.Ordinal);
+        public Dictionary<string, int> GiverMods { get; set; } =
+            new Dictionary<string, int>(StringComparer.Ordinal);
     }
 
     public static class WorkPresetStore
     {
-        private const int CurrentSchemaVersion = 1;
+        private const int CurrentSchemaVersion = 2;
         private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
         {
             WriteIndented = true,
@@ -66,7 +73,7 @@ namespace OrderedWork.Config
                     return null;
                 }
                 WorkPreset preset = JsonSerializer.Deserialize<WorkPreset>(File.ReadAllText(path), JsonOptions);
-                if (preset == null || preset.SchemaVersion != CurrentSchemaVersion)
+                if (preset == null || preset.SchemaVersion < 1 || preset.SchemaVersion > CurrentSchemaVersion)
                 {
                     return null;
                 }
@@ -147,6 +154,10 @@ namespace OrderedWork.Config
                 .Distinct(StringComparer.Ordinal)
                 .ToList();
             preset.Givers = preset.Givers ?? new Dictionary<string, List<string>>(StringComparer.Ordinal);
+            preset.Mods = preset.Mods ?? new List<string>();
+            preset.WorkTypeMods = preset.WorkTypeMods ?? new Dictionary<string, int>(StringComparer.Ordinal);
+            preset.WorkTypeLabels = preset.WorkTypeLabels ?? new Dictionary<string, string>(StringComparer.Ordinal);
+            preset.GiverMods = preset.GiverMods ?? new Dictionary<string, int>(StringComparer.Ordinal);
             foreach (string key in preset.Givers.Keys.ToList())
             {
                 preset.Givers[key] = (preset.Givers[key] ?? new List<string>())
