@@ -41,18 +41,18 @@ namespace OrderedWork.UI
         public override void DoWindowContents(Rect inRect)
         {
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(0f, 0f, inRect.width, 28f), "Skill filters");
+            Widgets.Label(new Rect(0f, 0f, inRect.width, 28f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Filter.Title", "Skill filters"));
             Text.Font = GameFont.Small;
 
             bool oldLevel = level;
             bool oldPassion = passion;
             bool oldMods = mods;
             bool oldExpertise = expertise;
-            Widgets.CheckboxLabeled(new Rect(8f, 38f, inRect.width - 16f, 24f), "Level", ref level);
-            Widgets.CheckboxLabeled(new Rect(8f, 66f, inRect.width - 16f, 24f), "Passion", ref passion);
-            Widgets.CheckboxLabeled(new Rect(8f, 94f, inRect.width - 16f, 24f), "Include mods", ref mods);
+            Widgets.CheckboxLabeled(new Rect(8f, 38f, inRect.width - 16f, 24f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Filter.Level", "Level"), ref level);
+            Widgets.CheckboxLabeled(new Rect(8f, 66f, inRect.width - 16f, 24f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Filter.Passion", "Passion"), ref passion);
+            Widgets.CheckboxLabeled(new Rect(8f, 94f, inRect.width - 16f, 24f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Filter.Mods", "Include mods"), ref mods);
             Widgets.CheckboxLabeled(new Rect(8f, 122f, inRect.width - 16f, 24f),
-                "Expertise (VSE)", ref expertise, !expertiseAvailable);
+                OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Filter.Expertise", "Expertise (VSE)"), ref expertise, !expertiseAvailable);
             if (!expertiseAvailable)
             {
                 TooltipHandler.TipRegion(new Rect(8f, 122f, inRect.width - 16f, 24f),

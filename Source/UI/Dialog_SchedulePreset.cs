@@ -80,7 +80,7 @@ namespace OrderedWork.UI
                 }
                 Widgets.Label(columns.Column(1, 28f),
                     string.IsNullOrWhiteSpace(preset.ModifiedUtc) ? "unknown" : preset.ModifiedUtc);
-                if (Widgets.ButtonText(columns.Column(2, 28f), loadMode ? "Load" : "Overwrite"))
+                if (Widgets.ButtonText(columns.Column(2, 28f), loadMode ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Load", "Load") : "Overwrite"))
                 {
                     if (loadMode)
                     {
@@ -89,7 +89,7 @@ namespace OrderedWork.UI
                     }
                     SaveAs(preset.Name);
                 }
-                if (Widgets.ButtonText(columns.Column(3, 28f), "Delete"))
+                if (Widgets.ButtonText(columns.Column(3, 28f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Delete", "Delete")))
                 {
                     pendingDelete = preset;
                 }
@@ -123,7 +123,7 @@ namespace OrderedWork.UI
                 presetName = Widgets.TextField(nameRect, presetName ?? "");
                 bool canSave = !string.IsNullOrWhiteSpace(presetName);
                 if (Widgets.ButtonText(new Rect(nameRect.xMax + 8f, nameRect.y, 90f, 28f),
-                    "Save", true, true, canSave))
+                    OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Save", "Save"), true, true, canSave))
                 {
                     SaveAs(presetName);
                 }
@@ -159,13 +159,13 @@ namespace OrderedWork.UI
             Widgets.Label(rows.Next(), "Delete '" + pendingDelete.Name + "'?");
             Rect buttons = rows.Next(26f);
             Rect[] cells = UiFlex.Columns(buttons, 6f, 1f, 1f);
-            if (UiButtonBar.Button(cells[0], "Confirm delete"))
+            if (UiButtonBar.Button(cells[0], OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.ConfirmDelete", "Confirm delete")))
             {
                 SchedulePresetStore.Delete(pendingDelete.Id);
                 pendingDelete = null;
                 presets = SchedulePresetStore.LoadAll();
             }
-            if (UiButtonBar.Button(cells[1], "Cancel"))
+            if (UiButtonBar.Button(cells[1], OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Cancel", "Cancel")))
             {
                 pendingDelete = null;
             }

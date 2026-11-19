@@ -1,12 +1,26 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
+  <OrderedWork.Common.Load>Load</OrderedWork.Common.Load>
+  <OrderedWork.Common.Save>Save</OrderedWork.Common.Save>
+  <OrderedWork.Common.Delete>Delete</OrderedWork.Common.Delete>
+  <OrderedWork.Common.Cancel>Cancel</OrderedWork.Common.Cancel>
+  <OrderedWork.Common.ConfirmDelete>Confirm delete</OrderedWork.Common.ConfirmDelete>
+  <OrderedWork.Common.New>New</OrderedWork.Common.New>
+  <OrderedWork.Common.CopyCurrent>Copy current</OrderedWork.Common.CopyCurrent>
+  <OrderedWork.Common.ApplyToPawn>Apply to pawn</OrderedWork.Common.ApplyToPawn>
+  <OrderedWork.Common.OpenDetails>Open details</OrderedWork.Common.OpenDetails>
+  <OrderedWork.Common.SearchColonist>Search colonist</OrderedWork.Common.SearchColonist>
+  <OrderedWork.Filter.Title>Skill filters</OrderedWork.Filter.Title>
+  <OrderedWork.Filter.Level>Level</OrderedWork.Filter.Level>
+  <OrderedWork.Filter.Passion>Passion</OrderedWork.Filter.Passion>
+  <OrderedWork.Filter.Mods>Include mods</OrderedWork.Filter.Mods>
+  <OrderedWork.Filter.Expertise>Expertise (VSE)</OrderedWork.Filter.Expertise>
   <OrderedWork.Work.Title>Work</OrderedWork.Work.Title>
   <OrderedWork.Work.Types>Work types</OrderedWork.Work.Types>
   <OrderedWork.Work.Givers>Givers</OrderedWork.Work.Givers>
   <OrderedWork.Work.Add>Add</OrderedWork.Work.Add>
   <OrderedWork.Work.Cannot>Cannot</OrderedWork.Work.Cannot>
   <OrderedWork.Work.NoLimitations>No limitations</OrderedWork.Work.NoLimitations>
-  <OrderedWork.Work.SelectType>Select a WorkType.</OrderedWork.Work.SelectType>
   <OrderedWork.Skills.Title>Skills</OrderedWork.Skills.Title>
   <OrderedWork.Skills.Filter>Filter</OrderedWork.Skills.Filter>
   <OrderedWork.Stats.Base>Base stats</OrderedWork.Stats.Base>

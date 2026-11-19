@@ -17,7 +17,7 @@ namespace OrderedWork.UI
         {
             Widgets.DrawBoxSolid(rect, UiColors.PanelBody);
             Rect header = new Rect(rect.x + 6f, rect.y + 4f, rect.width - 12f, 24f);
-            Widgets.Label(new Rect(header.x, header.y, header.width - 212f, 22f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.Types", "Work types"));
+            Widgets.Label(new Rect(header.x, header.y, header.width - 212f, 22f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.Types", OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.Types", "Work types")));
             if (UiButtonBar.Button(new Rect(header.xMax - 204f, header.y, 66f, 22f), "Recom.", true,
                 "Apply the existing WorkType recommendation to this pawn immediately. WorkGiver overrides are untouched."))
             {
@@ -26,7 +26,7 @@ namespace OrderedWork.UI
                 LoadSelectedGivers();
                 CommitWork();
             }
-            if (UiButtonBar.Button(new Rect(header.xMax - 134f, header.y, 62f, 22f), "Givers",
+            if (UiButtonBar.Button(new Rect(header.xMax - 134f, header.y, 62f, 22f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.Givers", "Givers"),
                 selectedWorkType != null, "Show or hide the WorkGiver column for the selected WorkType.",
                 giversExpanded ? new Color(0.48f, 0.68f, 0.42f, 1f) : (Color?)null))
             {
@@ -36,7 +36,7 @@ namespace OrderedWork.UI
                     LoadSelectedGivers();
                 }
             }
-            if (UiButtonBar.Button(new Rect(header.xMax - 68f, header.y, 62f, 22f), "Add", true,
+            if (UiButtonBar.Button(new Rect(header.xMax - 68f, header.y, 62f, 22f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.Add", "Add"), true,
                 "Add a capable WorkType that is not currently in this pawn's list."))
             {
                 ShowAddWorkTypeMenu();
@@ -144,11 +144,11 @@ namespace OrderedWork.UI
         private void DrawUnableWorkTypes(Rect rect, List<WorkTypeDef> unable)
         {
             Widgets.DrawBoxSolid(rect, UiColors.PanelBody);
-            Widgets.Label(new Rect(rect.x + 6f, rect.y + 3f, rect.width - 12f, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.Cannot", "Cannot"));
+            Widgets.Label(new Rect(rect.x + 6f, rect.y + 3f, rect.width - 12f, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.Cannot", OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.Cannot", "Cannot")));
             Rect list = new Rect(rect.x + 6f, rect.y + 24f, rect.width - 12f, Mathf.Max(0f, rect.height - 26f));
             if (unable.Count == 0)
             {
-                Widgets.Label(list, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.NoLimitations", "No limitations"));
+                Widgets.Label(list, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.NoLimitations", OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.NoLimitations", "No limitations")));
                 return;
             }
             Rect view = new Rect(0f, 0f, list.width - 16f, Mathf.Max(list.height, unable.Count * RowHeight));

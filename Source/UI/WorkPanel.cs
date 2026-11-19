@@ -116,7 +116,7 @@ namespace OrderedWork.UI
                 Mathf.Max(0f, rect.height - skillsHeight - 18f));
 
             bool hasVse = VseExpertiseAdapter.IsAvailable;
-            Widgets.Label(new Rect(skills.x, skills.y, skills.width - (hasVse ? 156f : 82f), 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Skills.Title", "Skills"));
+            Widgets.Label(new Rect(skills.x, skills.y, skills.width - (hasVse ? 156f : 82f), 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Skills.Title", OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Skills.Title", "Skills")));
             if (hasVse)
             {
                 Rect expertiseButton = new Rect(skills.xMax - 146f, skills.y, 70f, 20f);
@@ -127,7 +127,7 @@ namespace OrderedWork.UI
                 TooltipHandler.TipRegion(expertiseButton, "Open the VSE expertise interface for this pawn.");
             }
             Rect filter = new Rect(skills.xMax - 74f, skills.y, 74f, 20f);
-            if (Widgets.ButtonText(filter, "Filter"))
+            if (Widgets.ButtonText(filter, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Skills.Filter", "Filter")))
             {
                 Find.WindowStack.Add(new Dialog_SkillFilter(
                     skillFilter.Level, skillFilter.Passion, skillFilter.Expertise, skillFilter.Mods,

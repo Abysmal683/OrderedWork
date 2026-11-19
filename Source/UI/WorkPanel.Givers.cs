@@ -24,7 +24,7 @@ namespace OrderedWork.UI
             }
             WorkTypeDef workType = SelectedWorkType();
             Rect header = new Rect(rect.x + 6f, rect.y + 4f, rect.width - 12f, 24f);
-            string title = workType != null ? "Givers · " + workType.labelShort : "Givers";
+            string title = workType != null ? "Givers · " + workType.labelShort : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.Givers", "Givers");
             Widgets.Label(new Rect(header.x, header.y, header.width - 218f, 22f), title);
             List<string> draft = CurrentGiverDraft();
             List<string> baseline = CurrentGiverBaseline();

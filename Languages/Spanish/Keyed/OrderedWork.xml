@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <OrderedWork.Common.Load>Cargar</OrderedWork.Common.Load>
+  <OrderedWork.Common.Save>Guardar</OrderedWork.Common.Save>
+  <OrderedWork.Common.Delete>Eliminar</OrderedWork.Common.Delete>
+  <OrderedWork.Common.Cancel>Cancelar</OrderedWork.Common.Cancel>
+  <OrderedWork.Common.ConfirmDelete>Confirmar eliminación</OrderedWork.Common.ConfirmDelete>
+  <OrderedWork.Common.New>Nuevo</OrderedWork.Common.New>
+  <OrderedWork.Common.CopyCurrent>Copiar actual</OrderedWork.Common.CopyCurrent>
+  <OrderedWork.Common.ApplyToPawn>Aplicar al peón</OrderedWork.Common.ApplyToPawn>
+  <OrderedWork.Common.OpenDetails>Abrir detalles</OrderedWork.Common.OpenDetails>
+  <OrderedWork.Common.SearchColonist>Buscar colono</OrderedWork.Common.SearchColonist>
+  <OrderedWork.Filter.Title>Filtros de habilidades</OrderedWork.Filter.Title>
+  <OrderedWork.Filter.Level>Nivel</OrderedWork.Filter.Level>
+  <OrderedWork.Filter.Passion>Pasión</OrderedWork.Filter.Passion>
+  <OrderedWork.Filter.Mods>Incluir mods</OrderedWork.Filter.Mods>
+  <OrderedWork.Filter.Expertise>Especialidad (VSE)</OrderedWork.Filter.Expertise>
+  <OrderedWork.Work.Title>Trabajo</OrderedWork.Work.Title>
+  <OrderedWork.Work.Types>Tipos de trabajo</OrderedWork.Work.Types>
+  <OrderedWork.Work.Givers>Givers</OrderedWork.Work.Givers>
+  <OrderedWork.Work.Add>Agregar</OrderedWork.Work.Add>
+  <OrderedWork.Work.Cannot>No puede</OrderedWork.Work.Cannot>
+  <OrderedWork.Work.NoLimitations>Sin limitaciones</OrderedWork.Work.NoLimitations>
+  <OrderedWork.Skills.Title>Habilidades</OrderedWork.Skills.Title>
+  <OrderedWork.Skills.Filter>Filtro</OrderedWork.Skills.Filter>
+  <OrderedWork.Stats.Base>Stats base</OrderedWork.Stats.Base>
+  <OrderedWork.Stats.Specialized>Stats especializados</OrderedWork.Stats.Specialized>
+  <OrderedWork.Profile.Title>Ordered Work</OrderedWork.Profile.Title>
+  <OrderedWork.Profile.Assigned>Trabajo asignado</OrderedWork.Profile.Assigned>
+  <OrderedWork.Profile.Schedule>Horario</OrderedWork.Profile.Schedule>
+  <OrderedWork.Profile.NoWorkTypes>Sin WorkTypes activos.</OrderedWork.Profile.NoWorkTypes>
+  <OrderedWork.Profile.NoTimetable>Sin horario.</OrderedWork.Profile.NoTimetable>
+  <OrderedWork.Profile.Open>Abrir detalles</OrderedWork.Profile.Open>
+</LanguageData>

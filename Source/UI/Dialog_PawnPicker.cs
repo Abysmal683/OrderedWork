@@ -36,7 +36,7 @@ namespace OrderedWork.UI
         public override void DoWindowContents(Rect inRect)
         {
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(0f, 0f, inRect.width, 28f), "Search colonist");
+            Widgets.Label(new Rect(0f, 0f, inRect.width, 28f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.SearchColonist", "Search colonist"));
             Text.Font = GameFont.Small;
             query = Widgets.TextField(new Rect(0f, 34f, inRect.width, 28f), query ?? "");
 
