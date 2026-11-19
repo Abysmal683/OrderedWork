@@ -51,8 +51,16 @@ namespace OrderedWork.UI
                     {
                         string defName = order[i];
                         WorkTypeDef workType = DefDatabase<WorkTypeDef>.GetNamedSilentFail(defName);
-                        Widgets.Label(new Rect(content.x + 4f, y, content.width - 4f, 18f),
+                        Rect row = new Rect(content.x, y, content.width, 18f);
+                        UiZebra.Draw(row, i);
+                        Widgets.LabelEllipses(new Rect(row.x + 4f, row.y + 1f, row.width - 82f, 18f),
                             (i + 1) + ". " + (workType != null ? workType.labelShort : defName));
+                        SkillDef skill = BestSkill(workType);
+                        SkillRecord record = skill != null && SelPawn.skills != null ? SelPawn.skills.GetSkill(skill) : null;
+                        WorkTypePaletteView.DrawPassionIcon(new Rect(row.xMax - 66f, row.y + 2f, 14f, 14f),
+                            record != null ? record.passion : Passion.None);
+                        Widgets.Label(new Rect(row.xMax - 46f, row.y + 1f, 26f, 18f),
+                            record != null ? record.Level.ToString() : "—");
                         y += 18f;
                     }
                 }
@@ -98,6 +106,26 @@ namespace OrderedWork.UI
                 OpenDetail();
             }
         }
+        private SkillDef BestSkill(WorkTypeDef workType)
+        {
+            if (workType == null || workType.relevantSkills == null || SelPawn == null || SelPawn.skills == null)
+            {
+                return null;
+            }
+            SkillDef best = null;
+            int bestLevel = -1;
+            foreach (SkillDef skill in workType.relevantSkills)
+            {
+                SkillRecord record = skill != null ? SelPawn.skills.GetSkill(skill) : null;
+                if (record != null && record.Level > bestLevel)
+                {
+                    best = skill;
+                    bestLevel = record.Level;
+                }
+            }
+            return best;
+        }
+
         private static Color AssignmentColor(TimeAssignmentDef def)
         {
             if (def == null) return new Color(0.18f, 0.18f, 0.20f, 1f);

@@ -48,7 +48,7 @@ namespace OrderedWork.UI
             Widgets.CheckboxLabeled(new Rect(8f, 94f, inRect.width - 16f, 24f), "Include mods", ref mods);
 
             Widgets.CheckboxLabeled(new Rect(8f, 122f, inRect.width - 16f, 24f),
-                "Expertise (VSE)", ref expertise, expertiseAvailable);
+                "Expertise (VSE)", ref expertise, !expertiseAvailable);
             if (!expertiseAvailable)
             {
                 TooltipHandler.TipRegion(new Rect(8f, 122f, inRect.width - 16f, 24f),
