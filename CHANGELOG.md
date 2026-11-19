@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.188] - 2026-11-19
+
+### Fix — VSE API namespace
+- Verified the installed VSE 1.7 assembly: trackers and UI live at `VSE.ExpertiseTrackers` and `VSE.ExpertiseUIUtility`, not under `VSE.Expertise`.
+- Adapter now tries both the installed root namespace and the newer documented namespace.
+- This should enable the Expertise filter/button/star and the VSE panel when VSE is present.
+- VSE probing remains throttled to once per 300 ticks, preventing the previous FPS regression.
+- Profile `Open details` moved left and schedule cells show hour numbers.
+
 ## [0.3.0-alpha.187] - 2026-11-19
 
 ### Fix — VSE retry throttling and Profile button
