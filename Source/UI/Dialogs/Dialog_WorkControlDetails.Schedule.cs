@@ -92,7 +92,7 @@ namespace OrderedWork.UI
             y += 42f;
             float focusTop = y;
             Widgets.DrawBoxSolid(new Rect(0f, y - 5f, content.width, 2f), UiColors.SectionSeparator);
-            Widgets.DrawBoxSolid(new Rect(0f, y, content.width, Mathf.Max(0f, content.height - y)), UiColors.ColumnBackground);
+            Widgets.DrawBoxSolid(new Rect(0f, y, content.width, Mathf.Max(0f, content.height - y)), UiColors.FocusPanelBackground);
             DrawFocusSection(content, y, hourWidth);
             if (pawn != null && pawn.Map != null)
             {

@@ -88,6 +88,7 @@ namespace OrderedWork.UI
         public override void PreOpen()
         {
             base.PreOpen();
+            GUI.FocusControl(null);
             ConfigureResizer();
         }
 
@@ -129,7 +130,7 @@ namespace OrderedWork.UI
             switch (detailTab)
             {
                 case DetailTab.Work:
-                    workPanel.Draw(content, true);
+                    workPanel.Draw(content);
                     break;
                 case DetailTab.Schedule:
                     DrawScrollableTab(content, DrawScheduleTab, 860f, 500f);

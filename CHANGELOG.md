@@ -3,6 +3,17 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.227] - 2026-11-19
+
+### Fixed — visual layout direction and schedule grouping
+- Restored Work detail columns; removed the stacked Work layout.
+- Removed the WorkType `x` button; right-click removes with a named message.
+- Schedule focus zone now has its own darker background and consistent inner padding.
+- Added the separator below the hour header; the current-hour marker is a subtle gray column.
+- Increased the visible focus strip viewport so its scrollbar no longer compresses the chips.
+- Kept the Settings body inside the window bounds and increased Rules bottom padding.
+- Released text focus when opening the detail window to avoid hidden search-field keyboard capture.
+
 ## [0.3.0-alpha.226] - 2026-11-19
 
 ### Fixed — Work and Schedule layout pass

@@ -17,5 +17,6 @@ namespace OrderedWork.UI.Layout
         public static readonly Color WarningText = new Color(1f, 0.75f, 0.35f, 1f);
         public static readonly Color EmptyColumn = new Color(0.18f, 0.18f, 0.20f, 1f);
         public static readonly Color SectionSeparator = new Color(0.60f, 0.63f, 0.68f, 0.95f);
+        public static readonly Color FocusPanelBackground = new Color(0.075f, 0.085f, 0.105f, 0.92f);
     }
 }

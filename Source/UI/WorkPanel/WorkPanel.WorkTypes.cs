@@ -103,10 +103,10 @@ namespace OrderedWork.UI
                     {
                         Widgets.Label(new Rect(row.xMax - 126f, row.y + 3f, 58f, 18f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Changed", "Changed"));
                     }
-                    Rect remove = new Rect(row.xMax - 46f, row.y + 1f, 18f, 20f);
-                    if (Widgets.ButtonText(remove, "x"))
+                    if (Event.current.type == EventType.MouseDown && Event.current.button == 1 && Mouse.IsOver(row))
                     {
                         removeIndex = index;
+                        Event.current.Use();
                     }
                     Widgets.Label(new Rect(row.xMax - 24f, row.y + 1f, 20f, 20f), "≡");
                     if (Mouse.IsOver(row)) TooltipHandler.TipRegion(row, WorkTypeTooltip(workType, index + 1));
@@ -131,6 +131,7 @@ namespace OrderedWork.UI
             if (removeIndex >= 0 && removeIndex < workDraft.Count)
             {
                 string removed = workDraft[removeIndex];
+                WorkTypeDef removedType = DefDatabase<WorkTypeDef>.GetNamedSilentFail(removed);
                 workDraft.RemoveAt(removeIndex);
                 if (selectedWorkType == removed)
                 {
@@ -138,6 +139,8 @@ namespace OrderedWork.UI
                     LoadSelectedGivers();
                 }
                 CommitWork();
+                Messages.Message(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.Removed", "Work type removed: ")
+                    + (removedType != null ? removedType.labelShort : removed), MessageTypeDefOf.TaskCompletion, false);
             }
         }
 
