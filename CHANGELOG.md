@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.187] - 2026-11-19
+
+### Fix — VSE retry throttling and Profile button
+- VSE adapter probing is throttled to once every 300 ticks instead of scanning assemblies every frame when VSE is unavailable.
+- This removes the FPS regression caused by repeated type scans.
+- Profile `Open details` moved further left so it does not touch the close X.
+- Profile schedule shows the hour number inside each colored cell.
+
 ## [0.3.0-alpha.186] - 2026-11-19
 
 ### Fix — Profile schedule grid and VSE retry
