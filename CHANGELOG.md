@@ -3,6 +3,25 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.170] - 2026-11-19
+
+### Fix — WorkType Changed markers after reopening
+- All WorkType giver drafts and baselines are now loaded when the detail panel initializes, not only the preselected WorkType.
+- This makes `Changed` markers visible for every WorkType with a giver override after closing and reopening the panel.
+- Preset metadata from alpha.169 is included: compact unique mod list, WorkType mod indices, giver mod indices and WorkType labels for diagnostics only.
+- Presets remain literal for WorkTypes; new givers append at the end.
+
+## [0.3.0-alpha.169] - 2026-11-19
+
+### Feature — compact preset metadata
+- Work presets now use schema 2 but still accept schema 1.
+- Added a unique `mods` list containing only package IDs referenced by the preset; no full modpack dump.
+- Added `workTypeMods` and `giverMods` as index maps into that list.
+- Added `workTypeLabels` for diagnostics and future rename detection.
+- Metadata is diagnostic only; `defName` remains the application identity.
+- WorkType policy remains literal: new/omitted types stay at priority 0.
+- New givers are still appended to the end of their WorkType group; deletions/moves are skipped safely.
+
 ## [0.3.0-alpha.168] - 2026-11-19
 
 ### Fix — Work preset dialog lifecycle
