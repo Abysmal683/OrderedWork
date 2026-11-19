@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.181] - 2026-11-19
+
+### Fix — Profile tab hook and header language
+- Patched `Thing.GetInspectTabs` instead of the inherited `Pawn.GetInspectTabs`; this fixes the Harmony undefined-target error that prevented the Profile tab from appearing.
+- The Profile tab is appended only for living free colonists.
+- Renamed the tab and its body to English (`Profile`, `Open details`).
+- Search button now reads `Search` and is wider.
+- Skill filter menu and button now use English labels.
+- Removed the hardcoded `/20` from skill summaries; max/uncapped XP is reported when no requirement exists.
+
 ## [0.3.0-alpha.180] - 2026-11-19
 
 ### Fix — avoid hardcoded skill caps
