@@ -3,6 +3,18 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.174] - 2026-11-19
+
+### Feature — pawn navigation and stat correction
+- Fixed the three generic stats that showed `Stat: 0%`: Manipulation, Sight and Consciousness now read PawnCapacityDef values.
+- Added all-skill scrolling, flame-based passion filter and centered `Lv+flame` filter.
+- Added generic stats under Skills and specialized stats under Givers; hiding Givers expands the specialized stats.
+- Added hand-authored stat tooltips and a visible WorkType skill level summary.
+- Added right-click clear on schedule cells and the paint/clear hint.
+- Added a lock indicator and tooltip for Work/Schedule panel movement.
+- Added pawn search and previous/next colonist navigation inside details using the colonist-bar order.
+- Save/name sections remain anchored at the bottom of preset dialogs.
+
 ## [0.3.0-alpha.173] - 2026-11-19
 
 ### Feature — Work skills and stats layout
