@@ -137,10 +137,6 @@ namespace OrderedWork.UI
             if (Widgets.ButtonText(new Rect(rect.x + 20f, rect.y, rect.width - 20f, rect.height), ShortLabel(detailBrush)))
             {
                 List<FloatMenuOption> options = new List<FloatMenuOption>();
-                options.Add(new FloatMenuOption("Vacío", delegate
-                {
-                    detailBrush = null;
-                }));
                 foreach (TimeAssignmentDef def in DefDatabase<TimeAssignmentDef>.AllDefsListForReading
                     .OrderBy(d => d.LabelCap.ToString(), StringComparer.OrdinalIgnoreCase))
                 {
@@ -158,7 +154,6 @@ namespace OrderedWork.UI
         private void ShowBrushMenu()
         {
             List<FloatMenuOption> options = new List<FloatMenuOption>();
-            options.Add(new FloatMenuOption("Vacío", delegate { detailBrush = null; }));
             foreach (TimeAssignmentDef def in DefDatabase<TimeAssignmentDef>.AllDefsListForReading
                 .OrderBy(d => d.LabelCap.ToString(), StringComparer.OrdinalIgnoreCase))
             {

@@ -56,7 +56,6 @@ namespace OrderedWork.UI
                 {
                     Pawn pawn = matches[i];
                     Rect row = new Rect(0f, i * 28f, view.width, 25f);
-                    UiZebra.Draw(row, i);
                     string label = pawn.Name != null ? pawn.Name.ToStringFull : pawn.LabelShort;
                     if (Widgets.ButtonText(new Rect(row.x + 4f, row.y, row.width - 8f, 24f), label))
                     {

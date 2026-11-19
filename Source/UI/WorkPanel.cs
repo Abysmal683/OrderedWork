@@ -648,9 +648,21 @@ namespace OrderedWork.UI
             try
             {
                 float y = 0f;
-                StatDef relevant = RelevantWorkStat(SelectedWorkType());
+                WorkTypeDef selected = SelectedWorkType();
+                StatDef relevant = RelevantWorkStat(selected);
                 DrawStatLine(view.width, ref y, relevant, SafeStat(relevant), false);
-                if (SelectedWorkType() == null)
+                if (selected != null)
+                {
+                    SkillDef skill = BestSkillDef(selected);
+                    SkillRecord record = skill != null && pawn.skills != null ? pawn.skills.GetSkill(skill) : null;
+                    if (skill != null && record != null)
+                    {
+                        Widgets.Label(new Rect(0f, y, view.width, 20f),
+                            "Skill " + skill.label + ": " + record.Level + " / 20");
+                        y += 20f;
+                    }
+                }
+                else
                 {
                     Widgets.Label(new Rect(0f, y + 6f, view.width, 20f), "Seleccioná un WorkType.");
                 }
@@ -666,6 +678,43 @@ namespace OrderedWork.UI
             return DefDatabase<StatDef>.GetNamedSilentFail(defName);
         }
 
+        private static void DrawCapacityLine(float width, ref float y, PawnCapacityDef capacity, float value)
+        {
+            Rect row = new Rect(0f, y, width, 20f);
+            string label = capacity != null ? capacity.LabelCap.ToString() : "Capacity";
+            Widgets.Label(row, label + ": " + (value * 100f).ToString("0") + "%");
+            if (Mouse.IsOver(row))
+            {
+                TooltipHandler.TipRegion(row, CapacityTooltip(capacity));
+            }
+            y += 20f;
+        }
+
+        private float SafeCapacity(PawnCapacityDef capacity)
+        {
+            if (pawn == null || pawn.health == null || pawn.health.capacities == null || capacity == null)
+            {
+                return 0f;
+            }
+            try
+            {
+                return pawn.health.capacities.GetLevel(capacity);
+            }
+            catch (Exception)
+            {
+                return 0f;
+            }
+        }
+
+        private static string CapacityTooltip(PawnCapacityDef capacity)
+        {
+            if (capacity == null)
+            {
+                return "Capacity";
+            }
+            return capacity.LabelCap + "\nA body capacity affected by health, injuries, bionics and drugs.";
+        }
+
         private void DrawGenericStats(Rect rect)
         {
             Widgets.Label(new Rect(rect.x, rect.y, rect.width, 20f), "Stats base");
@@ -677,9 +726,9 @@ namespace OrderedWork.UI
                 float y = 0f;
                 DrawStatLine(view.width, ref y, StatDefOf.WorkSpeedGlobal, SafeStat(StatDefOf.WorkSpeedGlobal), false);
                 DrawStatLine(view.width, ref y, StatDefOf.MoveSpeed, SafeStat(StatDefOf.MoveSpeed), false);
-                DrawStatLine(view.width, ref y, NamedStat("Manipulation"), SafeStat(NamedStat("Manipulation")), true);
-                DrawStatLine(view.width, ref y, NamedStat("Sight"), SafeStat(NamedStat("Sight")), true);
-                DrawStatLine(view.width, ref y, NamedStat("Consciousness"), SafeStat(NamedStat("Consciousness")), true);
+                DrawCapacityLine(view.width, ref y, PawnCapacityDefOf.Manipulation, SafeCapacity(PawnCapacityDefOf.Manipulation));
+                DrawCapacityLine(view.width, ref y, PawnCapacityDefOf.Sight, SafeCapacity(PawnCapacityDefOf.Sight));
+                DrawCapacityLine(view.width, ref y, PawnCapacityDefOf.Consciousness, SafeCapacity(PawnCapacityDefOf.Consciousness));
                 DrawStatLine(view.width, ref y, StatDefOf.GlobalLearningFactor,
                     SafeStat(StatDefOf.GlobalLearningFactor), false);
             }

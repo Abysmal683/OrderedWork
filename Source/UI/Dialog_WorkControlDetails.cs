@@ -186,9 +186,13 @@ namespace OrderedWork.UI
             {
                 return;
             }
-            Rect lockRect = new Rect(inRect.xMax - 20f, 2f, 16f, 16f);
-            Widgets.DrawBoxSolid(new Rect(lockRect.x + 4f, lockRect.y + 6f, 8f, 7f), new Color(0.80f, 0.62f, 0.22f));
-            Widgets.DrawBox(new Rect(lockRect.x + 5f, lockRect.y + 2f, 6f, 6f), 1);
+            Rect lockRect = new Rect(inRect.xMax - 22f, 2f, 18f, 18f);
+            Color gold = new Color(0.82f, 0.64f, 0.24f);
+            Widgets.DrawBoxSolid(new Rect(lockRect.x + 3f, lockRect.y + 8f, 12f, 8f), gold);
+            Widgets.DrawBoxSolid(new Rect(lockRect.x + 6f, lockRect.y + 3f, 2f, 7f), gold);
+            Widgets.DrawBoxSolid(new Rect(lockRect.x + 12f, lockRect.y + 3f, 2f, 7f), gold);
+            Widgets.DrawBoxSolid(new Rect(lockRect.x + 6f, lockRect.y + 3f, 8f, 2f), gold);
+            Widgets.DrawBoxSolid(new Rect(lockRect.x + 8f, lockRect.y + 11f, 2f, 3f), new Color(0.16f, 0.14f, 0.10f));
             TooltipHandler.TipRegion(lockRect, "Movimiento del panel bloqueado en esta pestaña.");
         }
 
