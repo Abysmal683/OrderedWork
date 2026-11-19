@@ -3,6 +3,19 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.173] - 2026-11-19
+
+### Feature — Work skills and stats layout
+- All skills are now listed with an independent scroll; the filter only changes their order instead of hiding skills.
+- `P` filter now orders positive passions first, then no passion, then negative passions by weight.
+- The passion filter uses the flame icon instead of the `P` label.
+- Generic stats moved under Skills: Work Speed, Move Speed, Manipulation, Sight, Consciousness and Global Learning Factor.
+- Specialized stats moved under Givers; when Givers is hidden the specialized stats expand to fill that column.
+- Added hand-authored tooltips for generic and WorkType-specific stats.
+- Empty is now a valid schedule brush and can be selected to clear painted hours.
+- Save/name sections in Work and Schedule preset dialogs are anchored at the bottom.
+- Schedule metadata initialization from alpha.172 remains.
+
 ## [0.3.0-alpha.172] - 2026-11-19
 
 ### Fix — schedule metadata initialization
