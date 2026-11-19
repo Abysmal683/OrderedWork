@@ -24,13 +24,13 @@ namespace OrderedWork.UI
             }
             WorkTypeDef workType = SelectedWorkType();
             Rect header = new Rect(rect.x + 6f, rect.y + 4f, rect.width - 12f, 24f);
-            string title = workType != null ? "Givers · " + workType.labelShort : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.Givers", "Givers");
+            string title = workType != null ? "Givers · " + workType.labelShort : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.Givers", OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.Givers", "Givers"));
             Widgets.Label(new Rect(header.x, header.y, header.width - 218f, 22f), title);
             List<string> draft = CurrentGiverDraft();
             List<string> baseline = CurrentGiverBaseline();
             bool changed = draft != null && baseline != null && !SameOrder(draft, baseline);
-            if (UiButtonBar.Button(new Rect(header.xMax - 212f, header.y, 70f, 22f), "Reset", changed && workType != null,
-                "Reset this WorkType's giver order to the saved global JSON order."))
+            if (UiButtonBar.Button(new Rect(header.xMax - 212f, header.y, 70f, 22f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Reset", "Reset"), changed && workType != null,
+                OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Givers.ResetTip", "Reset this WorkType's giver order to the saved global JSON order.")))
             {
                 if (workType != null)
                 {
@@ -43,12 +43,12 @@ namespace OrderedWork.UI
                 resetAllArmed = false;
             }
             bool hasOverrides = WorkGiverOrderService.HasAnyOverride(pawn);
-            string resetAllLabel = resetAllArmed ? "Confirm reset" : "Reset all";
+            string resetAllLabel = resetAllArmed ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.ConfirmReset", "Confirm reset") : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.ResetAll", "Reset all");
             Color? resetTint = resetAllArmed ? new Color(0.86f, 0.30f, 0.26f, 1f) : (Color?)null;
             if (UiButtonBar.Button(new Rect(header.xMax - 138f, header.y, 132f, 22f), resetAllLabel,
                 hasOverrides || resetAllArmed,
-                resetAllArmed ? "Click again within 5 seconds to reset every WorkGiver override."
-                    : "Reset every WorkGiver override for this pawn. Requires confirmation.",
+                resetAllArmed ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Givers.ConfirmResetTip", "Click again within 5 seconds to reset every WorkGiver override.")
+                    : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Givers.ResetAllTip", "Reset every WorkGiver override for this pawn. Requires confirmation."),
                 resetTint))
             {
                 if (resetAllArmed)
@@ -69,7 +69,7 @@ namespace OrderedWork.UI
             Rect body = new Rect(rect.x + 6f, header.yMax + 4f, rect.width - 12f, Mathf.Max(0f, rect.height - header.height - 12f));
             if (workType == null || draft == null)
             {
-                Widgets.Label(body, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.SelectType", "Select a WorkType."));
+                Widgets.Label(body, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.SelectType", OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.SelectType", "Select a WorkType.")));
                 return;
             }
 
@@ -103,7 +103,7 @@ namespace OrderedWork.UI
                     Widgets.LabelEllipses(new Rect(row.x + 26f, row.y + 3f, Mathf.Max(50f, row.width - 104f), 18f), giverName);
                     if (GiverChanged(giverName, index))
                     {
-                        Widgets.Label(new Rect(row.xMax - 82f, row.y + 3f, 58f, 18f), "Changed");
+                        Widgets.Label(new Rect(row.xMax - 82f, row.y + 3f, 58f, 18f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Changed", "Changed"));
                     }
                     Widgets.Label(new Rect(row.xMax - 20f, row.y + 3f, 18f, 18f), "≡");
                     if (Mouse.IsOver(row)) TooltipHandler.TipRegion(row, GiverTooltip(giverName));

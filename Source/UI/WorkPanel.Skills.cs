@@ -22,7 +22,7 @@ namespace OrderedWork.UI
             List<SkillRow> skills = RankedSkills();
             if (skills.Count == 0)
             {
-                Widgets.Label(new Rect(rect.x, rect.y + 24f, rect.width, 40f), "No skills.");
+                Widgets.Label(new Rect(rect.x, rect.y + 24f, rect.width, 40f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Skills.None", "No skills."));
                 return;
             }
             Rect body = new Rect(rect.x, rect.y + 24f, rect.width, Mathf.Max(0f, rect.height - 24f));

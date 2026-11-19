@@ -31,4 +31,21 @@
   <OrderedWork.Profile.NoWorkTypes>Sin WorkTypes activos.</OrderedWork.Profile.NoWorkTypes>
   <OrderedWork.Profile.NoTimetable>Sin horario.</OrderedWork.Profile.NoTimetable>
   <OrderedWork.Profile.Open>Abrir detalles</OrderedWork.Profile.Open>
-</LanguageData>
+  <OrderedWork.Work.Recommend>Recom.</OrderedWork.Work.Recommend>
+  <OrderedWork.Common.Changed>Changed</OrderedWork.Common.Changed>
+  <OrderedWork.Work.NoAddable>No capable WorkTypes to add.</OrderedWork.Work.NoAddable>
+  <OrderedWork.Work.AddType>Add WorkType</OrderedWork.Work.AddType>
+  <OrderedWork.Skills.Expertise>Expertise</OrderedWork.Skills.Expertise>
+  <OrderedWork.Skills.None>No skills.</OrderedWork.Skills.None>
+  <OrderedWork.Common.Reset>Reset</OrderedWork.Common.Reset>
+  <OrderedWork.Common.ResetAll>Reset all</OrderedWork.Common.ResetAll>
+  <OrderedWork.Common.ConfirmReset>Confirm reset</OrderedWork.Common.ConfirmReset>
+  <OrderedWork.Common.None>None.</OrderedWork.Common.None>
+  <OrderedWork.Skills.OpenFilters>Open skill filters.</OrderedWork.Skills.OpenFilters>
+  <OrderedWork.Skills.OpenExpertise>Open the VSE expertise interface for this pawn.</OrderedWork.Skills.OpenExpertise>
+  <OrderedWork.Work.RecommendTip>Apply the existing WorkType recommendation to this pawn immediately. WorkGiver overrides are untouched.</OrderedWork.Work.RecommendTip>
+  <OrderedWork.Work.GiversTip>Show or hide the WorkGiver column for the selected WorkType.</OrderedWork.Work.GiversTip>
+  <OrderedWork.Work.AddTip>Add a capable WorkType that is not currently in this pawn's list.</OrderedWork.Work.AddTip>
+  <OrderedWork.Givers.ResetTip>Reset this WorkType's giver order to the saved global JSON order.</OrderedWork.Givers.ResetTip>
+  <OrderedWork.Givers.ResetAllTip>Reset every WorkGiver override for this pawn. Requires confirmation.</OrderedWork.Givers.ResetAllTip>
+  <OrderedWork.Givers.ConfirmResetTip>Click again within 5 seconds to reset every WorkGiver override.</OrderedWork.Givers.ConfirmResetTip></LanguageData>
