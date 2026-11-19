@@ -3,6 +3,18 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.178] - 2026-11-19
+
+### Fix — capacity stats and remaining polish
+- Replaced the ineffective `NamedStat` fallback for Manipulation, Sight and Consciousness with `PawnCapacityDefOf` capacity reads.
+- WorkType rows show the best relevant skill level and passion icon.
+- Specialized stats show the relevant skill level and `/20` cap.
+- Removed the `Vacío` brush option; right-click clears a schedule hour.
+- Removed zebra from the pawn picker button list.
+- Shifted the lock shackle left and widened the search button.
+- Fixed arrow navigation by recreating the WorkPanel after the pawn change.
+- Search now clears previous selection before selecting the target.
+
 ## [0.3.0-alpha.177] - 2026-11-19
 
 ### Fix — header polish
