@@ -69,7 +69,7 @@ namespace OrderedWork.UI
             Rect body = new Rect(rect.x + 6f, header.yMax + 4f, rect.width - 12f, Mathf.Max(0f, rect.height - header.height - 12f));
             if (workType == null || draft == null)
             {
-                Widgets.Label(body, "Select a WorkType.");
+                Widgets.Label(body, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.SelectType", "Select a WorkType."));
                 return;
             }
 

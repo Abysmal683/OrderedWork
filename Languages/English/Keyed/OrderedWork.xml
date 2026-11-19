@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <OrderedWork.Work.Title>Work</OrderedWork.Work.Title>
+  <OrderedWork.Work.Types>Work types</OrderedWork.Work.Types>
+  <OrderedWork.Work.Givers>Givers</OrderedWork.Work.Givers>
+  <OrderedWork.Work.Add>Add</OrderedWork.Work.Add>
+  <OrderedWork.Work.Cannot>Cannot</OrderedWork.Work.Cannot>
+  <OrderedWork.Work.NoLimitations>No limitations</OrderedWork.Work.NoLimitations>
+  <OrderedWork.Work.SelectType>Select a WorkType.</OrderedWork.Work.SelectType>
+  <OrderedWork.Skills.Title>Skills</OrderedWork.Skills.Title>
+  <OrderedWork.Skills.Filter>Filter</OrderedWork.Skills.Filter>
+  <OrderedWork.Stats.Base>Base stats</OrderedWork.Stats.Base>
+  <OrderedWork.Stats.Specialized>Specialized stats</OrderedWork.Stats.Specialized>
+  <OrderedWork.Profile.Title>Ordered Work</OrderedWork.Profile.Title>
+  <OrderedWork.Profile.Assigned>Assigned work</OrderedWork.Profile.Assigned>
+  <OrderedWork.Profile.Schedule>Schedule</OrderedWork.Profile.Schedule>
+  <OrderedWork.Profile.NoWorkTypes>No active WorkTypes.</OrderedWork.Profile.NoWorkTypes>
+  <OrderedWork.Profile.NoTimetable>No timetable.</OrderedWork.Profile.NoTimetable>
+  <OrderedWork.Profile.Open>Open details</OrderedWork.Profile.Open>
+</LanguageData>

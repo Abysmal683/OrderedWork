@@ -116,7 +116,7 @@ namespace OrderedWork.UI
                 Mathf.Max(0f, rect.height - skillsHeight - 18f));
 
             bool hasVse = VseExpertiseAdapter.IsAvailable;
-            Widgets.Label(new Rect(skills.x, skills.y, skills.width - (hasVse ? 156f : 82f), 20f), "Skills");
+            Widgets.Label(new Rect(skills.x, skills.y, skills.width - (hasVse ? 156f : 82f), 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Skills.Title", "Skills"));
             if (hasVse)
             {
                 Rect expertiseButton = new Rect(skills.xMax - 146f, skills.y, 70f, 20f);

@@ -23,11 +23,11 @@ namespace OrderedWork.UI
 
                 List<string> order = WorkOrderService.GetOrder(pawn) ?? new List<string>();
                 float y = body.y + 30f;
-                Widgets.Label(new Rect(body.x, y, body.width, 18f), "Assigned work");
+                Widgets.Label(new Rect(body.x, y, body.width, 18f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Profile.Assigned", "Assigned work"));
                 y += 20f;
                 if (order.Count == 0)
                 {
-                    Widgets.Label(new Rect(body.x, y, body.width, 18f), "No active WorkTypes.");
+                    Widgets.Label(new Rect(body.x, y, body.width, 18f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Profile.NoWorkTypes", "No active WorkTypes."));
                     y += 18f;
                 }
                 else
@@ -50,7 +50,7 @@ namespace OrderedWork.UI
                 }
 
                 y += 4f;
-                Widgets.Label(new Rect(body.x, y, body.width, 18f), "Schedule");
+                Widgets.Label(new Rect(body.x, y, body.width, 18f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Profile.Schedule", "Schedule"));
                 y += 18f;
                 Text.Font = GameFont.Tiny;
                 Text.Anchor = TextAnchor.MiddleCenter;
@@ -74,7 +74,7 @@ namespace OrderedWork.UI
                 }
                 else
                 {
-                    Widgets.Label(new Rect(body.x, y, body.width, 18f), "No timetable.");
+                    Widgets.Label(new Rect(body.x, y, body.width, 18f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Profile.NoTimetable", "No timetable."));
                 }
             }
             finally
@@ -84,7 +84,7 @@ namespace OrderedWork.UI
             }
 
             if (UiButtonBar.Button(new Rect(content.xMax - 150f, content.y + 2f, 132f, 24f),
-                "Open details", true, "Open the full Ordered Work editor."))
+                OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Profile.Open", "Open details"), true, "Open the full Ordered Work editor."))
             {
                 openDetails?.Invoke();
             }
