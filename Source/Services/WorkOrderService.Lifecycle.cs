@@ -19,6 +19,7 @@ namespace OrderedWork.Services
                     return;
                 }
 
+                EnsureManualPriorities();
                 OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
                 if (component == null || component.initialized)
                 {
@@ -61,6 +62,17 @@ namespace OrderedWork.Services
             }
         }
 
+        internal static void EnsureManualPriorities()
+        {
+            if (Current.Game == null || Current.Game.playSettings == null
+                || Current.Game.playSettings.useWorkPriorities)
+            {
+                return;
+            }
+            Current.Game.playSettings.useWorkPriorities = true;
+            Log.Message("[Ordered Work] Manual work priorities enabled for this game.");
+        }
+
         public static void OnVanillaPriorityChanged(Pawn_WorkSettings settings)
         {
             if (IsApplying || IsSpawning || IsInitializing)
@@ -80,6 +92,7 @@ namespace OrderedWork.Services
                     return;
                 }
 
+                EnsureManualPriorities();
                 OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
                 if (component == null || !component.initialized)
                 {
@@ -115,6 +128,7 @@ namespace OrderedWork.Services
 
             try
             {
+                EnsureManualPriorities();
                 OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
                 if (component == null || !component.initialized)
                 {
@@ -175,6 +189,7 @@ namespace OrderedWork.Services
 
             try
             {
+                EnsureManualPriorities();
                 OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
                 if (component == null || !component.initialized)
                 {
