@@ -181,11 +181,11 @@ namespace OrderedWork.UI
             }
             if (row.IsExpertise)
             {
-                string expertise = row.Label + "\nExpertise";
+                string expertise = row.Label + "\n" + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Skills.ExpertiseLabel", "Expertise");
                 if (!string.IsNullOrEmpty(row.Description)) expertise += "\n" + row.Description;
                 expertise += row.XpRequired > 0.01f
-                    ? "\nXP: " + row.XpCurrent.ToString("0") + " / " + row.XpRequired.ToString("0")
-                    : "\nXP: max / uncapped";
+                    ? "\n" + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Skills.Xp", "XP: ") + row.XpCurrent.ToString("0") + " / " + row.XpRequired.ToString("0")
+                    : "\n" + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Skills.XpMax", "XP: max / uncapped");
                 skillTooltipCache[row.Label] = expertise;
                 return expertise;
             }
@@ -195,19 +195,19 @@ namespace OrderedWork.UI
                 multiplier = row.LearnFactor;
             }
             string result = row.Label
-                + "\nPassion: " + WorkTypePaletteView.PassionText(row.Passion)
-                + "\nLearning multiplier: x" + multiplier.ToString("0.00")
-                + "\nNegative passion: " + (PassionSource.IsBadOf(row.Passion) ? "yes" : "no")
+                + "\n" + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Skills.Passion", "Passion: ") + WorkTypePaletteView.PassionText(row.Passion)
+                + "\n" + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Skills.Learning", "Learning multiplier: x") + multiplier.ToString("0.00")
+                + "\n" + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Skills.Negative", "Negative passion: ") + (PassionSource.IsBadOf(row.Passion) ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Skills.Yes", "yes") : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Skills.No", "no"))
                 + (row.XpRequired > 0.01f
-                    ? "\nXP: " + row.XpCurrent.ToString("0") + " / " + row.XpRequired.ToString("0")
-                    : "\nXP: max / uncapped");
+                    ? "\n" + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Skills.Xp", "XP: ") + row.XpCurrent.ToString("0") + " / " + row.XpRequired.ToString("0")
+                    : "\n" + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Skills.XpMax", "XP: max / uncapped"));
             PassionWeightEntry weight = PassionWeightPolicy.Find(OrderedWorkMod.Settings, row.Passion);
             if (weight != null)
             {
-                result += "\nRecommendation weight:"
-                    + "\n  Level 0: " + weight.level0Score
-                    + "\n  Per level: " + weight.perLevelBonus
-                    + "\n  Min level: " + weight.minLevel;
+                result += "\n" + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Skills.RecommendationWeight", "Recommendation weight:")
+                    + "\n" + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Skills.LevelZero", "  Level 0: ") + weight.level0Score
+                    + "\n" + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Skills.PerLevel", "  Per level: ") + weight.perLevelBonus
+                    + "\n" + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Skills.MinLevel", "  Min level: ") + weight.minLevel;
             }
             skillTooltipCache[row.Label] = result;
             return result;

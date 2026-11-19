@@ -53,7 +53,7 @@ namespace OrderedWork.UI
                     {
                         UiZebra.Draw(new Rect(0f, y, view.width, 20f), stats.Count);
                         Widgets.Label(new Rect(0f, y, view.width, 20f),
-                            "Skill " + skill.label + ": " + record.Level);
+                            OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Stats.SkillLabel", "Skill ") + skill.label + ": " + record.Level);
                     }
                 }
             }
@@ -152,7 +152,7 @@ namespace OrderedWork.UI
             {
                 return OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Stats.Capacity", "Capacity");
             }
-            return capacity.LabelCap + "\nA body capacity affected by health, injuries, bionics and drugs.";
+            return capacity.LabelCap + "\n" + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Stats.BodyCapacity", "A body capacity affected by health, injuries, bionics and drugs.");
         }
 
         private static StatDef RelevantWorkStat(WorkTypeDef workType)
