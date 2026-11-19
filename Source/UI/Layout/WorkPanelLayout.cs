@@ -21,13 +21,13 @@ namespace OrderedWork.UI.Layout
         private const float Gap = 8f;
         private const float StackThreshold = 940f;
 
-        public static WorkPanelRects Build(Rect area, bool giversExpanded, bool forceStacked = false)
+        public static WorkPanelRects Build(Rect area, bool giversExpanded)
         {
             WorkPanelRects result = new WorkPanelRects();
             result.Header = new Rect(area.x, area.y, area.width, HeaderHeight);
             result.Body = new Rect(area.x, result.Header.yMax + 4f, area.width,
                 Mathf.Max(0f, area.height - HeaderHeight - 4f));
-            result.Stacked = forceStacked || result.Body.width < StackThreshold;
+            result.Stacked = result.Body.width < StackThreshold;
 
             if (result.Stacked)
             {

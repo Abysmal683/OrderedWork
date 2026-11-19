@@ -28,7 +28,7 @@
   <OrderedWork.ScheduleFocus.CopyEmpty>No focus to copy in this hour.</OrderedWork.ScheduleFocus.CopyEmpty>
   <OrderedWork.ScheduleFocus.Removed>Focus removed: </OrderedWork.ScheduleFocus.Removed>
   <OrderedWork.ScheduleFocus.Modified>Focus updated: </OrderedWork.ScheduleFocus.Modified>
-  <OrderedWork.ScheduleFocus.OrderChanged>Focus order updated: </OrderedWork.ScheduleFocus.OrderChanged>  <OrderedWork.ScheduleFocus.ClearHour>Clear hour</OrderedWork.ScheduleFocus.ClearHour>
+  <OrderedWork.ScheduleFocus.OrderChanged>Focus order updated: </OrderedWork.ScheduleFocus.OrderChanged>
   <OrderedWork.ScheduleFocus.ClearAll>Clear all</OrderedWork.ScheduleFocus.ClearAll>
   <OrderedWork.ScheduleFocus.NothingToClear>Nothing to clear in this hour.</OrderedWork.ScheduleFocus.NothingToClear>
   <OrderedWork.ScheduleFocus.ClearedHour>Hour cleared: </OrderedWork.ScheduleFocus.ClearedHour>

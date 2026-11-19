@@ -58,7 +58,7 @@ namespace OrderedWork.UI
             statTooltips = new StatTooltipService(pawn);
         }
 
-        public void Draw(Rect area, bool forceStacked = false)
+        public void Draw(Rect area)
         {
             if (pawn == null || pawn.Destroyed)
             {
@@ -67,7 +67,7 @@ namespace OrderedWork.UI
             }
             EnsureInitialized();
 
-            WorkPanelRects layout = WorkPanelLayout.Build(area, giversExpanded, forceStacked);
+            WorkPanelRects layout = WorkPanelLayout.Build(area, giversExpanded);
             DrawHeader(layout.Header);
             if (layout.Stacked)
             {

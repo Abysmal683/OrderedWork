@@ -28,7 +28,7 @@
   <OrderedWork.ScheduleFocus.CopyEmpty>No hay foco para copiar en esta hora.</OrderedWork.ScheduleFocus.CopyEmpty>
   <OrderedWork.ScheduleFocus.Removed>Foco quitado: </OrderedWork.ScheduleFocus.Removed>
   <OrderedWork.ScheduleFocus.Modified>Foco modificado: </OrderedWork.ScheduleFocus.Modified>
-  <OrderedWork.ScheduleFocus.OrderChanged>Orden de foco modificado: </OrderedWork.ScheduleFocus.OrderChanged>  <OrderedWork.ScheduleFocus.ClearHour>Limpiar hora</OrderedWork.ScheduleFocus.ClearHour>
+  <OrderedWork.ScheduleFocus.OrderChanged>Orden de foco modificado: </OrderedWork.ScheduleFocus.OrderChanged>
   <OrderedWork.ScheduleFocus.ClearAll>Limpiar todo</OrderedWork.ScheduleFocus.ClearAll>
   <OrderedWork.ScheduleFocus.NothingToClear>No hay nada que limpiar en esta hora.</OrderedWork.ScheduleFocus.NothingToClear>
   <OrderedWork.ScheduleFocus.ClearedHour>Hora limpiada: </OrderedWork.ScheduleFocus.ClearedHour>

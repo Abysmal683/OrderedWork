@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.234] - 2026-11-19
+
+### Changed — focus module cleanup and docs
+- Split the focus dialog partial into editor, actions and preset files.
+- Removed the unused Clear hour localisation key and the unused WorkPanel layout switch.
+- Kept right-click hour clearing, Clear all, and WorkType row right-click removal.
+- Added `docs/SCHEDULE_FOCUS.md` with data flow, UI contract, storage rules and a verification checklist.
+- Reused the external scroll track for the detail and stacked Work layouts.
+
 ## [0.3.0-alpha.233] - 2026-11-19
 
 ### Changed — focus clear gestures
