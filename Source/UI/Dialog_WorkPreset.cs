@@ -21,13 +21,17 @@ namespace OrderedWork.UI
         private List<WorkPreset> presets;
         private string presetName = "";
         private WorkPreset pendingDelete;
+        private WorkPreset pendingLoad;
+        private bool closeAfterSave;
         private Vector2 scroll;
 
-        public Dialog_WorkPreset(bool loadMode, Func<WorkPreset> capture, Action<WorkPreset> apply)
+        public Dialog_WorkPreset(bool loadMode, Func<WorkPreset> capture, Action<WorkPreset> apply,
+            string initialName = null)
         {
             this.loadMode = loadMode;
             this.capture = capture;
             this.apply = apply;
+            presetName = initialName ?? "";
             presets = WorkPresetStore.List();
             doCloseX = true;
             doCloseButton = false;
@@ -70,8 +74,8 @@ namespace OrderedWork.UI
                     presetName = preset.Name;
                     if (loadMode)
                     {
-                        Load(preset);
-                        return;
+                        pendingLoad = preset;
+                        break;
                     }
                 }
                 Widgets.Label(columns.Column(1, 28f),
@@ -80,8 +84,8 @@ namespace OrderedWork.UI
                 {
                     if (loadMode)
                     {
-                        Load(preset);
-                        return;
+                        pendingLoad = preset;
+                        break;
                     }
                     SaveAs(preset.Name);
                 }
@@ -91,6 +95,18 @@ namespace OrderedWork.UI
                 }
             }
             Widgets.EndScrollView();
+            if (pendingLoad != null)
+            {
+                WorkPreset toLoad = pendingLoad;
+                pendingLoad = null;
+                Load(toLoad);
+                return;
+            }
+            if (closeAfterSave)
+            {
+                Close();
+                return;
+            }
 
             if (pendingDelete != null)
             {
@@ -128,6 +144,7 @@ namespace OrderedWork.UI
             {
                 Messages.Message("Work preset saved: " + preset.Name, MessageTypeDefOf.TaskCompletion, false);
                 presets = WorkPresetStore.List();
+                closeAfterSave = true;
             }
         }
 

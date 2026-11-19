@@ -115,7 +115,7 @@ namespace OrderedWork.UI
             }
             if (UiButtonBar.Button(save, "Save", true, "Save this pawn's WorkType and WorkGiver order as a named preset."))
             {
-                Find.WindowStack.Add(new Dialog_WorkPreset(false, CapturePreset, null));
+                Find.WindowStack.Add(new Dialog_WorkPreset(false, CapturePreset, null, pawn.LabelShort));
             }
         }
 
@@ -166,7 +166,11 @@ namespace OrderedWork.UI
                     continue;
                 }
                 List<string> valid = pair.Value
-                    .Where(name => DefDatabase<WorkGiverDef>.GetNamedSilentFail(name) != null)
+                    .Where(name =>
+                    {
+                        WorkGiverDef giver = DefDatabase<WorkGiverDef>.GetNamedSilentFail(name);
+                        return giver != null && giver.workType == workType;
+                    })
                     .Distinct(StringComparer.Ordinal)
                     .ToList();
                 if (valid.Count > 0)
