@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.192] - 2026-11-19
+
+### Fix — skill filter dismissal
+- Removed the Close button from the live skill filter.
+- The filter now closes with the vanilla X or Escape (`closeOnCancel`).
+- Checkbox changes still apply immediately.
+
 ## [0.3.0-alpha.191] - 2026-11-19
 
 ### Fix — live skill filter
