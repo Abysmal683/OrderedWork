@@ -53,7 +53,7 @@ namespace OrderedWork.UI
             if (UiButtonBar.Button(list.GetRect(28f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.PassionWeights.Reset", "Reset recommendation weights"), canReset,
                 canReset
                     ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.PassionWeights.ResetTip", "Restore all passion weights to their defaults.")
-                    : "Weights already match the current defaults."))
+                    : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.PassionWeights.DefaultsMatch", "Weights already match the current defaults.")))
             {
                 PassionWeightPolicy.ResetToDefaults(settings);
                 Messages.Message(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.PassionWeights.ResetDone", "Recommendation weights reset."), MessageTypeDefOf.TaskCompletion, false);
@@ -91,7 +91,7 @@ namespace OrderedWork.UI
             float learnRate = PassionSource.LearnRateOf(info.Passion);
             if (learnRate > 0f)
             {
-                string rateLine = "Learn rate: x" + learnRate.ToString("0.##");
+                string rateLine = OrderedWork.Localization.OrderedWorkText.T("OrderedWork.PassionWeights.LearnRate", "Learn rate: x") + learnRate.ToString("0.##");
                 description = string.IsNullOrEmpty(description)
                     ? rateLine
                     : description + "\n\n" + rateLine;

@@ -224,7 +224,7 @@ namespace OrderedWork.UI
                 }
             }
 
-            string label = incapable ? DisplayName(type) + " (Incapable)" : DisplayName(type);
+            string label = incapable ? DisplayName(type) + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Palette.IncapableSuffix", " (Incapable)") : DisplayName(type);
             bool previousWrap = Text.WordWrap;
             Text.WordWrap = false;
             Widgets.LabelEllipses(new Rect(x, rect.y, Mathf.Max(10f, rect.xMax - x - 4f), rect.height), label);

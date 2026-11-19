@@ -344,11 +344,11 @@ namespace OrderedWork.UI
                 switch (workFilterScope)
                 {
                     case WorkFilterScope.Palette:
-                        return "Palette";
+                        return OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Scope.Palette", "Palette");
                     case WorkFilterScope.Both:
-                        return "Both";
+                        return OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Scope.Both", "Both");
                     default:
-                        return "Line";
+                        return OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Scope.Line", "Line");
                 }
             }
         }

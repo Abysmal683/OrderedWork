@@ -66,7 +66,7 @@ namespace OrderedWork.UI
             if (Mouse.IsOver(manageRect))
             {
                 TooltipHandler.TipRegion(manageRect,
-                    "Open the vanilla area manager. Create, delete, expand or reduce areas there; Ordered Work only assigns existing areas.");
+                    OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Zone.ManageTip", "Open the vanilla area manager. Create, delete, expand or reduce areas there; Ordered Work only assigns existing areas."));
             }
 
             PawnWorkOrder entry = OrderedWorkGameComponent.GetOrCreate()?.GetOrCreateEntry(pawn);

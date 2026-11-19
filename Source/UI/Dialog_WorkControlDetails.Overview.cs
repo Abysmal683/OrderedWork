@@ -57,7 +57,7 @@ namespace OrderedWork.UI
                 y += 22f;
                 if (order.Count == 0)
                 {
-                    Widgets.Label(new Rect(6f, y, scrollContent.width - 6f, 20f), "No active WorkTypes.");
+                    Widgets.Label(new Rect(6f, y, scrollContent.width - 6f, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Profile.NoWorkTypes", "No active WorkTypes."));
                 }
                 else
                 {
@@ -83,8 +83,8 @@ namespace OrderedWork.UI
                         string levelText = bestSkill != null ? bestSkill.Level.ToString() : "—";
                         int priority = pawn.workSettings != null ? pawn.workSettings.GetPriority(workType) : 0;
                         string status = WorkOrderService.IsIncapable(pawn, workType)
-                            ? "Incapable"
-                            : priority > 0 ? "Active" : "Off";
+                            ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Incapable", "Incapable")
+                            : priority > 0 ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Active", "Active") : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Off", "Off");
                         Widgets.Label(new Rect(0f, y, rankWidth, 18f), (i + 1).ToString());
                         Widgets.Label(new Rect(rankWidth, y, nameWidth, 18f), WorkTypePaletteView.DisplayName(workType));
                         WorkTypePaletteView.DrawPassionIcon(
@@ -100,13 +100,13 @@ namespace OrderedWork.UI
                 Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.Policy", "Policy"));
                 y += 22f;
                 string workPreset = entry == null || string.IsNullOrEmpty(entry.workPresetId)
-                    ? "legacy snapshot"
+                    ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.LegacySnapshot", "legacy snapshot")
                     : entry.workPresetId;
                 string schedulePreset = entry == null || string.IsNullOrEmpty(entry.schedulePresetId)
-                    ? "not configured"
+                    ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.NotConfigured", "not configured")
                     : entry.schedulePresetId;
                 string clothingPreset = entry == null || string.IsNullOrEmpty(entry.clothingPresetId)
-                    ? "not configured"
+                    ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.NotConfigured", "not configured")
                     : entry.clothingPresetId;
                 int workOverrides = entry?.workOverrides?.Count ?? 0;
                 int scheduleOverrides = entry?.scheduleOverrides?.Count ?? 0;

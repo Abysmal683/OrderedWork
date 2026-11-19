@@ -24,7 +24,7 @@ namespace OrderedWork.UI
             Rect workButton = new Rect(x, searchY, 190f, SearchHeight - 2f);
             x += 194f;
             string workLabel = !WorkFilterActive
-                ? "Any"
+                ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Any", "Any")
                 : (workFilter != null ? WorkTypePaletteView.DisplayName(workFilter) : workFilterText);
             if (Widgets.ButtonText(workButton, workLabel))
             {
@@ -32,20 +32,20 @@ namespace OrderedWork.UI
             }
             if (Mouse.IsOver(workButton))
             {
-                TooltipHandler.TipRegion(workButton, "Filter WorkTypes");
+                TooltipHandler.TipRegion(workButton, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.FilterWorkTypes", "Filter WorkTypes"));
             }
 
             Rect notRect = new Rect(x, searchY, 64f, SearchHeight - 2f);
-            Widgets.CheckboxLabeled(notRect, "Not", ref invertWorkFilter, !WorkFilterActive);
+            Widgets.CheckboxLabeled(notRect, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Not", "Not"), ref invertWorkFilter, !WorkFilterActive);
             if (Mouse.IsOver(notRect))
             {
-                TooltipHandler.TipRegion(notRect, "Invert the Work filter where it applies");
+                TooltipHandler.TipRegion(notRect, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.InvertTip", "Invert the Work filter where it applies"));
             }
             x += 68f;
 
             Rect scopeRect = new Rect(x, searchY, 118f, SearchHeight - 2f);
-            if (UiButtonBar.Button(scopeRect, "Filter: " + WorkFilterScopeLabel, WorkFilterActive,
-                "Where the Work filter applies: pawn rows, palette, or both"))
+            if (UiButtonBar.Button(scopeRect, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.FilterPrefix", "Filter: ") + WorkFilterScopeLabel, WorkFilterActive,
+                OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.FilterScopeTip", "Where the Work filter applies: pawn rows, palette, or both")))
             {
                 workFilterScope = NextScope(workFilterScope);
             }
@@ -56,7 +56,7 @@ namespace OrderedWork.UI
                 || WorkFilterActive
                 || invertWorkFilter
                 || workFilterScope != WorkFilterScope.Line;
-            if (UiButtonBar.Button(clearRect, "Clear", canClear, "Clear the Pawn and Work filters"))
+            if (UiButtonBar.Button(clearRect, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Clear", "Clear"), canClear, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.ClearTip", "Clear the Pawn and Work filters")))
             {
                 searchText = "";
                 workFilterText = "";
@@ -168,7 +168,7 @@ namespace OrderedWork.UI
 
             public override void DoWindowContents(Rect inRect)
             {
-                Widgets.Label(new Rect(0f, 0f, inRect.width, 22f), "Filter Work");
+                Widgets.Label(new Rect(0f, 0f, inRect.width, 22f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.FilterWork", "Filter Work"));
 
                 // Any only appears while a Work filter is active; the selected WorkType is excluded.
                 List<WorkTypeDef> matches = WorkOrderService.GetAvailableWorkTypes()
