@@ -120,7 +120,15 @@ namespace OrderedWork.Core
                 value = TryLoadFile(backup);
                 if (value != null)
                 {
-                    EmitWarning("Recovered record from backup: " + backup);
+                    try
+                    {
+                        File.Copy(backup, path, true);
+                        EmitWarning("Recovered record from backup and repaired main file: " + path);
+                    }
+                    catch (Exception exception)
+                    {
+                        EmitWarning("Recovered record from backup but could not repair main file: " + exception.Message);
+                    }
                     return value;
                 }
             }
@@ -168,7 +176,14 @@ namespace OrderedWork.Core
                 string path = PathFor(id(value));
                 if (File.Exists(path))
                 {
-                    File.Copy(path, path + ".bak", true);
+                    if (TryLoadFile(path) != null)
+                    {
+                        File.Copy(path, path + ".bak", true);
+                    }
+                    else
+                    {
+                        EmitWarning("Keeping existing backup because main record is invalid: " + path);
+                    }
                 }
                 string temp = path + ".tmp";
                 File.WriteAllText(temp, JsonSerializer.Serialize(value, JsonOptions));

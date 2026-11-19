@@ -195,6 +195,7 @@ namespace OrderedWork.Tests
                 File.WriteAllText(Path.Combine(root, "one.json"), "{ corrupt");
                 loaded = store.TryLoadById("one");
                 Assert(loaded != null && loaded.Name == "Alpha", "backup fallback");
+                Assert(File.ReadAllText(Path.Combine(root, "one.json")).Contains("Alpha"), "main repaired from backup");
                 Assert(store.LoadAll().Count == 1, "load all");
                 Assert(store.Delete("one"), "delete");
                 Assert(!File.Exists(Path.Combine(root, "one.json")), "delete removes file");

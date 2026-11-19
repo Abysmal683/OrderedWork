@@ -5,10 +5,7 @@
   <OrderedWork.Common.Delete>Eliminar</OrderedWork.Common.Delete>
   <OrderedWork.Common.Cancel>Cancelar</OrderedWork.Common.Cancel>
   <OrderedWork.Common.ConfirmDelete>Confirmar eliminación</OrderedWork.Common.ConfirmDelete>
-  <OrderedWork.Common.New>Nuevo</OrderedWork.Common.New>
-  <OrderedWork.Common.CopyCurrent>Copiar actual</OrderedWork.Common.CopyCurrent>
   <OrderedWork.Common.ApplyToPawn>Aplicar al peón</OrderedWork.Common.ApplyToPawn>
-  <OrderedWork.Common.OpenDetails>Abrir detalles</OrderedWork.Common.OpenDetails>
   <OrderedWork.Common.SearchColonist>Buscar colono</OrderedWork.Common.SearchColonist>
   <OrderedWork.Filter.Title>Filtros de habilidades</OrderedWork.Filter.Title>
   <OrderedWork.Filter.Level>Nivel</OrderedWork.Filter.Level>
@@ -82,7 +79,6 @@
   <OrderedWork.Overview.TopSkills>Mejores habilidades</OrderedWork.Overview.TopSkills>
   <OrderedWork.Overview.NoSkills>Sin habilidades.</OrderedWork.Overview.NoSkills>
   <OrderedWork.Overview.WorkOrder>Orden de trabajo</OrderedWork.Overview.WorkOrder>
-  <OrderedWork.Overview.Priority>Prioridad</OrderedWork.Overview.Priority>
   <OrderedWork.Overview.WorkType>Tipo de trabajo</OrderedWork.Overview.WorkType>
   <OrderedWork.Overview.Skill>Habilidad</OrderedWork.Overview.Skill>
   <OrderedWork.Overview.Status>Estado</OrderedWork.Overview.Status>
@@ -143,7 +139,6 @@
   <OrderedWork.Schedule.AppliedSuffix>.</OrderedWork.Schedule.AppliedSuffix>
   <OrderedWork.Schedule.BrushTip>Pincel de horario activo. Haz clic o arrastra sobre Modif para pintar esta asignación.</OrderedWork.Schedule.BrushTip>
   <OrderedWork.Schedule.ClickPaint>Haz clic para pintar </OrderedWork.Schedule.ClickPaint>
-  <OrderedWork.Schedule.HourlyPriority>Prioridad por hora: reservada para anulaciones de tipo de trabajo; no se guarda en el preajuste.</OrderedWork.Schedule.HourlyPriority>
   <OrderedWork.Schedule.NoAssignment>Sin definiciones de asignación</OrderedWork.Schedule.NoAssignment>
   <OrderedWork.Skills.ExpertiseLabel>Especialidad</OrderedWork.Skills.ExpertiseLabel>
   <OrderedWork.Skills.Learning>Multiplicador de aprendizaje: x</OrderedWork.Skills.Learning>

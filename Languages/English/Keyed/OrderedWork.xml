@@ -5,10 +5,7 @@
   <OrderedWork.Common.Delete>Delete</OrderedWork.Common.Delete>
   <OrderedWork.Common.Cancel>Cancel</OrderedWork.Common.Cancel>
   <OrderedWork.Common.ConfirmDelete>Confirm delete</OrderedWork.Common.ConfirmDelete>
-  <OrderedWork.Common.New>New</OrderedWork.Common.New>
-  <OrderedWork.Common.CopyCurrent>Copy current</OrderedWork.Common.CopyCurrent>
   <OrderedWork.Common.ApplyToPawn>Apply to pawn</OrderedWork.Common.ApplyToPawn>
-  <OrderedWork.Common.OpenDetails>Open details</OrderedWork.Common.OpenDetails>
   <OrderedWork.Common.SearchColonist>Search colonist</OrderedWork.Common.SearchColonist>
   <OrderedWork.Filter.Title>Skill filters</OrderedWork.Filter.Title>
   <OrderedWork.Filter.Level>Level</OrderedWork.Filter.Level>
@@ -82,7 +79,6 @@
   <OrderedWork.Overview.TopSkills>Top skills</OrderedWork.Overview.TopSkills>
   <OrderedWork.Overview.NoSkills>No skills.</OrderedWork.Overview.NoSkills>
   <OrderedWork.Overview.WorkOrder>Work order</OrderedWork.Overview.WorkOrder>
-  <OrderedWork.Overview.Priority>Priority</OrderedWork.Overview.Priority>
   <OrderedWork.Overview.WorkType>Work type</OrderedWork.Overview.WorkType>
   <OrderedWork.Overview.Skill>Skill</OrderedWork.Overview.Skill>
   <OrderedWork.Overview.Status>Status</OrderedWork.Overview.Status>
@@ -143,7 +139,6 @@
   <OrderedWork.Schedule.AppliedSuffix>.</OrderedWork.Schedule.AppliedSuffix>
   <OrderedWork.Schedule.BrushTip>Active schedule brush. Click or drag over Modif to paint this assignment.</OrderedWork.Schedule.BrushTip>
   <OrderedWork.Schedule.ClickPaint>Click to paint </OrderedWork.Schedule.ClickPaint>
-  <OrderedWork.Schedule.HourlyPriority>Hourly priority: reserved for WorkType overrides; it is not stored in the preset.</OrderedWork.Schedule.HourlyPriority>
   <OrderedWork.Schedule.NoAssignment>No assignment defs</OrderedWork.Schedule.NoAssignment>
   <OrderedWork.Skills.ExpertiseLabel>Expertise</OrderedWork.Skills.ExpertiseLabel>
   <OrderedWork.Skills.Learning>Learning multiplier: x</OrderedWork.Skills.Learning>

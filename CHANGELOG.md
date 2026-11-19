@@ -3,6 +3,21 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.247] - 2026-11-19
+
+### Fixed — backup recovery repairs the main file
+- A successful `.bak` recovery now copies the valid backup over the corrupt main file.
+- Saving no longer overwrites a valid `.bak` with an invalid main file.
+- Added test coverage for main-file repair.
+
+## [0.3.0-alpha.246] - 2026-11-19
+
+### Cleanup — dead keys and helper
+- Removed seven unused localisation keys; `Clothing.Worn` is intentionally retained for the future clothing module.
+- Removed the unused `ScheduleApplyController.Save` method.
+- Kept `scheduleWorkOverrides` and `verboseLogging` until old-save migration is verified.
+- Kept `WorkConfigStore` as a compatibility facade.
+
 ## [0.3.0-alpha.245] - 2026-11-19
 
 ### Fixed — preset backup recovery

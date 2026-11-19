@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.245)
+# Ordered Work — Current Checklist (0.3.0-alpha.247)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -70,9 +70,17 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] `WorkTypePaletteView` split into core, tooltip and passion partials.
 - [ ] Runtime smoke test after the refactor: settings, pins, weights, split/merge, save/load.
 
+## Dead code cleanup (alpha.246)
+
+- [x] Seven unused localisation keys removed.
+- [x] `Clothing.Worn` retained for the future clothing module.
+- [x] Unused `ScheduleApplyController.Save` removed.
+- [x] Legacy save fields retained pending the old-save migration test.
+- [x] Build 0/0 and tests pass.
+- [ ] Remove legacy fields after the old-save migration test.
 ## Store fallback and migration tests (alpha.245)
 
-- [x] Atomic store recovers from a corrupt main file through `.bak`.
+- [x] Atomic store recovers from a corrupt main file through `.bak` and repairs the main file.\n- [x] Save does not overwrite a valid backup with an invalid main file.
 - [x] Roundtrip, backup and schema tests pass.
 - [ ] Runtime profile pending/promotion check.
 - [ ] Runtime legacy focus migration check on an old save.

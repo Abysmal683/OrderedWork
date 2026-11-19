@@ -13,8 +13,6 @@
   <OrderedWork.Config.General.DiagnosticsSection>Diagnostics</OrderedWork.Config.General.DiagnosticsSection>
   <OrderedWork.Config.General.PaletteStress>Palette stress test (debug)</OrderedWork.Config.General.PaletteStress>
   <OrderedWork.Config.General.PaletteStressTip>Adds 60 visual-only WorkTypes to test the palette focus.</OrderedWork.Config.General.PaletteStressTip>
-  <OrderedWork.Config.General.Verbose>Verbose diagnostics in Player.log</OrderedWork.Config.General.Verbose>
-  <OrderedWork.Config.General.VerboseTip>Enables temporary Order/Reset/Scroll debug lines. Disable for normal play.</OrderedWork.Config.General.VerboseTip>
   <OrderedWork.Config.General.SpikeInfo>WorkGiver order spike: reorders Hauling WorkGivers for one selected pawn only. No defs are changed.</OrderedWork.Config.General.SpikeInfo>
   <OrderedWork.Config.General.SpikeToggle>Enable WorkGiver order spike (debug)</OrderedWork.Config.General.SpikeToggle>
   <OrderedWork.Config.General.SpikeToggleTip>When enabled, the spike patch is allowed to reorder the selected pawn's runtime WorkGiver list.</OrderedWork.Config.General.SpikeToggleTip>

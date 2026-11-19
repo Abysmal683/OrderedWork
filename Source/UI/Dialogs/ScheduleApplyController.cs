@@ -70,14 +70,6 @@ namespace OrderedWork.UI
             return true;
         }
 
-        internal bool Save()
-        {
-            if (state.Draft == null || string.IsNullOrWhiteSpace(state.Name))
-            {
-                return false;
-            }
-            state.Draft.Name = state.Name.Trim();
-            return SchedulePresetStore.Save(state.Draft);
-        }
+
     }
 }

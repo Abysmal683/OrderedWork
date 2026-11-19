@@ -13,8 +13,6 @@
   <OrderedWork.Config.General.DiagnosticsSection>Diagnóstico</OrderedWork.Config.General.DiagnosticsSection>
   <OrderedWork.Config.General.PaletteStress>Prueba de estrés de la paleta (debug)</OrderedWork.Config.General.PaletteStress>
   <OrderedWork.Config.General.PaletteStressTip>Añade 60 tipos de trabajo visuales para probar el foco de la paleta.</OrderedWork.Config.General.PaletteStressTip>
-  <OrderedWork.Config.General.Verbose>Diagnóstico detallado en Player.log</OrderedWork.Config.General.Verbose>
-  <OrderedWork.Config.General.VerboseTip>Activa líneas temporales de depuración de orden, reinicio y desplazamiento. Desactívalo para jugar normal.</OrderedWork.Config.General.VerboseTip>
   <OrderedWork.Config.General.SpikeInfo>Prueba de orden de WorkGivers: reordena los WorkGivers de acarreo de un solo peón seleccionado. No cambia definiciones.</OrderedWork.Config.General.SpikeInfo>
   <OrderedWork.Config.General.SpikeToggle>Activar prueba de orden de WorkGivers (debug)</OrderedWork.Config.General.SpikeToggle>
   <OrderedWork.Config.General.SpikeToggleTip>Cuando está activo, el parche de prueba puede reordenar la lista runtime de WorkGivers del peón seleccionado.</OrderedWork.Config.General.SpikeToggleTip>
