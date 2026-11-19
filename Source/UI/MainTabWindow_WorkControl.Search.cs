@@ -16,7 +16,7 @@ namespace OrderedWork.UI
         private void DrawSearchRow(float searchY)
         {
             float x = Pad;
-            Widgets.Label(new Rect(x, searchY, 40f, SearchHeight), "Pawn");
+            Widgets.Label(new Rect(x, searchY, 40f, SearchHeight), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Pawn", "Pawn"));
             x += 42f;
             searchText = Widgets.TextField(new Rect(x, searchY, 168f, SearchHeight - 2f), searchText ?? "");
             x += 174f;

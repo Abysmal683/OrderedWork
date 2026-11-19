@@ -26,7 +26,7 @@ namespace OrderedWork.UI
                 .OrderByDescending(g => g.priorityInType)
                 .ToList();
             builder.AppendLine();
-            builder.AppendLine("Work givers:");
+            builder.AppendLine(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Palette.WorkGivers", "Work givers:"));
             if (givers.Count == 0)
             {
                 builder.AppendLine("- none");
@@ -40,7 +40,7 @@ namespace OrderedWork.UI
             }
 
             builder.AppendLine();
-            builder.Append("Relevant skills: ");
+            builder.Append(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Palette.RelevantSkills", "Relevant skills: "));
             if (type.relevantSkills == null || type.relevantSkills.Count == 0)
             {
                 builder.Append("none");

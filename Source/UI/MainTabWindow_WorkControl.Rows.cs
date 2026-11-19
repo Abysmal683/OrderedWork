@@ -332,7 +332,7 @@ namespace OrderedWork.UI
                 .OrderByDescending(g => g.priorityInType)
                 .ToList();
             builder.AppendLine();
-            builder.AppendLine("Work givers:");
+            builder.AppendLine(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Palette.WorkGivers", "Work givers:"));
             if (givers.Count == 0)
             {
                 builder.AppendLine("- none");
@@ -373,16 +373,16 @@ namespace OrderedWork.UI
             }
             if (pawn.health.State == PawnHealthState.Dead)
             {
-                return "Dead";
+                return OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Status.Dead", "Dead");
             }
             if (pawn.health.State == PawnHealthState.Down)
             {
-                return "Down";
+                return OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Status.Down", "Down");
             }
             float percent = pawn.health.summaryHealth != null
                 ? pawn.health.summaryHealth.SummaryHealthPercent
                 : 1f;
-            return percent < 0.999f ? Mathf.RoundToInt(percent * 100f) + "%" : "OK";
+            return percent < 0.999f ? Mathf.RoundToInt(percent * 100f) + "%" : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Status.Ok", "OK");
         }
 
         private static string PawnTooltip(Pawn pawn)

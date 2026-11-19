@@ -11,7 +11,7 @@ using Verse;
 namespace OrderedWork.UI
 {
     /// <summary>
-    /// Full-screen "Work Control" tab: colonist-bar pawn order, a 3-row WorkType palette,
+    /// Full-screen OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Title", "Work Control") tab: colonist-bar pawn order, a 3-row WorkType palette,
     /// a Pawn/Work search row, and a fixed-name + shared-horizontal-scroll matrix with
     /// thin auto-hiding scrollbars outside the content.
     /// </summary>
@@ -90,14 +90,14 @@ namespace OrderedWork.UI
 
             if (Find.CurrentMap == null)
             {
-                DrawCentered(inRect, "Load a colony");
+                DrawCentered(inRect, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.LoadColony", "Load a colony"));
                 return;
             }
 
             List<Pawn> allColonists = GetColonistsInDisplayOrder();
             if (allColonists.Count == 0)
             {
-                DrawCentered(inRect, "No free colonists");
+                DrawCentered(inRect, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.NoColonists", "No free colonists"));
                 return;
             }
 
@@ -119,7 +119,7 @@ namespace OrderedWork.UI
 
             // Title + top controls.
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(Pad, titleY, Mathf.Max(100f, inRect.width - 330f), TitleHeight), "Work Control");
+            Widgets.Label(new Rect(Pad, titleY, Mathf.Max(100f, inRect.width - 330f), TitleHeight), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Title", "Work Control"));
             Text.Font = GameFont.Small;
 
             Rect viewRect = new Rect(inRect.xMax - Pad - 120f, titleY + 2f, 120f, 24f);
@@ -172,14 +172,14 @@ namespace OrderedWork.UI
             UpdatePaletteDrag(bodyRect, leftWidth, colonists);
 
             // Column header.
-            Widgets.Label(new Rect(bodyRect.x, headerY, leftWidth - 6f, HeaderHeight), "Pawn");
+            Widgets.Label(new Rect(bodyRect.x, headerY, leftWidth - 6f, HeaderHeight), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Pawn", "Pawn"));
             Widgets.Label(new Rect(bodyRect.x + leftWidth, headerY, bodyRect.width - leftWidth, HeaderHeight),
-                "Work (left = highest). Drag to reorder, × remove, + add.");
+                OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Hint", "Work (left = highest). Drag to reorder, × remove, + add."));
 
             if (colonists.Count == 0)
             {
                 CancelPaletteDrag();
-                DrawCentered(bodyRect, filtering ? "No pawns match" : "No free colonists");
+                DrawCentered(bodyRect, filtering ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.NoMatch", "No pawns match") : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.NoColonists", "No free colonists"));
                 return;
             }
 
@@ -296,7 +296,7 @@ namespace OrderedWork.UI
             Rect handle = new Rect(inRect.center.x - 80f, 0f, 160f, 12f);
             Widgets.DrawBoxSolid(handle, new Color(0.32f, 0.36f, 0.40f, 1f));
             Widgets.DrawBoxSolid(new Rect(handle.x + 20f, handle.y + 4f, 120f, 2f), new Color(0.62f, 0.68f, 0.72f, 1f));
-            TooltipHandler.TipRegion(handle, "Drag to resize Work Control (minimum: 4 pawn rows)");
+            TooltipHandler.TipRegion(handle, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.ResizeTip", "Drag to resize Work Control (minimum: 4 pawn rows)"));
 
             Event current = Event.current;
             if (current.type == EventType.MouseDown && current.button == 0 && handle.Contains(current.mousePosition))

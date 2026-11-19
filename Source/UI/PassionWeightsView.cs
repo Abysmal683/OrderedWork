@@ -20,7 +20,7 @@ namespace OrderedWork.UI
         {
             if (drawHeader)
             {
-                list.Label("Recommendation passion weights (global). Level 0 / per level / min level:");
+                list.Label(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.PassionWeights.Title", "Recommendation passion weights (global). Level 0 / per level / min level:"));
             }
             PassionWeightPolicy.EnsureDefaults(settings);
             List<PassionSource.PassionInfo> registered = PassionSource.Registered;
@@ -50,13 +50,13 @@ namespace OrderedWork.UI
             WorkGridScrollView.DrawVertical(track, viewport, content, ref scroll);
 
             bool canReset = PassionWeightPolicy.HasChangesFromDefaults(settings);
-            if (UiButtonBar.Button(list.GetRect(28f), "Reset recommendation weights", canReset,
+            if (UiButtonBar.Button(list.GetRect(28f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.PassionWeights.Reset", "Reset recommendation weights"), canReset,
                 canReset
-                    ? "Restore all passion weights to their defaults."
+                    ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.PassionWeights.ResetTip", "Restore all passion weights to their defaults.")
                     : "Weights already match the current defaults."))
             {
                 PassionWeightPolicy.ResetToDefaults(settings);
-                Messages.Message("Recommendation weights reset.", MessageTypeDefOf.TaskCompletion, false);
+                Messages.Message(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.PassionWeights.ResetDone", "Recommendation weights reset."), MessageTypeDefOf.TaskCompletion, false);
             }
         }
 

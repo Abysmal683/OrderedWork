@@ -18,7 +18,7 @@ namespace OrderedWork.UI
             try
             {
                 Text.Font = GameFont.Medium;
-                Widgets.Label(new Rect(body.x, body.y, body.width, 24f), "Ordered Work");
+                Widgets.Label(new Rect(body.x, body.y, body.width, 24f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Profile.Title", "Ordered Work"));
                 Text.Font = GameFont.Small;
 
                 List<string> order = WorkOrderService.GetOrder(pawn) ?? new List<string>();

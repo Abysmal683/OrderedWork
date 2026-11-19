@@ -80,7 +80,7 @@ namespace OrderedWork.UI
             List<Pawn> selected = GetSelectedColonists();
             bool hasSelection = selected.Count > 0;
 
-            if (UiButtonBar.Button(recommendRect, "Recommend", hasSelection))
+            if (UiButtonBar.Button(recommendRect, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Recommend", "Recommend"), hasSelection))
             {
                 for (int i = 0; i < selected.Count; i++)
                 {
@@ -89,19 +89,19 @@ namespace OrderedWork.UI
             }
             if (Mouse.IsOver(recommendRect))
             {
-                TooltipHandler.TipRegion(recommendRect, "Generate recommendation for selected pawn(s)");
+                TooltipHandler.TipRegion(recommendRect, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.RecommendTip", "Generate recommendation for selected pawn(s)"));
             }
 
-            if (UiButtonBar.Button(detailsRect, "Details", hasSelection))
+            if (UiButtonBar.Button(detailsRect, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Details", "Details"), hasSelection))
             {
                 Find.WindowStack.Add(new Dialog_WorkControlDetails(selected[0]));
             }
             if (Mouse.IsOver(detailsRect))
             {
-                TooltipHandler.TipRegion(detailsRect, "More details for the first selected pawn");
+                TooltipHandler.TipRegion(detailsRect, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.DetailsTip", "More details for the first selected pawn"));
             }
 
-            if (Widgets.ButtonText(viewRect, "View: Numeric"))
+            if (Widgets.ButtonText(viewRect, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.ViewNumeric", "View: Numeric")))
             {
                 MainButtonDef workTab = DefDatabase<MainButtonDef>.GetNamedSilentFail("Work");
                 if (workTab != null)
@@ -111,7 +111,7 @@ namespace OrderedWork.UI
             }
             if (Mouse.IsOver(viewRect))
             {
-                TooltipHandler.TipRegion(viewRect, "Open the vanilla Work tab (Numeric view)");
+                TooltipHandler.TipRegion(viewRect, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.ViewTip", "Open the vanilla Work tab (Numeric view)"));
             }
         }
 
@@ -269,7 +269,7 @@ namespace OrderedWork.UI
 
             if (options.Count == 0)
             {
-                options.Add(new FloatMenuOption("Nothing available to add", null));
+                options.Add(new FloatMenuOption(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.NothingAdd", "Nothing available to add"), null));
             }
             Find.WindowStack.Add(new FloatMenu(options));
         }
