@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.239] - 2026-11-19
+
+### Refactor — split PassionSource
+- `PassionRegistry` owns optional VSE/Alpha Skills discovery and reflection.
+- `PassionMetadata` owns labels, descriptions, colours, bad-passion flag and learn rate.
+- `PassionIconResolver` owns optional `Icon`/`WorkBoxIcon` textures.
+- `PassionSource` remains a compatibility facade for existing callers.
+- Documented the permissive icon-source policy in credits.
+
 ## [0.3.0-alpha.238] - 2026-11-19
 
 ### Refactor — UiDragList external scrollbar

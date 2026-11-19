@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.238)
+# Ordered Work — Current Checklist (0.3.0-alpha.239)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -70,6 +70,13 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] `WorkTypePaletteView` split into core, tooltip and passion partials.
 - [ ] Runtime smoke test after the refactor: settings, pins, weights, split/merge, save/load.
 
+## PassionSource split (alpha.239)
+
+- [x] Registry, metadata and icon resolver separated.
+- [x] `PassionSource` retained as compatibility facade.
+- [x] Existing UI and policy callers unchanged.
+- [x] Build 0/0 and tests pass.
+- [ ] Runtime check with and without VSE/Alpha Skills.
 ## UiDragList external scroll (alpha.238)
 
 - [x] `UiDragList` uses the shared external track.

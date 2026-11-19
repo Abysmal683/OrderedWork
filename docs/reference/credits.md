@@ -32,3 +32,22 @@ The VSE/Alpha Skills integration is a soft reflection layer in `Source/UI/WorkTy
 - can be removed without breaking vanilla behavior.
 
 If you are an author of one of these mods and want a different attribution or compatibility arrangement, open an issue or contact the maintainer.
+
+## Icon asset policy
+
+No external icon assets are currently bundled. If icons are added, only permissively licensed sets are acceptable, and the exact version/license must be recorded before integration.
+
+| Source | License | Obligation |
+|---|---|---|
+| Lucide | ISC | Include the ISC copyright/permission notice |
+| Feather | MIT | Include the MIT notice |
+| Heroicons | MIT | Include the MIT notice |
+| Tabler Icons | MIT | Include the MIT notice |
+| Phosphor Icons | MIT | Include the MIT notice |
+| Bootstrap Icons | MIT | Include the MIT notice |
+| Material Symbols | Apache-2.0 | Include the NOTICE/license and respect trademark guidance |
+| Kenney assets | CC0 | No attribution required; record provenance |
+| Game-icons.net | CC BY 3.0 | Attribute the author and license |
+| Font Awesome Free | CC BY 4.0 for icons; SIL OFL for fonts; MIT for code | Preserve the applicable notices |
+
+Do not use icons with unknown, personal-use-only, paid, or share-alike terms unless the project explicitly accepts those terms. Verify each source file, not only the project landing page. SVG sources need conversion to a Unity-loadable texture; preserve the license next to the converted asset.

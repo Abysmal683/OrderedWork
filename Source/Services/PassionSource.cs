@@ -1,17 +1,11 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using RimWorld;
 using UnityEngine;
-using Verse;
 
 namespace OrderedWork.Services
 {
     /// <summary>
-    /// Read-only adapter over the passion registry exposed by VSE/Alpha Skills.
-    /// The source is discovered at runtime; no third-party code or text is copied.
+    /// Public compatibility facade for passion discovery, metadata and icons.
     /// </summary>
     public static class PassionSource
     {
@@ -22,386 +16,54 @@ namespace OrderedWork.Services
             public string Label;
         }
 
-        private static bool initialized;
-        private static List<PassionInfo> registered;
-
         public static List<PassionInfo> Registered
         {
-            get
-            {
-                EnsureInitialized();
-                return registered;
-            }
+            get { return PassionRegistry.Registered; }
         }
 
         public static string DefNameOf(Passion passion)
         {
-            object def = GetVseDef(passion);
-            if (def != null)
-            {
-                string name = GetMember<string>(def, "defName");
-                if (!string.IsNullOrEmpty(name))
-                {
-                    return name;
-                }
-            }
-            if (passion == Passion.Major) return "Major";
-            if (passion == Passion.Minor) return "Minor";
-            return "None";
+            return PassionMetadata.DefNameOf(passion);
         }
 
         public static string LabelOf(Passion passion)
         {
-            string label = VseLabelOf(passion);
-            if (!string.IsNullOrEmpty(label))
-            {
-                return label;
-            }
-            return passion == Passion.Major ? "Major" : passion == Passion.Minor ? "Minor" : "None";
+            return PassionMetadata.LabelOf(passion);
         }
 
-        /// <summary>Returns the VSE label only when the optional mod is present.</summary>
         public static string VseLabelOf(Passion passion)
         {
-            object def = GetVseDef(passion);
-            if (def == null)
-            {
-                return null;
-            }
-            try
-            {
-                string label = GetStringMember(def, "LabelCap");
-                if (string.IsNullOrEmpty(label))
-                {
-                    label = GetStringMember(def, "label");
-                }
-                return string.IsNullOrEmpty(label) ? null : label;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            return PassionMetadata.VseLabelOf(passion);
         }
 
-        /// <summary>Optional VSE passion icon. Returns null without VSE.</summary>
         public static Texture2D IconOf(Passion passion)
         {
-            return VseTextureOf(passion, "Icon");
+            return PassionIconResolver.IconOf(passion);
         }
 
-        /// <summary>Optional VSE work-box icon. Returns null without VSE.</summary>
         public static Texture2D WorkBoxIconOf(Passion passion)
         {
-            return VseTextureOf(passion, "WorkBoxIcon");
+            return PassionIconResolver.WorkBoxIconOf(passion);
         }
 
-        /// <summary>Optional VSE passion colour enum name. Returns null without VSE.</summary>
         public static string ColorNameOf(Passion passion)
         {
-            object def = GetVseDef(passion);
-            if (def == null)
-            {
-                return null;
-            }
-            try
-            {
-                object value = GetMember<object>(def, "color");
-                return value != null ? value.ToString() : null;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-
-        private static Texture2D VseTextureOf(Passion passion, string memberName)
-        {
-            object def = GetVseDef(passion);
-            if (def == null)
-            {
-                return null;
-            }
-            try
-            {
-                return GetMember<object>(def, memberName) as Texture2D;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            return PassionMetadata.ColorNameOf(passion);
         }
 
         public static string DescriptionOf(Passion passion)
         {
-            object def = GetVseDef(passion);
-            if (def == null)
-            {
-                return null;
-            }
-            string description = GetStringMember(def, "description");
-            if (string.IsNullOrEmpty(description))
-            {
-                description = GetStringMember(def, "Description");
-            }
-            return string.IsNullOrEmpty(description) ? null : description;
+            return PassionMetadata.DescriptionOf(passion);
         }
 
         public static bool IsBadOf(Passion passion)
         {
-            object def = GetVseDef(passion);
-            if (def == null)
-            {
-                return false;
-            }
-            object value = GetMember<object>(def, "isBad");
-            if (value == null)
-            {
-                return false;
-            }
-            try
-            {
-                return Convert.ToBoolean(value);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            return PassionMetadata.IsBadOf(passion);
         }
 
         public static float LearnRateOf(Passion passion)
         {
-            object def = GetVseDef(passion);
-            if (def == null)
-            {
-                return 0f;
-            }
-            object value = GetMember<object>(def, "learnRateFactor");
-            if (value == null)
-            {
-                return 0f;
-            }
-            try
-            {
-                return Convert.ToSingle(value);
-            }
-            catch (Exception)
-            {
-                return 0f;
-            }
-        }
-
-        private static bool vseApiResolved;
-        private static MethodInfo passionToDefMethod;
-        private static void EnsureInitialized()
-        {
-            if (initialized)
-            {
-                return;
-            }
-            initialized = true;
-            registered = new List<PassionInfo>();
-            Type managerType = FindType("VSE.Passions.PassionManager");
-            if (managerType != null)
-            {
-                try
-                {
-                    PropertyInfo all = managerType.GetProperty("AllPassions", BindingFlags.Public | BindingFlags.Static);
-                    if (all != null && all.GetValue(null, null) is IEnumerable values)
-                    {
-                        foreach (object value in values)
-                        {
-                            if (value is Passion passion)
-                            {
-                                AddPassion(passion);
-                            }
-                        }
-                    }
-                }
-                catch (Exception exception)
-                {
-                    Log.Warning("[Ordered Work] Could not enumerate VSE passions: " + exception.Message);
-                }
-            }
-            AddPassionsFromDefDatabase();
-            if (registered.Count == 0)
-            {
-                registered.Add(new PassionInfo { Passion = Passion.None, DefName = "None", Label = "None" });
-                registered.Add(new PassionInfo { Passion = Passion.Minor, DefName = "Minor", Label = "Minor" });
-                registered.Add(new PassionInfo { Passion = Passion.Major, DefName = "Major", Label = "Major" });
-            }
-        }
-
-        private static void AddPassion(Passion passion)
-        {
-            string defName = DefNameOf(passion);
-            if (string.IsNullOrEmpty(defName)
-                || registered.Any(p => p.DefName == defName))
-            {
-                return;
-            }
-            string label = null;
-            try
-            {
-                label = LabelOf(passion);
-            }
-            catch (Exception exception)
-            {
-                Log.Warning("[Ordered Work] Could not read passion label for " + defName + ": " + exception.Message);
-            }
-            if (string.IsNullOrEmpty(label))
-            {
-                label = defName;
-            }
-            registered.Add(new PassionInfo
-            {
-                Passion = passion,
-                DefName = defName,
-                Label = label
-            });
-        }
-
-        private static void AddPassionsFromDefDatabase()
-        {
-            Type defType = FindType("VSE.Passions.PassionDef");
-            if (defType == null)
-            {
-                return;
-            }
-            try
-            {
-                Type databaseType = typeof(DefDatabase<>).MakeGenericType(defType);
-                PropertyInfo allDefs = databaseType.GetProperty(
-                    "AllDefsListForReading",
-                    BindingFlags.Public | BindingFlags.Static);
-                if (allDefs == null || !(allDefs.GetValue(null, null) is IEnumerable defs))
-                {
-                    return;
-                }
-                foreach (object def in defs)
-                {
-                    if (!TryReadPassionIndex(defType, def, out int index))
-                    {
-                        continue;
-                    }
-                    AddPassion((Passion)index);
-                }
-            }
-            catch (Exception exception)
-            {
-                Log.Warning("[Ordered Work] Could not enumerate PassionDef database: " + exception.Message);
-            }
-        }
-
-        private static bool TryReadPassionIndex(Type defType, object def, out int index)
-        {
-            index = -1;
-            if (def == null)
-            {
-                return false;
-            }
-            string[] names = { "index", "Index", "passionIndex", "PassionIndex" };
-            foreach (string name in names)
-            {
-                FieldInfo field = defType.GetField(name, BindingFlags.Public | BindingFlags.Instance);
-                if (field != null)
-                {
-                    index = Convert.ToInt32(field.GetValue(def));
-                    return true;
-                }
-                PropertyInfo property = defType.GetProperty(name, BindingFlags.Public | BindingFlags.Instance);
-                if (property != null)
-                {
-                    index = Convert.ToInt32(property.GetValue(def, null));
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private static object GetVseDef(Passion passion)
-        {
-            ResolveVseApi();
-            if (passionToDefMethod == null)
-            {
-                return null;
-            }
-            try
-            {
-                return passionToDefMethod.Invoke(null, new object[] { passion });
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        private static void ResolveVseApi()
-        {
-            if (vseApiResolved)
-            {
-                return;
-            }
-            vseApiResolved = true;
-            Type managerType = FindType("VSE.Passions.PassionManager");
-            if (managerType == null)
-            {
-                return;
-            }
-            MethodInfo[] methods = managerType.GetMethods(BindingFlags.Public | BindingFlags.Static);
-            for (int i = 0; i < methods.Length; i++)
-            {
-                if (methods[i].Name == "PassionToDef" && methods[i].GetParameters().Length == 1)
-                {
-                    passionToDefMethod = methods[i];
-                    return;
-                }
-            }
-        }
-
-        private static Type FindType(string fullName)
-        {
-            Type type = Type.GetType(fullName + ", VSE");
-            if (type != null) return type;
-            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                type = assembly.GetType(fullName);
-                if (type != null) return type;
-            }
-            return null;
-        }
-
-        private static T GetMember<T>(object instance, string name)
-        {
-            if (instance == null)
-            {
-                return default;
-            }
-            Type type = instance.GetType();
-            PropertyInfo property = type.GetProperty(name, BindingFlags.Public | BindingFlags.Instance);
-            if (property != null)
-            {
-                return (T)property.GetValue(instance, null);
-            }
-            FieldInfo field = type.GetField(name, BindingFlags.Public | BindingFlags.Instance);
-            return field != null ? (T)field.GetValue(instance) : default;
-        }
-
-        private static string GetStringMember(object instance, string name)
-        {
-            if (instance == null)
-            {
-                return null;
-            }
-            object value = GetMember<object>(instance, name);
-            if (value is string text)
-            {
-                return text;
-            }
-            if (value is TaggedString tagged)
-            {
-                return tagged.ToString();
-            }
-            return value?.ToString();
+            return PassionMetadata.LearnRateOf(passion);
         }
     }
 }
