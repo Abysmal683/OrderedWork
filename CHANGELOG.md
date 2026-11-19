@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.214] - 2026-11-19
+
+### Localization — palette, tooltips and remaining Work labels
+- Migrated Work Control, palette tooltip labels, passion-weight labels and remaining static Work labels.
+- Added keys for long WorkType/Giver tooltip labels and Work Control diagnostics.
+- Removed duplicated nested key wrappers.
+- Remaining migration is limited to dynamic formatted tooltips and diagnostic/log wording.
+
 ## [0.3.0-alpha.213] - 2026-11-19
 
 ### Localization — Work Control and palette labels
