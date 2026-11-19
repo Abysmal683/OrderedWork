@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.202] - 2026-11-19
+
+### Fix — manual priorities on every apply
+- `EnsureManualPriorities` is also called at the start of `WorkOrderService.Apply`, covering existing saves whose colony was already initialized.
+- This ensures the mod writes and displays manual priorities even after an old save loads with the toggle off.
+- Split WorkType column generation remains active from startup.
+
 ## [0.3.0-alpha.201] - 2026-11-19
 
 ### Fix — manual priorities default
