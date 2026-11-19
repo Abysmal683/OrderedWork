@@ -3,6 +3,19 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.167] - 2026-11-19
+
+### Feature — Work preset save/load
+- Added `Save` and `Load` buttons beside the `Trabajo` title.
+- Presets are named JSON files under `OrderedWork/WorkPresets`.
+- A preset stores the active WorkType order and each WorkType's WorkGiver order; clothing remains separate.
+- Loading replaces the pawn's WorkType and WorkGiver state and reports success with a message.
+- Save/Load lists support overwrite, delete and immediate load.
+- Zone changes now apply immediately; `Apply zone` and the last-applied line were removed.
+- Skill tooltips use VSE `learnRateFactor` when available.
+- Givers toggle has an active tint; section separators are neutral gray; XP bars have a white border.
+- Time hotkeys attempt to play the vanilla time-control sound.
+
 ## [0.3.0-alpha.166] - 2026-11-19
 
 ### Fix — zone auto-apply and Work polish
