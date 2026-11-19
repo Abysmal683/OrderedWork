@@ -108,7 +108,10 @@ namespace OrderedWork.UI
                         removeIndex = index;
                         Event.current.Use();
                     }
-                    Widgets.Label(new Rect(row.xMax - 24f, row.y + 1f, 20f, 20f), "≡");
+                    Rect rowHandle = new Rect(row.xMax - 24f, row.y + 1f, 20f, 20f);
+                    Widgets.Label(rowHandle, "≡");
+                    TooltipHandler.TipRegion(rowHandle,
+                        OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.RightClickRemove", "Right-click to remove this WorkType."));
                     if (Mouse.IsOver(row)) TooltipHandler.TipRegion(row, WorkTypeTooltip(workType, index + 1));
                 },
                 delegate(int index, Rect row)

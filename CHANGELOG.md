@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.233] - 2026-11-19
+
+### Changed — focus clear gestures
+- Removed the `Clear hour` button; hour clearing remains available by right-clicking a focus hour cell.
+- Kept `Clear all` for all per-pawn focus overrides.
+- Added a WorkType row tooltip for the right-click removal gesture.
+
 ## [0.3.0-alpha.232] - 2026-11-19
 
 ### Added — focus clearing and add-menu zebra

@@ -221,4 +221,5 @@
   <OrderedWork.Passion.None>ninguna</OrderedWork.Passion.None>
   <OrderedWork.Work.Removed>Tipo de trabajo eliminado: </OrderedWork.Work.Removed>
   <OrderedWork.Common.NoneShort>Ninguno</OrderedWork.Common.NoneShort>
+  <OrderedWork.Work.RightClickRemove>Clic derecho para quitar este tipo de trabajo.</OrderedWork.Work.RightClickRemove>
 </LanguageData>

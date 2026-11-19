@@ -173,25 +173,20 @@ namespace OrderedWork.UI
                 OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.RightClick", "Right click a row to remove its focus."));
             y += 22f;
 
-            if (UiButtonBar.Button(new Rect(0f, y, 120f, 24f),
+            if (UiButtonBar.Button(new Rect(0f, y, 132f, 24f),
                 OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.SavePreset", "Save preset")))
             {
                 Find.WindowStack.Add(new Dialog_FocusPreset(false, BuildFocusPreset, null,
                     pawn != null ? pawn.LabelShort : null));
             }
-            if (UiButtonBar.Button(new Rect(126f, y, 120f, 24f),
+            if (UiButtonBar.Button(new Rect(138f, y, 132f, 24f),
                 OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.LoadPresetButton", "Load preset")))
             {
                 Find.WindowStack.Add(new Dialog_FocusPreset(true, null, ApplyFocusPreset));
             }
-            if (UiButtonBar.Button(new Rect(252f, y, 120f, 24f),
-                OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.ClearHour", "Clear hour"), focus.Count > 0))
-            {
-                ClearFocusHour(detailFocusHour);
-            }
             PawnWorkOrder focusEntry = DetailEntry();
             bool canClearAll = focusEntry != null && focusEntry.hourFocusOverrides.Count > 0;
-            if (UiButtonBar.Button(new Rect(378f, y, 120f, 24f),
+            if (UiButtonBar.Button(new Rect(276f, y, 132f, 24f),
                 OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.ClearAll", "Clear all"), canClearAll))
             {
                 ClearAllFocus();
