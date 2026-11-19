@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.204] - 2026-11-19
+
+### Refactor — dynamic WorkType factory
+- Extracted split WorkType creation, Work tab column generation and work type reference copying into `DynamicWorkTypeFactory`.
+- `OrderedWorkStartup` now delegates dynamic WorkType work to the factory.
+- Kept manual-priority enforcement and split column creation behavior.
+- Removed an unused Harmony using from startup.
+
 ## [0.3.0-alpha.203] - 2026-11-19
 
 ### Fix — custom split Work tab columns
