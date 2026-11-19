@@ -3,6 +3,17 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.190] - 2026-11-19
+
+### Feature — persistent skill filters and expertise scoring
+- Skill filter flags now persist in `OrderedWorkSettings` across tab close/reopen and saves.
+- Expertise rows inherit their parent skill level and passion when their own level is zero.
+- Level-only sorting uses level; passion-only uses passion weights; both use the combined score.
+- Expertise rows are included only when the VSE filter is enabled.
+- Profile assigned-work rows show skill level, passion and zebra.
+- VSE adapter resolves the installed root namespace (`VSE.ExpertiseTrackers`, `VSE.ExpertiseUIUtility`).
+- Search label is `Find`.
+
 ## [0.3.0-alpha.189] - 2026-11-19
 
 ### Feature — Profile row details and working expertise filter
