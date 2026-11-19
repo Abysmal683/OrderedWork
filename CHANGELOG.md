@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.218] - 2026-11-19
+
+### Localization — Schedule fragments and palette diagnostics
+- Migrated remaining Schedule Load/Save labels and Click-to-paint tooltip prefix.
+- Migrated the WorkType palette incapability diagnostic message into keyed fragments.
+- Added English/Spanish keys for the new fragments.
+- Technical Log/DebugLog output remains English by design.
+
 ## [0.3.0-alpha.217] - 2026-11-19
 
 ### Localization — Work Control detailed tooltip
