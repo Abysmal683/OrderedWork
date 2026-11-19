@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.180] - 2026-11-19
+
+### Fix — avoid hardcoded skill caps
+- Removed the `/20` display from the specialized skill summary.
+- `SkillRecord.MaxLevel` is a const, not a reliable modded cap; the UI no longer presents it as a universal maximum.
+- Skill XP tooltip shows `max / uncapped` when `XpRequiredForLevelUp` is zero.
+- Stats remain uncapped values; only capacities are shown as percentages.
+- WorkType rows keep the current skill level and passion icon.
+
 ## [0.3.0-alpha.179] - 2026-11-19
 
 ### Feature — skill filter menu and direct Profile tab
