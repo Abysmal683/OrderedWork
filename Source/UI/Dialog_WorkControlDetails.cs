@@ -201,7 +201,7 @@ namespace OrderedWork.UI
             Rect search = new Rect(inRect.xMax - 156f, 0f, 72f, 24f);
             Rect left = new Rect(inRect.xMax - 82f, 0f, 26f, 24f);
             Rect right = new Rect(inRect.xMax - 52f, 0f, 26f, 24f);
-            if (Widgets.ButtonText(search, "Buscar"))
+            if (Widgets.ButtonText(search, "Search"))
             {
                 Find.WindowStack.Add(new Dialog_PawnPicker(detailPawns, SetPawn));
             }
@@ -215,7 +215,7 @@ namespace OrderedWork.UI
             }
             TooltipHandler.TipRegion(left, "Colono anterior");
             TooltipHandler.TipRegion(right, "Colono siguiente");
-            TooltipHandler.TipRegion(search, "Buscar otro colono sin cerrar el detalle");
+            TooltipHandler.TipRegion(search, "Search another colonist without closing details");
         }
 
         private void StepPawn(int delta)

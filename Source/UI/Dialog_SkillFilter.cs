@@ -38,12 +38,12 @@ namespace OrderedWork.UI
         public override void DoWindowContents(Rect inRect)
         {
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(0f, 0f, inRect.width, 28f), "Filtro de habilidades");
+            Widgets.Label(new Rect(0f, 0f, inRect.width, 28f), "Skill filters");
             Text.Font = GameFont.Small;
 
-            Widgets.CheckboxLabeled(new Rect(8f, 38f, inRect.width - 16f, 24f), "Nivel", ref level);
-            Widgets.CheckboxLabeled(new Rect(8f, 66f, inRect.width - 16f, 24f), "Pasión", ref passion);
-            Widgets.CheckboxLabeled(new Rect(8f, 94f, inRect.width - 16f, 24f), "Incluir mods", ref mods);
+            Widgets.CheckboxLabeled(new Rect(8f, 38f, inRect.width - 16f, 24f), "Level", ref level);
+            Widgets.CheckboxLabeled(new Rect(8f, 66f, inRect.width - 16f, 24f), "Passion", ref passion);
+            Widgets.CheckboxLabeled(new Rect(8f, 94f, inRect.width - 16f, 24f), "Include mods", ref mods);
 
             bool expertiseAvailable = false;
             Widgets.CheckboxLabeled(new Rect(8f, 122f, inRect.width - 16f, 24f),
@@ -51,7 +51,7 @@ namespace OrderedWork.UI
             if (!expertiseAvailable)
             {
                 TooltipHandler.TipRegion(new Rect(8f, 122f, inRect.width - 16f, 24f),
-                    "La integración de Expertise se habilitará cuando el adaptador VSE esté activo.");
+                    "Expertise will be enabled when the VSE adapter is active.");
             }
 
             Rect buttons = new Rect(0f, inRect.yMax - 30f, inRect.width, 28f);
@@ -60,12 +60,12 @@ namespace OrderedWork.UI
                 new Rect(buttons.x, buttons.y, 110f, 28f),
                 new Rect(buttons.xMax - 90f, buttons.y, 90f, 28f)
             };
-            if (Widgets.ButtonText(cells[0], "Aplicar"))
+            if (Widgets.ButtonText(cells[0], "Apply"))
             {
                 apply?.Invoke(level, passion, expertise, mods);
                 Close();
             }
-            if (Widgets.ButtonText(cells[1], "Cerrar"))
+            if (Widgets.ButtonText(cells[1], "Close"))
             {
                 Close();
             }

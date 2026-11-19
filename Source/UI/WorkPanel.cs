@@ -487,12 +487,12 @@ namespace OrderedWork.UI
 
             Widgets.Label(new Rect(skills.x, skills.y, skills.width - 82f, 20f), "Habilidades");
             Rect filter = new Rect(skills.xMax - 74f, skills.y, 74f, 20f);
-            if (Widgets.ButtonText(filter, "Filtro"))
+            if (Widgets.ButtonText(filter, "Filter"))
             {
                 Find.WindowStack.Add(new Dialog_SkillFilter(
                     filterLevel, filterPassion, filterExpertise, filterMods, ApplySkillFilter));
             }
-            TooltipHandler.TipRegion(filter, "Abrir filtros de habilidades.");
+            TooltipHandler.TipRegion(filter, "Open skill filters.");
             DrawTopSkills(skills);
             Widgets.DrawBoxSolid(new Rect(rect.x + 6f, skills.yMax + 2f, rect.width - 12f, 2f),
                 UiColors.SectionSeparator);

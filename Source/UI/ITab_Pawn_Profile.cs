@@ -12,7 +12,7 @@ namespace OrderedWork.UI
     {
         public ITab_Pawn_Profile()
         {
-            labelKey = "Perfil";
+            labelKey = "Profile";
             size = new Vector2(400f, 220f);
             tutorTag = "OrderedWorkProfile";
         }
@@ -30,8 +30,8 @@ namespace OrderedWork.UI
         protected override void FillTab()
         {
             Rect rect = new Rect(0f, 0f, size.x, size.y);
-            Widgets.Label(rect.ContractedBy(12f), "Perfil de Ordered Work");
-            if (Widgets.ButtonText(new Rect(12f, 44f, 180f, 28f), "Abrir detalle"))
+            Widgets.Label(rect.ContractedBy(12f), "Ordered Work profile");
+            if (Widgets.ButtonText(new Rect(12f, 44f, 180f, 28f), "Open details"))
             {
                 OpenDetail();
             }

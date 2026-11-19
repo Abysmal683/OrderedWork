@@ -9,13 +9,13 @@ namespace OrderedWork.Patches
     /// Adds the Perfil tab to the pawn inspect pane. Only a postfix appends the
     /// tab; vanilla tabs and other mods keep their original order.
     /// </summary>
-    [HarmonyPatch(typeof(Pawn), nameof(Pawn.GetInspectTabs))]
+    [HarmonyPatch(typeof(Thing), nameof(Thing.GetInspectTabs))]
     internal static class Patch_Pawn_GetInspectTabs
     {
         private static readonly ITab_Pawn_Profile ProfileTab = new ITab_Pawn_Profile();
 
         [HarmonyPostfix]
-        private static IEnumerable<InspectTabBase> Postfix(IEnumerable<InspectTabBase> __result)
+        private static IEnumerable<InspectTabBase> Postfix(Thing __instance, IEnumerable<InspectTabBase> __result)
         {
             if (__result != null)
             {
@@ -24,7 +24,10 @@ namespace OrderedWork.Patches
                     yield return tab;
                 }
             }
-            yield return ProfileTab;
+            if (__instance is Pawn pawn && pawn.IsFreeColonist && !pawn.Dead)
+            {
+                yield return ProfileTab;
+            }
         }
     }
 }
