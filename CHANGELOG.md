@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.186] - 2026-11-19
+
+### Fix — Profile schedule grid and VSE retry
+- Profile schedule cells now display the hour number over the assignment color.
+- The `Open details` button moved to the top-right so the schedule cannot overlap it.
+- VSE adapter no longer permanently caches a failed early resolution; it retries after VSE loads.
+- The unavailable log is emitted only once.
+- Excel/expertise filter remains conditional on the adapter resolving.
+- Search label is `Find`.
+
 ## [0.3.0-alpha.185] - 2026-11-19
 
 ### Fix — Profile schedule colors and VSE diagnostics
