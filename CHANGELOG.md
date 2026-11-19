@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.166] - 2026-11-19
+
+### Fix — zone auto-apply and Work polish
+- Zone tab now applies the selected area immediately; `Apply zone` and the last-applied line were removed.
+- Skill multiplier now reads VSE's `learnRateFactor` when available; vanilla learning factors remain the fallback.
+- Givers toggle has an active tint while the column is open.
+- Added a green separator between WorkType active/incapable and Giver list/stats sections.
+- Added a white border to the XP bar.
+- Time hotkeys now attempt to play the vanilla time-control sound in addition to changing speed.
+
 ## [0.3.0-alpha.165] - 2026-11-19
 
 ### Fix — Work panel performance and hotkeys
