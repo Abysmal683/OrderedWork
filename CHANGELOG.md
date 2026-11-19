@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.161] - 2026-11-19
+
+### Fix — Work editor feedback pass
+- Removed the WorkType per-row `Changed` marker; only WorkGiver rows compare against the global JSON order.
+- Replaced per-row giver chevrons with a single `Givers` column toggle; selecting a WorkType opens the giver column for that type.
+- WorkType rows now accept drag from the row or handle and show a drag/drop tint; WorkGivers got the same tint.
+- `Top 5 trabajos` now lists WorkTypes by level, passion or combined recommendation score (without pins); the search button was removed.
+- Fixed the `DrawStats` NullReferenceException caused by evaluating the work-table-only cooking stat on a pawn.
+- Stats reads are now guarded and use pawn-safe stats.
+
 ## [0.3.0-alpha.160] - 2026-11-19
 
 ### Feature — per-pawn Work editor
