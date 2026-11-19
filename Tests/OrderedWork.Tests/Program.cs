@@ -187,10 +187,14 @@ namespace OrderedWork.Tests
                 AtomicTestRecord record = new AtomicTestRecord { Id = "one", Name = "Alpha" };
                 Assert(store.Save(record), "save first record");
                 Assert(File.Exists(Path.Combine(root, "one.json")), "record file exists");
+                record.Name = "Beta";
                 Assert(store.Save(record), "save second record");
                 Assert(File.Exists(Path.Combine(root, "one.json.bak")), "backup exists");
                 AtomicTestRecord loaded = store.TryLoadById("one");
-                Assert(loaded != null && loaded.Name == "Alpha", "roundtrip");
+                Assert(loaded != null && loaded.Name == "Beta", "roundtrip");
+                File.WriteAllText(Path.Combine(root, "one.json"), "{ corrupt");
+                loaded = store.TryLoadById("one");
+                Assert(loaded != null && loaded.Name == "Alpha", "backup fallback");
                 Assert(store.LoadAll().Count == 1, "load all");
                 Assert(store.Delete("one"), "delete");
                 Assert(!File.Exists(Path.Combine(root, "one.json")), "delete removes file");

@@ -108,6 +108,27 @@ namespace OrderedWork.Core
 
         public T TryLoad(string path)
         {
+            T value = TryLoadFile(path);
+            if (value != null)
+            {
+                return value;
+            }
+
+            string backup = path + ".bak";
+            if (File.Exists(backup))
+            {
+                value = TryLoadFile(backup);
+                if (value != null)
+                {
+                    EmitWarning("Recovered record from backup: " + backup);
+                    return value;
+                }
+            }
+            return null;
+        }
+
+        private T TryLoadFile(string path)
+        {
             try
             {
                 if (!File.Exists(path))

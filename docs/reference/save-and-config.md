@@ -9,7 +9,7 @@ Schedule, hourly focus and Work presets use the shared `AtomicJsonRecordStore<T>
 - one file per record;
 - schema bounds per store;
 - `.tmp` then `File.Replace`;
-- `.bak` before overwrite;
+- `.bak` before overwrite; load falls back to `.bak` when the main JSON is missing or invalid;
 - load normalization and explicit id/filename policy.
 
 The store owns file mechanics; each preset type owns its schema, normalization, id policy and sort order.

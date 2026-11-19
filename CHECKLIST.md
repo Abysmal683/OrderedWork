@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.244)
+# Ordered Work — Current Checklist (0.3.0-alpha.245)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -70,6 +70,12 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] `WorkTypePaletteView` split into core, tooltip and passion partials.
 - [ ] Runtime smoke test after the refactor: settings, pins, weights, split/merge, save/load.
 
+## Store fallback and migration tests (alpha.245)
+
+- [x] Atomic store recovers from a corrupt main file through `.bak`.
+- [x] Roundtrip, backup and schema tests pass.
+- [ ] Runtime profile pending/promotion check.
+- [ ] Runtime legacy focus migration check on an old save.
 ## ProfilesPanel component (alpha.244)
 
 - [x] Profile list/save/pending UI moved into a component.

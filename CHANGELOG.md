@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.245] - 2026-11-19
+
+### Fixed — preset backup recovery
+- `AtomicJsonRecordStore` now falls back to `.bak` when the main JSON is missing or invalid.
+- Added corrupt-main recovery coverage alongside roundtrip, backup and schema tests.
+- Documented the Scribe-based migration verification that still requires a runtime old save.
+
 ## [0.3.0-alpha.244] - 2026-11-19
 
 ### Refactor — ProfilesPanel component
