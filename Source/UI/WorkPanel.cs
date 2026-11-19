@@ -38,6 +38,13 @@ namespace OrderedWork.UI
         private int relevantMode;
         private readonly UiDragList workList = new UiDragList();
         private readonly UiDragList giverList = new UiDragList();
+        private readonly Dictionary<string, string> workTypeTooltipCache =
+            new Dictionary<string, string>(StringComparer.Ordinal);
+        private readonly Dictionary<string, string> giverTooltipCache =
+            new Dictionary<string, string>(StringComparer.Ordinal);
+        private readonly Dictionary<string, string> skillTooltipCache =
+            new Dictionary<string, string>(StringComparer.Ordinal);
+        private int skillTooltipCacheTick = -1;
         private bool resetAllArmed;
         private float resetAllArmedUntil;
 
@@ -188,7 +195,7 @@ namespace OrderedWork.UI
                         removeIndex = index;
                     }
                     Widgets.Label(new Rect(row.xMax - 24f, row.y + 1f, 20f, 20f), "≡");
-                    TooltipHandler.TipRegion(row, WorkTypeTooltip(workType, index + 1));
+                    if (Mouse.IsOver(row)) TooltipHandler.TipRegion(row, WorkTypeTooltip(workType, index + 1));
                 },
                 delegate(int index, Rect row)
                 {
@@ -239,7 +246,7 @@ namespace OrderedWork.UI
                     Rect row = new Rect(0f, i * RowHeight, view.width, RowHeight - 2f);
                     UiZebra.Draw(row, i);
                     Widgets.LabelEllipses(new Rect(row.x + 4f, row.y + 3f, row.width - 8f, 18f), unable[i].labelShort);
-                    TooltipHandler.TipRegion(row, WorkTypeTooltip(unable[i], -1));
+                    if (Mouse.IsOver(row)) TooltipHandler.TipRegion(row, WorkTypeTooltip(unable[i], -1));
                 }
             }
             finally
@@ -334,7 +341,7 @@ namespace OrderedWork.UI
                         Widgets.Label(new Rect(row.xMax - 82f, row.y + 3f, 58f, 18f), "Changed");
                     }
                     Widgets.Label(new Rect(row.xMax - 20f, row.y + 3f, 18f, 18f), "≡");
-                    TooltipHandler.TipRegion(row, GiverTooltip(giverName));
+                    if (Mouse.IsOver(row)) TooltipHandler.TipRegion(row, GiverTooltip(giverName));
                 },
                 null,
                 null,
@@ -360,6 +367,12 @@ namespace OrderedWork.UI
 
         private void DrawTopSkills(Rect rect)
         {
+            int ticks = Find.TickManager != null ? Find.TickManager.TicksGame : 0;
+            if (ticks - skillTooltipCacheTick >= 60)
+            {
+                skillTooltipCache.Clear();
+                skillTooltipCacheTick = ticks;
+            }
             float y = rect.y + 24f;
             List<SkillRow> skills = RankedSkills();
             if (skills.Count == 0)
@@ -377,7 +390,7 @@ namespace OrderedWork.UI
                 WorkTypePaletteView.DrawPassionIcon(icon, entry.Passion);
                 Widgets.Label(new Rect(row.xMax - 90f, row.y + 2f, 24f, 18f), entry.Level.ToString());
                 DrawSkillBar(new Rect(row.xMax - 62f, row.y + 7f, 58f, 8f), entry);
-                TooltipHandler.TipRegion(row, SkillTooltip(entry));
+                if (Mouse.IsOver(row)) TooltipHandler.TipRegion(row, SkillTooltip(entry));
                 y += 22f;
             }
         }
@@ -393,14 +406,22 @@ namespace OrderedWork.UI
                 Widgets.DrawBoxSolid(new Rect(rect.x, rect.y, rect.width * percent, rect.height),
                     new Color(0.42f, 0.68f, 0.34f, 0.9f));
             }
+            Widgets.DrawBox(rect, 1);
         }
 
-        private static string SkillTooltip(SkillRow row)
+        private string SkillTooltip(SkillRow row)
         {
-            return row.Label
+            string cached;
+            if (skillTooltipCache.TryGetValue(row.Label, out cached))
+            {
+                return cached;
+            }
+            string result = row.Label
                 + "\nPassion: " + WorkTypePaletteView.PassionText(row.Passion)
                 + "\nLearning multiplier: x" + row.LearnFactor.ToString("0.00")
                 + "\nXP: " + row.XpCurrent.ToString("0") + " / " + row.XpRequired.ToString("0");
+            skillTooltipCache[row.Label] = result;
+            return result;
         }
 
         private List<SkillRow> RankedSkills()
@@ -655,6 +676,11 @@ namespace OrderedWork.UI
 
         private string WorkTypeTooltip(WorkTypeDef workType, int rank)
         {
+            string cached;
+            if (workType != null && workTypeTooltipCache.TryGetValue(workType.defName, out cached))
+            {
+                return cached;
+            }
             StringBuilder builder = new StringBuilder();
             builder.AppendLine(workType.labelShort);
             if (!string.IsNullOrEmpty(workType.description))
@@ -689,11 +715,21 @@ namespace OrderedWork.UI
                     builder.AppendLine((i + 1) + ". " + current[i] + (overridden ? " *" : ""));
                 }
             }
-            return builder.ToString();
+            string result = builder.ToString();
+            if (workType != null)
+            {
+                workTypeTooltipCache[workType.defName] = result;
+            }
+            return result;
         }
 
-        private static string GiverTooltip(string giverDefName)
+        private string GiverTooltip(string giverDefName)
         {
+            string cached;
+            if (giverTooltipCache.TryGetValue(giverDefName, out cached))
+            {
+                return cached;
+            }
             WorkGiverDef def = DefDatabase<WorkGiverDef>.GetNamedSilentFail(giverDefName);
             if (def == null)
             {
@@ -713,7 +749,9 @@ namespace OrderedWork.UI
             {
                 builder.AppendLine("Emergency giver");
             }
-            return builder.ToString();
+            string result = builder.ToString();
+            giverTooltipCache[giverDefName] = result;
+            return result;
         }
 
         private List<WorkTypeDef> UnableWorkTypes()
@@ -769,6 +807,7 @@ namespace OrderedWork.UI
             }
             List<string> baseline = WorkGiverOrderService.GetGlobalOrder(pawn, workType);
             giverBaselines[workType.defName] = baseline;
+            workTypeTooltipCache.Clear();
             if (!giverDrafts.ContainsKey(workType.defName))
             {
                 List<string> stored = WorkGiverOrderService.GetStoredOrder(pawn, workType);
@@ -833,13 +872,23 @@ namespace OrderedWork.UI
             return baselineIndex != index;
         }
 
+        private void InvalidateTooltips()
+        {
+            workTypeTooltipCache.Clear();
+            giverTooltipCache.Clear();
+            skillTooltipCache.Clear();
+            skillTooltipCacheTick = -1;
+        }
+
         private void CommitWork()
         {
+            InvalidateTooltips();
             WorkOrderService.SaveAndApply(pawn, workDraft);
         }
 
         private void CommitGivers()
         {
+            InvalidateTooltips();
             WorkTypeDef workType = SelectedWorkType();
             if (workType == null)
             {

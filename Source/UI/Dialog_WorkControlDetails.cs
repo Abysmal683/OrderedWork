@@ -88,6 +88,7 @@ namespace OrderedWork.UI
 
         public override void DoWindowContents(Rect inRect)
         {
+            HandleTimeHotkeys();
             EnforceMinimumWindowSize();
             draggable = detailTab != DetailTab.Schedule && detailTab != DetailTab.Work;
             if (workPanel == null && pawn != null)
@@ -133,6 +134,45 @@ namespace OrderedWork.UI
                     break;
                 default:
                     DrawOverview(content);
+                    break;
+            }
+        }
+
+        private static void HandleTimeHotkeys()
+        {
+            Event current = Event.current;
+            if (current == null || current.type != EventType.KeyDown
+                || current.control || current.alt || current.shift
+                || Find.TickManager == null)
+            {
+                return;
+            }
+
+            switch (current.keyCode)
+            {
+                case KeyCode.Alpha1:
+                case KeyCode.Keypad1:
+                    Find.TickManager.CurTimeSpeed = TimeSpeed.Normal;
+                    current.Use();
+                    break;
+                case KeyCode.Alpha2:
+                case KeyCode.Keypad2:
+                    Find.TickManager.CurTimeSpeed = TimeSpeed.Fast;
+                    current.Use();
+                    break;
+                case KeyCode.Alpha3:
+                case KeyCode.Keypad3:
+                    Find.TickManager.CurTimeSpeed = TimeSpeed.Superfast;
+                    current.Use();
+                    break;
+                case KeyCode.Alpha4:
+                case KeyCode.Keypad4:
+                    Find.TickManager.CurTimeSpeed = TimeSpeed.Ultrafast;
+                    current.Use();
+                    break;
+                case KeyCode.Space:
+                    Find.TickManager.TogglePaused();
+                    current.Use();
                     break;
             }
         }
