@@ -17,15 +17,15 @@ namespace OrderedWork.UI
             }
             if (passion == Passion.Major)
             {
-                return "major";
+                return OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Passion.Major", "major");
             }
             if (passion == Passion.Minor)
             {
-                return "minor";
+                return OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Passion.Minor", "minor");
             }
             if (passion == Passion.None)
             {
-                return "none";
+                return OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Passion.None", "none");
             }
             return passion.ToString();
         }

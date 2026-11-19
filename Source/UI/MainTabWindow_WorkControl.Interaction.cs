@@ -251,7 +251,7 @@ namespace OrderedWork.UI
 
                 if (WorkOrderService.IsIncapable(pawn, workType))
                 {
-                    options.Add(new FloatMenuOption(label + " - Incapable", null));
+                    options.Add(new FloatMenuOption(label + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.IncapableSuffix", " - Incapable"), null));
                     continue;
                 }
 

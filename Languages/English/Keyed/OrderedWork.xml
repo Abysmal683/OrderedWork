@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-16"?>
 <LanguageData>
   <OrderedWork.Common.Load>Load</OrderedWork.Common.Load>
   <OrderedWork.Common.Save>Save</OrderedWork.Common.Save>
@@ -48,7 +48,8 @@
   <OrderedWork.Work.AddTip>Add a capable WorkType that is not currently in this pawn's list.</OrderedWork.Work.AddTip>
   <OrderedWork.Givers.ResetTip>Reset this WorkType's giver order to the saved global JSON order.</OrderedWork.Givers.ResetTip>
   <OrderedWork.Givers.ResetAllTip>Reset every WorkGiver override for this pawn. Requires confirmation.</OrderedWork.Givers.ResetAllTip>
-  <OrderedWork.Givers.ConfirmResetTip>Click again within 5 seconds to reset every WorkGiver override.</OrderedWork.Givers.ConfirmResetTip>  <OrderedWork.Common.Overwrite>Overwrite</OrderedWork.Common.Overwrite>
+  <OrderedWork.Givers.ConfirmResetTip>Click again within 5 seconds to reset every WorkGiver override.</OrderedWork.Givers.ConfirmResetTip>
+  <OrderedWork.Common.Overwrite>Overwrite</OrderedWork.Common.Overwrite>
   <OrderedWork.Common.Unknown>unknown</OrderedWork.Common.Unknown>
   <OrderedWork.Common.Map>Map</OrderedWork.Common.Map>
   <OrderedWork.Common.ManageZones>Manage zones</OrderedWork.Common.ManageZones>
@@ -96,4 +97,126 @@
   <OrderedWork.Main.Previous>Previous colonist</OrderedWork.Main.Previous>
   <OrderedWork.Main.Next>Next colonist</OrderedWork.Main.Next>
   <OrderedWork.Main.SearchTip>Search another colonist without closing details</OrderedWork.Main.SearchTip>
-  <OrderedWork.Main.PanelLocked>Panel movement is locked in this tab.</OrderedWork.Main.PanelLocked>  <OrderedWork.Zone.Info>Assign an existing area. Use Manage zones to create or edit.</OrderedWork.Zone.Info>
+  <OrderedWork.Main.PanelLocked>Panel movement is locked in this tab.</OrderedWork.Main.PanelLocked>
+  <OrderedWork.Clothing.None>None</OrderedWork.Clothing.None>
+  <OrderedWork.Clothing.NotConfigured>not configured</OrderedWork.Clothing.NotConfigured>
+  <OrderedWork.Clothing.WornPrefix>Worn apparel (</OrderedWork.Clothing.WornPrefix>
+  <OrderedWork.Clothing.WornSuffix>)</OrderedWork.Clothing.WornSuffix>
+  <OrderedWork.Common.Active>Active</OrderedWork.Common.Active>
+  <OrderedWork.Common.Any>Any</OrderedWork.Common.Any>
+  <OrderedWork.Common.Clear>Clear</OrderedWork.Common.Clear>
+  <OrderedWork.Common.Incapable>Incapable</OrderedWork.Common.Incapable>
+  <OrderedWork.Common.LegacySnapshot>legacy snapshot</OrderedWork.Common.LegacySnapshot>
+  <OrderedWork.Common.NotConfigured>not configured</OrderedWork.Common.NotConfigured>
+  <OrderedWork.Common.Off>Off</OrderedWork.Common.Off>
+  <OrderedWork.Givers.Emergency>Emergency giver</OrderedWork.Givers.Emergency>
+  <OrderedWork.Givers.Verb>Verb: </OrderedWork.Givers.Verb>
+  <OrderedWork.Overrides.ApparelPolicy> | apparel policy </OrderedWork.Overrides.ApparelPolicy>
+  <OrderedWork.Overrides.Disabled>disabled</OrderedWork.Overrides.Disabled>
+  <OrderedWork.Overrides.Enabled>enabled</OrderedWork.Overrides.Enabled>
+  <OrderedWork.Overrides.Hour>Hour </OrderedWork.Overrides.Hour>
+  <OrderedWork.Overrides.LockedSuffix>, locked</OrderedWork.Overrides.LockedSuffix>
+  <OrderedWork.Overrides.Rank> | rank </OrderedWork.Overrides.Rank>
+  <OrderedWork.Overrides.WorkType>WorkType </OrderedWork.Overrides.WorkType>
+  <OrderedWork.Palette.CannotDo>Ordered Work: </OrderedWork.Palette.CannotDo>
+  <OrderedWork.Palette.CannotDoSuffix> selected pawn(s) cannot do </OrderedWork.Palette.CannotDoSuffix>
+  <OrderedWork.Palette.IncapableSuffix> (Incapable).</OrderedWork.Palette.IncapableSuffix>
+  <OrderedWork.Palette.None>none</OrderedWork.Palette.None>
+  <OrderedWork.Palette.NoneShort>- none</OrderedWork.Palette.NoneShort>
+  <OrderedWork.Palette.RelevantSkills>Relevant skills: </OrderedWork.Palette.RelevantSkills>
+  <OrderedWork.Palette.WorkGivers>Work givers:</OrderedWork.Palette.WorkGivers>
+  <OrderedWork.PassionWeights.DefaultsMatch>Weights already match the current defaults.</OrderedWork.PassionWeights.DefaultsMatch>
+  <OrderedWork.PassionWeights.LearnRate>Learn rate: x</OrderedWork.PassionWeights.LearnRate>
+  <OrderedWork.PassionWeights.Reset>Reset recommendation weights</OrderedWork.PassionWeights.Reset>
+  <OrderedWork.PassionWeights.ResetDone>Recommendation weights reset.</OrderedWork.PassionWeights.ResetDone>
+  <OrderedWork.PassionWeights.ResetTip>Restore all passion weights to their defaults.</OrderedWork.PassionWeights.ResetTip>
+  <OrderedWork.PassionWeights.Title>Recommendation passion weights (global). Level 0 / per level / min level:</OrderedWork.PassionWeights.Title>
+  <OrderedWork.Presets.LoadSchedule>Load schedule preset</OrderedWork.Presets.LoadSchedule>
+  <OrderedWork.Presets.LoadWork>Load Work preset</OrderedWork.Presets.LoadWork>
+  <OrderedWork.Presets.SaveSchedule>Save schedule preset</OrderedWork.Presets.SaveSchedule>
+  <OrderedWork.Presets.SaveWork>Save Work preset</OrderedWork.Presets.SaveWork>
+  <OrderedWork.Presets.ScheduleLoadedPrefix>Schedule preset loaded into the editor: </OrderedWork.Presets.ScheduleLoadedPrefix>
+  <OrderedWork.Presets.ScheduleSavedPrefix>Schedule preset saved: </OrderedWork.Presets.ScheduleSavedPrefix>
+  <OrderedWork.Presets.WorkAppliedPrefix>Work preset applied: </OrderedWork.Presets.WorkAppliedPrefix>
+  <OrderedWork.Presets.WorkSavedPrefix>Work preset saved: </OrderedWork.Presets.WorkSavedPrefix>
+  <OrderedWork.Schedule.AppliedPrefix>Schedule applied to </OrderedWork.Schedule.AppliedPrefix>
+  <OrderedWork.Schedule.AppliedSuffix>.</OrderedWork.Schedule.AppliedSuffix>
+  <OrderedWork.Schedule.BrushTip>Active schedule brush. Click or drag over Modif to paint this assignment.</OrderedWork.Schedule.BrushTip>
+  <OrderedWork.Schedule.ClickPaint>Click to paint </OrderedWork.Schedule.ClickPaint>
+  <OrderedWork.Schedule.HourlyPriority>Hourly priority: reserved for WorkType overrides; it is not stored in the preset.</OrderedWork.Schedule.HourlyPriority>
+  <OrderedWork.Schedule.NoAssignment>No assignment defs</OrderedWork.Schedule.NoAssignment>
+  <OrderedWork.Skills.ExpertiseLabel>Expertise</OrderedWork.Skills.ExpertiseLabel>
+  <OrderedWork.Skills.Learning>Learning multiplier: x</OrderedWork.Skills.Learning>
+  <OrderedWork.Skills.LevelZero>  Level 0: </OrderedWork.Skills.LevelZero>
+  <OrderedWork.Skills.MinLevel>  Min level: </OrderedWork.Skills.MinLevel>
+  <OrderedWork.Skills.Negative>Negative passion: </OrderedWork.Skills.Negative>
+  <OrderedWork.Skills.No>no</OrderedWork.Skills.No>
+  <OrderedWork.Skills.Passion>Passion: </OrderedWork.Skills.Passion>
+  <OrderedWork.Skills.PerLevel>  Per level: </OrderedWork.Skills.PerLevel>
+  <OrderedWork.Skills.RecommendationWeight>Recommendation weight:</OrderedWork.Skills.RecommendationWeight>
+  <OrderedWork.Skills.Xp>XP: </OrderedWork.Skills.Xp>
+  <OrderedWork.Skills.XpMax>XP: max / uncapped</OrderedWork.Skills.XpMax>
+  <OrderedWork.Skills.Yes>yes</OrderedWork.Skills.Yes>
+  <OrderedWork.Stats.BodyCapacity>A body capacity affected by health, injuries, bionics and drugs.</OrderedWork.Stats.BodyCapacity>
+  <OrderedWork.Stats.Capacity>Capacity</OrderedWork.Stats.Capacity>
+  <OrderedWork.Stats.SkillLabel>Skill </OrderedWork.Stats.SkillLabel>
+  <OrderedWork.Stats.Stat>Stat</OrderedWork.Stats.Stat>
+  <OrderedWork.Status.Dead>Dead</OrderedWork.Status.Dead>
+  <OrderedWork.Status.Down>Down</OrderedWork.Status.Down>
+  <OrderedWork.Status.Ok>OK</OrderedWork.Status.Ok>
+  <OrderedWork.Tab.Clothing>Clothing</OrderedWork.Tab.Clothing>
+  <OrderedWork.Tab.Overrides>Overrides</OrderedWork.Tab.Overrides>
+  <OrderedWork.Tab.Overview>Overview</OrderedWork.Tab.Overview>
+  <OrderedWork.Tab.Work>Work</OrderedWork.Tab.Work>
+  <OrderedWork.Work.SelectType>Select a WorkType.</OrderedWork.Work.SelectType>
+  <OrderedWork.WorkControl.Age>Age: </OrderedWork.WorkControl.Age>
+  <OrderedWork.WorkControl.ClearTip>Clear the Pawn and Work filters</OrderedWork.WorkControl.ClearTip>
+  <OrderedWork.WorkControl.Details>Details</OrderedWork.WorkControl.Details>
+  <OrderedWork.WorkControl.DetailsTip>More details for the first selected pawn</OrderedWork.WorkControl.DetailsTip>
+  <OrderedWork.WorkControl.FilterPrefix>Filter: </OrderedWork.WorkControl.FilterPrefix>
+  <OrderedWork.WorkControl.FilterScopeTip>Where the Work filter applies: pawn rows, palette, or both</OrderedWork.WorkControl.FilterScopeTip>
+  <OrderedWork.WorkControl.FilterWork>Filter Work</OrderedWork.WorkControl.FilterWork>
+  <OrderedWork.WorkControl.FilterWorkTypes>Filter WorkTypes</OrderedWork.WorkControl.FilterWorkTypes>
+  <OrderedWork.WorkControl.Health>Health: </OrderedWork.WorkControl.Health>
+  <OrderedWork.WorkControl.Hint>Work (left = highest). Drag to reorder, × remove, + add.</OrderedWork.WorkControl.Hint>
+  <OrderedWork.WorkControl.InvertTip>Invert the Work filter where it applies</OrderedWork.WorkControl.InvertTip>
+  <OrderedWork.WorkControl.Level>Level: </OrderedWork.WorkControl.Level>
+  <OrderedWork.WorkControl.LoadColony>Load a colony</OrderedWork.WorkControl.LoadColony>
+  <OrderedWork.WorkControl.NoColonists>No free colonists</OrderedWork.WorkControl.NoColonists>
+  <OrderedWork.WorkControl.NoMatch>No pawns match</OrderedWork.WorkControl.NoMatch>
+  <OrderedWork.WorkControl.Not>Not</OrderedWork.WorkControl.Not>
+  <OrderedWork.WorkControl.NothingAdd>Nothing available to add</OrderedWork.WorkControl.NothingAdd>
+  <OrderedWork.WorkControl.Off>Off</OrderedWork.WorkControl.Off>
+  <OrderedWork.WorkControl.Passion>Passion: </OrderedWork.WorkControl.Passion>
+  <OrderedWork.WorkControl.Pawn>Pawn</OrderedWork.WorkControl.Pawn>
+  <OrderedWork.WorkControl.Priority>Priority: </OrderedWork.WorkControl.Priority>
+  <OrderedWork.WorkControl.Recommend>Recommend</OrderedWork.WorkControl.Recommend>
+  <OrderedWork.WorkControl.RecommendTip>Generate recommendation for selected pawn(s)</OrderedWork.WorkControl.RecommendTip>
+  <OrderedWork.WorkControl.ResizeTip>Drag to resize Work Control (minimum: 4 pawn rows)</OrderedWork.WorkControl.ResizeTip>
+  <OrderedWork.WorkControl.Scope.Both>Both</OrderedWork.WorkControl.Scope.Both>
+  <OrderedWork.WorkControl.Scope.Line>Line</OrderedWork.WorkControl.Scope.Line>
+  <OrderedWork.WorkControl.Scope.Palette>Palette</OrderedWork.WorkControl.Scope.Palette>
+  <OrderedWork.WorkControl.Skill>Skill: </OrderedWork.WorkControl.Skill>
+  <OrderedWork.WorkControl.Title>Work Control</OrderedWork.WorkControl.Title>
+  <OrderedWork.WorkControl.TitleLabel>Title: </OrderedWork.WorkControl.TitleLabel>
+  <OrderedWork.WorkControl.ViewNumeric>View: Numeric</OrderedWork.WorkControl.ViewNumeric>
+  <OrderedWork.WorkControl.ViewTip>Open the vanilla Work tab (Numeric view)</OrderedWork.WorkControl.ViewTip>
+  <OrderedWork.WorkControl.WorkTypes>Work types: </OrderedWork.WorkControl.WorkTypes>
+  <OrderedWork.WorkTypes.GiversLabel>Givers:</OrderedWork.WorkTypes.GiversLabel>
+  <OrderedWork.WorkTypes.SkillFallback>skill</OrderedWork.WorkTypes.SkillFallback>
+  <OrderedWork.WorkTypes.SkillsLabel>Skills:</OrderedWork.WorkTypes.SkillsLabel>
+  <OrderedWork.Zone.ManageTip>Open the vanilla area manager. Create, delete, expand or reduce areas there; Ordered Work only assigns existing areas.</OrderedWork.Zone.ManageTip>
+  <OrderedWork.Presets.DeleteConfirm>Delete '</OrderedWork.Presets.DeleteConfirm>
+  <OrderedWork.SkillFilter.ExpertiseUnavailable>Expertise will be enabled when the VSE adapter is active.</OrderedWork.SkillFilter.ExpertiseUnavailable>
+  <OrderedWork.WorkControl.Match> match</OrderedWork.WorkControl.Match>
+  <OrderedWork.WorkControl.Matches> matches</OrderedWork.WorkControl.Matches>
+  <OrderedWork.WorkControl.IncapableSuffix> - Incapable</OrderedWork.WorkControl.IncapableSuffix>
+  <OrderedWork.Common.YearsShort>y</OrderedWork.Common.YearsShort>
+  <OrderedWork.Overview.WorkSuffix> work, </OrderedWork.Overview.WorkSuffix>
+  <OrderedWork.Overview.ScheduleSuffix> schedule, </OrderedWork.Overview.ScheduleSuffix>
+  <OrderedWork.Overview.HourlySuffix> hourly, </OrderedWork.Overview.HourlySuffix>
+  <OrderedWork.Overview.ClothingSuffix> clothing</OrderedWork.Overview.ClothingSuffix>
+  <OrderedWork.Passion.Major>major</OrderedWork.Passion.Major>
+  <OrderedWork.Passion.Minor>minor</OrderedWork.Passion.Minor>
+  <OrderedWork.Passion.None>none</OrderedWork.Passion.None>
+</LanguageData>

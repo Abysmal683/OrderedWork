@@ -120,8 +120,8 @@ namespace OrderedWork.UI
                 Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.ClothingPreset", "Clothing preset: ") + clothingPreset);
                 y += 20f;
                 Widgets.Label(new Rect(0f, y, scrollContent.width, 20f),
-                    OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.Overrides", "Overrides: ") + workOverrides + " work, " + scheduleOverrides + " schedule, "
-                    + hourlyOverrides + " hourly, " + clothingOverrides + " clothing");
+                    OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.Overrides", "Overrides: ") + workOverrides + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.WorkSuffix", " work, ") + scheduleOverrides + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.ScheduleSuffix", " schedule, ")
+                    + hourlyOverrides + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.HourlySuffix", " hourly, ") + clothingOverrides + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.ClothingSuffix", " clothing"));
                 y += 20f;
                 Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.Zones", "Zones: ") + zones);
             }

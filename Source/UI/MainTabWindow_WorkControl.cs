@@ -165,7 +165,7 @@ namespace OrderedWork.UI
                 Text.Anchor = TextAnchor.MiddleRight;
                 Widgets.Label(
                     new Rect(inRect.xMax - Pad - 180f, searchY, 180f, SearchHeight),
-                    colonists.Count + (colonists.Count == 1 ? " match" : " matches"));
+                    colonists.Count + (colonists.Count == 1 ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Match", " match") : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Matches", " matches")));
                 Text.Anchor = previousMatchAnchor;
             }
 

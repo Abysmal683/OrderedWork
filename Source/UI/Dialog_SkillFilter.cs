@@ -56,7 +56,7 @@ namespace OrderedWork.UI
             if (!expertiseAvailable)
             {
                 TooltipHandler.TipRegion(new Rect(8f, 122f, inRect.width - 16f, 24f),
-                    "Expertise will be enabled when the VSE adapter is active.");
+                    OrderedWork.Localization.OrderedWorkText.T("OrderedWork.SkillFilter.ExpertiseUnavailable", "Expertise will be enabled when the VSE adapter is active."));
             }
 
             if (level != oldLevel || passion != oldPassion || mods != oldMods || expertise != oldExpertise)

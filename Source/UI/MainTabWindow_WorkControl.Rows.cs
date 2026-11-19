@@ -98,7 +98,7 @@ namespace OrderedWork.UI
                         GUI.color = new Color(0.72f, 0.72f, 0.72f);
                         Rect infoRect = new Rect(leftWidth - infoWidth - ColumnGutter - 2f, y, infoWidth, RowHeight);
                         Widgets.Label(new Rect(infoRect.x, y, infoRect.width, RowHeight / 2f),
-                            pawn.ageTracker != null ? pawn.ageTracker.AgeBiologicalYears + "y" : "");
+                            pawn.ageTracker != null ? pawn.ageTracker.AgeBiologicalYears + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.YearsShort", "y") : "");
                         Widgets.Label(new Rect(infoRect.x, y + RowHeight / 2f, infoRect.width, RowHeight / 2f), HealthShort(pawn));
                         GUI.color = previousInfoColor;
                         Text.Anchor = previousInfoAnchor;
@@ -390,7 +390,7 @@ namespace OrderedWork.UI
             string text = pawn.Name != null ? pawn.Name.ToStringFull : pawn.LabelShort;
             if (pawn.ageTracker != null)
             {
-                text += "\n" + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Age", "Age: ") + pawn.ageTracker.AgeBiologicalYears + "y";
+                text += "\n" + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Age", "Age: ") + pawn.ageTracker.AgeBiologicalYears + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.YearsShort", "y");
             }
             if (pawn.story != null && !string.IsNullOrEmpty(pawn.story.Title))
             {
