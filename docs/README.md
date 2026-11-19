@@ -11,6 +11,7 @@ Start with the need, not the file list.
 | Configure work rules and split/merge | [configure-work-rules.md](how-to/configure-work-rules.md) |
 | Configure hourly focus | [schedule-focus.md](how-to/schedule-focus.md) |
 | Build, test and install a dev build | [develop.md](how-to/develop.md) |
+| Prepare a feature or extension | [prepare-change.md](how-to/prepare-change.md) |
 
 ## Reference
 

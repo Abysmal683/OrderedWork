@@ -13,6 +13,7 @@ Ordered Work is a RimWorld 1.7 work-management mod: it orders WorkTypes and Work
 | Configure work rules and split/merge | [How to configure work rules](docs/how-to/configure-work-rules.md) |
 | Configure hourly focus | [How to configure hourly focus](docs/how-to/schedule-focus.md) |
 | Build, test or install a dev build | [How to build and test](docs/how-to/develop.md) |
+| Prepare a feature or extension | [How to prepare a change](docs/how-to/prepare-change.md) |
 | Look up current behavior | [Features and limitations](docs/reference/features.md) · [Work Control](docs/reference/work-control.md) |
 | Understand the design | [Design notebook](docs/explanation/design-notebook.md) · [Schedule focus](docs/explanation/schedule-focus.md) |
 
