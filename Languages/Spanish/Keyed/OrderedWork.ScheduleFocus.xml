@@ -25,4 +25,7 @@
   <OrderedWork.ScheduleFocus.PresetSaved>Preset de foco guardado: </OrderedWork.ScheduleFocus.PresetSaved>
   <OrderedWork.ScheduleFocus.PresetLoaded>Preset de foco cargado: </OrderedWork.ScheduleFocus.PresetLoaded>
   <OrderedWork.ScheduleFocus.LoadCancelled>Preset de foco no cargado: ninguna entrada es válida para este peón.</OrderedWork.ScheduleFocus.LoadCancelled>
-</LanguageData>
+  <OrderedWork.ScheduleFocus.CopyEmpty>No hay foco para copiar en esta hora.</OrderedWork.ScheduleFocus.CopyEmpty>
+  <OrderedWork.ScheduleFocus.Removed>Foco quitado: </OrderedWork.ScheduleFocus.Removed>
+  <OrderedWork.ScheduleFocus.Modified>Foco modificado: </OrderedWork.ScheduleFocus.Modified>
+  <OrderedWork.ScheduleFocus.OrderChanged>Orden de foco modificado: </OrderedWork.ScheduleFocus.OrderChanged></LanguageData>

@@ -25,4 +25,7 @@
   <OrderedWork.ScheduleFocus.PresetSaved>Focus preset saved: </OrderedWork.ScheduleFocus.PresetSaved>
   <OrderedWork.ScheduleFocus.PresetLoaded>Focus preset loaded: </OrderedWork.ScheduleFocus.PresetLoaded>
   <OrderedWork.ScheduleFocus.LoadCancelled>Focus preset not loaded: no entry is valid for this pawn.</OrderedWork.ScheduleFocus.LoadCancelled>
-</LanguageData>
+  <OrderedWork.ScheduleFocus.CopyEmpty>No focus to copy in this hour.</OrderedWork.ScheduleFocus.CopyEmpty>
+  <OrderedWork.ScheduleFocus.Removed>Focus removed: </OrderedWork.ScheduleFocus.Removed>
+  <OrderedWork.ScheduleFocus.Modified>Focus updated: </OrderedWork.ScheduleFocus.Modified>
+  <OrderedWork.ScheduleFocus.OrderChanged>Focus order updated: </OrderedWork.ScheduleFocus.OrderChanged></LanguageData>

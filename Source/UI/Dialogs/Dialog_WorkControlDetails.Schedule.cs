@@ -20,6 +20,7 @@ namespace OrderedWork.UI
         private void DrawScheduleTab(Rect content)
         {
             EnsureDetailSchedule();
+            Widgets.DrawBoxSolid(new Rect(0f, 0f, content.width, 196f), UiColors.PanelBody);
             float y = 0f;
             Text.Font = GameFont.Medium;
             Widgets.Label(new Rect(0f, y, 100f, 24f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.Title", "Schedule"));
@@ -74,6 +75,7 @@ namespace OrderedWork.UI
             y += line + 8f;
 
             float hourWidth = Mathf.Max(22f, (content.width - 76f) / SchedulePreset.SlotCount);
+            float hourHeaderTop = y;
             Widgets.Label(new Rect(0f, y, 72f, 18f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.Hour", "Hour"));
             for (int hour = 0; hour < SchedulePreset.SlotCount; hour++)
             {
@@ -86,7 +88,14 @@ namespace OrderedWork.UI
             y += 42f;
             DrawScheduleRow(content, y, hourWidth, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.Edit", "Edit"), true, false);
             y += 42f;
+            float focusTop = y;
+            Widgets.DrawBoxSolid(new Rect(0f, y - 5f, content.width, 2f), UiColors.SectionSeparator);
+            Widgets.DrawBoxSolid(new Rect(0f, y, content.width, Mathf.Max(0f, content.height - y)), UiColors.ColumnBackground);
             DrawFocusSection(content, y, hourWidth);
+            if (pawn != null && pawn.Map != null)
+            {
+                DrawCurrentHourHighlight(content, hourHeaderTop, focusTop + 34f, hourWidth, GenLocalDate.HourOfDay(pawn.Map));
+            }
         }
 
         private void OpenSaveDialog()
@@ -159,6 +168,20 @@ namespace OrderedWork.UI
             Find.WindowStack.Add(new FloatMenu(options));
         }
 
+        private static void DrawCurrentHourHighlight(Rect content, float top, float bottom, float hourWidth, int hour)
+        {
+            if (hour < 0 || hour >= SchedulePreset.SlotCount || bottom <= top)
+            {
+                return;
+            }
+            float x = 76f + hour * hourWidth;
+            Widgets.DrawBoxSolid(new Rect(x, top, hourWidth - 1f, bottom - top),
+                new Color(1f, 0.88f, 0.35f, 0.10f));
+            Widgets.DrawBoxSolid(new Rect(x, top, 2f, bottom - top),
+                new Color(1f, 0.88f, 0.35f, 0.55f));
+            Widgets.DrawBoxSolid(new Rect(x + hourWidth - 3f, top, 2f, bottom - top),
+                new Color(1f, 0.88f, 0.35f, 0.55f));
+        }
         private void DrawScheduleRow(Rect content, float y, float hourWidth, string label, bool editable, bool origin)
         {
             Widgets.Label(new Rect(0f, y, 72f, 24f), label);

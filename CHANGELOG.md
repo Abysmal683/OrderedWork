@@ -3,6 +3,18 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.225] - 2026-11-19
+
+### Fixed — Schedule focus layout and feedback
+- Removed the ~300 px empty tail from the Schedule tab; content height now matches the focus editor.
+- Split the Schedule grid and the hourly focus section into two visually distinct backgrounds with a separator.
+- Added a vertical current-hour highlight spanning the timetable and focus rows.
+- Focus cells now show only the number of assigned WorkTypes, regardless of width; names stay in the tooltip.
+- Copy hour refuses to copy an empty hour.
+- Added messages for focus removal, modification and committed reorder.
+- Added Work tab stacked layout with its own scroll; the detail Work panel is vertical again.
+- Clicking outside the Work Control search field releases text focus so camera keys can resume.
+
 ## [0.3.0-alpha.224] - 2026-11-19
 
 ### Added — hourly schedule focus overlay

@@ -36,6 +36,7 @@ namespace OrderedWork.UI
         private Vector2 unableScroll;
         private Vector2 skillsScroll;
         private Vector2 genericStatsScroll;
+        private Vector2 stackedScroll;
         private Vector2 specializedStatsScroll;
         private readonly WorkSkillFilter skillFilter = new WorkSkillFilter();
         private readonly UiDragList workList = new UiDragList();
@@ -57,7 +58,7 @@ namespace OrderedWork.UI
             statTooltips = new StatTooltipService(pawn);
         }
 
-        public void Draw(Rect area)
+        public void Draw(Rect area, bool forceStacked = false)
         {
             if (pawn == null || pawn.Destroyed)
             {
@@ -66,11 +67,11 @@ namespace OrderedWork.UI
             }
             EnsureInitialized();
 
-            WorkPanelRects layout = WorkPanelLayout.Build(area, giversExpanded);
+            WorkPanelRects layout = WorkPanelLayout.Build(area, giversExpanded, forceStacked);
             DrawHeader(layout.Header);
             if (layout.Stacked)
             {
-                DrawCompact(layout);
+                DrawStacked(layout);
                 return;
             }
             DrawWorkTypesColumn(layout.WorkTypes);
@@ -155,11 +156,28 @@ namespace OrderedWork.UI
 
 
 
-        private void DrawCompact(WorkPanelRects layout)
+        private void DrawStacked(WorkPanelRects layout)
         {
-            DrawWorkTypesColumn(layout.WorkTypes);
-            DrawGiversColumn(layout.Givers);
-            DrawMetadataColumn(layout.Metadata);
+            const float workHeight = 330f;
+            const float giversHeight = 260f;
+            const float metadataHeight = 300f;
+            const float gap = 8f;
+            Rect viewport = layout.Body;
+            Rect view = new Rect(0f, 0f, viewport.width,
+                workHeight + gap + giversHeight + gap + metadataHeight);
+            Widgets.BeginScrollView(viewport, ref stackedScroll, view);
+            try
+            {
+                DrawWorkTypesColumn(new Rect(0f, 0f, view.width, workHeight));
+                Widgets.DrawBoxSolid(new Rect(0f, workHeight + 3f, view.width, 2f), UiColors.SectionSeparator);
+                DrawGiversColumn(new Rect(0f, workHeight + gap, view.width, giversHeight));
+                Widgets.DrawBoxSolid(new Rect(0f, workHeight + gap + giversHeight + 3f, view.width, 2f), UiColors.SectionSeparator);
+                DrawMetadataColumn(new Rect(0f, workHeight + gap + giversHeight + gap, view.width, metadataHeight));
+            }
+            finally
+            {
+                Widgets.EndScrollView();
+            }
         }
 
 

@@ -30,3 +30,5 @@ Delivery: single PR slice on the feature branch; ask before push/PR.
 ## Log
 
 - L1. User request: implement schedule focus overlay with 3 assignable hourly WorkTypes, horizontal visible effective order (5 + scroll), right-click removal, direct passion/level metadata, prev/next hour, temporary copy/paste hour, separate hard 24x3 focus presets, independent schedule/focus components, atomic files, tests/logs/localization.
+
+- L2. First runtime smoke test found a stale installed OrderedWork.Core.dll; fixed the install. UI follow-up: compact schedule height, separated sections, current-hour highlight, numeric focus cells, copy-empty guard, focus messages, vertical Work tab, and search focus release.

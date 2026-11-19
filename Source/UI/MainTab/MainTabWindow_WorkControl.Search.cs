@@ -18,7 +18,12 @@ namespace OrderedWork.UI
             float x = Pad;
             Widgets.Label(new Rect(x, searchY, 40f, SearchHeight), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Pawn", "Pawn"));
             x += 42f;
-            searchText = Widgets.TextField(new Rect(x, searchY, 168f, SearchHeight - 2f), searchText ?? "");
+            Rect searchField = new Rect(x, searchY, 168f, SearchHeight - 2f);
+            if (Event.current.type == EventType.MouseDown && !searchField.Contains(Event.current.mousePosition))
+            {
+                GUI.FocusControl(null);
+            }
+            searchText = Widgets.TextField(searchField, searchText ?? "");
             x += 174f;
 
             Rect workButton = new Rect(x, searchY, 190f, SearchHeight - 2f);

@@ -76,16 +76,7 @@ namespace OrderedWork.UI
                 {
                     Text.Font = GameFont.Tiny;
                     Text.Anchor = TextAnchor.MiddleCenter;
-                    string first = WorkTypePaletteView.DisplayName(DefDatabase<WorkTypeDef>.GetNamedSilentFail(focus[0]));
-                    bool tight = hourWidth < 38f;
-                    string label = tight
-                        ? focus.Count.ToString()
-                        : "1" + (string.IsNullOrEmpty(first) ? "" : first.Substring(0, Mathf.Min(4, first.Length)));
-                    Widgets.Label(cell, label);
-                    if (!tight && focus.Count > 1)
-                    {
-                        Widgets.Label(new Rect(cell.x, cell.y + 13f, cell.width, 12f), "+" + (focus.Count - 1));
-                    }
+                    Widgets.Label(cell, focus.Count.ToString());
                     Text.Anchor = TextAnchor.UpperLeft;
                     Text.Font = GameFont.Small;
                 }
@@ -148,7 +139,11 @@ namespace OrderedWork.UI
                     delegate(int index, Rect row) { return new Rect(row.x, row.y, row.width - 70f, row.height); },
                     delegate(int index) { detailFocusSelected = index; },
                     delegate(int from, int to) { MoveFocusEntry(from, to); },
-                    null);
+                    delegate
+                    {
+                        Messages.Message(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.OrderChanged", "Focus order updated: ")
+                            + detailFocusHour.ToString("00") + ":00", MessageTypeDefOf.TaskCompletion, false);
+                    });
                 y += rowsRect.height + 4f;
             }
 
@@ -395,6 +390,8 @@ namespace OrderedWork.UI
                     }
                     SetFocus(detailFocusHour, next);
                     detailFocusSelected = replaceIndex >= 0 ? replaceIndex : Mathf.Min(next.Count - 1, HourFocusStack.MaxFocus - 1);
+                    Messages.Message(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.Modified", "Focus updated: ")
+                        + detailFocusHour.ToString("00") + ":00", MessageTypeDefOf.TaskCompletion, false);
                 }));
         }
 
@@ -422,11 +419,20 @@ namespace OrderedWork.UI
             focus.RemoveAt(index);
             SetFocus(detailFocusHour, focus);
             detailFocusSelected = -1;
+            Messages.Message(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.Removed", "Focus removed: ")
+                + detailFocusHour.ToString("00") + ":00", MessageTypeDefOf.TaskCompletion, false);
         }
 
         private void CopyFocusHour()
         {
-            detailFocusClipboard = new List<string>(GetFocus(detailFocusHour));
+            List<string> current = GetFocus(detailFocusHour);
+            if (current.Count == 0)
+            {
+                Messages.Message(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.CopyEmpty",
+                    "No focus to copy in this hour."), MessageTypeDefOf.RejectInput, false);
+                return;
+            }
+            detailFocusClipboard = new List<string>(current);
             Messages.Message(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.Copied", "Hour copied: ")
                 + detailFocusHour.ToString("00") + ":00", MessageTypeDefOf.TaskCompletion, false);
         }

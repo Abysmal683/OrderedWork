@@ -129,10 +129,10 @@ namespace OrderedWork.UI
             switch (detailTab)
             {
                 case DetailTab.Work:
-                    workPanel.Draw(content);
+                    workPanel.Draw(content, true);
                     break;
                 case DetailTab.Schedule:
-                    DrawScrollableTab(content, DrawScheduleTab, 860f, 760f);
+                    DrawScrollableTab(content, DrawScheduleTab, 860f, 500f);
                     break;
                 case DetailTab.Zone:
                     DrawScrollableTab(content, DrawZoneTab, 500f, 300f);
