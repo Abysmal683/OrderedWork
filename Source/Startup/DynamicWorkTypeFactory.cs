@@ -15,6 +15,8 @@ namespace OrderedWork.Startup
             IEnumerable<KeyValuePair<string, WorkTypeConfig>> ordered,
             OrderedWorkMod mod)
         {
+            try
+            {
             foreach (KeyValuePair<string, WorkTypeConfig> entry in ordered)
             {
                 WorkTypeConfig split = entry.Value;
@@ -74,6 +76,11 @@ namespace OrderedWork.Startup
                     .OrderByDescending(g => g.priorityInType)
                     .ToList();
                 EnsureWorkTabColumn(def);
+            }
+            }
+            catch (Exception exception)
+            {
+                Log.Error("[Ordered Work] Split WorkType creation failed: " + exception);
             }
         }
 

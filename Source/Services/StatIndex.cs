@@ -68,37 +68,43 @@ namespace OrderedWork.Services
                 return;
             }
             built = true;
-            foreach (StatDef stat in DefDatabase<StatDef>.AllDefsListForReading)
+            try
             {
-                if (stat == null || stat.forInformationOnly || stat.alwaysHide)
+                foreach (StatDef stat in DefDatabase<StatDef>.AllDefsListForReading)
                 {
-                    continue;
-                }
-
-                HashSet<string> skills = new HashSet<string>(StringComparer.Ordinal);
-                if (stat.disableIfSkillDisabled != null)
-                {
-                    skills.Add(stat.disableIfSkillDisabled.defName);
-                }
-                AddSkills(skills, stat.skillNeedFactors);
-                AddSkills(skills, stat.skillNeedOffsets);
-
-                foreach (string skill in skills)
-                {
-                    List<StatDef> stats;
-                    if (!bySkill.TryGetValue(skill, out stats))
+                    if (stat == null || stat.forInformationOnly || stat.alwaysHide)
                     {
-                        stats = new List<StatDef>();
-                        bySkill[skill] = stats;
+                        continue;
                     }
-                    if (!stats.Contains(stat))
+
+                    HashSet<string> skills = new HashSet<string>(StringComparer.Ordinal);
+                    if (stat.disableIfSkillDisabled != null)
                     {
-                        stats.Add(stat);
+                        skills.Add(stat.disableIfSkillDisabled.defName);
+                    }
+                    AddSkills(skills, stat.skillNeedFactors);
+                    AddSkills(skills, stat.skillNeedOffsets);
+
+                    foreach (string skill in skills)
+                    {
+                        List<StatDef> stats;
+                        if (!bySkill.TryGetValue(skill, out stats))
+                        {
+                            stats = new List<StatDef>();
+                            bySkill[skill] = stats;
+                        }
+                        if (!stats.Contains(stat))
+                        {
+                            stats.Add(stat);
+                        }
                     }
                 }
             }
+            catch (Exception exception)
+            {
+                Log.Warning("[Ordered Work] StatIndex discovery failed: " + exception.Message);
+            }
         }
-
         private static void AddSkills(HashSet<string> skills, IEnumerable<SkillNeed> needs)
         {
             if (needs == null)
