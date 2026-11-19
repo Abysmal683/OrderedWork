@@ -86,6 +86,13 @@ namespace OrderedWork.UI
                 return;
             }
             initialized = true;
+            if (OrderedWorkMod.Settings != null)
+            {
+                filterLevel = OrderedWorkMod.Settings.skillFilterLevel;
+                filterPassion = OrderedWorkMod.Settings.skillFilterPassion;
+                filterExpertise = OrderedWorkMod.Settings.skillFilterExpertise;
+                filterMods = OrderedWorkMod.Settings.skillFilterMods;
+            }
             workDraft = WorkOrderService.GetOrder(pawn) ?? new List<string>();
             selectedWorkType = workDraft.FirstOrDefault() ?? AddableWorkTypes().FirstOrDefault()?.defName;
             giverDrafts.Clear();
@@ -516,6 +523,13 @@ namespace OrderedWork.UI
             filterPassion = passion;
             filterExpertise = expertise;
             filterMods = mods;
+            if (OrderedWorkMod.Settings != null)
+            {
+                OrderedWorkMod.Settings.skillFilterLevel = level;
+                OrderedWorkMod.Settings.skillFilterPassion = passion;
+                OrderedWorkMod.Settings.skillFilterExpertise = expertise;
+                OrderedWorkMod.Settings.skillFilterMods = mods;
+            }
         }
 
         private void DrawTopSkills(Rect rect)
@@ -657,11 +671,14 @@ namespace OrderedWork.UI
             {
                 foreach (VseExpertiseAdapter.Row row in VseExpertiseAdapter.GetRows(pawn))
                 {
+                    SkillRecord parent = row.ParentSkill != null && pawn.skills != null
+                        ? pawn.skills.GetSkill(row.ParentSkill)
+                        : null;
                     candidates.Add(new SkillRow
                     {
                         Label = row.Label,
-                        Level = row.Level,
-                        Passion = Passion.None,
+                        Level = row.Level > 0 ? row.Level : (parent != null ? parent.Level : row.Level),
+                        Passion = parent != null ? parent.passion : Passion.None,
                         XpCurrent = row.XpCurrent,
                         XpRequired = row.XpRequired,
                         LearnFactor = 1f,

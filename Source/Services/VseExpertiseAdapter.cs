@@ -20,6 +20,7 @@ namespace OrderedWork.Services
             public string Label;
             public string Description;
             public string SkillLabel;
+            public SkillDef ParentSkill;
             public int Level;
             public float XpCurrent;
             public float XpRequired;
@@ -92,6 +93,7 @@ namespace OrderedWork.Services
                         Label = expertiseDef.LabelCap,
                         Description = expertiseDef.description,
                         SkillLabel = skill != null ? skill.label : "",
+                        ParentSkill = skill,
                         Level = levelProperty != null ? Convert.ToInt32(levelProperty.GetValue(record)) : 0,
                         XpCurrent = xpField != null ? Convert.ToSingle(xpField.GetValue(record)) : 0f,
                         XpRequired = requiredField != null ? Convert.ToSingle(requiredField.GetValue(record)) : 0f

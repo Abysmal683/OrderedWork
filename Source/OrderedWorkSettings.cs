@@ -14,6 +14,10 @@ namespace OrderedWork
         public bool prioritizeLowSkillPassion = true;
         public bool verboseLogging;
         public bool workGiverOrderSpike;
+        public bool skillFilterLevel = true;
+        public bool skillFilterPassion = true;
+        public bool skillFilterExpertise;
+        public bool skillFilterMods = true;
         public List<string> recommendationPins = new List<string> { "Patient", "PatientBedRest", "Firefighter" };
         public List<PassionWeightEntry> passionWeights = new List<PassionWeightEntry>();
         public int passionDefaultsVersion;
@@ -30,6 +34,10 @@ namespace OrderedWork
             Scribe_Values.Look(ref prioritizeLowSkillPassion, "prioritizeLowSkillPassion", true);
             Scribe_Values.Look(ref verboseLogging, "verboseLogging", false);
             Scribe_Values.Look(ref workGiverOrderSpike, "workGiverOrderSpike", false);
+            Scribe_Values.Look(ref skillFilterLevel, "skillFilterLevel", true);
+            Scribe_Values.Look(ref skillFilterPassion, "skillFilterPassion", true);
+            Scribe_Values.Look(ref skillFilterExpertise, "skillFilterExpertise", false);
+            Scribe_Values.Look(ref skillFilterMods, "skillFilterMods", true);
             Scribe_Collections.Look(ref recommendationPins, "recommendationPins", LookMode.Value);
             Scribe_Collections.Look(ref passionWeights, "passionWeights", LookMode.Deep);
             Scribe_Values.Look(ref passionDefaultsVersion, "passionDefaultsVersion", 0);
