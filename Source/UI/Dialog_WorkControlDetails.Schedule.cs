@@ -31,53 +31,39 @@ namespace OrderedWork.UI
             y += 28f;
 
             float line = 24f;
-            Widgets.Label(new Rect(0f, y, 42f, line), "Load:");
-            string loadedName = string.IsNullOrWhiteSpace(detailScheduleName)
-                ? "(none)"
-                : detailScheduleName;
-            if (Widgets.ButtonText(new Rect(44f, y, 150f, line), loadedName))
+            if (Widgets.ButtonText(new Rect(0f, y, 64f, line), "Load"))
             {
-                ShowPresetMenu();
+                Find.WindowStack.Add(new Dialog_SchedulePreset(true, null, delegate(SchedulePreset loaded)
+                {
+                    detailSchedule = loaded;
+                    detailScheduleName = loaded.Name;
+                }));
             }
-            if (Widgets.ButtonText(new Rect(198f, y, 56f, line), "New"))
+            if (Widgets.ButtonText(new Rect(68f, y, 56f, line), "New"))
             {
                 detailSchedule = new SchedulePreset { Name = "" };
                 detailScheduleName = "";
             }
-            if (Widgets.ButtonText(new Rect(258f, y, 100f, line), "Copy current"))
+            if (Widgets.ButtonText(new Rect(128f, y, 100f, line), "Copy current"))
             {
-                detailSchedule = ScheduleAdapter.CaptureCurrent(pawn, detailScheduleName);
-                if (detailSchedule != null)
-                {
-                    detailSchedule.Name = "";
-                }
+                detailSchedule = ScheduleAdapter.CaptureCurrent(pawn, "");
                 detailScheduleName = "";
             }
-            y += line + 4f;
-
-            Widgets.Label(new Rect(0f, y, 48f, line), "Name:");
-            detailScheduleName = Widgets.TextField(new Rect(50f, y, 220f, line), detailScheduleName ?? "");
-            bool hasValidName = !string.IsNullOrWhiteSpace(detailScheduleName);
-            bool hasChanges = HasScheduleChanges();
-            if (Widgets.ButtonText(new Rect(276f, y, 64f, line), "Save"))
+            if (Widgets.ButtonText(new Rect(232f, y, 64f, line), "Save"))
             {
                 OpenSaveDialog();
             }
-            if (UiButtonBar.Button(new Rect(344f, y, 116f, line), "Apply to pawn", hasChanges))
+            bool hasChanges = HasScheduleChanges();
+            if (UiButtonBar.Button(new Rect(300f, y, 116f, line), "Apply to pawn", hasChanges))
             {
-                if (hasValidName && SaveDetailSchedule())
-                {
-                    ScheduleAdapter.ApplyPreset(pawn, detailSchedule);
-                }
-                else
-                {
-                    ScheduleAdapter.ApplyDraft(pawn, detailSchedule);
-                }
+                ScheduleAdapter.ApplyDraft(pawn, detailSchedule);
+                Messages.Message("Schedule applied to " + pawn.LabelShort + ".",
+                    MessageTypeDefOf.TaskCompletion, false);
             }
-            if (Mouse.IsOver(new Rect(344f, y, 116f, line)) && !hasChanges)
+            if (Mouse.IsOver(new Rect(300f, y, 116f, line)) && !hasChanges)
             {
-                TooltipHandler.TipRegion(new Rect(344f, y, 116f, line),
-                    "Apply is enabled only when the edited timetable differs from the pawn's current timetable.");
+                TooltipHandler.TipRegion(new Rect(300f, y, 116f, line),
+                    "Apply is enabled only when a non-empty hour differs from the current timetable.");
             }
             y += line + 8f;
 
@@ -112,12 +98,8 @@ namespace OrderedWork.UI
                 return;
             }
             string initialName = string.IsNullOrWhiteSpace(detailScheduleName) ? pawn.LabelShort : detailScheduleName;
-            Find.WindowStack.Add(new Dialog_ScheduleSave(detailSchedule, initialName, delegate(SchedulePreset saved)
-            {
-                detailPresets = SchedulePresetStore.LoadAll();
-                detailSchedule = saved;
-                detailScheduleName = saved.Name;
-            }));
+            Find.WindowStack.Add(new Dialog_SchedulePreset(false,
+                delegate { return detailSchedule; }, null, initialName));
         }
         private void EnsureDetailSchedule()
         {
@@ -153,6 +135,10 @@ namespace OrderedWork.UI
             if (Widgets.ButtonText(new Rect(rect.x + 20f, rect.y, rect.width - 20f, rect.height), ShortLabel(detailBrush)))
             {
                 List<FloatMenuOption> options = new List<FloatMenuOption>();
+                options.Add(new FloatMenuOption("Vacío", delegate
+                {
+                    detailBrush = null;
+                }));
                 foreach (TimeAssignmentDef def in DefDatabase<TimeAssignmentDef>.AllDefsListForReading
                     .OrderBy(d => d.LabelCap.ToString(), StringComparer.OrdinalIgnoreCase))
                 {

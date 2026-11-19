@@ -24,7 +24,7 @@ namespace OrderedWork.Services
             int changed = 0;
             for (int hour = 0; hour < SchedulePolicyResolver.Hours; hour++)
             {
-                TimeAssignmentDef def = SchedulePolicyResolver.ResolveDef(slots[hour]);
+                TimeAssignmentDef def = ResolveForApply(slots[hour]);
                 if (def == null)
                 {
                     continue;
@@ -76,7 +76,7 @@ namespace OrderedWork.Services
             for (int hour = 0; hour < SchedulePreset.SlotCount; hour++)
             {
                 string slot = preset.Slots != null && hour < preset.Slots.Count ? preset.Slots[hour] : null;
-                TimeAssignmentDef def = SchedulePolicyResolver.ResolveDef(slot);
+                TimeAssignmentDef def = ResolveForApply(slot);
                 if (def == null)
                 {
                     continue;
@@ -89,6 +89,36 @@ namespace OrderedWork.Services
             }
             OrderedWorkMod.DebugLog("Schedule draft applied to " + pawn.LabelShort + ": " + changed + " slot(s) changed.");
             return true;
+        }
+
+        private static TimeAssignmentDef ResolveForApply(string slotName)
+        {
+            if (string.IsNullOrEmpty(slotName))
+            {
+                return null;
+            }
+            TimeAssignmentDef def = SchedulePolicyResolver.ResolveDef(slotName);
+            return def ?? TimeAssignmentDefOf.Anything;
+        }
+
+        private static int ModIndex(SchedulePreset preset, TimeAssignmentDef def)
+        {
+            if (def == null || def.modContentPack == null)
+            {
+                return -1;
+            }
+            string packageId = def.modContentPack.PackageId;
+            if (string.IsNullOrEmpty(packageId))
+            {
+                return -1;
+            }
+            int index = preset.Mods.IndexOf(packageId);
+            if (index < 0)
+            {
+                index = preset.Mods.Count;
+                preset.Mods.Add(packageId);
+            }
+            return index;
         }
 
         public static SchedulePreset CaptureCurrent(Pawn pawn, string name)
@@ -105,6 +135,7 @@ namespace OrderedWork.Services
             {
                 TimeAssignmentDef def = pawn.timetable.GetAssignment(hour);
                 preset.Slots[hour] = def != null ? def.defName : "";
+                preset.SlotMods[hour] = ModIndex(preset, def);
             }
             return preset;
         }

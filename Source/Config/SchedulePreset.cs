@@ -9,7 +9,7 @@ namespace OrderedWork.Config
     /// </summary>
     public sealed class SchedulePreset
     {
-        public const int CurrentSchemaVersion = 1;
+        public const int CurrentSchemaVersion = 2;
         public const int SlotCount = 24;
 
         public int SchemaVersion { get; set; } = CurrentSchemaVersion;
@@ -17,6 +17,8 @@ namespace OrderedWork.Config
         public string Name { get; set; } = "new schedule";
         public string ModifiedUtc { get; set; } = "";
         public List<string> Slots { get; set; } = NewSlots();
+        public List<string> Mods { get; set; } = new List<string>();
+        public List<int> SlotMods { get; set; } = new List<int>();
 
         public static List<string> NewSlots()
         {
@@ -53,6 +55,22 @@ namespace OrderedWork.Config
             if (Slots.Count > SlotCount)
             {
                 Slots.RemoveRange(SlotCount, Slots.Count - SlotCount);
+            }
+            if (Mods == null)
+            {
+                Mods = new List<string>();
+            }
+            if (SlotMods == null)
+            {
+                SlotMods = new List<int>();
+            }
+            while (SlotMods.Count < SlotCount)
+            {
+                SlotMods.Add(-1);
+            }
+            if (SlotMods.Count > SlotCount)
+            {
+                SlotMods.RemoveRange(SlotCount, SlotMods.Count - SlotCount);
             }
         }
     }

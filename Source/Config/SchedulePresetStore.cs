@@ -70,7 +70,7 @@ namespace OrderedWork.Config
                 }
                 SchedulePreset preset = JsonSerializer.Deserialize<SchedulePreset>(
                     File.ReadAllText(path), JsonOptions);
-                if (preset == null || preset.SchemaVersion != SchedulePreset.CurrentSchemaVersion)
+                if (preset == null || preset.SchemaVersion < 1 || preset.SchemaVersion > SchedulePreset.CurrentSchemaVersion)
                 {
                     Log.Warning("[Ordered Work] Ignoring schedule with unsupported schema: " + path);
                     return null;
