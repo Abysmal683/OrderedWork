@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.206] - 2026-11-19
+
+### Refactor — editor state and keyed UI text
+- Added `WorkEditorState` for the mutable Work draft, selection, giver maps and expansion flag; WorkPanel accesses it through focused properties.
+- Added `OrderedWorkText` keyed-text helper and the English `OrderedWork.xml` language file.
+- Migrated primary Work/Profile/Stats labels to translation keys with English fallbacks.
+- Moved shared skill helpers into the Skills partial.
+- This is the first localization layer; remaining tooltips and secondary messages still need migration.
+
 ## [0.3.0-alpha.205] - 2026-11-19
 
 ### Refactor — WorkPanel shell reduction
