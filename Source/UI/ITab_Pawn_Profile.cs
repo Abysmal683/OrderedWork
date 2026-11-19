@@ -17,7 +17,7 @@ namespace OrderedWork.UI
         public ITab_Pawn_Profile()
         {
             labelKey = "Profile";
-            size = new Vector2(400f, 320f);
+            size = new Vector2(400f, 340f);
             tutorTag = "OrderedWorkProfile";
         }
 
@@ -74,7 +74,7 @@ namespace OrderedWork.UI
                             Rect cell = new Rect(content.x + column * (cellWidth + 2f), y,
                                 cellWidth, 17f);
                             Widgets.DrawBoxSolid(cell, AssignmentColor(assignment));
-                            Widgets.Label(cell, ShortAssignment(assignment));
+                            Widgets.Label(cell, hour.ToString("00"));
                             TooltipHandler.TipRegion(cell,
                                 hour.ToString("00") + ": " + (assignment != null ? assignment.LabelCap : "None"));
                         }
@@ -92,7 +92,7 @@ namespace OrderedWork.UI
                 Text.Anchor = TextAnchor.UpperLeft;
             }
 
-            if (UiButtonBar.Button(new Rect(area.xMax - 132f, area.yMax - 26f, 132f, 24f), "Open details", true,
+            if (UiButtonBar.Button(new Rect(area.xMax - 132f, area.y + 2f, 132f, 24f), "Open details", true,
                 "Open the full Ordered Work editor."))
             {
                 OpenDetail();

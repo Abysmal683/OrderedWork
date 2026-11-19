@@ -26,6 +26,7 @@ namespace OrderedWork.Services
         }
 
         private static bool resolved;
+        private static bool loggedUnavailable;
         private static Type trackersType;
         private static Type uiType;
         private static MethodInfo expertiseOfPawn;
@@ -120,26 +121,25 @@ namespace OrderedWork.Services
             {
                 return;
             }
-            resolved = true;
             trackersType = FindType("VSE.Expertise.ExpertiseTrackers");
             uiType = FindType("VSE.Expertise.ExpertiseUIUtility");
             if (trackersType == null || uiType == null)
             {
-                Log.Message("[Ordered Work] VSE expertise adapter unavailable: trackers="
-                    + (trackersType != null) + ", ui=" + (uiType != null));
+                if (!loggedUnavailable)
+                {
+                    loggedUnavailable = true;
+                    Log.Message("[Ordered Work] VSE expertise adapter unavailable: trackers="
+                        + (trackersType != null) + ", ui=" + (uiType != null));
+                }
+                return;
             }
-            if (trackersType != null)
-            {
-                expertiseOfPawn = trackersType.GetMethod("Expertise",
-                    BindingFlags.Public | BindingFlags.Static,
-                    null, new[] { typeof(Pawn) }, null);
-            }
-            if (uiType != null)
-            {
-                doExpertisePanel = uiType.GetMethod("DoExpertisePanel",
-                    BindingFlags.Public | BindingFlags.Static,
-                    null, new[] { typeof(Rect), typeof(Pawn) }, null);
-            }
+            resolved = true;
+            expertiseOfPawn = trackersType.GetMethod("Expertise",
+                BindingFlags.Public | BindingFlags.Static,
+                null, new[] { typeof(Pawn) }, null);
+            doExpertisePanel = uiType.GetMethod("DoExpertisePanel",
+                BindingFlags.Public | BindingFlags.Static,
+                null, new[] { typeof(Rect), typeof(Pawn) }, null);
         }
 
         private static Type FindType(string fullName)
