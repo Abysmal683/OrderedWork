@@ -157,9 +157,7 @@ namespace OrderedWork.UI
                 Widgets.Label(list, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.NoLimitations", "No limitations"));
                 return;
             }
-            Rect view = new Rect(0f, 0f, list.width - 16f, Mathf.Max(list.height, unable.Count * RowHeight));
-            Widgets.BeginScrollView(list, ref unableScroll, view);
-            try
+            UiScrollPane.Draw(list, ref unableScroll, Mathf.Max(list.height, unable.Count * RowHeight), this, delegate(Rect view)
             {
                 for (int i = 0; i < unable.Count; i++)
                 {
@@ -168,11 +166,7 @@ namespace OrderedWork.UI
                     Widgets.LabelEllipses(new Rect(row.x + 4f, row.y + 3f, row.width - 8f, 18f), unable[i].labelShort);
                     if (Mouse.IsOver(row)) TooltipHandler.TipRegion(row, WorkTypeTooltip(unable[i], -1));
                 }
-            }
-            finally
-            {
-                Widgets.EndScrollView();
-            }
+            });
         }
 
         private void ShowAddWorkTypeMenu()

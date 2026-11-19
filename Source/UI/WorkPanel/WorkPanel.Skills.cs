@@ -26,9 +26,7 @@ namespace OrderedWork.UI
                 return;
             }
             Rect body = new Rect(rect.x, rect.y + 24f, rect.width, Mathf.Max(0f, rect.height - 24f));
-            Rect view = new Rect(0f, 0f, body.width - 16f, skills.Count * 22f);
-            Widgets.BeginScrollView(body, ref skillsScroll, view);
-            try
+            UiScrollPane.Draw(body, ref skillsScroll, Mathf.Max(body.height, skills.Count * 22f), this, delegate(Rect view)
             {
                 for (int i = 0; i < skills.Count; i++)
                 {
@@ -49,11 +47,7 @@ namespace OrderedWork.UI
                     DrawSkillBar(new Rect(row.xMax - 62f, row.y + 7f, 58f, 8f), entry);
                     if (Mouse.IsOver(row)) TooltipHandler.TipRegion(row, SkillTooltip(entry));
                 }
-            }
-            finally
-            {
-                Widgets.EndScrollView();
-            }
+            });
         }
 
         private List<SkillRow> RankedSkills()

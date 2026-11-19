@@ -54,3 +54,9 @@ Margin is outside the background. Padding is inside it.
 - `docs/explanation/schedule-focus.md` — why the focus overlay works the way it does.
 - `docs/how-to/schedule-focus.md` — user workflow.
 - `docs/reference/schedule-focus.md` — fields, files and storage.
+
+## Migration status
+
+Migrated to `UiScrollPane`: local preset dialogs, pawn picker, WorkType dropdown, WorkPanel Skills/Stats/Unable and Details Overview.
+
+Deliberately native/custom: the settings global scroll, SplitMerge column bars, Details Overrides/Clothing, the focus horizontal strip and the WorkType combo's thin bar. These either own a different input model or never nest inside another local scroll.

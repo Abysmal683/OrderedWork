@@ -62,13 +62,12 @@ namespace OrderedWork.UI
             float listHeight = Mathf.Min(inRect.height - (loadMode ? 90f : 150f),
                 Mathf.Max(70f, presets.Count * 38f + 6f));
             Rect listRect = new Rect(0f, 36f, inRect.width, listHeight);
-            Rect content = new Rect(0f, 0f, listRect.width - 18f,
-                Mathf.Max(listRect.height, presets.Count * 38f));
-            Widgets.BeginScrollView(listRect, ref scroll, content);
+            UiScrollPane.Draw(listRect, ref scroll, Mathf.Max(listRect.height, presets.Count * 38f), this, delegate(Rect view)
+            {
             for (int i = 0; i < presets.Count; i++)
             {
                 WorkFocusPreset preset = presets[i];
-                Rect row = new Rect(0f, i * 38f, content.width, 35f);
+                Rect row = new Rect(0f, i * 38f, view.width, 35f);
                 UiTable columns = new UiTable(row, 6f);
                 columns.Flex().Add(86f).Add(70f).Add(70f);
                 if (Widgets.ButtonText(columns.Column(0, 28f), preset.Name))
@@ -102,7 +101,7 @@ namespace OrderedWork.UI
                     pendingDelete = preset;
                 }
             }
-            Widgets.EndScrollView();
+            });
 
             if (pendingLoad != null)
             {

@@ -18,10 +18,7 @@ namespace OrderedWork.UI
             WorkTypeDef selected = SelectedWorkType();
             List<StatDef> selectedStats = selected != null ? StatIndex.GetFor(selected) : new List<StatDef>();
             int contentRows = selectedStats.Count + (selected != null && BestSkillDef(selected) != null ? 1 : 0);
-            Rect view = new Rect(0f, 0f, body.width - 16f,
-                Mathf.Max(body.height, contentRows * 20f + 4f));
-            Widgets.BeginScrollView(body, ref scroll, view);
-            try
+            UiScrollPane.Draw(body, ref scroll, Mathf.Max(body.height, contentRows * 20f + 4f), this, delegate(Rect view)
             {
                 float y = 0f;
                 if (selected == null)
@@ -56,11 +53,7 @@ namespace OrderedWork.UI
                             OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Stats.SkillLabel", "Skill ") + skill.label + ": " + record.Level);
                     }
                 }
-            }
-            finally
-            {
-                Widgets.EndScrollView();
-            }
+            });
         }
 
         private void DrawGenericStats(Rect rect)
@@ -68,9 +61,7 @@ namespace OrderedWork.UI
             statTooltips.Tick();
             Widgets.Label(new Rect(rect.x, rect.y, rect.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Stats.Base", "Base stats"));
             Rect body = new Rect(rect.x, rect.y + 24f, rect.width, Mathf.Max(0f, rect.height - 24f));
-            Rect view = new Rect(0f, 0f, body.width - 16f, Mathf.Max(body.height, 140f));
-            Widgets.BeginScrollView(body, ref genericStatsScroll, view);
-            try
+            UiScrollPane.Draw(body, ref genericStatsScroll, Mathf.Max(body.height, 140f), this, delegate(Rect view)
             {
                 float y = 0f;
                 DrawStatLine(view.width, ref y, StatDefOf.WorkSpeedGlobal, SafeStat(StatDefOf.WorkSpeedGlobal), false, 0);
@@ -78,13 +69,8 @@ namespace OrderedWork.UI
                 DrawCapacityLine(view.width, ref y, PawnCapacityDefOf.Manipulation, SafeCapacity(PawnCapacityDefOf.Manipulation), 2);
                 DrawCapacityLine(view.width, ref y, PawnCapacityDefOf.Sight, SafeCapacity(PawnCapacityDefOf.Sight), 3);
                 DrawCapacityLine(view.width, ref y, PawnCapacityDefOf.Consciousness, SafeCapacity(PawnCapacityDefOf.Consciousness), 4);
-                DrawStatLine(view.width, ref y, StatDefOf.GlobalLearningFactor,
-                    SafeStat(StatDefOf.GlobalLearningFactor), false, 5);
-            }
-            finally
-            {
-                Widgets.EndScrollView();
-            }
+                DrawStatLine(view.width, ref y, StatDefOf.GlobalLearningFactor, SafeStat(StatDefOf.GlobalLearningFactor), false, 5);
+            });
         }
 
         private void DrawStatLine(float width, ref float y, StatDef stat, float value, bool percent, int index)

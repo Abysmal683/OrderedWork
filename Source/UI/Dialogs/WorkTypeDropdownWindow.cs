@@ -51,15 +51,12 @@ namespace OrderedWork.UI
             Widgets.Label(new Rect(0f, 0f, inRect.width, 22f), title);
 
             Rect viewport = new Rect(0f, 24f, inRect.width, inRect.height - 24f);
-            Rect content = new Rect(0f, 0f, viewport.width, Mathf.Max(viewport.height, types.Count * RowHeight));
-
-            Widgets.BeginScrollView(viewport, ref scroll, content);
-            try
+            UiScrollPane.Draw(viewport, ref scroll, Mathf.Max(viewport.height, types.Count * RowHeight), this, delegate(Rect view)
             {
                 for (int i = 0; i < types.Count; i++)
                 {
                     WorkTypeDef type = types[i];
-                    Rect row = new Rect(0f, i * RowHeight, viewport.width - 16f, RowHeight - 2f);
+                    Rect row = new Rect(0f, i * RowHeight, view.width, RowHeight - 2f);
                     UiZebra.Draw(row, i);
                     if (Mouse.IsOver(row))
                     {
@@ -77,11 +74,7 @@ namespace OrderedWork.UI
                         Close(true);
                     }
                 }
-            }
-            finally
-            {
-                Widgets.EndScrollView();
-            }
+            });
         }
     }
 }

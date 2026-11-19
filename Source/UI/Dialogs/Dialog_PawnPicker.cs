@@ -48,9 +48,7 @@ namespace OrderedWork.UI
                 .ToList();
 
             Rect list = new Rect(0f, 70f, inRect.width, inRect.height - 76f);
-            Rect view = new Rect(0f, 0f, list.width - 16f, Mathf.Max(list.height, matches.Count * 28f));
-            Widgets.BeginScrollView(list, ref scroll, view);
-            try
+            UiScrollPane.Draw(list, ref scroll, Mathf.Max(list.height, matches.Count * 28f), this, delegate(Rect view)
             {
                 for (int i = 0; i < matches.Count; i++)
                 {
@@ -64,11 +62,7 @@ namespace OrderedWork.UI
                         return;
                     }
                 }
-            }
-            finally
-            {
-                Widgets.EndScrollView();
-            }
+            });
         }
     }
 }

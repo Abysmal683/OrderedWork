@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.249] - 2026-11-19
+
+### Refactor — scroll pane unification
+- Added `UiScrollPane` with an external vertical track and shared wheel handling.
+- Migrated local preset dialogs, pawn picker and WorkType dropdown.
+- Migrated WorkPanel Skills, Stats, generic Stats and Unable lists.
+- Migrated Details Overview.
+- Kept settings global scroll, SplitMerge column bars, Overrides/Clothing, focus horizontal strip and the WorkType combo thin bar as documented exceptions.
+
 ## [0.3.0-alpha.248] - 2026-11-19
 
 ### Fixed — focus preset error feedback

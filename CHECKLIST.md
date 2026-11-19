@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.248)
+# Ordered Work — Current Checklist (0.3.0-alpha.249)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -70,6 +70,15 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] `WorkTypePaletteView` split into core, tooltip and passion partials.
 - [ ] Runtime smoke test after the refactor: settings, pins, weights, split/merge, save/load.
 
+## Scroll unification (alpha.249)
+
+- [x] Shared `UiScrollPane` introduced.
+- [x] Local dialogs migrated.
+- [x] WorkPanel Skills, Stats and Unable lists migrated.
+- [x] Details Overview migrated.
+- [x] Native/custom exceptions documented.
+- [x] Build 0/0 and tests pass.
+- [ ] Runtime wheel/shift-wheel check.
 ## Focus preset error toast (alpha.248)
 
 - [x] Invalid preset load uses a reject toast only.

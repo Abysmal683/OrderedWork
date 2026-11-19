@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using OrderedWork.Data;
+using OrderedWork.UI.Layout;
 using OrderedWork.Services;
 using RimWorld;
 using UnityEngine;
@@ -20,23 +21,20 @@ namespace OrderedWork.UI
 
             float contentHeight = 32f + 22f + 22f + (topSkills.Count * 20f) + 10f + 22f
                 + (Mathf.Max(1, order.Count) * 20f) + 132f;
-            Rect scrollContent = new Rect(0f, 0f, content.width - 20f, Mathf.Max(content.height, contentHeight));
-
-            Widgets.BeginScrollView(content, ref overviewScroll, scrollContent);
-            try
+            UiScrollPane.Draw(content, ref overviewScroll, Mathf.Max(content.height, contentHeight), this, delegate(Rect view)
             {
                 float y = 0f;
                 if (pawn.story != null && !string.IsNullOrEmpty(pawn.story.Title))
                 {
-                    Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), pawn.story.Title);
+                    Widgets.Label(new Rect(0f, y, view.width, 20f), pawn.story.Title);
                 }
                 y += 22f;
 
-                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.TopSkills", "Top skills"));
+                Widgets.Label(new Rect(0f, y, view.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.TopSkills", "Top skills"));
                 y += 22f;
                 if (topSkills.Count == 0)
                 {
-                    Widgets.Label(new Rect(6f, y, scrollContent.width - 6f, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.NoSkills", "No skills."));
+                    Widgets.Label(new Rect(6f, y, view.width - 6f, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.NoSkills", "No skills."));
                     y += 20f;
                 }
                 else
@@ -46,25 +44,25 @@ namespace OrderedWork.UI
                         WorkTypePaletteView.DrawPassionIcon(
                             new Rect(4f, y + 4f, WorkTypePaletteView.PassionIconSize, WorkTypePaletteView.PassionIconSize),
                             skill.passion);
-                        Widgets.Label(new Rect(20f, y, scrollContent.width - 20f, 20f),
+                        Widgets.Label(new Rect(20f, y, view.width - 20f, 20f),
                             skill.def.label + ": " + skill.Level);
                         y += 20f;
                     }
                 }
 
                 y += 10f;
-                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.WorkOrder", "Work order"));
+                Widgets.Label(new Rect(0f, y, view.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.WorkOrder", "Work order"));
                 y += 22f;
                 if (order.Count == 0)
                 {
-                    Widgets.Label(new Rect(6f, y, scrollContent.width - 6f, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Profile.NoWorkTypes", "No active WorkTypes."));
+                    Widgets.Label(new Rect(6f, y, view.width - 6f, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Profile.NoWorkTypes", "No active WorkTypes."));
                 }
                 else
                 {
                     float rankWidth = 44f;
                     float statusWidth = 110f;
                     float skillWidth = 90f;
-                    float nameWidth = scrollContent.width - rankWidth - statusWidth - skillWidth - 12f;
+                    float nameWidth = view.width - rankWidth - statusWidth - skillWidth - 12f;
                     Widgets.Label(new Rect(0f, y, rankWidth, 18f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.Priority", "Priority"));
                     Widgets.Label(new Rect(rankWidth, y, nameWidth, 18f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.WorkType", "Work type"));
                     Widgets.Label(new Rect(rankWidth + nameWidth, y, skillWidth, 18f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.Skill", "Skill"));
@@ -97,7 +95,7 @@ namespace OrderedWork.UI
                 }
 
                 y += 10f;
-                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.Policy", "Policy"));
+                Widgets.Label(new Rect(0f, y, view.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.Policy", "Policy"));
                 y += 22f;
                 string workPreset = entry == null || string.IsNullOrEmpty(entry.workPresetId)
                     ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.LegacySnapshot", "legacy snapshot")
@@ -113,23 +111,19 @@ namespace OrderedWork.UI
                 int hourlyOverrides = entry?.hourFocusOverrides?.Count ?? 0;
                 int clothingOverrides = entry?.clothingOverrides?.Count ?? 0;
                 int zones = entry?.zones?.Count ?? 0;
-                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.WorkPreset", "Work preset: ") + workPreset);
+                Widgets.Label(new Rect(0f, y, view.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.WorkPreset", "Work preset: ") + workPreset);
                 y += 20f;
-                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.SchedulePreset", "Schedule preset: ") + schedulePreset);
+                Widgets.Label(new Rect(0f, y, view.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.SchedulePreset", "Schedule preset: ") + schedulePreset);
                 y += 20f;
-                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.ClothingPreset", "Clothing preset: ") + clothingPreset);
+                Widgets.Label(new Rect(0f, y, view.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.ClothingPreset", "Clothing preset: ") + clothingPreset);
                 y += 20f;
-                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f),
+                Widgets.Label(new Rect(0f, y, view.width, 20f),
                     OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.Overrides", "Overrides: ") + workOverrides + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.WorkSuffix", " work, ") + scheduleOverrides + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.ScheduleSuffix", " schedule, ")
                     + hourlyOverrides + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.HourlySuffix", " hourly, ") + clothingOverrides + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.ClothingSuffix", " clothing"));
                 y += 20f;
-                Widgets.Label(new Rect(0f, y, scrollContent.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.Zones", "Zones: ") + zones);
-            }
-            finally
-            {
-                Widgets.EndScrollView();
+                Widgets.Label(new Rect(0f, y, view.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overview.Zones", "Zones: ") + zones);
+            });
                 Text.Font = GameFont.Small;
             }
         }
     }
-}
