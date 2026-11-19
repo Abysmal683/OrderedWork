@@ -390,18 +390,18 @@ namespace OrderedWork.UI
             string text = pawn.Name != null ? pawn.Name.ToStringFull : pawn.LabelShort;
             if (pawn.ageTracker != null)
             {
-                text += "\nAge: " + pawn.ageTracker.AgeBiologicalYears + "y";
+                text += "\n" + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Age", "Age: ") + pawn.ageTracker.AgeBiologicalYears + "y";
             }
             if (pawn.story != null && !string.IsNullOrEmpty(pawn.story.Title))
             {
-                text += "\nTitle: " + pawn.story.Title;
+                text += "\n" + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.TitleLabel", "Title: ") + pawn.story.Title;
             }
             string health = HealthShort(pawn);
             if (!string.IsNullOrEmpty(health))
             {
-                text += "\nHealth: " + health;
+                text += "\n" + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Health", "Health: ") + health;
             }
-            text += "\nWork types: " + WorkOrderService.GetOrder(pawn).Count;
+            text += "\n" + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.WorkTypes", "Work types: ") + WorkOrderService.GetOrder(pawn).Count;
             return text;
         }
 
