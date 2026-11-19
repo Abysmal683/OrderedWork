@@ -40,10 +40,10 @@ namespace OrderedWork.UI
                 {
                     foreach (PawnWorkOverride value in entry.workOverrides)
                     {
-                        string state = value.enabled ? "enabled" : "disabled";
+                        string state = value.enabled ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overrides.Enabled", "enabled") : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overrides.Disabled", "disabled");
                         string locked = value.locked ? ", locked" : "";
-                        DrawRow(rows, "WorkType " + WorkTypeLabel(value.workTypeDefName)
-                            + " | rank " + value.rank + " | " + state + locked
+                        DrawRow(rows, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overrides.WorkType", "WorkType ") + WorkTypeLabel(value.workTypeDefName)
+                            + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overrides.Rank", " | rank ") + value.rank + " | " + state + locked
                             + " | " + value.source, rowIndex++);
                     }
                 }
@@ -59,7 +59,7 @@ namespace OrderedWork.UI
                     foreach (PawnScheduleOverride value in entry.scheduleOverrides)
                     {
                         TimeAssignmentDef assignment = SchedulePolicyResolver.ResolveDef(value.assignmentDefName);
-                        DrawRow(rows, "Hour " + value.hour + " | "
+                        DrawRow(rows, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overrides.Hour", "Hour ") + value.hour + " | "
                             + (assignment != null ? assignment.label : value.assignmentDefName)
                             + " | " + value.source, rowIndex++);
                     }
@@ -75,7 +75,7 @@ namespace OrderedWork.UI
                 {
                     foreach (PawnScheduleWorkOverride value in entry.scheduleWorkOverrides)
                     {
-                        DrawRow(rows, "Hour " + value.hour + " | "
+                        DrawRow(rows, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overrides.Hour", "Hour ") + value.hour + " | "
                             + WorkTypeLabel(value.workTypeDefName)
                             + " | " + value.source, rowIndex++);
                     }
@@ -91,8 +91,8 @@ namespace OrderedWork.UI
                 {
                     foreach (PawnClothingOverride value in entry.clothingOverrides)
                     {
-                        DrawRow(rows, "WorkType " + WorkTypeLabel(value.workTypeDefName)
-                            + " | apparel policy " + (string.IsNullOrEmpty(value.apparelPolicyId) ? "none" : value.apparelPolicyId)
+                        DrawRow(rows, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overrides.WorkType", "WorkType ") + WorkTypeLabel(value.workTypeDefName)
+                            + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overrides.ApparelPolicy", " | apparel policy ") + (string.IsNullOrEmpty(value.apparelPolicyId) ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Palette.None", "none") : value.apparelPolicyId)
                             + " | " + value.source, rowIndex++);
                     }
                 }

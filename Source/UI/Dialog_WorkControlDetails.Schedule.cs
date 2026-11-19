@@ -90,7 +90,7 @@ namespace OrderedWork.UI
             y += 42f;
 
             Widgets.Label(new Rect(76f, y, content.width - 76f, 20f),
-                "Hourly priority: reserved for WorkType overrides; it is not stored in the preset.");
+                OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.HourlyPriority", "Hourly priority: reserved for WorkType overrides; it is not stored in the preset."));
         }
 
         private void OpenSaveDialog()
@@ -129,7 +129,7 @@ namespace OrderedWork.UI
         {
             if (detailBrush == null)
             {
-                Widgets.Label(rect, "No assignment defs");
+                Widgets.Label(rect, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.NoAssignment", "No assignment defs"));
                 return;
             }
             Color color = AssignmentColor(detailBrush);
@@ -148,7 +148,7 @@ namespace OrderedWork.UI
                 }
                 Find.WindowStack.Add(new FloatMenu(options));
             }
-            TooltipHandler.TipRegion(rect, "Active schedule brush. Click or drag over Modif to paint this assignment.");
+            TooltipHandler.TipRegion(rect, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.BrushTip", "Active schedule brush. Click or drag over Modif to paint this assignment."));
         }
 
         private void ShowBrushMenu()

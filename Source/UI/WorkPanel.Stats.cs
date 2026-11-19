@@ -91,7 +91,7 @@ namespace OrderedWork.UI
         {
             Rect row = new Rect(0f, y, width, 20f);
             UiZebra.Draw(row, index);
-            string text = stat != null ? stat.label : "Stat";
+            string text = stat != null ? stat.label : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Stats.Stat", "Stat");
             string amount = percent ? (value * 100f).ToString("0") + "%" : value.ToString("0.##");
             Widgets.Label(row, text + ": " + amount);
             if (stat != null && Mouse.IsOver(row))
@@ -105,7 +105,7 @@ namespace OrderedWork.UI
         {
             Rect row = new Rect(0f, y, width, 20f);
             UiZebra.Draw(row, index);
-            string label = capacity != null ? capacity.LabelCap.ToString() : "Capacity";
+            string label = capacity != null ? capacity.LabelCap.ToString() : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Stats.Capacity", "Capacity");
             Widgets.Label(row, label + ": " + (value * 100f).ToString("0") + "%");
             if (Mouse.IsOver(row))
             {
@@ -150,7 +150,7 @@ namespace OrderedWork.UI
         {
             if (capacity == null)
             {
-                return "Capacity";
+                return OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Stats.Capacity", "Capacity");
             }
             return capacity.LabelCap + "\nA body capacity affected by health, injuries, bionics and drugs.";
         }

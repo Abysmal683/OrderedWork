@@ -335,7 +335,7 @@ namespace OrderedWork.UI
             builder.AppendLine(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Palette.WorkGivers", "Work givers:"));
             if (givers.Count == 0)
             {
-                builder.AppendLine("- none");
+                builder.AppendLine(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Palette.NoneShort", "- none"));
             }
             else
             {
@@ -348,12 +348,12 @@ namespace OrderedWork.UI
             Passion passion;
             SkillRecord bestSkill = WorkTypePaletteView.SafeBestSkill(pawn, workType, out passion);
             builder.AppendLine();
-            builder.AppendLine("Skill: " + (bestSkill != null ? bestSkill.def.label : "—"));
-            builder.AppendLine("Passion: " + WorkTypePaletteView.PassionText(bestSkill != null ? passion : Passion.None));
-            builder.AppendLine("Level: " + (bestSkill != null ? bestSkill.Level.ToString() : "—"));
+            builder.AppendLine(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Skill", "Skill: ") + (bestSkill != null ? bestSkill.def.label : "—"));
+            builder.AppendLine(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Passion", "Passion: ") + WorkTypePaletteView.PassionText(bestSkill != null ? passion : Passion.None));
+            builder.AppendLine(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Level", "Level: ") + (bestSkill != null ? bestSkill.Level.ToString() : "—"));
 
             int rank = WorkOrderService.GetOrder(pawn).IndexOf(workType.defName) + 1;
-            builder.AppendLine("Priority: " + (rank > 0 ? rank.ToString() : "Off"));
+            builder.AppendLine(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Priority", "Priority: ") + (rank > 0 ? rank.ToString() : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Off", "Off")));
 
             AppendPawnSpecificOverrides(pawn, workType, builder);
             return builder.ToString();

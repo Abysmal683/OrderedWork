@@ -54,7 +54,7 @@ namespace OrderedWork.UI
         {
             Text.Font = GameFont.Medium;
             Widgets.Label(new Rect(0f, 0f, inRect.width, 28f),
-                loadMode ? "Load schedule preset" : "Save schedule preset");
+                loadMode ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Presets.LoadSchedule", "Load schedule preset") : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Presets.SaveSchedule", "Save schedule preset"));
             Text.Font = GameFont.Small;
 
             float listHeight = Mathf.Min(inRect.height - (loadMode ? 90f : 150f),

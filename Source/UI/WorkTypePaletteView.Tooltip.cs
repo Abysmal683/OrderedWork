@@ -29,7 +29,7 @@ namespace OrderedWork.UI
             builder.AppendLine(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Palette.WorkGivers", "Work givers:"));
             if (givers.Count == 0)
             {
-                builder.AppendLine("- none");
+                builder.AppendLine(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Palette.NoneShort", "- none"));
             }
             else
             {
@@ -43,7 +43,7 @@ namespace OrderedWork.UI
             builder.Append(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Palette.RelevantSkills", "Relevant skills: "));
             if (type.relevantSkills == null || type.relevantSkills.Count == 0)
             {
-                builder.Append("none");
+                builder.Append(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Palette.None", "none"));
             }
             else
             {

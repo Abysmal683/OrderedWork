@@ -206,7 +206,7 @@ namespace OrderedWork.UI
                 return workType.labelShort;
             }
             SkillDef skill = BestSkillDef(workType);
-            return workType.labelShort + " · " + (skill != null ? skill.label : "skill")
+            return workType.labelShort + " · " + (skill != null ? skill.label : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkTypes.SkillFallback", "skill"))
                 + " " + record.Level + " · " + WorkTypePaletteView.PassionText(record.passion);
         }
 
@@ -225,7 +225,7 @@ namespace OrderedWork.UI
             }
             if (workType.relevantSkills != null && workType.relevantSkills.Count > 0)
             {
-                builder.AppendLine("Skills:");
+                builder.AppendLine(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkTypes.SkillsLabel", "Skills:"));
                 foreach (SkillRow row in RelevantSkills(workType))
                 {
                     builder.AppendLine("- " + row.Label + " " + row.Level + " (" + WorkTypePaletteView.PassionText(row.Passion) + ")");
@@ -243,7 +243,7 @@ namespace OrderedWork.UI
                 : WorkGiverOrderService.GetGlobalOrder(pawn, workType);
             if (current != null && current.Count > 0)
             {
-                builder.AppendLine("Givers:");
+                builder.AppendLine(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkTypes.GiversLabel", "Givers:"));
                 for (int i = 0; i < current.Count; i++)
                 {
                     bool overridden = baseline == null

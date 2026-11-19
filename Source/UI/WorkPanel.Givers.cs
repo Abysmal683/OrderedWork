@@ -135,11 +135,11 @@ namespace OrderedWork.UI
             }
             if (!string.IsNullOrEmpty(def.verb))
             {
-                builder.AppendLine("Verb: " + def.verb);
+                builder.AppendLine(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Givers.Verb", "Verb: ") + def.verb);
             }
             if (def.emergency)
             {
-                builder.AppendLine("Emergency giver");
+                builder.AppendLine(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Givers.Emergency", "Emergency giver"));
             }
             string result = builder.ToString();
             giverTooltipCache[giverDefName] = result;

@@ -61,8 +61,8 @@ namespace OrderedWork.UI
                     int rowIndex = 0;
                     foreach (PawnClothingOverride value in entry.clothingOverrides)
                     {
-                        DrawRow(rows, "WorkType " + WorkTypeLabel(value.workTypeDefName)
-                            + " | apparel policy " + (string.IsNullOrEmpty(value.apparelPolicyId) ? "none" : value.apparelPolicyId)
+                        DrawRow(rows, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overrides.WorkType", "WorkType ") + WorkTypeLabel(value.workTypeDefName)
+                            + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overrides.ApparelPolicy", " | apparel policy ") + (string.IsNullOrEmpty(value.apparelPolicyId) ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Palette.None", "none") : value.apparelPolicyId)
                             + " | " + value.source, rowIndex++);
                     }
                 }
