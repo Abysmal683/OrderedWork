@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -122,6 +123,11 @@ namespace OrderedWork.Services
             resolved = true;
             trackersType = FindType("VSE.Expertise.ExpertiseTrackers");
             uiType = FindType("VSE.Expertise.ExpertiseUIUtility");
+            if (trackersType == null || uiType == null)
+            {
+                Log.Message("[Ordered Work] VSE expertise adapter unavailable: trackers="
+                    + (trackersType != null) + ", ui=" + (uiType != null));
+            }
             if (trackersType != null)
             {
                 expertiseOfPawn = trackersType.GetMethod("Expertise",
@@ -138,6 +144,11 @@ namespace OrderedWork.Services
 
         private static Type FindType(string fullName)
         {
+            Type known = AccessTools.TypeByName(fullName);
+            if (known != null)
+            {
+                return known;
+            }
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 try

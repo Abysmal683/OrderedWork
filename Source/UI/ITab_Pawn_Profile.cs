@@ -61,14 +61,24 @@ namespace OrderedWork.UI
                 Widgets.Label(new Rect(content.x, y, content.width, 18f), "Schedule");
                 y += 18f;
                 Text.Font = GameFont.Tiny;
+                Text.Anchor = TextAnchor.MiddleCenter;
                 if (SelPawn != null && SelPawn.timetable != null)
                 {
+                    float cellWidth = (content.width - 10f) / 6f;
                     for (int row = 0; row < 4; row++)
                     {
-                        string line = string.Join("  ", Enumerable.Range(row * 6, 6)
-                            .Select(hour => hour.ToString("00") + " " + ShortAssignment(SelPawn.timetable.GetAssignment(hour))));
-                        Widgets.Label(new Rect(content.x, y, content.width, 14f), line);
-                        y += 16f;
+                        for (int column = 0; column < 6; column++)
+                        {
+                            int hour = row * 6 + column;
+                            TimeAssignmentDef assignment = SelPawn.timetable.GetAssignment(hour);
+                            Rect cell = new Rect(content.x + column * (cellWidth + 2f), y,
+                                cellWidth, 17f);
+                            Widgets.DrawBoxSolid(cell, AssignmentColor(assignment));
+                            Widgets.Label(cell, ShortAssignment(assignment));
+                            TooltipHandler.TipRegion(cell,
+                                hour.ToString("00") + ": " + (assignment != null ? assignment.LabelCap : "None"));
+                        }
+                        y += 19f;
                     }
                 }
                 else
@@ -88,6 +98,13 @@ namespace OrderedWork.UI
                 OpenDetail();
             }
         }
+        private static Color AssignmentColor(TimeAssignmentDef def)
+        {
+            if (def == null) return new Color(0.18f, 0.18f, 0.20f, 1f);
+            Color color = def.color;
+            return color.a <= 0f ? new Color(0.25f, 0.30f, 0.36f, 1f) : color;
+        }
+
         private static string ShortAssignment(TimeAssignmentDef def)
         {
             if (def == null) return "—";
