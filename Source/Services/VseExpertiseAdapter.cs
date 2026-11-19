@@ -27,6 +27,7 @@ namespace OrderedWork.Services
 
         private static bool resolved;
         private static bool loggedUnavailable;
+        private static int nextRetryTicks;
         private static Type trackersType;
         private static Type uiType;
         private static MethodInfo expertiseOfPawn;
@@ -121,6 +122,12 @@ namespace OrderedWork.Services
             {
                 return;
             }
+            int now = Find.TickManager != null ? Find.TickManager.TicksGame : Environment.TickCount;
+            if (now < nextRetryTicks)
+            {
+                return;
+            }
+            nextRetryTicks = now + 300;
             trackersType = FindType("VSE.Expertise.ExpertiseTrackers");
             uiType = FindType("VSE.Expertise.ExpertiseUIUtility");
             if (trackersType == null || uiType == null)

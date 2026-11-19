@@ -92,7 +92,7 @@ namespace OrderedWork.UI
                 Text.Anchor = TextAnchor.UpperLeft;
             }
 
-            if (UiButtonBar.Button(new Rect(area.xMax - 132f, area.y + 2f, 132f, 24f), "Open details", true,
+            if (UiButtonBar.Button(new Rect(area.xMax - 150f, area.y + 2f, 132f, 24f), "Open details", true,
                 "Open the full Ordered Work editor."))
             {
                 OpenDetail();
