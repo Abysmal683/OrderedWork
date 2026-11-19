@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.208] - 2026-11-19
+
+### Hardening — stat index and split creation
+- `StatIndex.Build` is guarded as a whole; a malformed modded StatDef logs a warning instead of breaking the stats panel.
+- `DynamicWorkTypeFactory.EnsureSplitWorkTypes` is guarded; a bad split logs an error instead of aborting profile application.
+- WorkGiver ordering and profile apply remain guarded.
+
 ## [0.3.0-alpha.207] - 2026-11-19
 
 ### Hardening — guarded dynamic hooks
