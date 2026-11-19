@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.182] - 2026-11-19
+
+### Fix — Profile inspect tab hook
+- Changed the Harmony postfix to mutate `ref IEnumerable<InspectTabBase>` instead of returning an enumerable; Harmony 3 was treating the return as a pass-through postfix and failing to apply it.
+- `Profile` now appends only for living free colonists.
+- Search button reduced another four pixels while keeping the English label.
+
 ## [0.3.0-alpha.181] - 2026-11-19
 
 ### Fix — Profile tab hook and header language
