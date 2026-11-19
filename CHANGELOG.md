@@ -3,6 +3,17 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.228] - 2026-11-19
+
+### Fixed — final visual alignment pass
+- Restored Work detail to side-by-side columns; removed the stacked layout.
+- Removed the WorkType `x`; right-click removes it and now reports the name.
+- Schedule uses one panel color and a single 6 px inner margin; the focus area no longer has a second background tone.
+- Added a separator below the hour header.
+- Kept the current-hour marker in a low-contrast gray.
+- Reserved vertical space for the visible focus strip scrollbar.
+- Added a WASD camera fallback while the detail window is open, using the CameraDriver root position.
+
 ## [0.3.0-alpha.227] - 2026-11-19
 
 ### Fixed — visual layout direction and schedule grouping

@@ -19,9 +19,10 @@ namespace OrderedWork.UI
 
         private void DrawScheduleTab(Rect content)
         {
-            content = UiInset.All(content, 6f);
+            Rect panel = content;
+            content = UiInset.All(panel, 6f);
             EnsureDetailSchedule();
-            Widgets.DrawBoxSolid(new Rect(0f, 0f, content.width, 196f), UiColors.PanelBody);
+            Widgets.DrawBoxSolid(new Rect(0f, 0f, panel.width, panel.height), UiColors.PanelBody);
             float y = 0f;
             Text.Font = GameFont.Medium;
             Widgets.Label(new Rect(0f, y, 100f, 24f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.Title", "Schedule"));
@@ -92,7 +93,6 @@ namespace OrderedWork.UI
             y += 42f;
             float focusTop = y;
             Widgets.DrawBoxSolid(new Rect(0f, y - 5f, content.width, 2f), UiColors.SectionSeparator);
-            Widgets.DrawBoxSolid(new Rect(0f, y, content.width, Mathf.Max(0f, content.height - y)), UiColors.FocusPanelBackground);
             DrawFocusSection(content, y, hourWidth);
             if (pawn != null && pawn.Map != null)
             {
