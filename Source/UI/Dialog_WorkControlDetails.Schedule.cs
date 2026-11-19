@@ -31,7 +31,7 @@ namespace OrderedWork.UI
             y += 28f;
 
             float line = 24f;
-            if (Widgets.ButtonText(new Rect(0f, y, 64f, line), "Load"))
+            if (UiButtonBar.Button(new Rect(0f, y, 64f, line), "Load"))
             {
                 Find.WindowStack.Add(new Dialog_SchedulePreset(true, null, delegate(SchedulePreset loaded)
                 {
@@ -39,17 +39,17 @@ namespace OrderedWork.UI
                     detailScheduleName = loaded.Name;
                 }));
             }
-            if (Widgets.ButtonText(new Rect(68f, y, 56f, line), "New"))
+            if (UiButtonBar.Button(new Rect(68f, y, 56f, line), "New"))
             {
                 detailSchedule = new SchedulePreset { Name = "" };
                 detailScheduleName = "";
             }
-            if (Widgets.ButtonText(new Rect(128f, y, 100f, line), "Copy current"))
+            if (UiButtonBar.Button(new Rect(128f, y, 100f, line), "Copy current"))
             {
                 detailSchedule = ScheduleAdapter.CaptureCurrent(pawn, "");
                 detailScheduleName = "";
             }
-            if (Widgets.ButtonText(new Rect(232f, y, 64f, line), "Save"))
+            if (UiButtonBar.Button(new Rect(232f, y, 64f, line), "Save"))
             {
                 OpenSaveDialog();
             }

@@ -70,7 +70,7 @@ namespace OrderedWork.UI
                 {
                     continue;
                 }
-                if (!filterMods && skill.modContentPack != null && !skill.modContentPack.IsCoreMod)
+                if (!skillFilter.Mods && skill.modContentPack != null && !skill.modContentPack.IsCoreMod)
                 {
                     continue;
                 }
@@ -87,7 +87,7 @@ namespace OrderedWork.UI
                 });
             }
 
-            if (filterExpertise && VseExpertiseAdapter.IsAvailable)
+            if (skillFilter.Expertise && VseExpertiseAdapter.IsAvailable)
             {
                 foreach (VseExpertiseAdapter.Row row in VseExpertiseAdapter.GetRows(pawn))
                 {
@@ -108,19 +108,19 @@ namespace OrderedWork.UI
                 }
             }
 
-            if (filterLevel && filterPassion)
+            if (skillFilter.Level && skillFilter.Passion)
             {
                 return candidates.OrderByDescending(SkillScore)
                     .ThenByDescending(r => r.Level)
                     .ToList();
             }
-            if (filterLevel)
+            if (skillFilter.Level)
             {
                 return candidates.OrderByDescending(r => r.Level)
                     .ThenByDescending(r => PassionRank(r.Passion))
                     .ToList();
             }
-            if (filterPassion)
+            if (skillFilter.Passion)
             {
                 return candidates
                     .OrderBy(r => PassionSource.IsBadOf(r.Passion) ? 2 : r.Passion == Passion.None ? 1 : 0)
@@ -215,17 +215,7 @@ namespace OrderedWork.UI
 
         private void ApplySkillFilter(bool level, bool passion, bool expertise, bool mods)
         {
-            filterLevel = level;
-            filterPassion = passion;
-            filterExpertise = expertise;
-            filterMods = mods;
-            if (OrderedWorkMod.Settings != null)
-            {
-                OrderedWorkMod.Settings.skillFilterLevel = level;
-                OrderedWorkMod.Settings.skillFilterPassion = passion;
-                OrderedWorkMod.Settings.skillFilterExpertise = expertise;
-                OrderedWorkMod.Settings.skillFilterMods = mods;
-            }
+            skillFilter.Apply(level, passion, expertise, mods, OrderedWorkMod.Settings);
         }
     }
 }

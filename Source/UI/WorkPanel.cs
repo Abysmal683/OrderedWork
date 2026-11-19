@@ -37,10 +37,7 @@ namespace OrderedWork.UI
         private Vector2 skillsScroll;
         private Vector2 genericStatsScroll;
         private Vector2 specializedStatsScroll;
-        private bool filterLevel = true;
-        private bool filterPassion = true;
-        private bool filterExpertise;
-        private bool filterMods = true;
+        private readonly WorkSkillFilter skillFilter = new WorkSkillFilter();
         private readonly UiDragList workList = new UiDragList();
         private readonly UiDragList giverList = new UiDragList();
         private readonly Dictionary<string, string> workTypeTooltipCache =
@@ -50,15 +47,14 @@ namespace OrderedWork.UI
         private readonly Dictionary<string, string> skillTooltipCache =
             new Dictionary<string, string>(StringComparer.Ordinal);
         private int skillTooltipCacheTick = -1;
-        private readonly Dictionary<string, string> statTooltipCache =
-            new Dictionary<string, string>(StringComparer.Ordinal);
-        private int statTooltipCacheTick = -1;
+        private readonly StatTooltipService statTooltips;
         private bool resetAllArmed;
         private float resetAllArmedUntil;
 
         public WorkPanel(Pawn pawn)
         {
             this.pawn = pawn;
+            statTooltips = new StatTooltipService(pawn);
         }
 
         public void Draw(Rect area)
@@ -89,13 +85,7 @@ namespace OrderedWork.UI
                 return;
             }
             initialized = true;
-            if (OrderedWorkMod.Settings != null)
-            {
-                filterLevel = OrderedWorkMod.Settings.skillFilterLevel;
-                filterPassion = OrderedWorkMod.Settings.skillFilterPassion;
-                filterExpertise = OrderedWorkMod.Settings.skillFilterExpertise;
-                filterMods = OrderedWorkMod.Settings.skillFilterMods;
-            }
+            skillFilter.Load(OrderedWorkMod.Settings);
             workDraft = WorkOrderService.GetOrder(pawn) ?? new List<string>();
             selectedWorkType = workDraft.FirstOrDefault() ?? AddableWorkTypes().FirstOrDefault()?.defName;
             giverDrafts.Clear();
@@ -140,7 +130,7 @@ namespace OrderedWork.UI
             if (Widgets.ButtonText(filter, "Filter"))
             {
                 Find.WindowStack.Add(new Dialog_SkillFilter(
-                    filterLevel, filterPassion, filterExpertise, filterMods,
+                    skillFilter.Level, skillFilter.Passion, skillFilter.Expertise, skillFilter.Mods,
                     hasVse, ApplySkillFilter));
             }
             TooltipHandler.TipRegion(filter, "Open skill filters.");

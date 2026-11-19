@@ -12,7 +12,7 @@ namespace OrderedWork.UI
     public sealed partial class WorkPanel
     {        private void DrawStats(Rect rect, ref Vector2 scroll)
         {
-            RefreshStatTooltipCache();
+            statTooltips.Tick();
             Widgets.Label(new Rect(rect.x, rect.y, rect.width, 20f), "Specialized stats");
             Rect body = new Rect(rect.x, rect.y + 24f, rect.width, Mathf.Max(0f, rect.height - 24f));
             WorkTypeDef selected = SelectedWorkType();
@@ -65,7 +65,7 @@ namespace OrderedWork.UI
 
         private void DrawGenericStats(Rect rect)
         {
-            RefreshStatTooltipCache();
+            statTooltips.Tick();
             Widgets.Label(new Rect(rect.x, rect.y, rect.width, 20f), "Base stats");
             Rect body = new Rect(rect.x, rect.y + 24f, rect.width, Mathf.Max(0f, rect.height - 24f));
             Rect view = new Rect(0f, 0f, body.width - 16f, Mathf.Max(body.height, 140f));
@@ -96,7 +96,7 @@ namespace OrderedWork.UI
             Widgets.Label(row, text + ": " + amount);
             if (stat != null && Mouse.IsOver(row))
             {
-                TooltipHandler.TipRegion(row, StatTooltip(stat));
+                TooltipHandler.TipRegion(row, statTooltips.Get(stat));
             }
             y += 20f;
         }
@@ -153,50 +153,6 @@ namespace OrderedWork.UI
                 return "Capacity";
             }
             return capacity.LabelCap + "\nA body capacity affected by health, injuries, bionics and drugs.";
-        }
-
-        private string StatTooltip(StatDef stat)
-        {
-            string cached;
-            if (stat != null && statTooltipCache.TryGetValue(stat.defName, out cached))
-            {
-                return cached;
-            }
-            float value = SafeStat(stat);
-            string explanation = null;
-            try
-            {
-                if (stat != null && stat.Worker != null)
-                {
-                    explanation = stat.Worker.GetExplanationFull(
-                        StatRequest.For(pawn), stat.toStringNumberSense, value);
-                }
-            }
-            catch (Exception)
-            {
-            }
-            string result = stat != null
-                ? stat.LabelCap + "\nCurrent: " + stat.Worker.ValueToString(value, true, stat.toStringNumberSense)
-                : "Stat";
-            if (!string.IsNullOrEmpty(explanation))
-            {
-                result += "\n" + explanation;
-            }
-            if (stat != null)
-            {
-                statTooltipCache[stat.defName] = result;
-            }
-            return result;
-        }
-
-        private void RefreshStatTooltipCache()
-        {
-            int ticks = Find.TickManager != null ? Find.TickManager.TicksGame : 0;
-            if (ticks - statTooltipCacheTick >= 60)
-            {
-                statTooltipCache.Clear();
-                statTooltipCacheTick = ticks;
-            }
         }
 
         private static StatDef RelevantWorkStat(WorkTypeDef workType)
