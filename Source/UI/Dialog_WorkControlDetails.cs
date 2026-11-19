@@ -198,7 +198,7 @@ namespace OrderedWork.UI
 
         private void DrawPawnNavigation(Rect inRect)
         {
-            Rect search = new Rect(inRect.xMax - 156f, 0f, 72f, 24f);
+            Rect search = new Rect(inRect.xMax - 152f, 0f, 68f, 24f);
             Rect left = new Rect(inRect.xMax - 82f, 0f, 26f, 24f);
             Rect right = new Rect(inRect.xMax - 52f, 0f, 26f, 24f);
             if (Widgets.ButtonText(search, "Search"))

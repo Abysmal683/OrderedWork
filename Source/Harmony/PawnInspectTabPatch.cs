@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using HarmonyLib;
 using OrderedWork.UI;
 using Verse;
@@ -15,18 +16,12 @@ namespace OrderedWork.Patches
         private static readonly ITab_Pawn_Profile ProfileTab = new ITab_Pawn_Profile();
 
         [HarmonyPostfix]
-        private static IEnumerable<InspectTabBase> Postfix(Thing __instance, IEnumerable<InspectTabBase> __result)
+        private static void Postfix(Thing __instance, ref IEnumerable<InspectTabBase> __result)
         {
-            if (__result != null)
-            {
-                foreach (InspectTabBase tab in __result)
-                {
-                    yield return tab;
-                }
-            }
             if (__instance is Pawn pawn && pawn.IsFreeColonist && !pawn.Dead)
             {
-                yield return ProfileTab;
+                IEnumerable<InspectTabBase> original = __result ?? Enumerable.Empty<InspectTabBase>();
+                __result = original.Concat(new[] { ProfileTab });
             }
         }
     }
