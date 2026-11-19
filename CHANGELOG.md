@@ -3,6 +3,18 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.164] - 2026-11-19
+
+### Fix — Work panel visual feedback pass 3
+- Selected WorkType rows now use green; only an actively dragged row uses blue.
+- Shortened `Recommend` to `Recom.`, tightened `Givers`, and removed the `+` from `Agregar`.
+- `Reset all` turns red in its confirmation state.
+- Removed truncated passion text from Top 5 skills.
+- Added XP progress bars and a skill tooltip with passion type, learning multiplier and current/required XP.
+- WorkType tooltip now lists relevant skills and effective giver positions, marking overrides with `*`.
+- Added giver tooltips using `WorkGiverDef.description`, verb and emergency flag.
+- Save/load UI and scheduler naming changes remain deferred.
+
 ## [0.3.0-alpha.163] - 2026-11-19
 
 ### Refactor — Work panel layout and drag lists
