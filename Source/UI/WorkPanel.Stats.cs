@@ -13,7 +13,7 @@ namespace OrderedWork.UI
     {        private void DrawStats(Rect rect, ref Vector2 scroll)
         {
             statTooltips.Tick();
-            Widgets.Label(new Rect(rect.x, rect.y, rect.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Stats.Specialized", OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Stats.Specialized", OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Stats.Specialized", "Specialized stats"))));
+            Widgets.Label(new Rect(rect.x, rect.y, rect.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Stats.Specialized", "Specialized stats"));
             Rect body = new Rect(rect.x, rect.y + 24f, rect.width, Mathf.Max(0f, rect.height - 24f));
             WorkTypeDef selected = SelectedWorkType();
             List<StatDef> selectedStats = selected != null ? StatIndex.GetFor(selected) : new List<StatDef>();
@@ -26,7 +26,7 @@ namespace OrderedWork.UI
                 float y = 0f;
                 if (selected == null)
                 {
-                    Widgets.Label(new Rect(0f, y + 6f, view.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.SelectType", OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.SelectType", "Select a WorkType.")));
+                    Widgets.Label(new Rect(0f, y + 6f, view.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.SelectType", "Select a WorkType."));
                 }
                 else
                 {
@@ -66,7 +66,7 @@ namespace OrderedWork.UI
         private void DrawGenericStats(Rect rect)
         {
             statTooltips.Tick();
-            Widgets.Label(new Rect(rect.x, rect.y, rect.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Stats.Base", OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Stats.Base", OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Stats.Base", "Base stats"))));
+            Widgets.Label(new Rect(rect.x, rect.y, rect.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Stats.Base", "Base stats"));
             Rect body = new Rect(rect.x, rect.y + 24f, rect.width, Mathf.Max(0f, rect.height - 24f));
             Rect view = new Rect(0f, 0f, body.width - 16f, Mathf.Max(body.height, 140f));
             Widgets.BeginScrollView(body, ref genericStatsScroll, view);

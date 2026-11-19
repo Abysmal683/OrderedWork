@@ -15,16 +15,16 @@ namespace OrderedWork.UI
     {        private void DrawHeader(Rect rect)
         {
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(rect.x, rect.y, 150f, 26f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.Title", OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.Title", "Work")));
+            Widgets.Label(new Rect(rect.x, rect.y, 150f, 26f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.Title", "Work"));
             Text.Font = GameFont.Small;
 
             Rect load = new Rect(rect.xMax - 136f, rect.y + 2f, 64f, 24f);
             Rect save = new Rect(rect.xMax - 68f, rect.y + 2f, 64f, 24f);
-            if (UiButtonBar.Button(load, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Load", OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Load", "Load")), true, "Load a named Work preset and replace this pawn's Work policy."))
+            if (UiButtonBar.Button(load, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Load", "Load"), true, "Load a named Work preset and replace this pawn's Work policy."))
             {
                 Find.WindowStack.Add(new Dialog_WorkPreset(true, null, ApplyPreset));
             }
-            if (UiButtonBar.Button(save, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Save", OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Save", "Save")), true, "Save this pawn's WorkType and WorkGiver order as a named preset."))
+            if (UiButtonBar.Button(save, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Save", "Save"), true, "Save this pawn's WorkType and WorkGiver order as a named preset."))
             {
                 Find.WindowStack.Add(new Dialog_WorkPreset(false, CapturePreset, null, pawn.LabelShort));
             }
