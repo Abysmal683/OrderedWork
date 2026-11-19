@@ -50,6 +50,9 @@ namespace OrderedWork.UI
         private readonly Dictionary<string, string> skillTooltipCache =
             new Dictionary<string, string>(StringComparer.Ordinal);
         private int skillTooltipCacheTick = -1;
+        private readonly Dictionary<string, string> statTooltipCache =
+            new Dictionary<string, string>(StringComparer.Ordinal);
+        private int statTooltipCacheTick = -1;
         private bool resetAllArmed;
         private float resetAllArmedUntil;
 
@@ -727,6 +730,7 @@ namespace OrderedWork.UI
 
         private void DrawStats(Rect rect, ref Vector2 scroll)
         {
+            RefreshStatTooltipCache();
             Widgets.Label(new Rect(rect.x, rect.y, rect.width, 20f), "Specialized stats");
             Rect body = new Rect(rect.x, rect.y + 24f, rect.width, Mathf.Max(0f, rect.height - 24f));
             Rect view = new Rect(0f, 0f, body.width - 16f, Mathf.Max(body.height, 28f));
@@ -736,7 +740,7 @@ namespace OrderedWork.UI
                 float y = 0f;
                 WorkTypeDef selected = SelectedWorkType();
                 StatDef relevant = RelevantWorkStat(selected);
-                DrawStatLine(view.width, ref y, relevant, SafeStat(relevant), false);
+                DrawStatLine(view.width, ref y, relevant, SafeStat(relevant), false, 0);
                 if (selected != null)
                 {
                     SkillDef skill = BestSkillDef(selected);
@@ -764,9 +768,10 @@ namespace OrderedWork.UI
             return DefDatabase<StatDef>.GetNamedSilentFail(defName);
         }
 
-        private static void DrawCapacityLine(float width, ref float y, PawnCapacityDef capacity, float value)
+        private static void DrawCapacityLine(float width, ref float y, PawnCapacityDef capacity, float value, int index)
         {
             Rect row = new Rect(0f, y, width, 20f);
+            UiZebra.Draw(row, index);
             string label = capacity != null ? capacity.LabelCap.ToString() : "Capacity";
             Widgets.Label(row, label + ": " + (value * 100f).ToString("0") + "%");
             if (Mouse.IsOver(row))
@@ -803,6 +808,7 @@ namespace OrderedWork.UI
 
         private void DrawGenericStats(Rect rect)
         {
+            RefreshStatTooltipCache();
             Widgets.Label(new Rect(rect.x, rect.y, rect.width, 20f), "Base stats");
             Rect body = new Rect(rect.x, rect.y + 24f, rect.width, Mathf.Max(0f, rect.height - 24f));
             Rect view = new Rect(0f, 0f, body.width - 16f, Mathf.Max(body.height, 140f));
@@ -810,13 +816,13 @@ namespace OrderedWork.UI
             try
             {
                 float y = 0f;
-                DrawStatLine(view.width, ref y, StatDefOf.WorkSpeedGlobal, SafeStat(StatDefOf.WorkSpeedGlobal), false);
-                DrawStatLine(view.width, ref y, StatDefOf.MoveSpeed, SafeStat(StatDefOf.MoveSpeed), false);
-                DrawCapacityLine(view.width, ref y, PawnCapacityDefOf.Manipulation, SafeCapacity(PawnCapacityDefOf.Manipulation));
-                DrawCapacityLine(view.width, ref y, PawnCapacityDefOf.Sight, SafeCapacity(PawnCapacityDefOf.Sight));
-                DrawCapacityLine(view.width, ref y, PawnCapacityDefOf.Consciousness, SafeCapacity(PawnCapacityDefOf.Consciousness));
+                DrawStatLine(view.width, ref y, StatDefOf.WorkSpeedGlobal, SafeStat(StatDefOf.WorkSpeedGlobal), false, 0);
+                DrawStatLine(view.width, ref y, StatDefOf.MoveSpeed, SafeStat(StatDefOf.MoveSpeed), false, 1);
+                DrawCapacityLine(view.width, ref y, PawnCapacityDefOf.Manipulation, SafeCapacity(PawnCapacityDefOf.Manipulation), 2);
+                DrawCapacityLine(view.width, ref y, PawnCapacityDefOf.Sight, SafeCapacity(PawnCapacityDefOf.Sight), 3);
+                DrawCapacityLine(view.width, ref y, PawnCapacityDefOf.Consciousness, SafeCapacity(PawnCapacityDefOf.Consciousness), 4);
                 DrawStatLine(view.width, ref y, StatDefOf.GlobalLearningFactor,
-                    SafeStat(StatDefOf.GlobalLearningFactor), false);
+                    SafeStat(StatDefOf.GlobalLearningFactor), false, 5);
             }
             finally
             {
@@ -839,9 +845,10 @@ namespace OrderedWork.UI
             }
         }
 
-        private static void DrawStatLine(float width, ref float y, StatDef stat, float value, bool percent)
+        private void DrawStatLine(float width, ref float y, StatDef stat, float value, bool percent, int index)
         {
             Rect row = new Rect(0f, y, width, 20f);
+            UiZebra.Draw(row, index);
             string text = stat != null ? stat.label : "Stat";
             string amount = percent ? (value * 100f).ToString("0") + "%" : value.ToString("0.##");
             Widgets.Label(row, text + ": " + amount);
@@ -852,44 +859,49 @@ namespace OrderedWork.UI
             y += 20f;
         }
 
-        private static string StatTooltip(StatDef stat)
+        private void RefreshStatTooltipCache()
         {
-            switch (stat.defName)
+            int ticks = Find.TickManager != null ? Find.TickManager.TicksGame : 0;
+            if (ticks - statTooltipCacheTick >= 60)
             {
-                case "WorkSpeedGlobal":
-                    return "Work Speed\nAffected by Manipulation, Sight and Consciousness, plus the WorkType-specific speed stat.\nImproves with relevant skill, passions, health and gear.";
-                case "MoveSpeed":
-                    return "Move Speed\nAffected by the Moving capacity, health, injuries, bionics and gear.";
-                case "Manipulation":
-                    return "Manipulation\nAffected by arm/hand health, bionics, injuries and drugs.\nAffects most work speed stats.";
-                case "Sight":
-                    return "Sight\nAffected by eye health, bionics, injuries and drugs.\nAffects accuracy and several work speeds.";
-                case "Consciousness":
-                    return "Consciousness\nAffected by brain/health state, pain, drugs and injuries.\nAffects almost every work activity.";
-                case "GlobalLearningFactor":
-                    return "Global Learning Factor\nAffects XP gain for all skills.\nInfluenced by traits, genes, age and some drugs.";
-                case "ConstructionSpeed":
-                    return "Construction Speed\nAffected by Construction skill and passion, Manipulation, Sight, Consciousness and tools.";
-                case "MiningSpeed":
-                    return "Mining Speed\nAffected by Mining skill and passion, Manipulation, Sight, Consciousness and tools.";
-                case "PlantWorkSpeed":
-                    return "Plant Work Speed\nAffected by Plants skill and passion, Manipulation, Sight and Consciousness.";
-                case "ResearchSpeed":
-                    return "Research Speed\nAffected by Intellectual skill and passion, Manipulation, Sight, Consciousness and research facilities.";
-                case "MedicalTendSpeed":
-                    return "Medical Tend Speed\nAffected by Medicine skill and passion, Manipulation, Sight and Consciousness.";
-                case "CleaningSpeed":
-                    return "Cleaning Speed\nAffected by Cleaning skill and passion, Manipulation, Sight and Consciousness.";
-                case "FishingSpeed":
-                    return "Fishing Speed\nAffected by Animals/Fishing skill, Manipulation, Sight and Consciousness.";
-                default:
-                    return (stat.description ?? stat.label)
-                        + "\nAffected by the relevant skill, Manipulation, Sight and Consciousness.";
+                statTooltipCache.Clear();
+                statTooltipCacheTick = ticks;
             }
         }
 
-
-
+        private string StatTooltip(StatDef stat)
+        {
+            string cached;
+            if (stat != null && statTooltipCache.TryGetValue(stat.defName, out cached))
+            {
+                return cached;
+            }
+            float value = SafeStat(stat);
+            string explanation = null;
+            try
+            {
+                if (stat != null && stat.Worker != null)
+                {
+                    explanation = stat.Worker.GetExplanationFull(
+                        StatRequest.For(pawn), stat.toStringNumberSense, value);
+                }
+            }
+            catch (Exception)
+            {
+            }
+            string result = stat != null
+                ? stat.LabelCap + "\nCurrent: " + stat.Worker.ValueToString(value, true, stat.toStringNumberSense)
+                : "Stat";
+            if (!string.IsNullOrEmpty(explanation))
+            {
+                result += "\n" + explanation;
+            }
+            if (stat != null)
+            {
+                statTooltipCache[stat.defName] = result;
+            }
+            return result;
+        }
         private void DrawCompact(WorkPanelRects layout)
         {
             DrawWorkTypesColumn(layout.WorkTypes);
