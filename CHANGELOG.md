@@ -3,6 +3,18 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.222] - 2026-11-19
+
+### Added — Spanish (Latin America) language folder
+- Added `Languages/SpanishLatin` so the mod loads its Spanish keys with RimWorld's Español (Latinoamérica) language.
+- `Languages/Spanish` remains the Castellano variant; both use the same neutral Spanish translation set.
+
+### Refactor — source layout
+- Moved `OrderedWorkMod` partials into `Source/Mod` and `Source/Mod/SplitMerge`.
+- Moved settings and startup into `Source/Config` and `Source/Startup`.
+- Grouped UI files into `Dialogs`, `MainTab`, `WorkPanel`, `Palette`, `Profile` and `Shared`.
+- No behavior or namespace changes.
+
 ## [0.3.0-alpha.221] - 2026-11-19
 
 ### Localization — complete Spanish keyed translations
