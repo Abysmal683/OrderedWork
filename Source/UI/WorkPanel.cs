@@ -739,22 +739,37 @@ namespace OrderedWork.UI
             {
                 float y = 0f;
                 WorkTypeDef selected = SelectedWorkType();
-                StatDef relevant = RelevantWorkStat(selected);
-                DrawStatLine(view.width, ref y, relevant, SafeStat(relevant), false, 0);
-                if (selected != null)
+                if (selected == null)
                 {
+                    Widgets.Label(new Rect(0f, y + 6f, view.width, 20f), "Select a WorkType.");
+                }
+                else
+                {
+                    List<StatDef> stats = StatIndex.GetFor(selected);
+                    if (stats.Count == 0)
+                    {
+                        StatDef fallback = RelevantWorkStat(selected);
+                        if (fallback != null)
+                        {
+                            DrawStatLine(view.width, ref y, fallback, SafeStat(fallback), false, 0);
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < stats.Count; i++)
+                        {
+                            DrawStatLine(view.width, ref y, stats[i], SafeStat(stats[i]), false, i);
+                        }
+                    }
+
                     SkillDef skill = BestSkillDef(selected);
                     SkillRecord record = skill != null && pawn.skills != null ? pawn.skills.GetSkill(skill) : null;
                     if (skill != null && record != null)
                     {
+                        UiZebra.Draw(new Rect(0f, y, view.width, 20f), stats.Count);
                         Widgets.Label(new Rect(0f, y, view.width, 20f),
                             "Skill " + skill.label + ": " + record.Level);
-                        y += 20f;
                     }
-                }
-                else
-                {
-                    Widgets.Label(new Rect(0f, y + 6f, view.width, 20f), "Select a WorkType.");
                 }
             }
             finally
