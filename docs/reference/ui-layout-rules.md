@@ -31,6 +31,7 @@ Margin is outside the background. Padding is inside it.
 ## Nested scrolling
 
 - The outer scrollbar is external.
+- `UiDragList` uses the shared external `WorkGridScrollView` track, with one owner per list.
 - Inner lists reserve their own scrollbar before drawing rows.
 - When an outer bar appears, content width shrinks before inner lists are laid out.
 - Two scrollbars must not share the same right edge.

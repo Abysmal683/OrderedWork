@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.237)
+# Ordered Work — Current Checklist (0.3.0-alpha.238)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -70,6 +70,14 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] `WorkTypePaletteView` split into core, tooltip and passion partials.
 - [ ] Runtime smoke test after the refactor: settings, pins, weights, split/merge, save/load.
 
+## UiDragList external scroll (alpha.238)
+
+- [x] `UiDragList` uses the shared external track.
+- [x] Track is drawn outside the content viewport.
+- [x] Per-list owner prevents cross-list drag interference.
+- [x] Existing vertical callers pass an owner.
+- [x] Build 0/0 and tests pass.
+- [ ] Runtime check with two visible lists.
 ## WorkConfigStore split (alpha.237)
 
 - [x] Paths, serializer, profile service and resolver isolated.

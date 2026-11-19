@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.238] - 2026-11-19
+
+### Refactor — UiDragList external scrollbar
+- Migrated `UiDragList` to the shared `WorkGridScrollView` external track.
+- The track is reserved outside the row viewport and drawn after the content, so it cannot cover the last row.
+- Added an owner token to vertical scroll handling; two visible lists can no longer steal each other's drag.
+- Updated all existing vertical scroll callers to pass an owner.
+- Preserved row hitboxes, selection, drag ordering and scroll state.
+
 ## [0.3.0-alpha.237] - 2026-11-19
 
 ### Refactor — split WorkConfigStore

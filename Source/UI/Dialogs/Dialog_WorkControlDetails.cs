@@ -346,7 +346,7 @@ namespace OrderedWork.UI
             Rect view = new Rect(0f, 0f,
                 Mathf.Max(viewport.width, minWidth),
                 Mathf.Max(viewport.height, minHeight));
-            WorkGridScrollView.HandleVertical(track, viewport, view, ref detailTabScroll);
+            WorkGridScrollView.HandleVertical(track, viewport, view, ref detailTabScroll, this);
             Widgets.BeginScrollView(viewport, ref detailTabScroll, view, false);
             draw(view);
             Widgets.EndScrollView();

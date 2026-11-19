@@ -1,4 +1,5 @@
 using System;
+using OrderedWork.UI;
 using UnityEngine;
 using Verse;
 
@@ -41,10 +42,16 @@ namespace OrderedWork.UI.Layout
             Action<int, int> onMove,
             Action onCommit)
         {
+            const float gap = 4f;
+            float trackWidth = WorkGridScrollView.Thickness;
+            Rect contentViewport = new Rect(viewport.x, viewport.y,
+                Mathf.Max(0f, viewport.width - trackWidth - gap), viewport.height);
+            Rect track = new Rect(viewport.xMax - trackWidth, viewport.y, trackWidth, viewport.height);
             Rect view = new Rect(0f, 0f,
-                viewport.width - 16f,
-                Mathf.Max(viewport.height, count * RowHeight));
-            Widgets.BeginScrollView(viewport, ref scroll, view);
+                contentViewport.width,
+                Mathf.Max(contentViewport.height, count * RowHeight));
+            WorkGridScrollView.HandleVertical(track, contentViewport, view, ref scroll, this);
+            Widgets.BeginScrollView(contentViewport, ref scroll, view, false);
             try
             {
                 for (int i = 0; i < count; i++)
@@ -111,6 +118,7 @@ namespace OrderedWork.UI.Layout
             {
                 Widgets.EndScrollView();
             }
+            WorkGridScrollView.DrawVertical(track, contentViewport, view, ref scroll);
         }
     }
 }

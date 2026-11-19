@@ -169,7 +169,7 @@ namespace OrderedWork.UI
             Rect track = new Rect(viewport.xMax - trackWidth, viewport.y, trackWidth, viewport.height);
             Rect view = new Rect(0f, 0f, contentViewport.width,
                 workHeight + gap + giversHeight + gap + metadataHeight);
-            WorkGridScrollView.HandleVertical(track, contentViewport, view, ref stackedScroll);
+            WorkGridScrollView.HandleVertical(track, contentViewport, view, ref stackedScroll, this);
             Widgets.BeginScrollView(contentViewport, ref stackedScroll, view, false);
             try
             {

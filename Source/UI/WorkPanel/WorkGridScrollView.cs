@@ -16,6 +16,7 @@ namespace OrderedWork.UI
         private const float MinThumb = 24f;
 
         private static bool draggingVertical;
+        private static object verticalOwner;
         private static bool draggingHorizontal;
         private static object horizontalOwner;
         private static float dragStartMouseY;
@@ -81,12 +82,16 @@ namespace OrderedWork.UI
         }
 
         /// <summary>Consumes vertical-bar input before the scroll view/content is drawn.</summary>
-        internal static void HandleVertical(Rect track, Rect viewport, Rect content, ref Vector2 scroll)
+        internal static void HandleVertical(Rect track, Rect viewport, Rect content, ref Vector2 scroll, object owner = null)
         {
             float max = Mathf.Max(0f, content.height - viewport.height);
             if (max <= 0f || track.height <= 0f)
             {
-                draggingVertical = false;
+                if (owner == null || ReferenceEquals(verticalOwner, owner))
+                {
+                    draggingVertical = false;
+                    verticalOwner = null;
+                }
                 return;
             }
 
@@ -101,12 +106,13 @@ namespace OrderedWork.UI
             if (current.type == EventType.MouseDown && current.button == 0 && Mouse.IsOver(thumb))
             {
                 draggingVertical = true;
+                verticalOwner = owner;
                 dragStartMouseY = current.mousePosition.y;
                 dragStartScrollY = scroll.y;
                 lastScrollTime = Time.realtimeSinceStartup;
                 current.Use();
             }
-            else if (draggingVertical && current.type == EventType.MouseDrag)
+            else if (draggingVertical && ReferenceEquals(verticalOwner, owner) && current.type == EventType.MouseDrag)
             {
                 float delta = current.mousePosition.y - dragStartMouseY;
                 float travel = track.height - thumb.height;
@@ -114,13 +120,15 @@ namespace OrderedWork.UI
                 lastScrollTime = Time.realtimeSinceStartup;
                 current.Use();
             }
-            else if (draggingVertical && current.type == EventType.MouseUp)
+            else if (draggingVertical && ReferenceEquals(verticalOwner, owner) && current.type == EventType.MouseUp)
             {
                 draggingVertical = false;
+                verticalOwner = null;
                 current.Use();
             }
             else if (current.type == EventType.MouseDown && current.button == 0 && Mouse.IsOver(track) && !Mouse.IsOver(thumb))
             {
+                verticalOwner = owner;
                 float page = Mathf.Max(MinThumb, viewport.height);
                 scroll.y = Mathf.Clamp(scroll.y + (current.mousePosition.y < thumb.y ? -page : page), 0f, max);
                 lastScrollTime = Time.realtimeSinceStartup;

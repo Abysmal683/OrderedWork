@@ -32,7 +32,7 @@ namespace OrderedWork.UI
             Rect track = new Rect(viewport.xMax + 2f, outRect.y, barWidth, outRect.height);
             float maxScroll = Mathf.Max(0f, content.height - viewport.height);
             scroll.y = Mathf.Clamp(scroll.y, 0f, maxScroll);
-            WorkGridScrollView.HandleVertical(track, viewport, content, ref scroll);
+            WorkGridScrollView.HandleVertical(track, viewport, content, ref scroll, typeof(PassionWeightsView));
 
             GUI.BeginGroup(viewport);
             string pendingTooltip = null;

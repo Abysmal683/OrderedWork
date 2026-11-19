@@ -239,7 +239,7 @@ namespace OrderedWork.UI
             // Handle bar input before the scroll view so the content cannot eat MouseDown.
             if (showVerticalScrollbar)
             {
-                WorkGridScrollView.HandleVertical(vTrack, gridViewport, laneContent, ref gridScroll);
+                WorkGridScrollView.HandleVertical(vTrack, gridViewport, laneContent, ref gridScroll, this);
             }
             if (showHorizontalScrollbar)
             {
