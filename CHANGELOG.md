@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.193] - 2026-11-19
+
+### Feature — stat breakdown tooltips and zebra
+- Generic and specialized stat rows now use zebra striping.
+- Stat tooltips now show the current final value and the vanilla `StatWorker.GetExplanationFull` breakdown.
+- The breakdown is cached and refreshed every 60 ticks; it is only queried while hovering a row.
+- This exposes current skill, capacity, factor, offset and mod-part contributions without hardcoded formulas.
+- Profile and VSE filters remain in their current validated state.
+
 ## [0.3.0-alpha.192] - 2026-11-19
 
 ### Fix — skill filter dismissal
