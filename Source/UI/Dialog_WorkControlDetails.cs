@@ -17,6 +17,7 @@ namespace OrderedWork.UI
     {
         private enum DetailTab
         {
+            Work,
             Overview,
             Schedule,
             Zone,
@@ -28,6 +29,7 @@ namespace OrderedWork.UI
         private DetailTab detailTab;
         private Vector2 overviewScroll;
         private Vector2 detailTabScroll;
+        private WorkPanel workPanel;
 
         public Dialog_WorkControlDetails(Pawn pawn)
         {
@@ -88,6 +90,10 @@ namespace OrderedWork.UI
         {
             EnforceMinimumWindowSize();
             draggable = detailTab != DetailTab.Schedule;
+            if (workPanel == null && pawn != null)
+            {
+                workPanel = new WorkPanel(pawn);
+            }
             if (pawn == null || pawn.Destroyed)
             {
                 Widgets.Label(inRect, "Pawn unavailable.");
@@ -99,7 +105,7 @@ namespace OrderedWork.UI
             Text.Font = GameFont.Small;
 
             Rect tabRow = new Rect(0f, 64f, inRect.width, 28f);
-            OrderedTabStrip.Draw(tabRow, new[] { "Overview", "Horario", "Zona", "Overrides", "Ropa" }, (int)detailTab,
+            OrderedTabStrip.Draw(tabRow, new[] { "Trabajo", "Overview", "Horario", "Zona", "Overrides", "Ropa" }, (int)detailTab,
                 delegate(int index)
                 {
                     detailTab = (DetailTab)index;
@@ -110,6 +116,9 @@ namespace OrderedWork.UI
 
             switch (detailTab)
             {
+                case DetailTab.Work:
+                    workPanel.Draw(content);
+                    break;
                 case DetailTab.Schedule:
                     DrawScrollableTab(content, DrawScheduleTab, 860f, 340f);
                     break;

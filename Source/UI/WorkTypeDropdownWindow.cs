@@ -18,19 +18,22 @@ namespace OrderedWork.UI
         private readonly string title;
         private readonly List<WorkTypeDef> types;
         private readonly Action<WorkTypeDef> onSelect;
+        private readonly Func<WorkTypeDef, string> label;
         private Vector2 scroll;
 
         internal WorkTypeDropdownWindow(
             string title,
             IEnumerable<WorkTypeDef> types,
             WorkTypeDef selected,
-            Action<WorkTypeDef> onSelect)
+            Action<WorkTypeDef> onSelect,
+            Func<WorkTypeDef, string> label = null)
         {
             this.title = title;
             this.types = (types ?? Enumerable.Empty<WorkTypeDef>())
                 .Where(t => t != null && t != selected)
                 .ToList();
             this.onSelect = onSelect;
+            this.label = label;
             doCloseX = true;
             closeOnClickedOutside = true;
             absorbInputAroundWindow = true;
@@ -56,7 +59,8 @@ namespace OrderedWork.UI
                 {
                     WorkTypeDef type = types[i];
                     Rect row = new Rect(0f, i * RowHeight, viewport.width - 16f, RowHeight - 2f);
-                    if (Widgets.ButtonText(row, WorkTypePaletteView.DisplayName(type)))
+                    string text = label != null ? label(type) : WorkTypePaletteView.DisplayName(type);
+                    if (Widgets.ButtonText(row, text))
                     {
                         if (onSelect != null)
                         {

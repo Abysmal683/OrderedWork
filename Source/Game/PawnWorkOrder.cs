@@ -9,7 +9,7 @@ namespace OrderedWork.Data
     /// </summary>
     public class PawnWorkOrder : IExposable
     {
-        public const int CurrentPolicySchemaVersion = 1;
+        public const int CurrentPolicySchemaVersion = 2;
 
         public Pawn pawn;
         public string pawnId;
@@ -19,6 +19,7 @@ namespace OrderedWork.Data
         public List<string> order = new List<string>();
         public string workPresetId;
         public List<PawnWorkOverride> workOverrides = new List<PawnWorkOverride>();
+        public List<PawnWorkGiverOrder> workGiverOrders = new List<PawnWorkGiverOrder>();
 
         public string schedulePresetId;
         public List<PawnScheduleOverride> scheduleOverrides = new List<PawnScheduleOverride>();
@@ -45,6 +46,7 @@ namespace OrderedWork.Data
             Scribe_Collections.Look(ref order, "order", LookMode.Value);
             Scribe_Values.Look(ref workPresetId, "workPresetId");
             Scribe_Collections.Look(ref workOverrides, "workOverrides", LookMode.Deep);
+            Scribe_Collections.Look(ref workGiverOrders, "workGiverOrders", LookMode.Deep);
             Scribe_Values.Look(ref schedulePresetId, "schedulePresetId");
             Scribe_Collections.Look(ref scheduleOverrides, "scheduleOverrides", LookMode.Deep);
             Scribe_Collections.Look(ref scheduleWorkOverrides, "scheduleWorkOverrides", LookMode.Deep);
@@ -56,6 +58,8 @@ namespace OrderedWork.Data
             {
                 if (order == null) order = new List<string>();
                 if (workOverrides == null) workOverrides = new List<PawnWorkOverride>();
+            if (workGiverOrders == null) workGiverOrders = new List<PawnWorkGiverOrder>();
+                if (workGiverOrders == null) workGiverOrders = new List<PawnWorkGiverOrder>();
                 if (scheduleOverrides == null) scheduleOverrides = new List<PawnScheduleOverride>();
                 if (scheduleWorkOverrides == null) scheduleWorkOverrides = new List<PawnScheduleWorkOverride>();
                 if (clothingOverrides == null) clothingOverrides = new List<PawnClothingOverride>();
@@ -78,12 +82,14 @@ namespace OrderedWork.Data
             }
             if (order == null) order = new List<string>();
             if (workOverrides == null) workOverrides = new List<PawnWorkOverride>();
+            if (workGiverOrders == null) workGiverOrders = new List<PawnWorkGiverOrder>();
             if (scheduleOverrides == null) scheduleOverrides = new List<PawnScheduleOverride>();
             if (scheduleWorkOverrides == null) scheduleWorkOverrides = new List<PawnScheduleWorkOverride>();
             if (zones == null) zones = new List<PawnZoneBinding>();
             if (clothingOverrides == null) clothingOverrides = new List<PawnClothingOverride>();
 
             PolicyValidation.Normalize(workOverrides);
+            PolicyValidation.NormalizeWorkGivers(workGiverOrders);
             PolicyValidation.Normalize(scheduleOverrides);
             PolicyValidation.NormalizeScheduleWork(scheduleWorkOverrides);
             PolicyValidation.Normalize(zones);

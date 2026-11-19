@@ -22,7 +22,8 @@ namespace OrderedWork.Patches
         {
             Pawn pawn = PawnField(__instance);
             List<WorkGiver> reordered;
-            if (WorkGiverOrderSpike.TryReorder(pawn, __result, false, out reordered))
+            if (WorkGiverOrderSpike.TryReorder(pawn, __result, false, out reordered)
+                || WorkGiverOrderService.TryReorder(pawn, __result, out reordered))
             {
                 __result = reordered;
             }
@@ -34,7 +35,8 @@ namespace OrderedWork.Patches
         {
             Pawn pawn = PawnField(__instance);
             List<WorkGiver> reordered;
-            if (WorkGiverOrderSpike.TryReorder(pawn, __result, true, out reordered))
+            if (WorkGiverOrderSpike.TryReorder(pawn, __result, true, out reordered)
+                || WorkGiverOrderService.TryReorder(pawn, __result, out reordered))
             {
                 __result = reordered;
             }

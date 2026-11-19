@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Verse;
 
 namespace OrderedWork.Data
@@ -10,6 +12,24 @@ namespace OrderedWork.Data
         Schedule,
         Emergency,
         Legacy
+    }
+
+    public class PawnWorkGiverOrder : IExposable
+    {
+        public string workTypeDefName;
+        public List<string> giverDefNames = new List<string>();
+        public PolicySource source = PolicySource.Manual;
+
+        public void ExposeData()
+        {
+            Scribe_Values.Look(ref workTypeDefName, "workTypeDefName");
+            Scribe_Collections.Look(ref giverDefNames, "giverDefNames", LookMode.Value);
+            Scribe_Values.Look(ref source, "source", PolicySource.Manual);
+            if (Scribe.mode == LoadSaveMode.LoadingVars && giverDefNames == null)
+            {
+                giverDefNames = new List<string>();
+            }
+        }
     }
 
     public class PawnWorkOverride : IExposable
@@ -104,6 +124,34 @@ namespace OrderedWork.Data
             foreach (PawnWorkOverride value in values)
             {
                 if (value == null || string.IsNullOrEmpty(value.workTypeDefName))
+                {
+                    continue;
+                }
+                unique[value.workTypeDefName] = value;
+            }
+            values.Clear();
+            values.AddRange(unique.Values);
+        }
+
+        public static void NormalizeWorkGivers(List<PawnWorkGiverOrder> values)
+        {
+            if (values == null)
+            {
+                return;
+            }
+            Dictionary<string, PawnWorkGiverOrder> unique = new Dictionary<string, PawnWorkGiverOrder>(StringComparer.Ordinal);
+            foreach (PawnWorkGiverOrder value in values)
+            {
+                if (value == null || string.IsNullOrEmpty(value.workTypeDefName))
+                {
+                    continue;
+                }
+                value.giverDefNames = value.giverDefNames ?? new List<string>();
+                value.giverDefNames = value.giverDefNames
+                    .Where(name => !string.IsNullOrEmpty(name))
+                    .Distinct(StringComparer.Ordinal)
+                    .ToList();
+                if (value.giverDefNames.Count == 0)
                 {
                     continue;
                 }
