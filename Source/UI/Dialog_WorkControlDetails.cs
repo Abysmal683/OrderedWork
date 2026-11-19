@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
@@ -153,27 +154,48 @@ namespace OrderedWork.UI
                 case KeyCode.Alpha1:
                 case KeyCode.Keypad1:
                     Find.TickManager.CurTimeSpeed = TimeSpeed.Normal;
+                    PlayTimeSound(TimeSpeed.Normal);
                     current.Use();
                     break;
                 case KeyCode.Alpha2:
                 case KeyCode.Keypad2:
                     Find.TickManager.CurTimeSpeed = TimeSpeed.Fast;
+                    PlayTimeSound(TimeSpeed.Fast);
                     current.Use();
                     break;
                 case KeyCode.Alpha3:
                 case KeyCode.Keypad3:
                     Find.TickManager.CurTimeSpeed = TimeSpeed.Superfast;
+                    PlayTimeSound(TimeSpeed.Superfast);
                     current.Use();
                     break;
                 case KeyCode.Alpha4:
                 case KeyCode.Keypad4:
                     Find.TickManager.CurTimeSpeed = TimeSpeed.Ultrafast;
+                    PlayTimeSound(TimeSpeed.Ultrafast);
                     current.Use();
                     break;
                 case KeyCode.Space:
                     Find.TickManager.TogglePaused();
+                    PlayTimeSound(Find.TickManager.Paused ? TimeSpeed.Paused : TimeSpeed.Normal);
                     current.Use();
                     break;
+            }
+        }
+
+        private static void PlayTimeSound(TimeSpeed speed)
+        {
+            try
+            {
+                MethodInfo method = typeof(TimeControls).GetMethod("PlaySoundOf",
+                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+                if (method != null)
+                {
+                    method.Invoke(null, new object[] { speed });
+                }
+            }
+            catch (Exception)
+            {
             }
         }
 

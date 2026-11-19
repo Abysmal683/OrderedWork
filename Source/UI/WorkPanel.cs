@@ -122,7 +122,8 @@ namespace OrderedWork.UI
                 CommitWork();
             }
             if (UiButtonBar.Button(new Rect(header.xMax - 134f, header.y, 62f, 22f), "Givers",
-                selectedWorkType != null, "Show or hide the WorkGiver column for the selected WorkType."))
+                selectedWorkType != null, "Show or hide the WorkGiver column for the selected WorkType.",
+                giversExpanded ? new Color(0.48f, 0.68f, 0.42f, 1f) : (Color?)null))
             {
                 giversExpanded = !giversExpanded;
                 if (giversExpanded)
@@ -145,6 +146,7 @@ namespace OrderedWork.UI
             if (unableHeight > 0f)
             {
                 Rect unableRect = new Rect(body.x, active.yMax + Gap, body.width, unableHeight);
+                Widgets.DrawBoxSolid(new Rect(body.x, active.yMax + 3f, body.width, 2f), UiColors.SectionSeparator);
                 DrawUnableWorkTypes(unableRect, unable);
             }
         }
@@ -312,6 +314,7 @@ namespace OrderedWork.UI
             float statsHeight = Mathf.Clamp(body.height * 0.30f, 96f, 180f);
             Rect listRect = new Rect(body.x, body.y, body.width, Mathf.Max(0f, body.height - statsHeight - Gap));
             Rect statsRect = new Rect(body.x, listRect.yMax + Gap, body.width, statsHeight);
+            Widgets.DrawBoxSolid(new Rect(body.x, listRect.yMax + 3f, body.width, 2f), UiColors.SectionSeparator);
             giverList.Draw(
                 listRect,
                 draft.Count,
@@ -416,9 +419,14 @@ namespace OrderedWork.UI
             {
                 return cached;
             }
+            float multiplier = PassionSource.LearnRateOf(row.Passion);
+            if (multiplier <= 0f)
+            {
+                multiplier = row.LearnFactor;
+            }
             string result = row.Label
                 + "\nPassion: " + WorkTypePaletteView.PassionText(row.Passion)
-                + "\nLearning multiplier: x" + row.LearnFactor.ToString("0.00")
+                + "\nLearning multiplier: x" + multiplier.ToString("0.00")
                 + "\nXP: " + row.XpCurrent.ToString("0") + " / " + row.XpRequired.ToString("0");
             skillTooltipCache[row.Label] = result;
             return result;

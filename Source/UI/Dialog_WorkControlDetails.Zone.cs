@@ -54,41 +54,8 @@ namespace OrderedWork.UI
             {
                 ShowAreaMenu();
             }
-            bool zoneChanged = ZoneHasChanges();
-
-            PawnWorkOrder lastEntry = OrderedWorkGameComponent.GetOrCreate()?.GetEntry(pawn);
-            PawnZoneBinding lastBinding = lastEntry?.zones?.FirstOrDefault(
-                z => z.mapUniqueId == (detailZoneMap != null ? detailZoneMap.uniqueID : 0));
-            string lastZone;
-            if (lastBinding != null)
-            {
-                lastZone = lastBinding.unrestricted ? "Sin restricciones" : lastBinding.areaLabel;
-            }
-            else if (detailZoneMap == pawn.Map && pawn.playerSettings != null)
-            {
-                Area currentArea = pawn.playerSettings.AreaRestrictionInPawnCurrentMap;
-                lastZone = currentArea != null ? currentArea.Label : "Sin restricciones";
-            }
-            else
-            {
-                lastZone = "none";
-            }
-            Widgets.Label(rows.Next(20f), "Last applied on this map: " + lastZone);
-
             Rect buttonRow = rows.Next(26f);
-            Rect applyRect = new Rect(buttonRow.x, buttonRow.y, 130f, buttonRow.height);
-            Rect manageRect = new Rect(buttonRow.x + 134f, buttonRow.y, 130f, buttonRow.height);
-            if (UiButtonBar.Button(applyRect, "Apply zone", zoneChanged && !detailZoneMissing))
-            {
-                ApplyZone();
-            }
-            if (Mouse.IsOver(applyRect) && (!zoneChanged || detailZoneMissing))
-            {
-                TooltipHandler.TipRegion(applyRect,
-                    detailZoneMissing
-                        ? "The saved area no longer exists. Choose an existing area first."
-                        : "Apply is enabled only when the selected zone differs from the applied zone.");
-            }
+            Rect manageRect = new Rect(buttonRow.x, buttonRow.y, 130f, buttonRow.height);
             if (UiButtonBar.Button(manageRect, "Manage zones", true))
             {
                 if (detailZoneMap != null)
@@ -178,6 +145,7 @@ namespace OrderedWork.UI
             options.Add(new FloatMenuOption("Sin restricciones", delegate
             {
                 detailZoneArea = null;
+                ApplyZone();
             }));
             if (detailZoneMap != null)
             {
@@ -189,6 +157,7 @@ namespace OrderedWork.UI
                     options.Add(new FloatMenuOption(captured.Label, delegate
                     {
                         detailZoneArea = captured;
+                        ApplyZone();
                     }));
                 }
             }
