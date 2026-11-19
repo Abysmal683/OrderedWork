@@ -23,13 +23,13 @@ namespace OrderedWork
             WorkConfigProfile reference = WorkConfigStore.LoadReference();
             if (active == null || active.Profile == null || string.IsNullOrEmpty(selectedGiverType))
             {
-                list.Label("Choose a WorkType below to compare its giver order.");
+                list.Label(ConfigText("OrderedWork.Config.Order.SelectPrompt", "Choose a WorkType below to compare its giver order."));
                 return;
             }
             WorkTypeConfig current;
             if (!active.Profile.WorkTypes.TryGetValue(selectedGiverType, out current) || current == null)
             {
-                list.Label("Selected WorkType is not in the active profile.");
+                list.Label(ConfigText("OrderedWork.Config.Order.NotInProfile", "Selected WorkType is not in the active profile."));
                 return;
             }
             if (!giverOrderDraftInitialized || giverOrderDraftType != selectedGiverType)
@@ -52,7 +52,7 @@ namespace OrderedWork
                 : giverOrderDraft.ToList();
 
             string workLabel = DefDatabase<WorkTypeDef>.GetNamedSilentFail(selectedGiverType)?.labelShort ?? selectedGiverType;
-            list.Label("Giver order — " + workLabel + ": origin = reference, destination = draft.");
+            list.Label(string.Format(ConfigText("OrderedWork.Config.Order.Header", "Giver order — {0}: origin = reference, destination = draft."), workLabel));
             int rowCount = Mathf.Max(referenceGivers.Count, giverOrderDraft.Count);
             Rect columns = list.GetRect(Mathf.Max(120f, 28f + rowCount * SplitMergeRowHeight));
             float columnWidth = (columns.width - 12f) * 0.5f;
@@ -60,8 +60,8 @@ namespace OrderedWork
             Rect right = new Rect(columns.x + columnWidth + 12f, columns.y, columnWidth, columns.height);
             Widgets.DrawBoxSolid(left, UiColors.ColumnBackground);
             Widgets.DrawBoxSolid(right, UiColors.ColumnBackground);
-            Widgets.Label(new Rect(left.x, left.y, left.width, 22f), "Origin (last applied)");
-            Widgets.Label(new Rect(right.x, right.y, right.width, 22f), "Destination (current)");
+            Widgets.Label(new Rect(left.x, left.y, left.width, 22f), ConfigText("OrderedWork.Config.Order.Origin", "Origin (last applied)"));
+            Widgets.Label(new Rect(right.x, right.y, right.width, 22f), ConfigText("OrderedWork.Config.Order.Destination", "Destination (current)"));
 
             for (int i = 0; i < referenceGivers.Count; i++)
             {
@@ -85,11 +85,11 @@ namespace OrderedWork
             float half = (buttons.width - 8f) * 0.5f;
             bool changed = !giverOrderDraft.SequenceEqual(giverOrderInitial);
             giverOrderDirty = changed;
-            if (UiButtonBar.Button(new Rect(buttons.x, buttons.y, half, 28f), "Apply giver order", changed))
+            if (UiButtonBar.Button(new Rect(buttons.x, buttons.y, half, 28f), ConfigText("OrderedWork.Config.Order.Apply", "Apply giver order"), changed))
             {
                 ApplyGiverOrderDraft(active.Profile);
             }
-            if (UiButtonBar.Button(new Rect(buttons.x + half + 8f, buttons.y, half, 28f), "Cancel giver order", changed))
+            if (UiButtonBar.Button(new Rect(buttons.x + half + 8f, buttons.y, half, 28f), ConfigText("OrderedWork.Config.Order.Cancel", "Cancel giver order"), changed))
             {
                 giverOrderDraft = new List<string>(giverOrderInitial);
                 giverOrderDirty = false;
@@ -100,9 +100,9 @@ namespace OrderedWork
         private void DrawOrderEditor(Listing_Standard list)
         {
             EnsureSplitMergeDefaults();
-            list.Label("Giver order: choose a WorkType, then drag the destination list. Top = first.");
+            list.Label(ConfigText("OrderedWork.Config.Order.Info", "Giver order: choose a WorkType, then drag the destination list. Top = first."));
             Rect selectorRect = list.GetRect(28f);
-            DrawWorkTypeSelector(selectorRect, "Work type: ", selectedGiverType, "Select Work type", delegate(string defName)
+            DrawWorkTypeSelector(selectorRect, ConfigText("OrderedWork.Config.Order.WorkType", "Work type: "), selectedGiverType, ConfigText("OrderedWork.Config.Order.SelectWorkType", "Select Work type"), delegate(string defName)
             {
                 selectedGiverType = defName;
                 giverOrderDraftInitialized = false;
@@ -119,25 +119,25 @@ namespace OrderedWork
         private void DrawProfileResetChanges(Listing_Standard list)
         {
             list.Gap(14f);
-            list.Label("Reset changes against reference.json:");
+            list.Label(ConfigText("OrderedWork.Config.Order.ResetInfo", "Reset changes against reference.json:"));
             WorkConfigLoadResult active = WorkConfigStore.LoadActiveWithFallback(activeProfileName);
             WorkConfigProfile pending = WorkConfigStore.LoadPending(activeProfileName);
             WorkConfigProfile reference = WorkConfigStore.LoadReference();
             if (active == null || active.Profile == null || reference == null)
             {
-                list.Label("No active profile/reference available.");
+                list.Label(ConfigText("OrderedWork.Config.Order.NoActive", "No active profile/reference available."));
                 return;
             }
             WorkConfigProfile display = pending ?? (active != null ? active.Profile : null);
             if (display == null)
             {
-                list.Label("No pending/active profile available.");
+                list.Label(ConfigText("OrderedWork.Config.Order.NoPending", "No pending/active profile available."));
                 return;
             }
             List<string> modified = WorkConfigDiff.GetModifiedDefNames(display, reference);
             if (modified.Count == 0)
             {
-                list.Label("No modified WorkTypes.");
+                list.Label(ConfigText("OrderedWork.Config.Order.NoModified", "No modified WorkTypes."));
                 return;
             }
 
@@ -150,8 +150,8 @@ namespace OrderedWork
                 bool isSplit = original == null;
                 Rect row = list.GetRect(30f);
                 Widgets.LabelEllipses(new Rect(row.x, row.y, row.width - 150f, 26f),
-                    (isSplit ? "Delete split: " : "Restore: ") + defName);
-                if (Widgets.ButtonText(new Rect(row.xMax - 138f, row.y, 132f, 26f), isSplit ? "Delete" : "Restore"))
+                    (isSplit ? ConfigText("OrderedWork.Config.Order.DeleteSplit", "Delete split: ") : ConfigText("OrderedWork.Config.Order.Restore", "Restore: ")) + defName);
+                if (Widgets.ButtonText(new Rect(row.xMax - 138f, row.y, 132f, 26f), isSplit ? ConfigText("OrderedWork.Config.Order.Delete", "Delete") : ConfigText("OrderedWork.Config.Order.RestoreButton", "Restore")))
                 {
                     if (isSplit)
                     {
@@ -216,10 +216,10 @@ namespace OrderedWork
                     if (WorkConfigStore.SavePending(display))
                     {
                         WorkConfigStore.SaveProfile(display, true);
-                        profileStatus = "Reset written to pending and applied now.";
+                        profileStatus = ConfigText("OrderedWork.Config.Order.ResetApplied", "Reset written to pending and applied now.");
                         OrderedWorkMod.DebugLog("[Reset] " + defName + " profile=" + display.Profile);
                         OrderedWorkStartup.ApplyProfileNow(display, Settings, this);
-                        Messages.Message(isSplit ? "Split deleted: " + defName : "Restored: " + defName, MessageTypeDefOf.TaskCompletion, false);
+                        Messages.Message(isSplit ? string.Format(ConfigText("OrderedWork.Config.Order.SplitDeleted", "Split deleted: {0}"), defName) : string.Format(ConfigText("OrderedWork.Config.Order.Restored", "Restored: {0}"), defName), MessageTypeDefOf.TaskCompletion, false);
                         ResetGiverOrderDraft();
                         giverOrderDraftInitialized = false;
                         giverOrderDraft.Clear();
@@ -235,7 +235,7 @@ namespace OrderedWork
                     break;
                 }
             }
-            list.Label("Reset writes to pending; it does not mutate live defs until restart.");
+            list.Label(ConfigText("OrderedWork.Config.Order.ResetPending", "Reset writes to pending; it does not mutate live defs until restart."));
         }
     }
 }

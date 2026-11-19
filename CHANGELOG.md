@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.235] - 2026-11-19
+
+### Localization — Config mod strings
+- Extracted the Config mod user-facing strings to `OrderedWork.Config.xml`.
+- Added 163 English keys plus Spanish and SpanishLatin translations.
+- Converted General, Rules, Profiles, Order, GiverOrder, SplitMetadata, SplitMerge and Work-tab overlay strings to keyed text.
+- Dynamic messages use format keys; section IDs, file paths, defNames and technical logs remain non-localized.
+- Verified all 413 used keyed strings exist in all three language files.
+
 ## [0.3.0-alpha.234] - 2026-11-19
 
 ### Changed — focus module cleanup and docs

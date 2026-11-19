@@ -59,8 +59,8 @@ namespace OrderedWork
             WorkConfigStore.SaveProfile(profile, true);
             WorkConfigStore.SavePending(profile);
             OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
-            profileStatus = "Giver order for " + selectedGiverType + " applied.";
-            Messages.Message("Giver order saved for " + selectedGiverType + ".", MessageTypeDefOf.TaskCompletion, false);
+            profileStatus = string.Format(ConfigText("OrderedWork.Config.GiverOrder.Applied", "Giver order for {0} applied."), selectedGiverType);
+            Messages.Message(string.Format(ConfigText("OrderedWork.Config.GiverOrder.Saved", "Giver order saved for {0}."), selectedGiverType), MessageTypeDefOf.TaskCompletion, false);
             giverOrderDraftInitialized = false;
             giverOrderDirty = false;
         }

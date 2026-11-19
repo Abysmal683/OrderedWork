@@ -37,20 +37,20 @@ namespace OrderedWork
             }
 
             list.Gap(10f);
-            list.Label("Split metadata (defName is stable):");
-            list.Label("defName: " + selectedGiverType);
+            list.Label(ConfigText("OrderedWork.Config.SplitMeta.Info", "Split metadata (defName is stable):"));
+            list.Label(string.Format(ConfigText("OrderedWork.Config.SplitMeta.DefName", "defName: {0}"), selectedGiverType));
             Rect labelRow = list.GetRect(26f);
-            Widgets.Label(new Rect(labelRow.x, labelRow.y, 110f, 24f), "Label");
+            Widgets.Label(new Rect(labelRow.x, labelRow.y, 110f, 24f), ConfigText("OrderedWork.Config.SplitMeta.Label", "Label"));
             splitMetaLabel = Widgets.TextField(
                 new Rect(labelRow.x + 114f, labelRow.y, labelRow.width - 114f, 24f), splitMetaLabel ?? "");
             Rect descRow = list.GetRect(26f);
-            Widgets.Label(new Rect(descRow.x, descRow.y, 110f, 24f), "Description");
+            Widgets.Label(new Rect(descRow.x, descRow.y, 110f, 24f), ConfigText("OrderedWork.Config.SplitMeta.Description", "Description"));
             splitMetaDescription = Widgets.TextField(
                 new Rect(descRow.x + 114f, descRow.y, descRow.width - 114f, 24f), splitMetaDescription ?? "");
 
             bool changed = splitMetaLabel != (split.Label ?? "")
                 || splitMetaDescription != (split.Description ?? "");
-            if (UiButtonBar.Button(list.GetRect(26f), "Save split metadata", changed))
+            if (UiButtonBar.Button(list.GetRect(26f), ConfigText("OrderedWork.Config.SplitMeta.Save", "Save split metadata"), changed))
             {
                 WorkConfigProfile editing = LoadEditingProfile();
                 if (editing != null && editing.WorkTypes.TryGetValue(selectedGiverType, out WorkTypeConfig target)
@@ -61,7 +61,7 @@ namespace OrderedWork
                     WorkConfigStore.SaveProfile(editing, true);
                     WorkConfigStore.SavePending(editing);
                     OrderedWorkStartup.ApplyProfileNow(editing, Settings, this);
-                    Messages.Message("Split metadata saved for " + selectedGiverType + ".",
+                    Messages.Message(string.Format(ConfigText("OrderedWork.Config.SplitMeta.Saved", "Split metadata saved for {0}."), selectedGiverType),
                         MessageTypeDefOf.TaskCompletion, false);
                 }
             }

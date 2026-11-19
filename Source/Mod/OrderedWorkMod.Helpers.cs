@@ -44,6 +44,10 @@ namespace OrderedWork
             }
         }
 
+        internal static string ConfigText(string key, string fallback)
+        {
+            return OrderedWork.Localization.OrderedWorkText.T(key, fallback);
+        }
         private static string WorkTypeTooltip(string defName)
         {
             WorkTypeDef wt = DefDatabase<WorkTypeDef>.GetNamedSilentFail(defName);
@@ -58,7 +62,7 @@ namespace OrderedWork
                 .ToList();
             if (givers.Count > 0)
             {
-                text += "\n\nWorkGivers:";
+                text += "\n\n" + ConfigText("OrderedWork.Config.Helpers.WorkGivers", "WorkGivers:");
                 foreach (WorkGiverDef giver in givers)
                 {
                     text += "\n- " + giver.defName;
@@ -76,7 +80,7 @@ namespace OrderedWork
             string text = giver.defName;
             if (giver.workType != null)
             {
-                text += "\nWork type: " + giver.workType.labelShort;
+                text += "\n" + ConfigText("OrderedWork.Config.Helpers.WorkType", "Work type: ") + giver.workType.labelShort;
             }
             return text;
         }
@@ -157,7 +161,7 @@ namespace OrderedWork
             OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
             workOrderBaseline.Clear();
             workOrderBaseline.AddRange(workOrderDraft);
-            Messages.Message("Work type order applied.", MessageTypeDefOf.TaskCompletion, false);
+            Messages.Message(ConfigText("OrderedWork.Config.Helpers.OrderApplied", "Work type order applied."), MessageTypeDefOf.TaskCompletion, false);
         }
         private void MoveWorkTypeProfile(List<WorkTypeDef> ordered, int from, int to)
         {

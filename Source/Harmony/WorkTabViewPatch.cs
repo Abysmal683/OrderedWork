@@ -21,13 +21,13 @@ namespace OrderedWork.Patches
             }
 
             Rect buttonRect = new Rect(rect.xMax - 134f, rect.y + 6f, 124f, 28f);
-            if (Widgets.ButtonText(buttonRect, "View: Draw"))
+            if (Widgets.ButtonText(buttonRect, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Config.WorkTab.ViewDraw", "View: Draw")))
             {
                 Find.MainTabsRoot.ToggleTab(workControl, true);
             }
             if (Mouse.IsOver(buttonRect))
             {
-                TooltipHandler.TipRegion(buttonRect, "Open Work Control (Draw view)");
+                TooltipHandler.TipRegion(buttonRect, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Config.WorkTab.OpenTip", "Open Work Control (Draw view)"));
             }
         }
     }

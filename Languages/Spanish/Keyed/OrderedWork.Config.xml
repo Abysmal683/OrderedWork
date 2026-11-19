@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <OrderedWork.Config.General.CoreSection>Ajustes principales</OrderedWork.Config.General.CoreSection>
+  <OrderedWork.Config.General.RestartNotice>Ordered Work (Core): los cambios se aplican al reiniciar.</OrderedWork.Config.General.RestartNotice>
+  <OrderedWork.Config.General.Version>Versión del mod: {0}</OrderedWork.Config.General.Version>
+  <OrderedWork.Config.General.AutoRecommend>Recomendar automáticamente en colonias nuevas</OrderedWork.Config.General.AutoRecommend>
+  <OrderedWork.Config.General.AutoRecommendTip>Activado: las colonias nuevas o por defecto y los peones nuevos reciben una recomendación de habilidades. Desactivado: se copia el orden vanilla actual; el botón Recomendar de arriba sigue funcionando.</OrderedWork.Config.General.AutoRecommendTip>
+  <OrderedWork.Config.General.AutoHideScrollbars>Ocultar barras de desplazamiento automáticamente</OrderedWork.Config.General.AutoHideScrollbars>
+  <OrderedWork.Config.General.AutoHideScrollbarsTip>Muestra las barras de Work Control solo al pasar el cursor o desplazarse, para que la matriz conserve su espacio.</OrderedWork.Config.General.AutoHideScrollbarsTip>
+  <OrderedWork.Config.General.KeepDestroyed>Conservar órdenes de peones destruidos</OrderedWork.Config.General.KeepDestroyed>
+  <OrderedWork.Config.General.KeepDestroyedTip>Desactivado: elimina la entrada cuando el juego ya no recuerda al peón. Activado: la conserva para mods que pueden devolver peones eliminados.</OrderedWork.Config.General.KeepDestroyedTip>
+  <OrderedWork.Config.General.ProfilesSection>Perfiles</OrderedWork.Config.General.ProfilesSection>
+  <OrderedWork.Config.General.DiagnosticsSection>Diagnóstico</OrderedWork.Config.General.DiagnosticsSection>
+  <OrderedWork.Config.General.PaletteStress>Prueba de estrés de la paleta (debug)</OrderedWork.Config.General.PaletteStress>
+  <OrderedWork.Config.General.PaletteStressTip>Añade 60 tipos de trabajo visuales para probar el foco de la paleta.</OrderedWork.Config.General.PaletteStressTip>
+  <OrderedWork.Config.General.Verbose>Diagnóstico detallado en Player.log</OrderedWork.Config.General.Verbose>
+  <OrderedWork.Config.General.VerboseTip>Activa líneas temporales de depuración de orden, reinicio y desplazamiento. Desactívalo para jugar normal.</OrderedWork.Config.General.VerboseTip>
+  <OrderedWork.Config.General.SpikeInfo>Prueba de orden de WorkGivers: reordena los WorkGivers de acarreo de un solo peón seleccionado. No cambia definiciones.</OrderedWork.Config.General.SpikeInfo>
+  <OrderedWork.Config.General.SpikeToggle>Activar prueba de orden de WorkGivers (debug)</OrderedWork.Config.General.SpikeToggle>
+  <OrderedWork.Config.General.SpikeToggleTip>Cuando está activo, el parche de prueba puede reordenar la lista runtime de WorkGivers del peón seleccionado.</OrderedWork.Config.General.SpikeToggleTip>
+  <OrderedWork.Config.General.SpikeApply>Aplicar prueba de WorkGivers al peón seleccionado</OrderedWork.Config.General.SpikeApply>
+  <OrderedWork.Config.General.SpikeApplyTip>Selecciona exactamente un peón, invierte sus WorkGivers de acarreo y registra el resultado.</OrderedWork.Config.General.SpikeApplyTip>
+  <OrderedWork.Config.General.SpikeLog>Registrar orden actual de WorkGivers</OrderedWork.Config.General.SpikeLog>
+  <OrderedWork.Config.General.SpikeLogTip>Registra el orden normal y de emergencia actual del peón seleccionado.</OrderedWork.Config.General.SpikeLogTip>
+  <OrderedWork.Config.General.SpikeClear>Limpiar prueba de WorkGivers</OrderedWork.Config.General.SpikeClear>
+  <OrderedWork.Config.General.SpikeClearTip>Elimina el orden de prueba del peón seleccionado.</OrderedWork.Config.General.SpikeClearTip>
+  <OrderedWork.Config.General.DenseInfo>Prueba técnica: escribe rango denso 1..N en los colonos libres y registra el resultado.</OrderedWork.Config.General.DenseInfo>
+  <OrderedWork.Config.General.LoadColony>Carga una colonia para ejecutar la prueba de rango denso.</OrderedWork.Config.General.LoadColony>
+  <OrderedWork.Config.General.DenseButton>Probar rango denso en colonos (log)</OrderedWork.Config.General.DenseButton>
+  <OrderedWork.Config.General.DenseButtonTip>Ejecuta la prueba técnica de rango denso.</OrderedWork.Config.General.DenseButtonTip>
+  <OrderedWork.Config.General.DangerSection>Zona de peligro</OrderedWork.Config.General.DangerSection>
+  <OrderedWork.Config.General.ResetInfo>Reinicia la configuración del mod sin tocar las prioridades 1..N de los peones.</OrderedWork.Config.General.ResetInfo>
+  <OrderedWork.Config.General.ResetButton>Reiniciar toda la configuración</OrderedWork.Config.General.ResetButton>
+  <OrderedWork.Config.General.ResetTip>Reinicia toda la configuración de Ordered Work.</OrderedWork.Config.General.ResetTip>
+  <OrderedWork.Config.General.ResetConfirmInfo>Esto borra órdenes, divisiones, fusiones, colores, prueba de estrés y altura del panel, además de borradores sin guardar. Las prioridades de trabajo de los peones no se tocan.</OrderedWork.Config.General.ResetConfirmInfo>
+  <OrderedWork.Config.General.ResetConfirm>Confirmar reinicio total</OrderedWork.Config.General.ResetConfirm>
+  <OrderedWork.Config.General.ResetConfirmTip>Confirma el reinicio completo de la configuración.</OrderedWork.Config.General.ResetConfirmTip>
+  <OrderedWork.Config.General.CancelReset>Cancelar reinicio</OrderedWork.Config.General.CancelReset>
+  <OrderedWork.Config.General.CancelResetTip>Cancela el reinicio pendiente.</OrderedWork.Config.General.CancelResetTip>
+  <OrderedWork.Config.General.BackupWarning>Nunca se elimina un tipo de trabajo ni un WorkGiver. Haz una copia de seguridad antes de aplicar.</OrderedWork.Config.General.BackupWarning>
+
+  <OrderedWork.Config.Rules.Section>Reglas</OrderedWork.Config.Rules.Section>
+  <OrderedWork.Config.Rules.RestartNotice>Ordered Work (Core): los cambios se aplican al reiniciar.</OrderedWork.Config.Rules.RestartNotice>
+  <OrderedWork.Config.Rules.SplitNotice>La división copia etiquetas de trabajo, habilidades, etapas de vida y disponibilidad mecánica.</OrderedWork.Config.Rules.SplitNotice>
+  <OrderedWork.Config.Rules.WorkOrderSection>Tipos de trabajo y orden</OrderedWork.Config.Rules.WorkOrderSection>
+  <OrderedWork.Config.Rules.WorkOrderInfo>Orden de tipos de trabajo (arriba = primero). Arrastra las filas para reordenar:</OrderedWork.Config.Rules.WorkOrderInfo>
+  <OrderedWork.Config.Rules.Changed>Modificado</OrderedWork.Config.Rules.Changed>
+  <OrderedWork.Config.Rules.ApplyWorkOrder>Aplicar orden de trabajo</OrderedWork.Config.Rules.ApplyWorkOrder>
+  <OrderedWork.Config.Rules.ApplyWorkOrderTip>Aplica los tipos de trabajo reordenados.</OrderedWork.Config.Rules.ApplyWorkOrderTip>
+  <OrderedWork.Config.Rules.ApplyWorkOrderNoChanges>No hay cambios de orden para aplicar.</OrderedWork.Config.Rules.ApplyWorkOrderNoChanges>
+  <OrderedWork.Config.Rules.CancelWorkOrder>Cancelar orden de trabajo</OrderedWork.Config.Rules.CancelWorkOrder>
+  <OrderedWork.Config.Rules.CancelWorkOrderTip>Descarta el borrador del orden de trabajo.</OrderedWork.Config.Rules.CancelWorkOrderTip>
+  <OrderedWork.Config.Rules.CancelWorkOrderNoChanges>No hay cambios de orden para cancelar.</OrderedWork.Config.Rules.CancelWorkOrderNoChanges>
+  <OrderedWork.Config.Rules.PinsSection>Fijados de recomendación</OrderedWork.Config.Rules.PinsSection>
+  <OrderedWork.Config.Rules.PrioritizePassion>Priorizar pasión de nivel bajo sobre trabajo sin habilidad</OrderedWork.Config.Rules.PrioritizePassion>
+  <OrderedWork.Config.Rules.PrioritizePassionTip>Activado: una habilidad baja con pasión menor o mayor puede quedar por encima de un tipo de trabajo sin habilidad relevante. Desactivado: solo deciden el nivel y la prioridad natural.</OrderedWork.Config.Rules.PrioritizePassionTip>
+  <OrderedWork.Config.Rules.PinsInfo>Fijados automáticos de recomendación (arriba = primero). Arrastra para reordenar:</OrderedWork.Config.Rules.PinsInfo>
+  <OrderedWork.Config.Rules.AddPin>Añadir fijado de recomendación</OrderedWork.Config.Rules.AddPin>
+  <OrderedWork.Config.Rules.AddPinTitle>Añadir fijado de recomendación</OrderedWork.Config.Rules.AddPinTitle>
+  <OrderedWork.Config.Rules.DefaultPinsTip>Fijados por defecto: Paciente, Paciente en cama, Bombero. Los fijados son globales y se aplican en este orden antes de puntuar.</OrderedWork.Config.Rules.DefaultPinsTip>
+  <OrderedWork.Config.Rules.WeightsSection>Pesos de pasión para recomendaciones</OrderedWork.Config.Rules.WeightsSection>
+  <OrderedWork.Config.Rules.SplitMergeSection>Dividir / Fusionar / Ordenar</OrderedWork.Config.Rules.SplitMergeSection>
+  <OrderedWork.Config.Rules.AllowEmpty>Permitir origen vacío (todas las reglas)</OrderedWork.Config.Rules.AllowEmpty>
+  <OrderedWork.Config.Rules.AllowEmptyTip>Se aplica a Dividir y Fusionar. Los orígenes vanilla se ocultan; las divisiones se eliminan. Desactívalo para exigir al menos un WorkGiver en el origen.</OrderedWork.Config.Rules.AllowEmptyTip>
+  <OrderedWork.Config.Rules.NoDelete>Nunca se elimina un tipo de trabajo ni un WorkGiver. Haz una copia de seguridad antes de aplicar.</OrderedWork.Config.Rules.NoDelete>
+  <OrderedWork.Config.Rules.RestartApply>Los cambios de Dividir/Fusionar se aplican tras reiniciar.</OrderedWork.Config.Rules.RestartApply>
+
+  <OrderedWork.Config.Profiles.Info>Perfiles JSON globales (los cambios pendientes se aplican al reiniciar):</OrderedWork.Config.Profiles.Info>
+  <OrderedWork.Config.Profiles.ListError>No se pudieron listar los perfiles: {0}</OrderedWork.Config.Profiles.ListError>
+  <OrderedWork.Config.Profiles.Active>Perfil activo: {0}  ▼</OrderedWork.Config.Profiles.Active>
+  <OrderedWork.Config.Profiles.Selected>Seleccionado {0}. Se aplicará al próximo arranque.</OrderedWork.Config.Profiles.Selected>
+  <OrderedWork.Config.Profiles.SaveAs>Guardar como</OrderedWork.Config.Profiles.SaveAs>
+  <OrderedWork.Config.Profiles.SaveCurrent>Guardar actual como perfil</OrderedWork.Config.Profiles.SaveCurrent>
+  <OrderedWork.Config.Profiles.SaveCurrentTip>Guarda el perfil activo como JSON.</OrderedWork.Config.Profiles.SaveCurrentTip>
+  <OrderedWork.Config.Profiles.WritePending>Escribir pendiente del perfil activo</OrderedWork.Config.Profiles.WritePending>
+  <OrderedWork.Config.Profiles.WritePendingTip>Escribe los cambios pendientes del perfil activo.</OrderedWork.Config.Profiles.WritePendingTip>
+  <OrderedWork.Config.Profiles.WrotePending>Se escribió {0}.pending.json. Se aplicará al próximo arranque.</OrderedWork.Config.Profiles.WrotePending>
+  <OrderedWork.Config.Profiles.FailedPending>No se pudo escribir el perfil pendiente.</OrderedWork.Config.Profiles.FailedPending>
+  <OrderedWork.Config.Profiles.Reference>Referencia: {0}</OrderedWork.Config.Profiles.Reference>
+
+  <OrderedWork.Config.Order.SelectPrompt>Elige un tipo de trabajo para comparar el orden de sus WorkGivers.</OrderedWork.Config.Order.SelectPrompt>
+  <OrderedWork.Config.Order.NotInProfile>El tipo de trabajo seleccionado no está en el perfil activo.</OrderedWork.Config.Order.NotInProfile>
+  <OrderedWork.Config.Order.Header>Orden de WorkGivers — {0}: origen = referencia, destino = borrador.</OrderedWork.Config.Order.Header>
+  <OrderedWork.Config.Order.Origin>Origen (última aplicación)</OrderedWork.Config.Order.Origin>
+  <OrderedWork.Config.Order.Destination>Destino (actual)</OrderedWork.Config.Order.Destination>
+  <OrderedWork.Config.Order.Apply>Aplicar orden de WorkGivers</OrderedWork.Config.Order.Apply>
+  <OrderedWork.Config.Order.Cancel>Cancelar orden de WorkGivers</OrderedWork.Config.Order.Cancel>
+  <OrderedWork.Config.Order.Info>Orden de WorkGivers: elige un tipo de trabajo y arrastra la lista de destino. Arriba = primero.</OrderedWork.Config.Order.Info>
+  <OrderedWork.Config.Order.WorkType>Tipo de trabajo: </OrderedWork.Config.Order.WorkType>
+  <OrderedWork.Config.Order.SelectWorkType>Seleccionar tipo de trabajo</OrderedWork.Config.Order.SelectWorkType>
+  <OrderedWork.Config.Order.ResetInfo>Reiniciar cambios contra reference.json:</OrderedWork.Config.Order.ResetInfo>
+  <OrderedWork.Config.Order.NoActive>No hay perfil activo ni referencia disponible.</OrderedWork.Config.Order.NoActive>
+  <OrderedWork.Config.Order.NoPending>No hay perfil pendiente o activo disponible.</OrderedWork.Config.Order.NoPending>
+  <OrderedWork.Config.Order.NoModified>No hay tipos de trabajo modificados.</OrderedWork.Config.Order.NoModified>
+  <OrderedWork.Config.Order.DeleteSplit>Eliminar división: </OrderedWork.Config.Order.DeleteSplit>
+  <OrderedWork.Config.Order.Restore>Restaurar: </OrderedWork.Config.Order.Restore>
+  <OrderedWork.Config.Order.Delete>Eliminar</OrderedWork.Config.Order.Delete>
+  <OrderedWork.Config.Order.RestoreButton>Restaurar</OrderedWork.Config.Order.RestoreButton>
+  <OrderedWork.Config.Order.ResetApplied>Reinicio escrito en pendiente y aplicado ahora.</OrderedWork.Config.Order.ResetApplied>
+  <OrderedWork.Config.Order.SplitDeleted>División eliminada: {0}</OrderedWork.Config.Order.SplitDeleted>
+  <OrderedWork.Config.Order.Restored>Restaurado: {0}</OrderedWork.Config.Order.Restored>
+  <OrderedWork.Config.Order.ResetPending>El reinicio se escribe en pendiente; no modifica definiciones activas hasta reiniciar.</OrderedWork.Config.Order.ResetPending>
+
+  <OrderedWork.Config.GiverOrder.Applied>Orden de WorkGivers de {0} aplicado.</OrderedWork.Config.GiverOrder.Applied>
+  <OrderedWork.Config.GiverOrder.Saved>Orden de WorkGivers guardado para {0}.</OrderedWork.Config.GiverOrder.Saved>
+  <OrderedWork.Config.Helpers.WorkGivers>WorkGivers:</OrderedWork.Config.Helpers.WorkGivers>
+  <OrderedWork.Config.Helpers.WorkType>Tipo de trabajo: </OrderedWork.Config.Helpers.WorkType>
+  <OrderedWork.Config.Helpers.OrderApplied>Orden de tipos de trabajo aplicado.</OrderedWork.Config.Helpers.OrderApplied>
+
+  <OrderedWork.Config.SplitMeta.Info>Metadatos de la división (el defName es estable):</OrderedWork.Config.SplitMeta.Info>
+  <OrderedWork.Config.SplitMeta.DefName>defName: {0}</OrderedWork.Config.SplitMeta.DefName>
+  <OrderedWork.Config.SplitMeta.Label>Etiqueta</OrderedWork.Config.SplitMeta.Label>
+  <OrderedWork.Config.SplitMeta.Description>Descripción</OrderedWork.Config.SplitMeta.Description>
+  <OrderedWork.Config.SplitMeta.Save>Guardar metadatos de la división</OrderedWork.Config.SplitMeta.Save>
+  <OrderedWork.Config.SplitMeta.Saved>Metadatos de la división guardados para {0}.</OrderedWork.Config.SplitMeta.Saved>
+
+  <OrderedWork.Config.SplitMerge.Info>Editor Dividir / Fusionar / Ordenar. Los borradores son temporales; las entradas guardadas se aplican al reiniciar.</OrderedWork.Config.SplitMerge.Info>
+  <OrderedWork.Config.SplitMerge.Tip>Consejo: usa Ctrl+rueda o arrastra la barra de una columna para desplazarla; la rueda normal desplaza los ajustes.</OrderedWork.Config.SplitMerge.Tip>
+  <OrderedWork.Config.SplitMerge.SplitTab>Dividir</OrderedWork.Config.SplitMerge.SplitTab>
+  <OrderedWork.Config.SplitMerge.MergeTab>Fusionar</OrderedWork.Config.SplitMerge.MergeTab>
+  <OrderedWork.Config.SplitMerge.OrderTab>Ordenar</OrderedWork.Config.SplitMerge.OrderTab>
+  <OrderedWork.Config.SplitMerge.OriginWorkType>Tipo de trabajo origen: </OrderedWork.Config.SplitMerge.OriginWorkType>
+  <OrderedWork.Config.SplitMerge.Origin>Origen: </OrderedWork.Config.SplitMerge.Origin>
+  <OrderedWork.Config.SplitMerge.Target>Destino: </OrderedWork.Config.SplitMerge.Target>
+  <OrderedWork.Config.SplitMerge.SelectOrigin>Seleccionar tipo de trabajo origen</OrderedWork.Config.SplitMerge.SelectOrigin>
+  <OrderedWork.Config.SplitMerge.SelectTarget>Seleccionar destino de fusión</OrderedWork.Config.SplitMerge.SelectTarget>
+  <OrderedWork.Config.SplitMerge.NewName>Nombre nuevo</OrderedWork.Config.SplitMerge.NewName>
+  <OrderedWork.Config.SplitMerge.Description>Descripción</OrderedWork.Config.SplitMerge.Description>
+  <OrderedWork.Config.SplitMerge.DefName>defName: {0}</OrderedWork.Config.SplitMerge.DefName>
+  <OrderedWork.Config.SplitMerge.OriginGivers>WorkGivers de origen ({0})</OrderedWork.Config.SplitMerge.OriginGivers>
+  <OrderedWork.Config.SplitMerge.SplitDest>Destino de la división ({0})</OrderedWork.Config.SplitMerge.SplitDest>
+  <OrderedWork.Config.SplitMerge.InSplit>(en división)</OrderedWork.Config.SplitMerge.InSplit>
+  <OrderedWork.Config.SplitMerge.Add>Añadir división</OrderedWork.Config.SplitMerge.Add>
+  <OrderedWork.Config.SplitMerge.MergeDest>Destino ({0} fijos + {1} entrantes)</OrderedWork.Config.SplitMerge.MergeDest>
+  <OrderedWork.Config.SplitMerge.InMerge>(en fusión)</OrderedWork.Config.SplitMerge.InMerge>
+  <OrderedWork.Config.SplitMerge.Drop>Suelta "{0}" en la posición de destino {1}.</OrderedWork.Config.SplitMerge.Drop>
+  <OrderedWork.Config.SplitMerge.MergeSelected>Fusionar seleccionados</OrderedWork.Config.SplitMerge.MergeSelected>
+  <OrderedWork.Config.SplitMerge.MergeAll>Fusionar todo</OrderedWork.Config.SplitMerge.MergeAll>
+  <OrderedWork.Config.SplitMerge.CancelDraft>Cancelar borrador</OrderedWork.Config.SplitMerge.CancelDraft>
+  <OrderedWork.Config.SplitMerge.WarningSelected>Fusionar seleccionados: {0}</OrderedWork.Config.SplitMerge.WarningSelected>
+  <OrderedWork.Config.SplitMerge.WarningAll>Fusionar todo: {0}</OrderedWork.Config.SplitMerge.WarningAll>
+  <OrderedWork.Config.SplitMerge.NoGivers>No hay WorkGivers en este tipo de trabajo.</OrderedWork.Config.SplitMerge.NoGivers>
+  <OrderedWork.Config.SplitMerge.DragOrigin>Arrastra aquí los WorkGivers de origen.</OrderedWork.Config.SplitMerge.DragOrigin>
+  <OrderedWork.Config.SplitMerge.DragTarget>Selecciona un destino y arrastra aquí los WorkGivers de origen.</OrderedWork.Config.SplitMerge.DragTarget>
+  <OrderedWork.Config.SplitMerge.Fixed>(fijo)</OrderedWork.Config.SplitMerge.Fixed>
+  <OrderedWork.Config.SplitMerge.ScrollbarTip>Barra: arrástrala o usa Ctrl+rueda sobre esta columna. La rueda normal desplaza los ajustes.</OrderedWork.Config.SplitMerge.ScrollbarTip>
+  <OrderedWork.Config.SplitMerge.WarningPrefix>Aviso: {0}</OrderedWork.Config.SplitMerge.WarningPrefix>
+  <OrderedWork.Config.SplitMerge.WarnSelectOrigin>Selecciona un tipo de trabajo origen válido.</OrderedWork.Config.SplitMerge.WarnSelectOrigin>
+  <OrderedWork.Config.SplitMerge.WarnEnterName>Escribe un nombre para el nuevo tipo de trabajo.</OrderedWork.Config.SplitMerge.WarnEnterName>
+  <OrderedWork.Config.SplitMerge.WarnDragOne>Arrastra al menos un WorkGiver de origen al destino de la división.</OrderedWork.Config.SplitMerge.WarnDragOne>
+  <OrderedWork.Config.SplitMerge.WarnLeaveOrigin>Esta división dejaría el origen vacío. Deja al menos un WorkGiver o activa "Permitir origen vacío".</OrderedWork.Config.SplitMerge.WarnLeaveOrigin>
+  <OrderedWork.Config.SplitMerge.WarnGiversBelong>Todos los WorkGivers de la división deben pertenecer al origen seleccionado.</OrderedWork.Config.SplitMerge.WarnGiversBelong>
+  <OrderedWork.Config.SplitMerge.WarnDifferentTarget>Selecciona un tipo de trabajo destino diferente.</OrderedWork.Config.SplitMerge.WarnDifferentTarget>
+  <OrderedWork.Config.SplitMerge.WarnTargetDifferent>El destino debe ser un tipo de trabajo diferente.</OrderedWork.Config.SplitMerge.WarnTargetDifferent>
+  <OrderedWork.Config.SplitMerge.WarnNoGivers>El tipo de trabajo origen no tiene WorkGivers para mover.</OrderedWork.Config.SplitMerge.WarnNoGivers>
+  <OrderedWork.Config.SplitMerge.WarnMergeAllEmpty>Fusionar todo dejaría el origen vacío. Activa "Permitir origen vacío" para confirmar.</OrderedWork.Config.SplitMerge.WarnMergeAllEmpty>
+  <OrderedWork.Config.SplitMerge.WarnDragMerge>Arrastra al menos un WorkGiver de origen al destino de la fusión.</OrderedWork.Config.SplitMerge.WarnDragMerge>
+  <OrderedWork.Config.SplitMerge.WarnMergeSelectedEmpty>Fusionar seleccionados dejaría el origen vacío. Activa "Permitir origen vacío" para confirmar.</OrderedWork.Config.SplitMerge.WarnMergeSelectedEmpty>
+  <OrderedWork.Config.SplitMerge.WarnMergeGiversBelong>Todos los WorkGivers de la fusión deben pertenecer al origen seleccionado.</OrderedWork.Config.SplitMerge.WarnMergeGiversBelong>
+  <OrderedWork.Config.SplitMerge.SelectMarker>(seleccionar)</OrderedWork.Config.SplitMerge.SelectMarker>
+  <OrderedWork.Config.SplitMerge.SplitSaved>División guardada: {0} (reinicia para aplicar).</OrderedWork.Config.SplitMerge.SplitSaved>
+  <OrderedWork.Config.SplitMerge.MergeSaved>Fusión guardada para {0} (reinicia para aplicar).</OrderedWork.Config.SplitMerge.MergeSaved>
+
+  <OrderedWork.Config.RulesUI.RulesTab>Reglas</OrderedWork.Config.RulesUI.RulesTab>
+  <OrderedWork.Config.RulesUI.GeneralTab>General</OrderedWork.Config.RulesUI.GeneralTab>
+  <OrderedWork.Config.WorkTab.ViewDraw>Vista: Dibujo</OrderedWork.Config.WorkTab.ViewDraw>
+  <OrderedWork.Config.WorkTab.OpenTip>Abrir Work Control (vista Dibujo)</OrderedWork.Config.WorkTab.OpenTip>
+  <OrderedWork.Config.WorkTab.Priority>Prioridad {0} de {1} (por encima del 4 vanilla)</OrderedWork.Config.WorkTab.Priority>
+  <OrderedWork.Config.Reset.ConfigReset>Configuración de Ordered Work reiniciada.</OrderedWork.Config.Reset.ConfigReset>
+  <OrderedWork.Config.General.Unknown>desconocido</OrderedWork.Config.General.Unknown>
+  <OrderedWork.Config.Profiles.Saved>Guardado {0}.json</OrderedWork.Config.Profiles.Saved>
+  <OrderedWork.Config.Profiles.FailedSave>No se pudo guardar {0}.json</OrderedWork.Config.Profiles.FailedSave></LanguageData>

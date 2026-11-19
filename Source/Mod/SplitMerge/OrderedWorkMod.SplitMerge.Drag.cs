@@ -16,7 +16,8 @@ using System.Text;
 namespace OrderedWork
 {
     public partial class OrderedWorkMod : Mod
-    {        private bool IsValidDropHover(bool originSide, bool mergeMode, Rect row)
+    {
+        private bool IsValidDropHover(bool originSide, bool mergeMode, Rect row)
         {
             if (smDragSide == 0 || smDragMergeMode != mergeMode || !smDragMoved)
             {
@@ -37,7 +38,7 @@ namespace OrderedWork
             {
                 onSave();
             }
-            if (UiButtonBar.Button(cancelRect, "Cancel draft", canCancel))
+            if (UiButtonBar.Button(cancelRect, ConfigText("OrderedWork.Config.SplitMerge.CancelDraft", "Cancel draft"), canCancel))
             {
                 onCancel();
             }
@@ -51,7 +52,7 @@ namespace OrderedWork
         {
             Color previous = GUI.color;
             GUI.color = new Color(1f, 0.74f, 0.40f, 1f);
-            list.Label("Warning: " + warning);
+            list.Label(string.Format(ConfigText("OrderedWork.Config.SplitMerge.WarningPrefix", "Warning: {0}"), warning));
             GUI.color = previous;
         }
 
@@ -59,26 +60,26 @@ namespace OrderedWork
         {
             if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(splitOrigin) == null)
             {
-                return "Select a valid origin work type.";
+                return ConfigText("OrderedWork.Config.SplitMerge.WarnSelectOrigin", "Select a valid origin work type.");
             }
             if (string.IsNullOrWhiteSpace(splitName))
             {
-                return "Enter a name for the new work type.";
+                return ConfigText("OrderedWork.Config.SplitMerge.WarnEnterName", "Enter a name for the new work type.");
             }
             if (splitDraft.Count == 0)
             {
-                return "Drag at least one origin giver into Split destination.";
+                return ConfigText("OrderedWork.Config.SplitMerge.WarnDragOne", "Drag at least one origin giver into Split destination.");
             }
             List<WorkGiverDef> originGivers = GiversForWorkType(splitOrigin);
             if (!Settings.allowEmptyOrigin && originGivers.Count > 0 && splitDraft.Count >= originGivers.Count)
             {
-                return "This split would leave the origin empty. Leave at least one giver or enable 'Allow empty origin'.";
+                return ConfigText("OrderedWork.Config.SplitMerge.WarnLeaveOrigin", "This split would leave the origin empty. Leave at least one giver or enable 'Allow empty origin'.");
             }
             foreach (string giver in splitDraft)
             {
                 if (!GiverBelongsTo(giver, splitOrigin))
                 {
-                    return "Every split giver must belong to the selected origin.";
+                    return ConfigText("OrderedWork.Config.SplitMerge.WarnGiversBelong", "Every split giver must belong to the selected origin.");
                 }
             }
             return null;
@@ -88,42 +89,42 @@ namespace OrderedWork
         {
             if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(mergeOrigin) == null)
             {
-                return "Select a valid origin work type.";
+                return ConfigText("OrderedWork.Config.SplitMerge.WarnSelectOrigin", "Select a valid origin work type.");
             }
             if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(mergeTarget) == null)
             {
-                return "Select a different target work type.";
+                return ConfigText("OrderedWork.Config.SplitMerge.WarnDifferentTarget", "Select a different target work type.");
             }
             if (mergeTarget == mergeOrigin)
             {
-                return "Target must be a different work type.";
+                return ConfigText("OrderedWork.Config.SplitMerge.WarnTargetDifferent", "Target must be a different work type.");
             }
             List<WorkGiverDef> originGivers = GiversForWorkType(mergeOrigin);
             if (all)
             {
                 if (originGivers.Count == 0)
                 {
-                    return "Origin work type has no givers to move.";
+                    return ConfigText("OrderedWork.Config.SplitMerge.WarnNoGivers", "Origin work type has no givers to move.");
                 }
                 if (!Settings.allowEmptyOrigin)
                 {
-                    return "Merge all would leave the origin empty. Enable 'Allow empty origin' to confirm.";
+                    return ConfigText("OrderedWork.Config.SplitMerge.WarnMergeAllEmpty", "Merge all would leave the origin empty. Enable 'Allow empty origin' to confirm.");
                 }
                 return null;
             }
             if (mergeDraft.Count == 0)
             {
-                return "Drag at least one origin giver into Merge destination.";
+                return ConfigText("OrderedWork.Config.SplitMerge.WarnDragMerge", "Drag at least one origin giver into Merge destination.");
             }
             if (!Settings.allowEmptyOrigin && mergeDraft.Count >= originGivers.Count)
             {
-                return "Merge selected would leave the origin empty. Enable 'Allow empty origin' to confirm.";
+                return ConfigText("OrderedWork.Config.SplitMerge.WarnMergeSelectedEmpty", "Merge selected would leave the origin empty. Enable 'Allow empty origin' to confirm.");
             }
             foreach (string giver in mergeDraft)
             {
                 if (!GiverBelongsTo(giver, mergeOrigin))
                 {
-                    return "Every merge giver must belong to the selected origin.";
+                    return ConfigText("OrderedWork.Config.SplitMerge.WarnMergeGiversBelong", "Every merge giver must belong to the selected origin.");
                 }
             }
             return null;
@@ -254,6 +255,5 @@ namespace OrderedWork
             splitDraft.RemoveAll(g => !GiverBelongsTo(g, splitOrigin));
             mergeDraft.RemoveAll(g => !GiverBelongsTo(g, mergeOrigin));
         }
-
     }
 }

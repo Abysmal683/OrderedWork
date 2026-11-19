@@ -18,7 +18,7 @@ namespace OrderedWork
     {        private void DrawWorkTypeSelector(Rect rect, string prefix, string selectedDefName, string title, Action<string> onSelect, string excludeDefName = null)
         {
             WorkTypeDef selected = DefDatabase<WorkTypeDef>.GetNamedSilentFail(selectedDefName);
-            string label = selected != null ? WorkTypePaletteView.DisplayName(selected) : "(select)";
+            string label = selected != null ? WorkTypePaletteView.DisplayName(selected) : ConfigText("OrderedWork.Config.SplitMerge.SelectMarker", "(select)");
             if (!Widgets.ButtonText(rect, prefix + label + "  ▼"))
             {
                 return;
@@ -100,7 +100,7 @@ namespace OrderedWork
             WorkConfigStore.SaveProfile(profile, true);
             WorkConfigStore.SavePending(profile);
             OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
-            Messages.Message("Split saved: " + splitName + " (restart to apply).", MessageTypeDefOf.TaskCompletion, false);
+            Messages.Message(string.Format(ConfigText("OrderedWork.Config.SplitMerge.SplitSaved", "Split saved: {0} (restart to apply)."), splitName), MessageTypeDefOf.TaskCompletion, false);
             ResetGiverOrderDraft();
 
             splitName = "";
@@ -188,7 +188,7 @@ namespace OrderedWork
             WorkConfigStore.SaveProfile(profile, true);
             WorkConfigStore.SavePending(profile);
             OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
-            Messages.Message("Merge saved for " + mergeTarget + " (restart to apply).", MessageTypeDefOf.TaskCompletion, false);
+            Messages.Message(string.Format(ConfigText("OrderedWork.Config.SplitMerge.MergeSaved", "Merge saved for {0} (restart to apply)."), mergeTarget), MessageTypeDefOf.TaskCompletion, false);
             mergeDraft.Clear();
             ResetGiverOrderDraft();
             mergeTargetScroll = 0f;

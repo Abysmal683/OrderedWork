@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <OrderedWork.Config.General.CoreSection>Core settings</OrderedWork.Config.General.CoreSection>
+  <OrderedWork.Config.General.RestartNotice>Ordered Work (Core) - changes apply on restart.</OrderedWork.Config.General.RestartNotice>
+  <OrderedWork.Config.General.Version>Mod version: {0}</OrderedWork.Config.General.Version>
+  <OrderedWork.Config.General.AutoRecommend>Auto recommend new colony</OrderedWork.Config.General.AutoRecommend>
+  <OrderedWork.Config.General.AutoRecommendTip>On: new/default colonies and new pawns get a skill recommendation applied. Off: copy the current vanilla order instead; the top Recommend button still works.</OrderedWork.Config.General.AutoRecommendTip>
+  <OrderedWork.Config.General.AutoHideScrollbars>Auto-hide scrollbars</OrderedWork.Config.General.AutoHideScrollbars>
+  <OrderedWork.Config.General.AutoHideScrollbarsTip>Show Work Control scrollbars only while hovering or scrolling, so the matrix keeps its space.</OrderedWork.Config.General.AutoHideScrollbarsTip>
+  <OrderedWork.Config.General.KeepDestroyed>Keep orders for destroyed pawns</OrderedWork.Config.General.KeepDestroyed>
+  <OrderedWork.Config.General.KeepDestroyedTip>Off: remove the pawn entry when the game no longer remembers it. On: keep it for mods that can return fully deleted pawns.</OrderedWork.Config.General.KeepDestroyedTip>
+  <OrderedWork.Config.General.ProfilesSection>Profiles</OrderedWork.Config.General.ProfilesSection>
+  <OrderedWork.Config.General.DiagnosticsSection>Diagnostics</OrderedWork.Config.General.DiagnosticsSection>
+  <OrderedWork.Config.General.PaletteStress>Palette stress test (debug)</OrderedWork.Config.General.PaletteStress>
+  <OrderedWork.Config.General.PaletteStressTip>Adds 60 visual-only WorkTypes to test the palette focus.</OrderedWork.Config.General.PaletteStressTip>
+  <OrderedWork.Config.General.Verbose>Verbose diagnostics in Player.log</OrderedWork.Config.General.Verbose>
+  <OrderedWork.Config.General.VerboseTip>Enables temporary Order/Reset/Scroll debug lines. Disable for normal play.</OrderedWork.Config.General.VerboseTip>
+  <OrderedWork.Config.General.SpikeInfo>WorkGiver order spike: reorders Hauling WorkGivers for one selected pawn only. No defs are changed.</OrderedWork.Config.General.SpikeInfo>
+  <OrderedWork.Config.General.SpikeToggle>Enable WorkGiver order spike (debug)</OrderedWork.Config.General.SpikeToggle>
+  <OrderedWork.Config.General.SpikeToggleTip>When enabled, the spike patch is allowed to reorder the selected pawn's runtime WorkGiver list.</OrderedWork.Config.General.SpikeToggleTip>
+  <OrderedWork.Config.General.SpikeApply>Apply WorkGiver spike to selected pawn</OrderedWork.Config.General.SpikeApply>
+  <OrderedWork.Config.General.SpikeApplyTip>Select exactly one pawn, then reverse that pawn's Hauling WorkGivers and log the result.</OrderedWork.Config.General.SpikeApplyTip>
+  <OrderedWork.Config.General.SpikeLog>Log current WorkGiver order</OrderedWork.Config.General.SpikeLog>
+  <OrderedWork.Config.General.SpikeLogTip>Log the selected pawn's current normal and emergency WorkGiver order.</OrderedWork.Config.General.SpikeLogTip>
+  <OrderedWork.Config.General.SpikeClear>Clear WorkGiver spike</OrderedWork.Config.General.SpikeClear>
+  <OrderedWork.Config.General.SpikeClearTip>Remove the spike order from the selected pawn.</OrderedWork.Config.General.SpikeClearTip>
+  <OrderedWork.Config.General.DenseInfo>Technical spike: writes dense rank 1..N to free colonists and logs the result.</OrderedWork.Config.General.DenseInfo>
+  <OrderedWork.Config.General.LoadColony>Load a colony to run the dense-rank test.</OrderedWork.Config.General.LoadColony>
+  <OrderedWork.Config.General.DenseButton>Test dense rank on colonists (log)</OrderedWork.Config.General.DenseButton>
+  <OrderedWork.Config.General.DenseButtonTip>Run the dense-rank technical spike.</OrderedWork.Config.General.DenseButtonTip>
+  <OrderedWork.Config.General.DangerSection>Danger zone</OrderedWork.Config.General.DangerSection>
+  <OrderedWork.Config.General.ResetInfo>Reset the mod configuration without touching pawn 1..N priorities.</OrderedWork.Config.General.ResetInfo>
+  <OrderedWork.Config.General.ResetButton>Reset config mod all</OrderedWork.Config.General.ResetButton>
+  <OrderedWork.Config.General.ResetTip>Reset all Ordered Work configuration.</OrderedWork.Config.General.ResetTip>
+  <OrderedWork.Config.General.ResetConfirmInfo>This clears orders, splits, merges, colors, stress test and panel height, plus any unsaved drafts. Pawn work priorities are not touched.</OrderedWork.Config.General.ResetConfirmInfo>
+  <OrderedWork.Config.General.ResetConfirm>Confirm reset config mod all</OrderedWork.Config.General.ResetConfirm>
+  <OrderedWork.Config.General.ResetConfirmTip>Confirm the full configuration reset.</OrderedWork.Config.General.ResetConfirmTip>
+  <OrderedWork.Config.General.CancelReset>Cancel reset</OrderedWork.Config.General.CancelReset>
+  <OrderedWork.Config.General.CancelResetTip>Cancel the pending configuration reset.</OrderedWork.Config.General.CancelResetTip>
+  <OrderedWork.Config.General.BackupWarning>No work type or giver is ever deleted. Back up your save before applying.</OrderedWork.Config.General.BackupWarning>
+
+  <OrderedWork.Config.Rules.Section>Rules</OrderedWork.Config.Rules.Section>
+  <OrderedWork.Config.Rules.RestartNotice>Ordered Work (Core) - changes apply on restart.</OrderedWork.Config.Rules.RestartNotice>
+  <OrderedWork.Config.Rules.SplitNotice>Split copies work tags, skills, life stages and mech availability.</OrderedWork.Config.Rules.SplitNotice>
+  <OrderedWork.Config.Rules.WorkOrderSection>Work types and order</OrderedWork.Config.Rules.WorkOrderSection>
+  <OrderedWork.Config.Rules.WorkOrderInfo>Work type order (top = first). Drag rows to reorder:</OrderedWork.Config.Rules.WorkOrderInfo>
+  <OrderedWork.Config.Rules.Changed>Changed</OrderedWork.Config.Rules.Changed>
+  <OrderedWork.Config.Rules.ApplyWorkOrder>Apply work order</OrderedWork.Config.Rules.ApplyWorkOrder>
+  <OrderedWork.Config.Rules.ApplyWorkOrderTip>Apply the reordered WorkTypes.</OrderedWork.Config.Rules.ApplyWorkOrderTip>
+  <OrderedWork.Config.Rules.ApplyWorkOrderNoChanges>No work order changes to apply.</OrderedWork.Config.Rules.ApplyWorkOrderNoChanges>
+  <OrderedWork.Config.Rules.CancelWorkOrder>Cancel work order</OrderedWork.Config.Rules.CancelWorkOrder>
+  <OrderedWork.Config.Rules.CancelWorkOrderTip>Discard the work order draft.</OrderedWork.Config.Rules.CancelWorkOrderTip>
+  <OrderedWork.Config.Rules.CancelWorkOrderNoChanges>No work order changes to cancel.</OrderedWork.Config.Rules.CancelWorkOrderNoChanges>
+  <OrderedWork.Config.Rules.PinsSection>Recommendation pins</OrderedWork.Config.Rules.PinsSection>
+  <OrderedWork.Config.Rules.PrioritizePassion>Prioritize low-level passion over work without skill</OrderedWork.Config.Rules.PrioritizePassion>
+  <OrderedWork.Config.Rules.PrioritizePassionTip>When on, a low skill with Minor/Major passion can rank above a WorkType without a relevant skill. When off, only level and naturalPriority decide.</OrderedWork.Config.Rules.PrioritizePassionTip>
+  <OrderedWork.Config.Rules.PinsInfo>Automatic recommendation pins (top = first). Drag to reorder:</OrderedWork.Config.Rules.PinsInfo>
+  <OrderedWork.Config.Rules.AddPin>Add recommendation pin</OrderedWork.Config.Rules.AddPin>
+  <OrderedWork.Config.Rules.AddPinTitle>Add recommendation pin</OrderedWork.Config.Rules.AddPinTitle>
+  <OrderedWork.Config.Rules.DefaultPinsTip>Default pins: Patient, PatientBedRest, Firefighter. Pins are global and applied in this order before scoring.</OrderedWork.Config.Rules.DefaultPinsTip>
+  <OrderedWork.Config.Rules.WeightsSection>Recommendation passion weights</OrderedWork.Config.Rules.WeightsSection>
+  <OrderedWork.Config.Rules.SplitMergeSection>Split / Merge / Order</OrderedWork.Config.Rules.SplitMergeSection>
+  <OrderedWork.Config.Rules.AllowEmpty>Allow empty origin (Rules-wide)</OrderedWork.Config.Rules.AllowEmpty>
+  <OrderedWork.Config.Rules.AllowEmptyTip>Applies to both Split and Merge. Vanilla origins hide; splits delete. Disable to require at least one giver left in the origin.</OrderedWork.Config.Rules.AllowEmptyTip>
+  <OrderedWork.Config.Rules.NoDelete>No work type or giver is ever deleted. Back up your save before applying.</OrderedWork.Config.Rules.NoDelete>
+  <OrderedWork.Config.Rules.RestartApply>Split/Merge changes take effect after a restart.</OrderedWork.Config.Rules.RestartApply>
+
+  <OrderedWork.Config.Profiles.Info>Global JSON profiles (pending edits apply on restart):</OrderedWork.Config.Profiles.Info>
+  <OrderedWork.Config.Profiles.ListError>Could not list profiles: {0}</OrderedWork.Config.Profiles.ListError>
+  <OrderedWork.Config.Profiles.Active>Active profile: {0}  ▼</OrderedWork.Config.Profiles.Active>
+  <OrderedWork.Config.Profiles.Selected>Selected {0}. Apply on next startup.</OrderedWork.Config.Profiles.Selected>
+  <OrderedWork.Config.Profiles.SaveAs>Save as</OrderedWork.Config.Profiles.SaveAs>
+  <OrderedWork.Config.Profiles.SaveCurrent>Save current as profile</OrderedWork.Config.Profiles.SaveCurrent>
+  <OrderedWork.Config.Profiles.SaveCurrentTip>Save the active profile as JSON.</OrderedWork.Config.Profiles.SaveCurrentTip>
+  <OrderedWork.Config.Profiles.WritePending>Write pending for active profile</OrderedWork.Config.Profiles.WritePending>
+  <OrderedWork.Config.Profiles.WritePendingTip>Write pending edits for the active profile.</OrderedWork.Config.Profiles.WritePendingTip>
+  <OrderedWork.Config.Profiles.WrotePending>Wrote {0}.pending.json. Apply on next startup.</OrderedWork.Config.Profiles.WrotePending>
+  <OrderedWork.Config.Profiles.FailedPending>Failed to write pending profile.</OrderedWork.Config.Profiles.FailedPending>
+  <OrderedWork.Config.Profiles.Reference>Reference: {0}</OrderedWork.Config.Profiles.Reference>
+
+  <OrderedWork.Config.Order.SelectPrompt>Choose a WorkType below to compare its giver order.</OrderedWork.Config.Order.SelectPrompt>
+  <OrderedWork.Config.Order.NotInProfile>Selected WorkType is not in the active profile.</OrderedWork.Config.Order.NotInProfile>
+  <OrderedWork.Config.Order.Header>Giver order — {0}: origin = reference, destination = draft.</OrderedWork.Config.Order.Header>
+  <OrderedWork.Config.Order.Origin>Origin (last applied)</OrderedWork.Config.Order.Origin>
+  <OrderedWork.Config.Order.Destination>Destination (current)</OrderedWork.Config.Order.Destination>
+  <OrderedWork.Config.Order.Apply>Apply giver order</OrderedWork.Config.Order.Apply>
+  <OrderedWork.Config.Order.Cancel>Cancel giver order</OrderedWork.Config.Order.Cancel>
+  <OrderedWork.Config.Order.Info>Giver order: choose a WorkType, then drag the destination list. Top = first.</OrderedWork.Config.Order.Info>
+  <OrderedWork.Config.Order.WorkType>Work type: </OrderedWork.Config.Order.WorkType>
+  <OrderedWork.Config.Order.SelectWorkType>Select Work type</OrderedWork.Config.Order.SelectWorkType>
+  <OrderedWork.Config.Order.ResetInfo>Reset changes against reference.json:</OrderedWork.Config.Order.ResetInfo>
+  <OrderedWork.Config.Order.NoActive>No active profile/reference available.</OrderedWork.Config.Order.NoActive>
+  <OrderedWork.Config.Order.NoPending>No pending/active profile available.</OrderedWork.Config.Order.NoPending>
+  <OrderedWork.Config.Order.NoModified>No modified WorkTypes.</OrderedWork.Config.Order.NoModified>
+  <OrderedWork.Config.Order.DeleteSplit>Delete split: </OrderedWork.Config.Order.DeleteSplit>
+  <OrderedWork.Config.Order.Restore>Restore: </OrderedWork.Config.Order.Restore>
+  <OrderedWork.Config.Order.Delete>Delete</OrderedWork.Config.Order.Delete>
+  <OrderedWork.Config.Order.RestoreButton>Restore</OrderedWork.Config.Order.RestoreButton>
+  <OrderedWork.Config.Order.ResetApplied>Reset written to pending and applied now.</OrderedWork.Config.Order.ResetApplied>
+  <OrderedWork.Config.Order.SplitDeleted>Split deleted: {0}</OrderedWork.Config.Order.SplitDeleted>
+  <OrderedWork.Config.Order.Restored>Restored: {0}</OrderedWork.Config.Order.Restored>
+  <OrderedWork.Config.Order.ResetPending>Reset writes to pending; it does not mutate live defs until restart.</OrderedWork.Config.Order.ResetPending>
+
+  <OrderedWork.Config.GiverOrder.Applied>Giver order for {0} applied.</OrderedWork.Config.GiverOrder.Applied>
+  <OrderedWork.Config.GiverOrder.Saved>Giver order saved for {0}.</OrderedWork.Config.GiverOrder.Saved>
+  <OrderedWork.Config.Helpers.WorkGivers>WorkGivers:</OrderedWork.Config.Helpers.WorkGivers>
+  <OrderedWork.Config.Helpers.WorkType>Work type: </OrderedWork.Config.Helpers.WorkType>
+  <OrderedWork.Config.Helpers.OrderApplied>Work type order applied.</OrderedWork.Config.Helpers.OrderApplied>
+
+  <OrderedWork.Config.SplitMeta.Info>Split metadata (defName is stable):</OrderedWork.Config.SplitMeta.Info>
+  <OrderedWork.Config.SplitMeta.DefName>defName: {0}</OrderedWork.Config.SplitMeta.DefName>
+  <OrderedWork.Config.SplitMeta.Label>Label</OrderedWork.Config.SplitMeta.Label>
+  <OrderedWork.Config.SplitMeta.Description>Description</OrderedWork.Config.SplitMeta.Description>
+  <OrderedWork.Config.SplitMeta.Save>Save split metadata</OrderedWork.Config.SplitMeta.Save>
+  <OrderedWork.Config.SplitMeta.Saved>Split metadata saved for {0}.</OrderedWork.Config.SplitMeta.Saved>
+
+  <OrderedWork.Config.SplitMerge.Info>Split / Merge / Order editor. Drafts are temporary; saved entries apply on restart.</OrderedWork.Config.SplitMerge.Info>
+  <OrderedWork.Config.SplitMerge.Tip>Tip: Ctrl+wheel or drag a column scrollbar to scroll that column; a plain wheel scrolls the settings.</OrderedWork.Config.SplitMerge.Tip>
+  <OrderedWork.Config.SplitMerge.SplitTab>Split</OrderedWork.Config.SplitMerge.SplitTab>
+  <OrderedWork.Config.SplitMerge.MergeTab>Merge</OrderedWork.Config.SplitMerge.MergeTab>
+  <OrderedWork.Config.SplitMerge.OrderTab>Order</OrderedWork.Config.SplitMerge.OrderTab>
+  <OrderedWork.Config.SplitMerge.OriginWorkType>Origin work type: </OrderedWork.Config.SplitMerge.OriginWorkType>
+  <OrderedWork.Config.SplitMerge.Origin>Origin: </OrderedWork.Config.SplitMerge.Origin>
+  <OrderedWork.Config.SplitMerge.Target>Target: </OrderedWork.Config.SplitMerge.Target>
+  <OrderedWork.Config.SplitMerge.SelectOrigin>Select origin work type</OrderedWork.Config.SplitMerge.SelectOrigin>
+  <OrderedWork.Config.SplitMerge.SelectTarget>Select merge target</OrderedWork.Config.SplitMerge.SelectTarget>
+  <OrderedWork.Config.SplitMerge.NewName>New name</OrderedWork.Config.SplitMerge.NewName>
+  <OrderedWork.Config.SplitMerge.Description>Description</OrderedWork.Config.SplitMerge.Description>
+  <OrderedWork.Config.SplitMerge.DefName>defName: {0}</OrderedWork.Config.SplitMerge.DefName>
+  <OrderedWork.Config.SplitMerge.OriginGivers>Origin givers ({0})</OrderedWork.Config.SplitMerge.OriginGivers>
+  <OrderedWork.Config.SplitMerge.SplitDest>Split destination ({0})</OrderedWork.Config.SplitMerge.SplitDest>
+  <OrderedWork.Config.SplitMerge.InSplit>(in split)</OrderedWork.Config.SplitMerge.InSplit>
+  <OrderedWork.Config.SplitMerge.Add>Add split</OrderedWork.Config.SplitMerge.Add>
+  <OrderedWork.Config.SplitMerge.MergeDest>Destination ({0} fixed + {1} incoming)</OrderedWork.Config.SplitMerge.MergeDest>
+  <OrderedWork.Config.SplitMerge.InMerge>(in merge)</OrderedWork.Config.SplitMerge.InMerge>
+  <OrderedWork.Config.SplitMerge.Drop>Drop "{0}" at destination position {1}.</OrderedWork.Config.SplitMerge.Drop>
+  <OrderedWork.Config.SplitMerge.MergeSelected>Merge selected</OrderedWork.Config.SplitMerge.MergeSelected>
+  <OrderedWork.Config.SplitMerge.MergeAll>Merge all</OrderedWork.Config.SplitMerge.MergeAll>
+  <OrderedWork.Config.SplitMerge.CancelDraft>Cancel draft</OrderedWork.Config.SplitMerge.CancelDraft>
+  <OrderedWork.Config.SplitMerge.WarningSelected>Merge selected: {0}</OrderedWork.Config.SplitMerge.WarningSelected>
+  <OrderedWork.Config.SplitMerge.WarningAll>Merge all: {0}</OrderedWork.Config.SplitMerge.WarningAll>
+  <OrderedWork.Config.SplitMerge.NoGivers>No givers on this work type.</OrderedWork.Config.SplitMerge.NoGivers>
+  <OrderedWork.Config.SplitMerge.DragOrigin>Drag origin givers here.</OrderedWork.Config.SplitMerge.DragOrigin>
+  <OrderedWork.Config.SplitMerge.DragTarget>Select a target, then drag origin givers here.</OrderedWork.Config.SplitMerge.DragTarget>
+  <OrderedWork.Config.SplitMerge.Fixed>(fixed)</OrderedWork.Config.SplitMerge.Fixed>
+  <OrderedWork.Config.SplitMerge.ScrollbarTip>Scrollbar: drag it, or Ctrl+wheel over this column. A plain wheel scrolls the settings.</OrderedWork.Config.SplitMerge.ScrollbarTip>
+  <OrderedWork.Config.SplitMerge.WarningPrefix>Warning: {0}</OrderedWork.Config.SplitMerge.WarningPrefix>
+  <OrderedWork.Config.SplitMerge.WarnSelectOrigin>Select a valid origin work type.</OrderedWork.Config.SplitMerge.WarnSelectOrigin>
+  <OrderedWork.Config.SplitMerge.WarnEnterName>Enter a name for the new work type.</OrderedWork.Config.SplitMerge.WarnEnterName>
+  <OrderedWork.Config.SplitMerge.WarnDragOne>Drag at least one origin giver into Split destination.</OrderedWork.Config.SplitMerge.WarnDragOne>
+  <OrderedWork.Config.SplitMerge.WarnLeaveOrigin>This split would leave the origin empty. Leave at least one giver or enable 'Allow empty origin'.</OrderedWork.Config.SplitMerge.WarnLeaveOrigin>
+  <OrderedWork.Config.SplitMerge.WarnGiversBelong>Every split giver must belong to the selected origin.</OrderedWork.Config.SplitMerge.WarnGiversBelong>
+  <OrderedWork.Config.SplitMerge.WarnDifferentTarget>Select a different target work type.</OrderedWork.Config.SplitMerge.WarnDifferentTarget>
+  <OrderedWork.Config.SplitMerge.WarnTargetDifferent>Target must be a different work type.</OrderedWork.Config.SplitMerge.WarnTargetDifferent>
+  <OrderedWork.Config.SplitMerge.WarnNoGivers>Origin work type has no givers to move.</OrderedWork.Config.SplitMerge.WarnNoGivers>
+  <OrderedWork.Config.SplitMerge.WarnMergeAllEmpty>Merge all would leave the origin empty. Enable 'Allow empty origin' to confirm.</OrderedWork.Config.SplitMerge.WarnMergeAllEmpty>
+  <OrderedWork.Config.SplitMerge.WarnDragMerge>Drag at least one origin giver into Merge destination.</OrderedWork.Config.SplitMerge.WarnDragMerge>
+  <OrderedWork.Config.SplitMerge.WarnMergeSelectedEmpty>Merge selected would leave the origin empty. Enable 'Allow empty origin' to confirm.</OrderedWork.Config.SplitMerge.WarnMergeSelectedEmpty>
+  <OrderedWork.Config.SplitMerge.WarnMergeGiversBelong>Every merge giver must belong to the selected origin.</OrderedWork.Config.SplitMerge.WarnMergeGiversBelong>
+  <OrderedWork.Config.SplitMerge.SelectMarker>(select)</OrderedWork.Config.SplitMerge.SelectMarker>
+  <OrderedWork.Config.SplitMerge.SplitSaved>Split saved: {0} (restart to apply).</OrderedWork.Config.SplitMerge.SplitSaved>
+  <OrderedWork.Config.SplitMerge.MergeSaved>Merge saved for {0} (restart to apply).</OrderedWork.Config.SplitMerge.MergeSaved>
+
+  <OrderedWork.Config.RulesUI.RulesTab>Rules</OrderedWork.Config.RulesUI.RulesTab>
+  <OrderedWork.Config.RulesUI.GeneralTab>General</OrderedWork.Config.RulesUI.GeneralTab>
+  <OrderedWork.Config.WorkTab.ViewDraw>View: Draw</OrderedWork.Config.WorkTab.ViewDraw>
+  <OrderedWork.Config.WorkTab.OpenTip>Open Work Control (Draw view)</OrderedWork.Config.WorkTab.OpenTip>
+  <OrderedWork.Config.WorkTab.Priority>Priority {0} of {1} (above vanilla 4)</OrderedWork.Config.WorkTab.Priority>
+  <OrderedWork.Config.Reset.ConfigReset>Ordered Work config reset.</OrderedWork.Config.Reset.ConfigReset>
+  <OrderedWork.Config.General.Unknown>unknown</OrderedWork.Config.General.Unknown>
+  <OrderedWork.Config.Profiles.Saved>Saved {0}.json</OrderedWork.Config.Profiles.Saved>
+  <OrderedWork.Config.Profiles.FailedSave>Failed to save {0}.json</OrderedWork.Config.Profiles.FailedSave></LanguageData>

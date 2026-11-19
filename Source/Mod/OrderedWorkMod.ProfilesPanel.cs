@@ -18,7 +18,7 @@ namespace OrderedWork
         private void DrawProfilePanel(Listing_Standard list)
         {
             list.Gap(8f);
-            list.Label("Global JSON profiles (pending edits apply on restart):");
+            list.Label(ConfigText("OrderedWork.Config.Profiles.Info", "Global JSON profiles (pending edits apply on restart):"));
             if (!profileNameInitialized)
             {
                 activeProfileName = WorkConfigStore.LoadSelectedProfileName();
@@ -39,11 +39,11 @@ namespace OrderedWork
             }
             catch (Exception exception)
             {
-                profileStatus = "Could not list profiles: " + exception.Message;
+                profileStatus = string.Format(ConfigText("OrderedWork.Config.Profiles.ListError", "Could not list profiles: {0}"), exception.Message);
             }
 
             Rect selector = list.GetRect(28f);
-            if (Widgets.ButtonText(selector, "Active profile: " + activeProfileName + "  ▼"))
+            if (Widgets.ButtonText(selector, string.Format(ConfigText("OrderedWork.Config.Profiles.Active", "Active profile: {0}  ▼"), activeProfileName)))
             {
                 List<FloatMenuOption> options = new List<FloatMenuOption>();
                 foreach (string profile in profiles)
@@ -54,7 +54,7 @@ namespace OrderedWork
                         activeProfileName = captured;
                         newProfileName = captured;
                         WorkConfigStore.SaveSelectedProfileName(captured);
-                        profileStatus = "Selected " + captured + ". Apply on next startup.";
+                        profileStatus = string.Format(ConfigText("OrderedWork.Config.Profiles.Selected", "Selected {0}. Apply on next startup."), captured);
                     }));
                 }
                 if (options.Count > 0)
@@ -64,11 +64,11 @@ namespace OrderedWork
             }
 
             list.Gap(6f);
-            newProfileName = UiFieldRow.Text(list.GetRect(26f), "Save as", newProfileName, 84f);
+            newProfileName = UiFieldRow.Text(list.GetRect(26f), ConfigText("OrderedWork.Config.Profiles.SaveAs", "Save as"), newProfileName, 84f);
             list.Gap(6f);
 
 
-            if (UiButtonBar.Button(list.GetRect(28f), "Save current as profile", true, "Save the active profile as JSON."))
+            if (UiButtonBar.Button(list.GetRect(28f), ConfigText("OrderedWork.Config.Profiles.SaveCurrent", "Save current as profile"), true, ConfigText("OrderedWork.Config.Profiles.SaveCurrentTip", "Save the active profile as JSON.")))
             {
                 string profile = string.IsNullOrWhiteSpace(newProfileName) ? activeProfileName : newProfileName.Trim();
                 if (string.IsNullOrWhiteSpace(profile))
@@ -81,23 +81,23 @@ namespace OrderedWork
                     activeProfileName = profile;
                     WorkConfigStore.SaveSelectedProfileName(profile);
                     PersistLivePending();
-                    profileStatus = "Saved " + profile + ".json";
+                    profileStatus = string.Format(ConfigText("OrderedWork.Config.Profiles.Saved", "Saved {0}.json"), profile);
                 }
                 else
                 {
-                    profileStatus = "Failed to save " + profile + ".json";
+                    profileStatus = string.Format(ConfigText("OrderedWork.Config.Profiles.FailedSave", "Failed to save {0}.json"), profile);
                 }
             list.Gap(4f);
             }
-            if (UiButtonBar.Button(list.GetRect(28f), "Write pending for active profile", true, "Write pending edits for the active profile."))
+            if (UiButtonBar.Button(list.GetRect(28f), ConfigText("OrderedWork.Config.Profiles.WritePending", "Write pending for active profile"), true, ConfigText("OrderedWork.Config.Profiles.WritePendingTip", "Write pending edits for the active profile.")))
             {
                 WorkConfigProfile captured = WorkConfigProfileBuilder.Capture(Settings, activeProfileName);
                 profileStatus = WorkConfigStore.SavePending(captured)
-                    ? "Wrote " + activeProfileName + ".pending.json. Apply on next startup."
-                    : "Failed to write pending profile.";
+                    ? string.Format(ConfigText("OrderedWork.Config.Profiles.WrotePending", "Wrote {0}.pending.json. Apply on next startup."), activeProfileName)
+                    : ConfigText("OrderedWork.Config.Profiles.FailedPending", "Failed to write pending profile.");
             }
 
-            list.Label("Reference: " + WorkConfigStore.ReferencePath);
+            list.Label(string.Format(ConfigText("OrderedWork.Config.Profiles.Reference", "Reference: {0}"), WorkConfigStore.ReferencePath));
             if (!string.IsNullOrEmpty(profileStatus))
             {
                 list.Label(profileStatus);

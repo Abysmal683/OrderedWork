@@ -103,7 +103,7 @@ namespace OrderedWork.Patches
                     TooltipHandler.TipRegion(
                         rect,
                         new TipSignal(
-                            "Priority " + priority + " of " + max + " (above vanilla 4)",
+                            string.Format(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Config.WorkTab.Priority", "Priority {0} of {1} (above vanilla 4)"), priority, max),
                             pawn.thingIDNumber ^ workType.shortHash,
                             TooltipPriority.Pawn));
                 }

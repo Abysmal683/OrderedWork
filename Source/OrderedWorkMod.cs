@@ -223,7 +223,7 @@ namespace OrderedWork
             dragKind = 0;
             dragIndex = -1;
             EnsureSplitMergeDefaults();
-            Messages.Message("Ordered Work config reset.", MessageTypeDefOf.TaskCompletion, false);
+            Messages.Message(ConfigText("OrderedWork.Config.Reset.ConfigReset", "Ordered Work config reset."), MessageTypeDefOf.TaskCompletion, false);
         }
 
 

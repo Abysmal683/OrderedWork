@@ -19,16 +19,21 @@ namespace OrderedWork
         {
             EnsureSplitMergeDefaults();
 
-            if (DrawCollapsibleSection(list, "rules-core", "Rules"))
+            if (DrawCollapsibleSection(list, "rules-core",
+                ConfigText("OrderedWork.Config.Rules.Section", "Rules")))
             {
-                list.Label("Ordered Work (Core) - changes apply on restart.");
-                list.Label("Split copies work tags, skills, life stages and mech availability.");
+                list.Label(ConfigText("OrderedWork.Config.Rules.RestartNotice",
+                    "Ordered Work (Core) - changes apply on restart."));
+                list.Label(ConfigText("OrderedWork.Config.Rules.SplitNotice",
+                    "Split copies work tags, skills, life stages and mech availability."));
             }
             list.Gap(6f);
 
-            if (DrawCollapsibleSection(list, "work-order", "Work types and order"))
+            if (DrawCollapsibleSection(list, "work-order",
+                ConfigText("OrderedWork.Config.Rules.WorkOrderSection", "Work types and order")))
             {
-                list.Label("Work type order (top = first). Drag rows to reorder:");
+                list.Label(ConfigText("OrderedWork.Config.Rules.WorkOrderInfo",
+                    "Work type order (top = first). Drag rows to reorder:"));
                 WorkConfigProfile rulesProfile = WorkConfigStore.LoadEditingProfile(activeProfileName);
                 List<WorkTypeDef> orderedTypes = WorkConfigStore.GetOrderedVisibleWorkTypes(rulesProfile);
                 if (!workOrderDraftInitialized)
@@ -53,7 +58,8 @@ namespace OrderedWork
                     bool changed = i >= workOrderBaseline.Count || workOrderDraft[i] != workOrderBaseline[i];
                     if (changed)
                     {
-                        Widgets.Label(new Rect(row.xMax - 86f, row.y, 60f, 20f), "Changed");
+                        Widgets.Label(new Rect(row.xMax - 86f, row.y, 60f, 20f),
+                            ConfigText("OrderedWork.Config.Rules.Changed", "Changed"));
                     }
                     workRows.Add(row);
                 }
@@ -62,23 +68,33 @@ namespace OrderedWork
                 Rect workButtons = list.GetRect(28f);
                 Rect[] workButtonCells = UiFlex.Columns(workButtons, 6f, 1f, 1f);
                 bool workOrderChanged = !workOrderDraft.SequenceEqual(workOrderBaseline);
-                if (UiButtonBar.Button(workButtonCells[0], "Apply work order", workOrderChanged, workOrderChanged ? "Apply the reordered WorkTypes." : "No work order changes to apply."))
+                if (UiButtonBar.Button(workButtonCells[0],
+                    ConfigText("OrderedWork.Config.Rules.ApplyWorkOrder", "Apply work order"), workOrderChanged,
+                    workOrderChanged
+                        ? ConfigText("OrderedWork.Config.Rules.ApplyWorkOrderTip", "Apply the reordered WorkTypes.")
+                        : ConfigText("OrderedWork.Config.Rules.ApplyWorkOrderNoChanges", "No work order changes to apply.")))
                 {
                     ApplyWorkOrderDraft();
                 }
-                if (UiButtonBar.Button(workButtonCells[1], "Cancel work order", workOrderChanged, workOrderChanged ? "Discard the work order draft." : "No work order changes to cancel."))
+                if (UiButtonBar.Button(workButtonCells[1],
+                    ConfigText("OrderedWork.Config.Rules.CancelWorkOrder", "Cancel work order"), workOrderChanged,
+                    workOrderChanged
+                        ? ConfigText("OrderedWork.Config.Rules.CancelWorkOrderTip", "Discard the work order draft.")
+                        : ConfigText("OrderedWork.Config.Rules.CancelWorkOrderNoChanges", "No work order changes to cancel.")))
                 {
                     workOrderDraft.Clear();
                     workOrderDraft.AddRange(workOrderBaseline);
                 }
             }
-            if (DrawCollapsibleSection(list, "recommendation-pins", "Recommendation pins"))
+            if (DrawCollapsibleSection(list, "recommendation-pins",
+                ConfigText("OrderedWork.Config.Rules.PinsSection", "Recommendation pins")))
             {
                 list.CheckboxLabeled(
-                    "Prioritize low-level passion over work without skill",
+                    ConfigText("OrderedWork.Config.Rules.PrioritizePassion", "Prioritize low-level passion over work without skill"),
                     ref Settings.prioritizeLowSkillPassion,
-                    "When on, a low skill with Minor/Major passion can rank above a WorkType without a relevant skill. When off, only level and naturalPriority decide.");
-                list.Label("Automatic recommendation pins (top = first). Drag to reorder:");
+                    ConfigText("OrderedWork.Config.Rules.PrioritizePassionTip", "When on, a low skill with Minor/Major passion can rank above a WorkType without a relevant skill. When off, only level and naturalPriority decide."));
+                list.Label(ConfigText("OrderedWork.Config.Rules.PinsInfo",
+                    "Automatic recommendation pins (top = first). Drag to reorder:"));
                 List<Rect> pinRows = new List<Rect>();
                 for (int i = 0; i < Settings.recommendationPins.Count; i++)
                 {
@@ -97,7 +113,8 @@ namespace OrderedWork
                 }
                 HandleReorderDrag(6, pinRows, MoveRecommendationPin);
                 Rect pinButtonRect = list.GetRect(24f);
-                if (Widgets.ButtonText(pinButtonRect, "Add recommendation pin"))
+                if (Widgets.ButtonText(pinButtonRect,
+                    ConfigText("OrderedWork.Config.Rules.AddPin", "Add recommendation pin")))
                 {
                     List<WorkTypeDef> candidates = WorkConfigStore.GetOrderedVisibleWorkTypes(
                             WorkConfigStore.LoadEditingProfile(activeProfileName))
@@ -106,7 +123,7 @@ namespace OrderedWork
                     if (candidates.Count > 0)
                     {
                         Find.WindowStack.Add(new WorkTypeDropdownWindow(
-                            "Add recommendation pin",
+                            ConfigText("OrderedWork.Config.Rules.AddPinTitle", "Add recommendation pin"),
                             candidates,
                             null,
                             delegate(WorkTypeDef wt)
@@ -120,26 +137,31 @@ namespace OrderedWork
                 }
                 TooltipHandler.TipRegion(
                     pinButtonRect,
-                    "Default pins: Patient, PatientBedRest, Firefighter. Pins are global and applied in this order before scoring.");
+                    ConfigText("OrderedWork.Config.Rules.DefaultPinsTip",
+                        "Default pins: Patient, PatientBedRest, Firefighter. Pins are global and applied in this order before scoring."));
             }
 
-            if (DrawCollapsibleSection(list, "recommendation-weights", "Recommendation passion weights"))
+            if (DrawCollapsibleSection(list, "recommendation-weights",
+                ConfigText("OrderedWork.Config.Rules.WeightsSection", "Recommendation passion weights")))
             {
                 PassionWeightsView.Draw(list, Settings, ref passionWeightScroll, false);
             }
 
-            if (DrawCollapsibleSection(list, "split-merge-order", "Split / Merge / Order"))
+            if (DrawCollapsibleSection(list, "split-merge-order",
+                ConfigText("OrderedWork.Config.Rules.SplitMergeSection", "Split / Merge / Order")))
             {
                 list.CheckboxLabeled(
-                    "Allow empty origin (Rules-wide)",
+                    ConfigText("OrderedWork.Config.Rules.AllowEmpty", "Allow empty origin (Rules-wide)"),
                     ref Settings.allowEmptyOrigin,
-                    "Applies to both Split and Merge. Vanilla origins hide; splits delete. Disable to require at least one giver left in the origin.");
+                    ConfigText("OrderedWork.Config.Rules.AllowEmptyTip", "Applies to both Split and Merge. Vanilla origins hide; splits delete. Disable to require at least one giver left in the origin."));
                 DrawSplitMergeEditor(list);
             }
 
             list.Gap(10f);
-            list.Label("No work type or giver is ever deleted. Back up your save before applying.");
-            list.Label("Split/Merge changes take effect after a restart.");
+            list.Label(ConfigText("OrderedWork.Config.Rules.NoDelete",
+                "No work type or giver is ever deleted. Back up your save before applying."));
+            list.Label(ConfigText("OrderedWork.Config.Rules.RestartApply",
+                "Split/Merge changes take effect after a restart."));
         }
     }
 }

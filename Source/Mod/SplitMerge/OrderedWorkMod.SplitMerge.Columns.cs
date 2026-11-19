@@ -43,7 +43,7 @@ namespace OrderedWork
             {
                 Widgets.Label(
                     new Rect(area.x + 6f, area.y + 4f, contentWidth - 12f, area.height - 8f),
-                    originSide ? "No givers on this work type." : "Drag origin givers here.");
+                    originSide ? ConfigText("OrderedWork.Config.SplitMerge.NoGivers", "No givers on this work type.") : ConfigText("OrderedWork.Config.SplitMerge.DragOrigin", "Drag origin givers here."));
                 DrawColumnScrollbar(track, area.height, maxScroll, scroll, columnId);
                 return;
             }
@@ -114,7 +114,7 @@ namespace OrderedWork
             {
                 Widgets.Label(
                     new Rect(area.x + 6f, area.y + 4f, contentWidth - 12f, area.height - 8f),
-                    "Select a target, then drag origin givers here.");
+                    ConfigText("OrderedWork.Config.SplitMerge.DragTarget", "Select a target, then drag origin givers here."));
                 DrawColumnScrollbar(track, area.height, maxScroll, scroll, 2);
                 return;
             }
@@ -144,7 +144,7 @@ namespace OrderedWork
 
                 if (isFixed)
                 {
-                    DrawSplitMergeRow(row, (i + 1) + ". " + name, true, false, false, "(fixed)", false);
+                    DrawSplitMergeRow(row, (i + 1) + ". " + name, true, false, false, ConfigText("OrderedWork.Config.SplitMerge.Fixed", "(fixed)"), false);
                 }
                 else
                 {
@@ -295,7 +295,7 @@ namespace OrderedWork
                 ? new Color(0.72f, 0.80f, 0.92f, 1f)
                 : new Color(0.48f, 0.53f, 0.60f, 0.95f);
             Widgets.DrawBoxSolid(thumb, color);
-            TooltipHandler.TipRegion(track, "Scrollbar: drag it, or Ctrl+wheel over this column. A plain wheel scrolls the settings.");
+            TooltipHandler.TipRegion(track, ConfigText("OrderedWork.Config.SplitMerge.ScrollbarTip", "Scrollbar: drag it, or Ctrl+wheel over this column. A plain wheel scrolls the settings."));
         }
 
         private void DrawSplitMergeRow(Rect row, string giverName, bool inDraft, bool dragged, bool dropTarget, string draftMarker, bool showHandle = true)

@@ -48,7 +48,7 @@ namespace OrderedWork
 
         private void DrawSettingsTabs(Rect rect)
         {
-            OrderedTabStrip.Draw(rect, new[] { "Rules", "General" }, settingsTab,
+            OrderedTabStrip.Draw(rect, new[] { ConfigText("OrderedWork.Config.RulesUI.RulesTab", "Rules"), ConfigText("OrderedWork.Config.RulesUI.GeneralTab", "General") }, settingsTab,
                 delegate(int index)
                 {
                     if (settingsTab != index)
