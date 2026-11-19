@@ -11,7 +11,8 @@ namespace OrderedWork.UI.Layout
     /// </summary>
     public static class UiButtonBar
     {
-        public static bool Button(Rect rect, string label, bool enabled = true, string tooltip = null)
+        public static bool Button(Rect rect, string label, bool enabled = true, string tooltip = null,
+            Color? tint = null)
         {
             if (!string.IsNullOrEmpty(tooltip))
             {
@@ -20,7 +21,15 @@ namespace OrderedWork.UI.Layout
 
             if (enabled)
             {
-                return Widgets.ButtonText(rect, label, true, true, true);
+                if (!tint.HasValue)
+                {
+                    return Widgets.ButtonText(rect, label, true, true, true);
+                }
+                Color previous = GUI.color;
+                GUI.color = tint.Value;
+                bool clicked = Widgets.ButtonText(rect, label, true, true, true);
+                GUI.color = previous;
+                return clicked;
             }
 
             Color previousColor = GUI.color;

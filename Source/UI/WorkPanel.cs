@@ -105,8 +105,8 @@ namespace OrderedWork.UI
         {
             Widgets.DrawBoxSolid(rect, UiColors.PanelBody);
             Rect header = new Rect(rect.x + 6f, rect.y + 4f, rect.width - 12f, 24f);
-            Widgets.Label(new Rect(header.x, header.y, header.width - 250f, 22f), "Work types");
-            if (UiButtonBar.Button(new Rect(header.xMax - 246f, header.y, 78f, 22f), "Recommend", true,
+            Widgets.Label(new Rect(header.x, header.y, header.width - 212f, 22f), "Work types");
+            if (UiButtonBar.Button(new Rect(header.xMax - 204f, header.y, 66f, 22f), "Recom.", true,
                 "Apply the existing WorkType recommendation to this pawn immediately. WorkGiver overrides are untouched."))
             {
                 workDraft = WorkOrderService.GetRecommendation(pawn);
@@ -114,7 +114,7 @@ namespace OrderedWork.UI
                 LoadSelectedGivers();
                 CommitWork();
             }
-            if (UiButtonBar.Button(new Rect(header.xMax - 164f, header.y, 78f, 22f), "Givers",
+            if (UiButtonBar.Button(new Rect(header.xMax - 134f, header.y, 62f, 22f), "Givers",
                 selectedWorkType != null, "Show or hide the WorkGiver column for the selected WorkType."))
             {
                 giversExpanded = !giversExpanded;
@@ -123,7 +123,7 @@ namespace OrderedWork.UI
                     LoadSelectedGivers();
                 }
             }
-            if (UiButtonBar.Button(new Rect(header.xMax - 82f, header.y, 82f, 22f), "+ Agregar", true,
+            if (UiButtonBar.Button(new Rect(header.xMax - 68f, header.y, 62f, 22f), "Agregar", true,
                 "Add a capable WorkType that is not currently in this pawn's list."))
             {
                 ShowAddWorkTypeMenu();
@@ -171,9 +171,9 @@ namespace OrderedWork.UI
                     {
                         UiZebra.Draw(row, index);
                     }
-                    if (selectedWorkType == workType.defName)
+                    if (selectedWorkType == workType.defName && workList.DraggingIndex != index)
                     {
-                        Widgets.DrawHighlight(row);
+                        Widgets.DrawBoxSolid(row, new Color(0.30f, 0.52f, 0.28f, 0.48f));
                     }
 
                     Widgets.Label(new Rect(row.x + 4f, row.y + 3f, 22f, 18f), (index + 1).ToString());
@@ -273,10 +273,12 @@ namespace OrderedWork.UI
             }
             bool hasOverrides = WorkGiverOrderService.HasAnyOverride(pawn);
             string resetAllLabel = resetAllArmed ? "Confirm reset" : "Reset all";
+            Color? resetTint = resetAllArmed ? new Color(0.86f, 0.30f, 0.26f, 1f) : (Color?)null;
             if (UiButtonBar.Button(new Rect(header.xMax - 138f, header.y, 132f, 22f), resetAllLabel,
                 hasOverrides || resetAllArmed,
                 resetAllArmed ? "Click again within 5 seconds to reset every WorkGiver override."
-                    : "Reset every WorkGiver override for this pawn. Requires confirmation."))
+                    : "Reset every WorkGiver override for this pawn. Requires confirmation.",
+                resetTint))
             {
                 if (resetAllArmed)
                 {
@@ -332,6 +334,7 @@ namespace OrderedWork.UI
                         Widgets.Label(new Rect(row.xMax - 82f, row.y + 3f, 58f, 18f), "Changed");
                     }
                     Widgets.Label(new Rect(row.xMax - 20f, row.y + 3f, 18f, 18f), "≡");
+                    TooltipHandler.TipRegion(row, GiverTooltip(giverName));
                 },
                 null,
                 null,
@@ -369,14 +372,35 @@ namespace OrderedWork.UI
                 SkillRow entry = skills[i];
                 Rect row = new Rect(rect.x, y, rect.width, 22f);
                 UiZebra.Draw(row, i);
-                Widgets.LabelEllipses(new Rect(row.x + 2f, row.y + 2f, row.width - 92f, 18f), entry.Label);
-                Rect icon = new Rect(row.xMax - 82f, row.y + 3f, 16f, 16f);
+                Widgets.LabelEllipses(new Rect(row.x + 2f, row.y + 2f, row.width - 132f, 18f), entry.Label);
+                Rect icon = new Rect(row.xMax - 110f, row.y + 3f, 16f, 16f);
                 WorkTypePaletteView.DrawPassionIcon(icon, entry.Passion);
-                Widgets.Label(new Rect(row.xMax - 62f, row.y + 2f, 28f, 18f), entry.Level.ToString());
-                Widgets.Label(new Rect(row.xMax - 32f, row.y + 2f, 30f, 18f),
-                    WorkTypePaletteView.PassionText(entry.Passion));
+                Widgets.Label(new Rect(row.xMax - 90f, row.y + 2f, 24f, 18f), entry.Level.ToString());
+                DrawSkillBar(new Rect(row.xMax - 62f, row.y + 7f, 58f, 8f), entry);
+                TooltipHandler.TipRegion(row, SkillTooltip(entry));
                 y += 22f;
             }
+        }
+
+        private static void DrawSkillBar(Rect rect, SkillRow row)
+        {
+            Widgets.DrawBoxSolid(rect, new Color(0.12f, 0.14f, 0.16f, 0.9f));
+            float percent = row.XpRequired > 0.01f
+                ? Mathf.Clamp01(row.XpCurrent / row.XpRequired)
+                : 1f;
+            if (percent > 0f)
+            {
+                Widgets.DrawBoxSolid(new Rect(rect.x, rect.y, rect.width * percent, rect.height),
+                    new Color(0.42f, 0.68f, 0.34f, 0.9f));
+            }
+        }
+
+        private static string SkillTooltip(SkillRow row)
+        {
+            return row.Label
+                + "\nPassion: " + WorkTypePaletteView.PassionText(row.Passion)
+                + "\nLearning multiplier: x" + row.LearnFactor.ToString("0.00")
+                + "\nXP: " + row.XpCurrent.ToString("0") + " / " + row.XpRequired.ToString("0");
         }
 
         private List<SkillRow> RankedSkills()
@@ -402,7 +426,12 @@ namespace OrderedWork.UI
                 {
                     Label = skill.label,
                     Level = record.Level,
-                    Passion = record.passion
+                    Passion = record.passion,
+                    XpCurrent = record.xpSinceLastLevel,
+                    XpRequired = record.XpRequiredForLevelUp,
+                    LearnFactor = record.passion == Passion.Major ? SkillRecord.LearnFactorPassionMajor
+                        : record.passion == Passion.Minor ? SkillRecord.LearnFactorPassionMinor
+                        : SkillRecord.LearnFactorPassionNone
                 });
             }
 
@@ -632,10 +661,6 @@ namespace OrderedWork.UI
             {
                 builder.AppendLine(workType.description);
             }
-            if (rank > 0)
-            {
-                builder.AppendLine("Rank: " + rank);
-            }
             if (workType.relevantSkills != null && workType.relevantSkills.Count > 0)
             {
                 builder.AppendLine("Skills:");
@@ -643,6 +668,50 @@ namespace OrderedWork.UI
                 {
                     builder.AppendLine("- " + row.Label + " " + row.Level + " (" + WorkTypePaletteView.PassionText(row.Passion) + ")");
                 }
+            }
+
+            List<string> current;
+            List<string> baseline;
+            if (!giverDrafts.TryGetValue(workType.defName, out current))
+            {
+                current = WorkGiverOrderService.GetEffectiveOrder(pawn, workType);
+            }
+            baseline = giverBaselines.ContainsKey(workType.defName)
+                ? giverBaselines[workType.defName]
+                : WorkGiverOrderService.GetGlobalOrder(pawn, workType);
+            if (current != null && current.Count > 0)
+            {
+                builder.AppendLine("Givers:");
+                for (int i = 0; i < current.Count; i++)
+                {
+                    bool overridden = baseline == null
+                        || baseline.IndexOf(current[i]) != i;
+                    builder.AppendLine((i + 1) + ". " + current[i] + (overridden ? " *" : ""));
+                }
+            }
+            return builder.ToString();
+        }
+
+        private static string GiverTooltip(string giverDefName)
+        {
+            WorkGiverDef def = DefDatabase<WorkGiverDef>.GetNamedSilentFail(giverDefName);
+            if (def == null)
+            {
+                return giverDefName;
+            }
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine(def.LabelCap);
+            if (!string.IsNullOrEmpty(def.description))
+            {
+                builder.AppendLine(def.description);
+            }
+            if (!string.IsNullOrEmpty(def.verb))
+            {
+                builder.AppendLine("Verb: " + def.verb);
+            }
+            if (def.emergency)
+            {
+                builder.AppendLine("Emergency giver");
             }
             return builder.ToString();
         }
@@ -822,6 +891,9 @@ namespace OrderedWork.UI
             public string Label;
             public int Level;
             public Passion Passion;
+            public float XpCurrent;
+            public float XpRequired;
+            public float LearnFactor;
         }
     }
 }
