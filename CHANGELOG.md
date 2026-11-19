@@ -3,6 +3,19 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.184] - 2026-11-19
+
+### Feature — read-only Profile tab and VSE adapter
+- Profile tab no longer auto-opens the detail; it shows read-only Assigned work and Schedule sections with a bottom-right `Open details` button.
+- Profile text resets font/alignment so it cannot leak into the Search header or tabs.
+- Added optional VSE expertise adapter using reflection only:
+  - resolves `VSE.Expertise` trackers and expertise records;
+  - lists expertise in the skill area with a star;
+  - `Expertise` button opens the VSE-owned panel;
+  - filter checkbox becomes available only when VSE is loaded.
+- Language pass added English labels for Work, Schedule, Zone, Profile, filters and incapability messages.
+- Search reduced another 4 px.
+
 ## [0.3.0-alpha.183] - 2026-11-19
 
 ### Feature — language pass and Profile summary
