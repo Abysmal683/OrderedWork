@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.203] - 2026-11-19
+
+### Fix — custom split Work tab columns
+- Added `EnsureWorkTabColumn`, creating a generated `PawnColumnDef` for each split WorkType.
+- Inserted the column into `PawnTableDefOf.Work.columns` by natural priority.
+- Populated the split WorkType `workGiversByPriority` list.
+- Refreshed the optional WorkTab controller column cache.
+- Manual priorities remain enabled during colony initialization and apply.
+
 ## [0.3.0-alpha.202] - 2026-11-19
 
 ### Fix — manual priorities on every apply
