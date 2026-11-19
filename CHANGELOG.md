@@ -3,6 +3,17 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.197] - 2026-11-19
+
+### Refactor — split remaining Work panel concerns
+- Extracted WorkType drawing/reordering/add menu into `WorkPanel.WorkTypes.cs`.
+- Extracted Giver drawing/state/reset helpers into `WorkPanel.Givers.cs`.
+- Extracted header, preset capture/apply and commit actions into `WorkPanel.Actions.cs`.
+- `WorkPanel` now acts as the layout/controller shell instead of a monolith.
+- Specialized stats use content-sized scrolling: the scrollbar only appears when the rows exceed the panel.
+- `StatIndex` includes skill-linked stats even when vanilla `showOnPawns` is false, so VSE construction quality is discoverable.
+- Skill tooltips expose passion type, multiplier, negative flag, XP and recommendation weights.
+
 ## [0.3.0-alpha.196] - 2026-11-19
 
 ### Refactor — split Work panel concerns
