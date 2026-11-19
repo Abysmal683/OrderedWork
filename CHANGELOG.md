@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.168] - 2026-11-19
+
+### Fix — Work preset dialog lifecycle
+- Save now closes the preset dialog after writing.
+- The save name defaults to the selected colonist's name for quick saves.
+- Load is deferred until after the list scroll view ends, fixing the `BeginScrollView`/`EndScrollView` error in the log.
+- Loading a preset still applies immediately and reports success.
+- Schedule save/load is planned to follow the same list + immediate-load structure.
+
 ## [0.3.0-alpha.167] - 2026-11-19
 
 ### Feature — Work preset save/load
