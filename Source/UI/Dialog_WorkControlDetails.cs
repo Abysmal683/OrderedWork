@@ -117,7 +117,7 @@ namespace OrderedWork.UI
             Text.Font = GameFont.Small;
 
             Rect tabRow = new Rect(0f, 64f, inRect.width, 28f);
-            OrderedTabStrip.Draw(tabRow, new[] { "Trabajo", "Overview", "Horario", "Zona", "Overrides", "Ropa" }, (int)detailTab,
+            OrderedTabStrip.Draw(tabRow, new[] { "Work", "Overview", "Schedule", "Zone", "Overrides", "Clothing" }, (int)detailTab,
                 delegate(int index)
                 {
                     detailTab = (DetailTab)index;
@@ -193,7 +193,7 @@ namespace OrderedWork.UI
             Widgets.DrawBoxSolid(new Rect(lockRect.x + 11f, lockRect.y + 3f, 2f, 7f), gold);
             Widgets.DrawBoxSolid(new Rect(lockRect.x + 5f, lockRect.y + 3f, 8f, 2f), gold);
             Widgets.DrawBoxSolid(new Rect(lockRect.x + 8f, lockRect.y + 11f, 2f, 3f), new Color(0.16f, 0.14f, 0.10f));
-            TooltipHandler.TipRegion(lockRect, "Movimiento del panel bloqueado en esta pestaña.");
+            TooltipHandler.TipRegion(lockRect, "Panel movement is locked in this tab.");
         }
 
         private void DrawPawnNavigation(Rect inRect)
@@ -213,8 +213,8 @@ namespace OrderedWork.UI
             {
                 StepPawn(1);
             }
-            TooltipHandler.TipRegion(left, "Colono anterior");
-            TooltipHandler.TipRegion(right, "Colono siguiente");
+            TooltipHandler.TipRegion(left, "Previous colonist");
+            TooltipHandler.TipRegion(right, "Next colonist");
             TooltipHandler.TipRegion(search, "Search another colonist without closing details");
         }
 

@@ -20,19 +20,19 @@ namespace OrderedWork.UI
         {
             EnsureZoneState();
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(0f, 0f, content.width, 24f), "Zona");
+            Widgets.Label(new Rect(0f, 0f, content.width, 24f), "Zone");
             Text.Font = GameFont.Small;
             UiRows rows = new UiRows(new Rect(0f, 30f, content.width, Mathf.Max(0f, content.height - 30f)), 26f, 6f);
 
             Rect zoneInfo = rows.Next(20f);
-            Widgets.Label(zoneInfo, "Asigna un área existente. Usa Manage zones para crear o editar.");
+            Widgets.Label(zoneInfo, "Assign an existing area. Use Manage zones to create or edit.");
             TooltipHandler.TipRegion(zoneInfo,
-                "No se crean zonas desde esta sección. El gestor vanilla permite crear, borrar, expandir y reducir áreas.");
+                "Zones are not created here. The vanilla manager can create, delete, expand and reduce areas.");
 
             Rect mapRow = rows.Next(26f);
             UiTable mapColumns = new UiTable(mapRow, 4f);
             mapColumns.Add(48f).Add(230f).Flex();
-            Widgets.Label(mapColumns.Column(0), "Mapa:");
+            Widgets.Label(mapColumns.Column(0), "Map:");
             if (Widgets.ButtonText(mapColumns.Column(1), MapLabel(detailZoneMap)))
             {
                 ShowMapMenu();
@@ -49,7 +49,7 @@ namespace OrderedWork.UI
             {
                 Widgets.DrawBoxSolid(swatch, detailZoneArea.Color);
             }
-            string areaLabel = detailZoneArea == null ? "Sin restricciones" : detailZoneArea.Label;
+            string areaLabel = detailZoneArea == null ? "Unrestricted" : detailZoneArea.Label;
             if (Widgets.ButtonText(new Rect(areaRow.x + 20f, areaRow.y, Mathf.Min(300f, Mathf.Max(40f, areaRow.width - 20f)), areaRow.height), areaLabel))
             {
                 ShowAreaMenu();
@@ -74,7 +74,7 @@ namespace OrderedWork.UI
             if (detailZoneMissing || (binding != null && detailZoneArea == null && !binding.unrestricted))
             {
                 GUI.color = new Color(1f, 0.75f, 0.35f, 1f);
-                Widgets.Label(rows.Next(20f), "Aviso: la zona guardada ya no existe en este mapa. Se conserva la referencia.");
+                Widgets.Label(rows.Next(20f), "Warning: the saved area no longer exists on this map. The reference is preserved.");
                 GUI.color = Color.white;
             }
         }
@@ -142,7 +142,7 @@ namespace OrderedWork.UI
         private void ShowAreaMenu()
         {
             List<FloatMenuOption> options = new List<FloatMenuOption>();
-            options.Add(new FloatMenuOption("Sin restricciones", delegate
+            options.Add(new FloatMenuOption("Unrestricted", delegate
             {
                 detailZoneArea = null;
                 ApplyZone();

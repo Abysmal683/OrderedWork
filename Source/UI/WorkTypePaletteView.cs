@@ -224,7 +224,7 @@ namespace OrderedWork.UI
                 }
             }
 
-            string label = incapable ? DisplayName(type) + " (Incapaz)" : DisplayName(type);
+            string label = incapable ? DisplayName(type) + " (Incapable)" : DisplayName(type);
             bool previousWrap = Text.WordWrap;
             Text.WordWrap = false;
             Widgets.LabelEllipses(new Rect(x, rect.y, Mathf.Max(10f, rect.xMax - x - 4f), rect.height), label);
@@ -297,7 +297,7 @@ namespace OrderedWork.UI
             if (skipped > 0)
             {
                 Messages.Message(
-                    "Ordered Work: " + skipped + " selected pawn(s) cannot do " + DisplayName(type) + " (Incapaz).",
+                    "Ordered Work: " + skipped + " selected pawn(s) cannot do " + DisplayName(type) + " (Incapable).",
                     MessageTypeDefOf.RejectInput,
                     false);
             }

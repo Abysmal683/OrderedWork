@@ -22,12 +22,12 @@ namespace OrderedWork.UI
             EnsureDetailSchedule();
             float y = 0f;
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(0f, y, 100f, 24f), "Horario");
+            Widgets.Label(new Rect(0f, y, 100f, 24f), "Schedule");
             Text.Font = GameFont.Small;
             Rect infoRect = new Rect(104f, y + 2f, 18f, 20f);
             Widgets.Label(infoRect, "?");
             TooltipHandler.TipRegion(infoRect,
-                "Origen: timetable vanilla actual, solo lectura. Modif: preset editable; el brush pinta horas. Prioridad: reservado para override por WorkType.");
+                "Origin: current vanilla timetable, read-only. Edit: editable preset; the brush paints hours. Priority: reserved for WorkType overrides.");
             y += 28f;
 
             float line = 24f;
@@ -70,11 +70,11 @@ namespace OrderedWork.UI
             Rect brushRect = new Rect(0f, y, 210f, line);
             DrawBrush(brushRect);
             Widgets.LabelEllipses(new Rect(brushRect.xMax + 8f, y, content.width - brushRect.width - 8f, line),
-                "Click izquierdo: pintar · Click derecho: vaciar");
+                "Left click: paint · Right click: clear");
             y += line + 8f;
 
             float hourWidth = Mathf.Max(22f, (content.width - 76f) / SchedulePreset.SlotCount);
-            Widgets.Label(new Rect(0f, y, 72f, 18f), "Hora");
+            Widgets.Label(new Rect(0f, y, 72f, 18f), "Hour");
             for (int hour = 0; hour < SchedulePreset.SlotCount; hour++)
             {
                 Text.Anchor = TextAnchor.MiddleCenter;
@@ -82,15 +82,15 @@ namespace OrderedWork.UI
                 Text.Anchor = TextAnchor.UpperLeft;
             }
             y += 20f;
-            DrawScheduleRow(content, y, hourWidth, "Origen", false, true);
+            DrawScheduleRow(content, y, hourWidth, "Origin", false, true);
             y += 42f;
-            DrawScheduleRow(content, y, hourWidth, "Modif", true, false);
+            DrawScheduleRow(content, y, hourWidth, "Edit", true, false);
             y += 42f;
-            DrawScheduleRow(content, y, hourWidth, "Prioridad", false, false);
+            DrawScheduleRow(content, y, hourWidth, "Priority", false, false);
             y += 42f;
 
             Widgets.Label(new Rect(76f, y, content.width - 76f, 20f),
-                "Prioridad por hora: reservada para el override de WorkType; no se guarda en el preset.");
+                "Hourly priority: reserved for WorkType overrides; it is not stored in the preset.");
         }
 
         private void OpenSaveDialog()

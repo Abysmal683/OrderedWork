@@ -102,7 +102,7 @@ namespace OrderedWork.UI
         private void DrawHeader(Rect rect)
         {
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(rect.x, rect.y, 150f, 26f), "Trabajo");
+            Widgets.Label(new Rect(rect.x, rect.y, 150f, 26f), "Work");
             Text.Font = GameFont.Small;
 
             Rect load = new Rect(rect.xMax - 136f, rect.y + 2f, 64f, 24f);
@@ -242,7 +242,7 @@ namespace OrderedWork.UI
                     LoadSelectedGivers();
                 }
             }
-            if (UiButtonBar.Button(new Rect(header.xMax - 68f, header.y, 62f, 22f), "Agregar", true,
+            if (UiButtonBar.Button(new Rect(header.xMax - 68f, header.y, 62f, 22f), "Add", true,
                 "Add a capable WorkType that is not currently in this pawn's list."))
             {
                 ShowAddWorkTypeMenu();
@@ -350,11 +350,11 @@ namespace OrderedWork.UI
         private void DrawUnableWorkTypes(Rect rect, List<WorkTypeDef> unable)
         {
             Widgets.DrawBoxSolid(rect, UiColors.PanelBody);
-            Widgets.Label(new Rect(rect.x + 6f, rect.y + 3f, rect.width - 12f, 20f), "No puede");
+            Widgets.Label(new Rect(rect.x + 6f, rect.y + 3f, rect.width - 12f, 20f), "Cannot");
             Rect list = new Rect(rect.x + 6f, rect.y + 24f, rect.width - 12f, Mathf.Max(0f, rect.height - 26f));
             if (unable.Count == 0)
             {
-                Widgets.Label(list, "Sin limitaciones");
+                Widgets.Label(list, "No limitations");
                 return;
             }
             Rect view = new Rect(0f, 0f, list.width - 16f, Mathf.Max(list.height, unable.Count * RowHeight));
@@ -431,7 +431,7 @@ namespace OrderedWork.UI
             Rect body = new Rect(rect.x + 6f, header.yMax + 4f, rect.width - 12f, Mathf.Max(0f, rect.height - header.height - 12f));
             if (workType == null || draft == null)
             {
-                Widgets.Label(body, "Seleccioná un WorkType.");
+                Widgets.Label(body, "Select a WorkType.");
                 return;
             }
 
@@ -485,7 +485,7 @@ namespace OrderedWork.UI
             Rect stats = new Rect(rect.x + 6f, skills.yMax + 6f, rect.width - 12f,
                 Mathf.Max(0f, rect.height - skillsHeight - 18f));
 
-            Widgets.Label(new Rect(skills.x, skills.y, skills.width - 82f, 20f), "Habilidades");
+            Widgets.Label(new Rect(skills.x, skills.y, skills.width - 82f, 20f), "Skills");
             Rect filter = new Rect(skills.xMax - 74f, skills.y, 74f, 20f);
             if (Widgets.ButtonText(filter, "Filter"))
             {
@@ -518,7 +518,7 @@ namespace OrderedWork.UI
             List<SkillRow> skills = RankedSkills();
             if (skills.Count == 0)
             {
-                Widgets.Label(new Rect(rect.x, rect.y + 24f, rect.width, 40f), "Sin habilidades.");
+                Widgets.Label(new Rect(rect.x, rect.y + 24f, rect.width, 40f), "No skills.");
                 return;
             }
             Rect body = new Rect(rect.x, rect.y + 24f, rect.width, Mathf.Max(0f, rect.height - 24f));
@@ -651,7 +651,7 @@ namespace OrderedWork.UI
 
         private void DrawStats(Rect rect, ref Vector2 scroll)
         {
-            Widgets.Label(new Rect(rect.x, rect.y, rect.width, 20f), "Stats especializados");
+            Widgets.Label(new Rect(rect.x, rect.y, rect.width, 20f), "Specialized stats");
             Rect body = new Rect(rect.x, rect.y + 24f, rect.width, Mathf.Max(0f, rect.height - 24f));
             Rect view = new Rect(0f, 0f, body.width - 16f, Mathf.Max(body.height, 28f));
             Widgets.BeginScrollView(body, ref scroll, view);
@@ -674,7 +674,7 @@ namespace OrderedWork.UI
                 }
                 else
                 {
-                    Widgets.Label(new Rect(0f, y + 6f, view.width, 20f), "Seleccioná un WorkType.");
+                    Widgets.Label(new Rect(0f, y + 6f, view.width, 20f), "Select a WorkType.");
                 }
             }
             finally
@@ -727,7 +727,7 @@ namespace OrderedWork.UI
 
         private void DrawGenericStats(Rect rect)
         {
-            Widgets.Label(new Rect(rect.x, rect.y, rect.width, 20f), "Stats base");
+            Widgets.Label(new Rect(rect.x, rect.y, rect.width, 20f), "Base stats");
             Rect body = new Rect(rect.x, rect.y + 24f, rect.width, Mathf.Max(0f, rect.height - 24f));
             Rect view = new Rect(0f, 0f, body.width - 16f, Mathf.Max(body.height, 140f));
             Widgets.BeginScrollView(body, ref genericStatsScroll, view);
@@ -826,11 +826,11 @@ namespace OrderedWork.UI
             List<WorkTypeDef> candidates = AddableWorkTypes().ToList();
             if (candidates.Count == 0)
             {
-                Messages.Message("No hay WorkTypes capaces para agregar.", MessageTypeDefOf.RejectInput, false);
+                Messages.Message("No capable WorkTypes to add.", MessageTypeDefOf.RejectInput, false);
                 return;
             }
             Find.WindowStack.Add(new WorkTypeDropdownWindow(
-                "Agregar WorkType",
+                "Add WorkType",
                 candidates,
                 null,
                 delegate(WorkTypeDef workType)
