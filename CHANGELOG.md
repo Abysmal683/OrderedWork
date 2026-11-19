@@ -3,6 +3,18 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.171] - 2026-11-19
+
+### Feature — scheduler redesign
+- Schedule header is now `Load`, `New`, `Copy current`, `Save`, `Apply to pawn`; the old Load/Name labels are gone.
+- `Load` opens the same list-style picker as Work and loads the preset into the editor; `Apply to pawn` is the explicit confirmation.
+- `Save` writes the draft without applying it to the pawn.
+- Empty slots are now allowed and mean no schedule change for that hour; only non-empty slots are applied.
+- `Vacío` is available in the brush menu to clear a slot.
+- Schedule presets use schema 2 with compact `mods` and `slotMods` metadata; schema 1 remains readable.
+- Missing non-empty assignment defs are replaced with `Anything` on apply; empty slots are skipped.
+- New schedule save dialog closes after save and defaults to the colonist name.
+
 ## [0.3.0-alpha.170] - 2026-11-19
 
 ### Fix — WorkType Changed markers after reopening
