@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.211] - 2026-11-19
+
+### Localization — cleanup of keyed Work panel
+- Removed duplicated nested keyed-text wrappers from WorkPanel.
+- Added key entries for Work panel buttons, tooltips and section labels.
+- WorkPanel primary text is now key-first; remaining hardcoded UI is concentrated in dialogs, Schedule/Zone and long explanatory tooltips.
+- No behavior changes.
+
 ## [0.3.0-alpha.210] - 2026-11-19
 
 ### Localization — Work panel labels and tooltips
