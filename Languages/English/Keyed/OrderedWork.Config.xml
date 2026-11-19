@@ -169,4 +169,10 @@
   <OrderedWork.Config.Reset.ConfigReset>Ordered Work config reset.</OrderedWork.Config.Reset.ConfigReset>
   <OrderedWork.Config.General.Unknown>unknown</OrderedWork.Config.General.Unknown>
   <OrderedWork.Config.Profiles.Saved>Saved {0}.json</OrderedWork.Config.Profiles.Saved>
-  <OrderedWork.Config.Profiles.FailedSave>Failed to save {0}.json</OrderedWork.Config.Profiles.FailedSave></LanguageData>
+  <OrderedWork.Config.Profiles.FailedSave>Failed to save {0}.json</OrderedWork.Config.Profiles.FailedSave>  <OrderedWork.Config.General.LogCategories>Log categories (Player.log):</OrderedWork.Config.General.LogCategories>
+  <OrderedWork.Config.General.LogWorkControl>Work Control</OrderedWork.Config.General.LogWorkControl>
+  <OrderedWork.Config.General.LogSchedule>Schedule / focus</OrderedWork.Config.General.LogSchedule>
+  <OrderedWork.Config.General.LogStores>Stores</OrderedWork.Config.General.LogStores>
+  <OrderedWork.Config.General.LogPassion>Passion / VSE</OrderedWork.Config.General.LogPassion>
+  <OrderedWork.Config.General.LogConfig>Config mod</OrderedWork.Config.General.LogConfig>
+  <OrderedWork.Config.General.LogHarmony>Harmony</OrderedWork.Config.General.LogHarmony></LanguageData>

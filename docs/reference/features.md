@@ -16,6 +16,20 @@
   the tags you want. Do not merge a giver into a type whose tags would let an incapable pawn do it.
 
 
+## Diagnostic categories
+
+Diagnostics are enabled per subsystem in **Mod Settings → Diagnostics**:
+
+| Category | Covers |
+|---|---|
+| Work Control | matrix layout, resize and scroll diagnostics |
+| Schedule / focus | schedule presets, focus application and resolution |
+| Stores | reserved for preset/store diagnostics |
+| Passion / VSE | registry discovery and fallback |
+| Config mod | configuration edits and resets |
+| Harmony | reserved for patch diagnostics |
+
+A legacy `verboseLogging=true` setting is migrated to all categories when no category has been chosen. Warnings and errors are never gated by this switch.
 ## Passion diagnostics
 
 With **Verbose diagnostics in Player.log** enabled, startup emits one line:

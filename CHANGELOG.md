@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.243] - 2026-11-19
+
+### Diagnostics — category-based logging
+- Replaced the single verbose switch with per-subsystem log categories.
+- Added Work Control, Schedule/focus, Stores, Passion/VSE, Config and Harmony categories.
+- Legacy verbose=true migrates to all categories when no new category is set.
+- Diagnostics UI now exposes independent category toggles.
+- Tagged existing Work Control, Schedule, Passion and Config debug calls.
+
 ## [0.3.0-alpha.242] - 2026-11-19
 
 ### Refactor — extract Schedule editor

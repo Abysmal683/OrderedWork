@@ -24,7 +24,7 @@ namespace OrderedWork.Services
                 : null;
             if (entry != null && !string.IsNullOrEmpty(entry.schedulePresetId) && preset == null)
             {
-                OrderedWorkMod.DebugLog("Schedule preset not found: " + entry.schedulePresetId);
+                OrderedWorkMod.DebugLog("Schedule preset not found: " + entry.schedulePresetId, OrderedWorkLogCategory.Schedule);
             }
 
             for (int hour = 0; hour < Hours; hour++)

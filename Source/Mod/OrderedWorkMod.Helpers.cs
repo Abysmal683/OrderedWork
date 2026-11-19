@@ -189,12 +189,13 @@ namespace OrderedWork
             OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
         }
 
-        public static void DebugLog(string message)
+        public static void DebugLog(string message, OrderedWorkLogCategory category = OrderedWorkLogCategory.Config)
         {
-            if (Settings != null && Settings.verboseLogging)
+            if (Settings == null || (Settings.logCategories & (int)category) == 0)
             {
-                Log.Message("[OrderedWork] " + message);
+                return;
             }
+            Log.Message("[OrderedWork] " + message);
         }
 
         private void MoveRecommendationPin(int from, int to)

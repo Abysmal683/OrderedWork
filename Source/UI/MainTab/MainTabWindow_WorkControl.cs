@@ -214,7 +214,7 @@ namespace OrderedWork.UI
                 resizingPanel = true;
                 resizeStartMouseY = Verse.UI.MousePositionOnUIInverted.y;
                 resizeStartHeight = windowRect.height;
-                OrderedWorkMod.DebugLog("[Resize] down mouse=" + current.mousePosition + " height=" + inRect.height);
+                OrderedWorkMod.DebugLog("[Resize] down mouse=" + current.mousePosition + " height=" + inRect.height, OrderedWorkLogCategory.WorkControl);
                 current.Use();
                 return;
             }
@@ -229,7 +229,7 @@ namespace OrderedWork.UI
             if (!Input.GetMouseButton(0))
             {
                 OrderedWorkMod.DebugLog("[Resize] up saved="
-                    + (OrderedWorkMod.Settings != null ? OrderedWorkMod.Settings.workControlHeight : -1f));
+                    + (OrderedWorkMod.Settings != null ? OrderedWorkMod.Settings.workControlHeight : -1f), OrderedWorkLogCategory.WorkControl);
                 resizingPanel = false;
                 return;
             }

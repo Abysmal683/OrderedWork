@@ -63,7 +63,7 @@ namespace OrderedWork.UI
                 {
                     scroll.x = maxX;
                 }
-                OrderedWorkMod.DebugLog("[Scroll] shiftWheel scrollX=" + scroll.x + " maxX=" + maxX + " delta=" + delta);
+                OrderedWorkMod.DebugLog("[Scroll] shiftWheel scrollX=" + scroll.x + " maxX=" + maxX + " delta=" + delta, OrderedWorkLogCategory.WorkControl);
             }
             else
             {
@@ -258,7 +258,7 @@ namespace OrderedWork.UI
                 track.width.ToString("F0") + "," + track.height.ToString("F0") + ") thumb=(" +
                 thumb.x.ToString("F0") + "," + thumb.y.ToString("F0") + "," +
                 thumb.width.ToString("F0") + "," + thumb.height.ToString("F0") + ") scroll" +
-                axis + "=" + scrollValue.ToString("F0"));
+                axis + "=" + scrollValue.ToString("F0"), OrderedWorkLogCategory.WorkControl);
         }
     }
 }

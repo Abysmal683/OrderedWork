@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.242)
+# Ordered Work — Current Checklist (0.3.0-alpha.243)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -70,6 +70,14 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] `WorkTypePaletteView` split into core, tooltip and passion partials.
 - [ ] Runtime smoke test after the refactor: settings, pins, weights, split/merge, save/load.
 
+## Log categories (alpha.243)
+
+- [x] Diagnostic categories added.
+- [x] Legacy verbose setting migrates to All.
+- [x] Diagnostics UI has one checkbox per category.
+- [x] Work Control, Schedule, Passion and Config calls tagged.
+- [x] Build 0/0 and tests pass.
+- [ ] Runtime check with one category at a time.
 ## Schedule editor split (alpha.242)
 
 - [x] State, brush, apply controller, view and visuals separated.

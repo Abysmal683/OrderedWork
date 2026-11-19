@@ -116,12 +116,9 @@ namespace OrderedWork.Services
                 registered.Add(new PassionSource.PassionInfo { Passion = Passion.Minor, DefName = "Minor", Label = "Minor" });
                 registered.Add(new PassionSource.PassionInfo { Passion = Passion.Major, DefName = "Major", Label = "Major" });
             }
-            if (OrderedWorkMod.Settings != null && OrderedWorkMod.Settings.verboseLogging)
-            {
-                Log.Message("[OrderedWork][Passion] VSE manager=" + (managerType != null)
-                    + " registered=" + registered.Count
-                    + " names=" + string.Join(",", registered.Select(info => info.DefName)));
-            }
+            OrderedWorkMod.DebugLog("[Passion] VSE manager=" + (managerType != null)
+                + " registered=" + registered.Count
+                + " names=" + string.Join(",", registered.Select(info => info.DefName)), OrderedWorkLogCategory.Passion);
         }
 
         private static void AddPassion(Passion passion)

@@ -15,6 +15,19 @@ namespace OrderedWork
 {
     public partial class OrderedWorkMod : Mod
     {
+        private static void DrawLogCategory(Listing_Standard list, string key, string fallback,
+            OrderedWorkLogCategory category)
+        {
+            bool enabled = (Settings.logCategories & (int)category) != 0;
+            bool previous = enabled;
+            list.CheckboxLabeled(ConfigText(key, fallback), ref enabled);
+            if (enabled != previous)
+            {
+                Settings.logCategories = enabled
+                    ? Settings.logCategories | (int)category
+                    : Settings.logCategories & ~(int)category;
+            }
+        }
         private void DrawGeneralTab(Listing_Standard list)
         {
             if (DrawCollapsibleSection(list, "general-core",
@@ -56,10 +69,13 @@ namespace OrderedWork
                     ConfigText("OrderedWork.Config.General.PaletteStress", "Palette stress test (debug)"),
                     ref Settings.paletteStressTest,
                     ConfigText("OrderedWork.Config.General.PaletteStressTip", "Adds 60 visual-only WorkTypes to test the palette focus."));
-                list.CheckboxLabeled(
-                    ConfigText("OrderedWork.Config.General.Verbose", "Verbose diagnostics in Player.log"),
-                    ref Settings.verboseLogging,
-                    ConfigText("OrderedWork.Config.General.VerboseTip", "Enables temporary Order/Reset/Scroll debug lines. Disable for normal play."));
+                list.Label(ConfigText("OrderedWork.Config.General.LogCategories", "Log categories (Player.log):"));
+                DrawLogCategory(list, "OrderedWork.Config.General.LogWorkControl", "Work Control", OrderedWorkLogCategory.WorkControl);
+                DrawLogCategory(list, "OrderedWork.Config.General.LogSchedule", "Schedule / focus", OrderedWorkLogCategory.Schedule);
+                DrawLogCategory(list, "OrderedWork.Config.General.LogStores", "Stores", OrderedWorkLogCategory.Stores);
+                DrawLogCategory(list, "OrderedWork.Config.General.LogPassion", "Passion / VSE", OrderedWorkLogCategory.Passion);
+                DrawLogCategory(list, "OrderedWork.Config.General.LogConfig", "Config mod", OrderedWorkLogCategory.Config);
+                DrawLogCategory(list, "OrderedWork.Config.General.LogHarmony", "Harmony", OrderedWorkLogCategory.Harmony);
                 list.Gap(4f);
                 list.Label(ConfigText("OrderedWork.Config.General.SpikeInfo", "WorkGiver order spike: reorders Hauling WorkGivers for one selected pawn only. No defs are changed."));
                 list.CheckboxLabeled(

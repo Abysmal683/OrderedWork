@@ -105,11 +105,8 @@ namespace OrderedWork.Services
 
             WorkOrderService.Apply(pawn, effective, false);
             states[pawn] = new FocusState { Hour = hour, Signature = signature, HasFocus = hasFocus };
-            if (OrderedWorkMod.Settings != null && OrderedWorkMod.Settings.verboseLogging)
-            {
-                OrderedWorkMod.DebugLog("Hour focus " + hour.ToString("00") + " for " + pawn.LabelShort
-                    + ": " + (hasFocus ? string.Join(", ", focus) : "base order"));
-            }
+            OrderedWorkMod.DebugLog("Hour focus " + hour.ToString("00") + " for " + pawn.LabelShort
+                + ": " + (hasFocus ? string.Join(", ", focus) : "base order"), OrderedWorkLogCategory.Schedule);
         }
 
         private static List<string> FocusForHour(PawnWorkOrder entry, int hour)

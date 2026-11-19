@@ -35,7 +35,7 @@ namespace OrderedWork.Services
                     changed++;
                 }
             }
-            OrderedWorkMod.DebugLog("Schedule applied to " + pawn.LabelShort + ": " + changed + " slot(s) changed.");
+            OrderedWorkMod.DebugLog("Schedule applied to " + pawn.LabelShort + ": " + changed + " slot(s) changed.", OrderedWorkLogCategory.Schedule);
             return true;
         }
 
@@ -87,7 +87,7 @@ namespace OrderedWork.Services
                     changed++;
                 }
             }
-            OrderedWorkMod.DebugLog("Schedule draft applied to " + pawn.LabelShort + ": " + changed + " slot(s) changed.");
+            OrderedWorkMod.DebugLog("Schedule draft applied to " + pawn.LabelShort + ": " + changed + " slot(s) changed.", OrderedWorkLogCategory.Schedule);
             return true;
         }
 
