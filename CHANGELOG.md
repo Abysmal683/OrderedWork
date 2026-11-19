@@ -3,6 +3,17 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.160] - 2026-11-19
+
+### Feature — per-pawn Work editor
+- Added the `Trabajo` detail tab with a self-contained three-column editor.
+- WorkTypes: drag order, add capable types, remove to priority 0, per-row `Changed`, and a 70/30 active/incapable split.
+- WorkGivers: per-WorkType drag order, per-row `Changed`, selected reset and a separated global reset; givers are never deleted.
+- WorkGiver overrides are now persisted per pawn in `PawnWorkOrder.workGiverOrders` and use the global JSON profile as the reset baseline.
+- Added `Recommend` for the WorkType draft without touching WorkGiver overrides.
+- Added a read-only metadata column with top 4 relevant skills, level/passion filter modes, WorkType-aware search, and basic relevant stats.
+- `WorkPanel` is self-contained for future grid hosting.
+
 ## [0.3.0-alpha.159] - 2026-11-18
 
 ### Debug spike — per-pawn WorkGiver order
