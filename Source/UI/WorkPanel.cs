@@ -574,7 +574,9 @@ namespace OrderedWork.UI
             string result = row.Label
                 + "\nPassion: " + WorkTypePaletteView.PassionText(row.Passion)
                 + "\nLearning multiplier: x" + multiplier.ToString("0.00")
-                + "\nXP: " + row.XpCurrent.ToString("0") + " / " + row.XpRequired.ToString("0");
+                + (row.XpRequired > 0.01f
+                    ? "\nXP: " + row.XpCurrent.ToString("0") + " / " + row.XpRequired.ToString("0")
+                    : "\nXP: max / uncapped");
             skillTooltipCache[row.Label] = result;
             return result;
         }
@@ -604,7 +606,6 @@ namespace OrderedWork.UI
                     Passion = record.passion,
                     XpCurrent = record.xpSinceLastLevel,
                     XpRequired = record.XpRequiredForLevelUp,
-                    MaxLevel = SkillRecord.MaxLevel,
                     LearnFactor = record.passion == Passion.Major ? SkillRecord.LearnFactorPassionMajor
                         : record.passion == Passion.Minor ? SkillRecord.LearnFactorPassionMinor
                         : SkillRecord.LearnFactorPassionNone
@@ -667,7 +668,7 @@ namespace OrderedWork.UI
                     if (skill != null && record != null)
                     {
                         Widgets.Label(new Rect(0f, y, view.width, 20f),
-                            "Skill " + skill.label + ": " + record.Level + " / " + SkillRecord.MaxLevel);
+                            "Skill " + skill.label + ": " + record.Level);
                         y += 20f;
                     }
                 }
@@ -1229,7 +1230,6 @@ namespace OrderedWork.UI
             public float XpCurrent;
             public float XpRequired;
             public float LearnFactor;
-            public int MaxLevel;
         }
     }
 }
