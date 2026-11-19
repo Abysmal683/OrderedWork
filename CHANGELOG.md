@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.212] - 2026-11-19
+
+### Localization — tabs and secondary Work labels
+- Migrated dialog tab labels and remaining WorkPanel/Profile/Stats static labels to keyed text.
+- Removed duplicated nested localization wrappers.
+- Added the corresponding English and Spanish keys.
+- Long tooltips and diagnostic messages remain the final localization pass.
+
 ## [0.3.0-alpha.211] - 2026-11-19
 
 ### Localization — cleanup of keyed Work panel
