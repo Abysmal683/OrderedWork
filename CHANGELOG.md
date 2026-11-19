@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.220] - 2026-11-19
+
+### Fixed — keyed language files
+- Repaired both keyed XML files: restored the missing closing `LanguageData` tag.
+- Added every key used by `OrderedWorkText.T` that was missing from English and Spanish.
+- Removed duplicate key definitions.
+- Migrated remaining preset delete confirmations, VSE expertise tooltip, match counts, incapability suffix, passion labels and overview count fragments.
+
 ## [0.3.0-alpha.219] - 2026-11-19
 
 ### Localization — remaining Work Control and overview labels
