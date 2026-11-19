@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.210] - 2026-11-19
+
+### Localization — Work panel labels and tooltips
+- Migrated WorkPanel buttons, section titles and Work/Giver tooltips to keyed text.
+- Added the corresponding English and Spanish key entries.
+- Existing common UI keys remain.
+- WorkPanel is now key-first; remaining localization is concentrated in dialogs, Schedule/Zone and long stat/skill explanations.
+
 ## [0.3.0-alpha.209] - 2026-11-19
 
 ### Localization — common UI labels
