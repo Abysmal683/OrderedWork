@@ -34,7 +34,9 @@ namespace OrderedWork.UI
             new Dictionary<string, List<string>>(StringComparer.Ordinal);
 
         private Vector2 unableScroll;
-        private Vector2 metadataScroll;
+        private Vector2 skillsScroll;
+        private Vector2 genericStatsScroll;
+        private Vector2 specializedStatsScroll;
         private int relevantMode;
         private readonly UiDragList workList = new UiDragList();
         private readonly UiDragList giverList = new UiDragList();
@@ -70,15 +72,8 @@ namespace OrderedWork.UI
                 return;
             }
             DrawWorkTypesColumn(layout.WorkTypes);
-            if (giversExpanded)
-            {
-                DrawGiversColumn(layout.Givers);
-                DrawMetadataColumn(layout.Metadata);
-            }
-            else
-            {
-                DrawMetadataColumn(layout.Metadata);
-            }
+            DrawGiversColumn(layout.Givers);
+            DrawMetadataColumn(layout.Metadata);
         }
 
         private void EnsureInitialized()
@@ -373,6 +368,12 @@ namespace OrderedWork.UI
         private void DrawGiversColumn(Rect rect)
         {
             Widgets.DrawBoxSolid(rect, UiColors.PanelBody);
+            if (!giversExpanded)
+            {
+                DrawStats(new Rect(rect.x + 6f, rect.y + 6f, rect.width - 12f, rect.height - 12f),
+                    ref specializedStatsScroll);
+                return;
+            }
             WorkTypeDef workType = SelectedWorkType();
             Rect header = new Rect(rect.x + 6f, rect.y + 4f, rect.width - 12f, 24f);
             string title = workType != null ? "Givers · " + workType.labelShort : "Givers";
@@ -463,22 +464,40 @@ namespace OrderedWork.UI
                 null,
                 MoveGiver,
                 CommitGivers);
-            DrawStats(statsRect);
+            DrawStats(statsRect, ref specializedStatsScroll);
         }
 
         private void DrawMetadataColumn(Rect rect)
         {
             Widgets.DrawBoxSolid(rect, UiColors.PanelBody);
-            Rect skills = new Rect(rect.x + 6f, rect.y + 6f, rect.width - 12f, Mathf.Max(0f, rect.height - 12f));
+            float skillsHeight = Mathf.Clamp(rect.height * 0.58f, 150f, 420f);
+            Rect skills = new Rect(rect.x + 6f, rect.y + 6f, rect.width - 12f, skillsHeight);
+            Rect stats = new Rect(rect.x + 6f, skills.yMax + 6f, rect.width - 12f,
+                Mathf.Max(0f, rect.height - skillsHeight - 18f));
 
-            Widgets.Label(new Rect(skills.x, skills.y, skills.width - 58f, 20f), "Top 5 habilidades");
-            string modeLabel = relevantMode == 0 ? "Lv" : relevantMode == 1 ? "P" : "Lv.P";
-            if (UiButtonBar.Button(new Rect(skills.xMax - 48f, skills.y, 48f, 20f), modeLabel, true,
-                "Filter: Lv = level, P = passion, Lv.P = both."))
+            Widgets.Label(new Rect(skills.x, skills.y, skills.width - 70f, 20f), "Habilidades");
+            Rect filter = new Rect(skills.xMax - 62f, skills.y, 62f, 20f);
+            string modeLabel = relevantMode == 0 ? "Lv" : relevantMode == 1 ? "" : "Lv+";
+            if (Widgets.ButtonText(filter, modeLabel))
             {
                 relevantMode = (relevantMode + 1) % 3;
             }
+            if (relevantMode == 1)
+            {
+                WorkTypePaletteView.DrawPassionIcon(
+                    new Rect(filter.center.x - 8f, filter.y + 2f, 16f, 16f), Passion.Major);
+            }
+            else if (relevantMode == 2)
+            {
+                WorkTypePaletteView.DrawPassionIcon(
+                    new Rect(filter.xMax - 18f, filter.y + 2f, 16f, 16f), Passion.Major);
+            }
+            TooltipHandler.TipRegion(filter,
+                "Order: Lv = level, flame = passion weight, Lv+flame = combined recommendation score.");
             DrawTopSkills(skills);
+            Widgets.DrawBoxSolid(new Rect(rect.x + 6f, skills.yMax + 2f, rect.width - 12f, 2f),
+                UiColors.SectionSeparator);
+            DrawGenericStats(stats);
         }
 
         private void DrawTopSkills(Rect rect)
@@ -489,25 +508,33 @@ namespace OrderedWork.UI
                 skillTooltipCache.Clear();
                 skillTooltipCacheTick = ticks;
             }
-            float y = rect.y + 24f;
             List<SkillRow> skills = RankedSkills();
             if (skills.Count == 0)
             {
-                Widgets.Label(new Rect(rect.x, y, rect.width, 40f), "Sin coincidencias para este filtro.");
+                Widgets.Label(new Rect(rect.x, rect.y + 24f, rect.width, 40f), "Sin habilidades.");
                 return;
             }
-            for (int i = 0; i < skills.Count; i++)
+            Rect body = new Rect(rect.x, rect.y + 24f, rect.width, Mathf.Max(0f, rect.height - 24f));
+            Rect view = new Rect(0f, 0f, body.width - 16f, skills.Count * 22f);
+            Widgets.BeginScrollView(body, ref skillsScroll, view);
+            try
             {
-                SkillRow entry = skills[i];
-                Rect row = new Rect(rect.x, y, rect.width, 22f);
-                UiZebra.Draw(row, i);
-                Widgets.LabelEllipses(new Rect(row.x + 2f, row.y + 2f, row.width - 132f, 18f), entry.Label);
-                Rect icon = new Rect(row.xMax - 110f, row.y + 3f, 16f, 16f);
-                WorkTypePaletteView.DrawPassionIcon(icon, entry.Passion);
-                Widgets.Label(new Rect(row.xMax - 90f, row.y + 2f, 24f, 18f), entry.Level.ToString());
-                DrawSkillBar(new Rect(row.xMax - 62f, row.y + 7f, 58f, 8f), entry);
-                if (Mouse.IsOver(row)) TooltipHandler.TipRegion(row, SkillTooltip(entry));
-                y += 22f;
+                for (int i = 0; i < skills.Count; i++)
+                {
+                    SkillRow entry = skills[i];
+                    Rect row = new Rect(0f, i * 22f, view.width, 20f);
+                    UiZebra.Draw(row, i);
+                    Widgets.LabelEllipses(new Rect(row.x + 2f, row.y + 2f, row.width - 132f, 18f), entry.Label);
+                    Rect icon = new Rect(row.xMax - 110f, row.y + 3f, 16f, 16f);
+                    WorkTypePaletteView.DrawPassionIcon(icon, entry.Passion);
+                    Widgets.Label(new Rect(row.xMax - 90f, row.y + 2f, 24f, 18f), entry.Level.ToString());
+                    DrawSkillBar(new Rect(row.xMax - 62f, row.y + 7f, 58f, 8f), entry);
+                    if (Mouse.IsOver(row)) TooltipHandler.TipRegion(row, SkillTooltip(entry));
+                }
+            }
+            finally
+            {
+                Widgets.EndScrollView();
             }
         }
 
@@ -559,11 +586,6 @@ namespace OrderedWork.UI
                 {
                     continue;
                 }
-                bool level = record.Level > 0;
-                bool passion = record.passion != Passion.None;
-                if (relevantMode == 0 && !level) continue;
-                if (relevantMode == 1 && !passion) continue;
-                if (relevantMode == 2 && (!level || !passion)) continue;
                 candidates.Add(new SkillRow
                 {
                     Label = skill.label,
@@ -581,12 +603,18 @@ namespace OrderedWork.UI
             {
                 return candidates.OrderByDescending(r => r.Level)
                     .ThenByDescending(r => PassionRank(r.Passion))
-                    .Take(5)
+                    .ToList();
+            }
+            if (relevantMode == 1)
+            {
+                return candidates
+                    .OrderBy(r => PassionSource.IsBadOf(r.Passion) ? 2 : r.Passion == Passion.None ? 1 : 0)
+                    .ThenByDescending(SkillScore)
+                    .ThenByDescending(r => r.Level)
                     .ToList();
             }
             return candidates.OrderByDescending(SkillScore)
                 .ThenByDescending(r => r.Level)
-                .Take(5)
                 .ToList();
         }
 
@@ -604,21 +632,21 @@ namespace OrderedWork.UI
                 prioritizeLowSkill);
         }
 
-        private void DrawStats(Rect rect)
+        private void DrawStats(Rect rect, ref Vector2 scroll)
         {
-            Widgets.Label(new Rect(rect.x, rect.y, rect.width, 20f), "Stats del oficio");
+            Widgets.Label(new Rect(rect.x, rect.y, rect.width, 20f), "Stats especializados");
             Rect body = new Rect(rect.x, rect.y + 24f, rect.width, Mathf.Max(0f, rect.height - 24f));
-            Rect view = new Rect(0f, 0f, body.width - 16f, Mathf.Max(body.height, 170f));
-            Widgets.BeginScrollView(body, ref metadataScroll, view);
+            Rect view = new Rect(0f, 0f, body.width - 16f, Mathf.Max(body.height, 28f));
+            Widgets.BeginScrollView(body, ref scroll, view);
             try
             {
                 float y = 0f;
-                DrawStatLine(view.width, ref y, "Work Speed", SafeStat(StatDefOf.WorkSpeedGlobal));
-                DrawStatLine(view.width, ref y, "Move Speed", SafeStat(StatDefOf.MoveSpeed));
                 StatDef relevant = RelevantWorkStat(SelectedWorkType());
-                DrawStatLine(view.width, ref y, relevant.label, SafeStat(relevant));
-                Widgets.Label(new Rect(0f, y + 8f, view.width, 40f),
-                    "Stats específicos y desglose quedan para la siguiente versión.");
+                DrawStatLine(view.width, ref y, relevant, SafeStat(relevant), false);
+                if (SelectedWorkType() == null)
+                {
+                    Widgets.Label(new Rect(0f, y + 6f, view.width, 20f), "Seleccioná un WorkType.");
+                }
             }
             finally
             {
@@ -626,6 +654,33 @@ namespace OrderedWork.UI
             }
         }
 
+        private static StatDef NamedStat(string defName)
+        {
+            return DefDatabase<StatDef>.GetNamedSilentFail(defName);
+        }
+
+        private void DrawGenericStats(Rect rect)
+        {
+            Widgets.Label(new Rect(rect.x, rect.y, rect.width, 20f), "Stats base");
+            Rect body = new Rect(rect.x, rect.y + 24f, rect.width, Mathf.Max(0f, rect.height - 24f));
+            Rect view = new Rect(0f, 0f, body.width - 16f, Mathf.Max(body.height, 140f));
+            Widgets.BeginScrollView(body, ref genericStatsScroll, view);
+            try
+            {
+                float y = 0f;
+                DrawStatLine(view.width, ref y, StatDefOf.WorkSpeedGlobal, SafeStat(StatDefOf.WorkSpeedGlobal), false);
+                DrawStatLine(view.width, ref y, StatDefOf.MoveSpeed, SafeStat(StatDefOf.MoveSpeed), false);
+                DrawStatLine(view.width, ref y, NamedStat("Manipulation"), SafeStat(NamedStat("Manipulation")), true);
+                DrawStatLine(view.width, ref y, NamedStat("Sight"), SafeStat(NamedStat("Sight")), true);
+                DrawStatLine(view.width, ref y, NamedStat("Consciousness"), SafeStat(NamedStat("Consciousness")), true);
+                DrawStatLine(view.width, ref y, StatDefOf.GlobalLearningFactor,
+                    SafeStat(StatDefOf.GlobalLearningFactor), false);
+            }
+            finally
+            {
+                Widgets.EndScrollView();
+            }
+        }
         private float SafeStat(StatDef stat)
         {
             if (stat == null)
@@ -642,12 +697,55 @@ namespace OrderedWork.UI
             }
         }
 
-        private static void DrawStatLine(float width, ref float y, string label, float value)
+        private static void DrawStatLine(float width, ref float y, StatDef stat, float value, bool percent)
         {
             Rect row = new Rect(0f, y, width, 20f);
-            Widgets.Label(row, label + ": " + value.ToString("0.##"));
+            string text = stat != null ? stat.label : "Stat";
+            string amount = percent ? (value * 100f).ToString("0") + "%" : value.ToString("0.##");
+            Widgets.Label(row, text + ": " + amount);
+            if (stat != null && Mouse.IsOver(row))
+            {
+                TooltipHandler.TipRegion(row, StatTooltip(stat));
+            }
             y += 20f;
         }
+
+        private static string StatTooltip(StatDef stat)
+        {
+            switch (stat.defName)
+            {
+                case "WorkSpeedGlobal":
+                    return "Work Speed\nAffected by Manipulation, Sight and Consciousness, plus the WorkType-specific speed stat.\nImproves with relevant skill, passions, health and gear.";
+                case "MoveSpeed":
+                    return "Move Speed\nAffected by the Moving capacity, health, injuries, bionics and gear.";
+                case "Manipulation":
+                    return "Manipulation\nAffected by arm/hand health, bionics, injuries and drugs.\nAffects most work speed stats.";
+                case "Sight":
+                    return "Sight\nAffected by eye health, bionics, injuries and drugs.\nAffects accuracy and several work speeds.";
+                case "Consciousness":
+                    return "Consciousness\nAffected by brain/health state, pain, drugs and injuries.\nAffects almost every work activity.";
+                case "GlobalLearningFactor":
+                    return "Global Learning Factor\nAffects XP gain for all skills.\nInfluenced by traits, genes, age and some drugs.";
+                case "ConstructionSpeed":
+                    return "Construction Speed\nAffected by Construction skill and passion, Manipulation, Sight, Consciousness and tools.";
+                case "MiningSpeed":
+                    return "Mining Speed\nAffected by Mining skill and passion, Manipulation, Sight, Consciousness and tools.";
+                case "PlantWorkSpeed":
+                    return "Plant Work Speed\nAffected by Plants skill and passion, Manipulation, Sight and Consciousness.";
+                case "ResearchSpeed":
+                    return "Research Speed\nAffected by Intellectual skill and passion, Manipulation, Sight, Consciousness and research facilities.";
+                case "MedicalTendSpeed":
+                    return "Medical Tend Speed\nAffected by Medicine skill and passion, Manipulation, Sight and Consciousness.";
+                case "CleaningSpeed":
+                    return "Cleaning Speed\nAffected by Cleaning skill and passion, Manipulation, Sight and Consciousness.";
+                case "FishingSpeed":
+                    return "Fishing Speed\nAffected by Animals/Fishing skill, Manipulation, Sight and Consciousness.";
+                default:
+                    return (stat.description ?? stat.label)
+                        + "\nAffected by the relevant skill, Manipulation, Sight and Consciousness.";
+            }
+        }
+
 
 
         private void DrawCompact(WorkPanelRects layout)

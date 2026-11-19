@@ -57,7 +57,7 @@ namespace OrderedWork.UI
                 loadMode ? "Load Work preset" : "Save Work preset");
             Text.Font = GameFont.Small;
 
-            float listHeight = Mathf.Min(inRect.height - (loadMode ? 90f : 130f),
+            float listHeight = Mathf.Min(inRect.height - (loadMode ? 90f : 150f),
                 Mathf.Max(70f, presets.Count * 38f + 6f));
             Rect listRect = new Rect(0f, 36f, inRect.width, listHeight);
             Rect content = new Rect(0f, 0f, listRect.width - 18f,
@@ -116,7 +116,7 @@ namespace OrderedWork.UI
 
             if (!loadMode)
             {
-                Rect nameRect = new Rect(0f, listRect.yMax + 12f, inRect.width - 100f, 28f);
+                Rect nameRect = new Rect(0f, inRect.yMax - 40f, inRect.width - 100f, 28f);
                 presetName = Widgets.TextField(nameRect, presetName ?? "");
                 bool canSave = !string.IsNullOrWhiteSpace(presetName);
                 if (Widgets.ButtonText(new Rect(nameRect.xMax + 8f, nameRect.y, 90f, 28f),

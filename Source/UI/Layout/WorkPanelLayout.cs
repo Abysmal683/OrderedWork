@@ -38,22 +38,13 @@ namespace OrderedWork.UI.Layout
             }
 
             float leftWidth = Mathf.Clamp(result.Body.width * 0.31f, 280f, 390f);
-            float middleWidth = giversExpanded
-                ? Mathf.Clamp(result.Body.width * 0.34f, 300f, 430f)
-                : 0f;
+            float middleWidth = Mathf.Clamp(result.Body.width * 0.34f, 300f, 430f);
             float metadataWidth = Mathf.Max(260f,
-                result.Body.width - leftWidth - middleWidth - (giversExpanded ? Gap * 2f : Gap));
+                result.Body.width - leftWidth - middleWidth - Gap * 2f);
 
             result.WorkTypes = new Rect(result.Body.x, result.Body.y, leftWidth, result.Body.height);
-            if (giversExpanded)
-            {
-                result.Givers = new Rect(result.WorkTypes.xMax + Gap, result.Body.y, middleWidth, result.Body.height);
-                result.Metadata = new Rect(result.Givers.xMax + Gap, result.Body.y, metadataWidth, result.Body.height);
-            }
-            else
-            {
-                result.Metadata = new Rect(result.WorkTypes.xMax + Gap, result.Body.y, metadataWidth, result.Body.height);
-            }
+            result.Givers = new Rect(result.WorkTypes.xMax + Gap, result.Body.y, middleWidth, result.Body.height);
+            result.Metadata = new Rect(result.Givers.xMax + Gap, result.Body.y, metadataWidth, result.Body.height);
             return result;
         }
     }

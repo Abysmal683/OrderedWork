@@ -153,6 +153,19 @@ namespace OrderedWork.UI
             TooltipHandler.TipRegion(rect, "Active schedule brush. Click or drag over Modif to paint this assignment.");
         }
 
+        private void ShowBrushMenu()
+        {
+            List<FloatMenuOption> options = new List<FloatMenuOption>();
+            options.Add(new FloatMenuOption("Vacío", delegate { detailBrush = null; }));
+            foreach (TimeAssignmentDef def in DefDatabase<TimeAssignmentDef>.AllDefsListForReading
+                .OrderBy(d => d.LabelCap.ToString(), StringComparer.OrdinalIgnoreCase))
+            {
+                TimeAssignmentDef captured = def;
+                options.Add(new FloatMenuOption(captured.LabelCap.ToString(), delegate { detailBrush = captured; }));
+            }
+            Find.WindowStack.Add(new FloatMenu(options));
+        }
+
         private void DrawScheduleRow(Rect content, float y, float hourWidth, string label, bool editable, bool origin)
         {
             Widgets.Label(new Rect(0f, y, 72f, 24f), label);
