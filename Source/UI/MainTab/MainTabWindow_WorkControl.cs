@@ -23,13 +23,8 @@ namespace OrderedWork.UI
         private const float SearchHeight = 24f;
         private const float HScrollHeight = WorkGridScrollView.Thickness;
         private const float HeaderHeight = 18f;
-        private const float RowHeight = 42f;
-        private const float CardWidth = 135f;
-        private const float CardHeight = 30f;
-        private const float CardGap = 4f;
         private const float LeftColumnMin = 160f;
         private const float LeftColumnMax = 260f;
-        private const float ColumnGutter = 6f;
         private const int DebugPaletteTypeCount = 60;
         private const float MinPanelHeight = 360f; // top UI + 4 pawn rows
         private const float DefaultPanelHeightFactor = 0.5f;
@@ -66,19 +61,7 @@ namespace OrderedWork.UI
         private float resizeStartMouseY;
         private float resizeStartHeight;
 
-        private bool draggingPalette;
-        private WorkTypeDef paletteWorkType;
-        private Pawn paletteHoverPawn;
-        private int paletteDropIndex;
-
-        private bool dragging;
-        private Pawn dragPawn;
-        private int dragSourceIndex = -1;
-        private int dragTargetIndex = -1;
-        private int dragCount;
-
-        /// <summary>Future per-pawn/per-giver override hook (not implemented yet).</summary>
-        internal static Action<Pawn, WorkTypeDef, StringBuilder> PawnSpecificOverrideHook { get; set; }
+        private readonly WorkControlInteraction interaction = new WorkControlInteraction();
 
         public override void DoWindowContents(Rect inRect)
         {
@@ -146,10 +129,10 @@ namespace OrderedWork.UI
                 paletteRect,
                 ref paletteScroll,
                 paletteTypes,
-                paletteWorkType,
+                interaction.PaletteWorkType,
                 showPaletteScrollbar,
-                dragging || draggingPalette,
-                BeginPaletteDrag);
+                interaction.IsAnyDragging,
+                interaction.BeginPaletteDrag);
 
             // Search row below the palette, above the matrix.
             DrawSearchRow(searchY);
@@ -169,7 +152,7 @@ namespace OrderedWork.UI
                 Text.Anchor = previousMatchAnchor;
             }
 
-            UpdatePaletteDrag(bodyRect, leftWidth, colonists);
+            interaction.UpdatePaletteDrag(bodyRect, leftWidth, colonists, gridScroll);
 
             // Column header.
             Widgets.Label(new Rect(bodyRect.x, headerY, leftWidth - 6f, HeaderHeight), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Pawn", "Pawn"));
@@ -178,9 +161,15 @@ namespace OrderedWork.UI
 
             if (colonists.Count == 0)
             {
-                CancelPaletteDrag();
+                interaction.CancelPaletteDrag();
                 DrawCentered(bodyRect, filtering ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.NoMatch", "No pawns match") : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.NoColonists", "No free colonists"));
                 return;
+            }
+
+            int maxLane = 0;
+            foreach (Pawn pawn in colonists)
+            {
+                maxLane = Mathf.Max(maxLane, WorkControlRows.BuildLane(pawn).types.Count);
             }
 
             float vThickness = WorkGridScrollView.Thickness;
@@ -202,92 +191,13 @@ namespace OrderedWork.UI
                 Mathf.Max(0f, gridViewport.width - leftWidth),
                 HScrollHeight);
 
-            int maxLane = 0;
-            foreach (Pawn pawn in colonists)
-            {
-                maxLane = Mathf.Max(maxLane, BuildLane(pawn).types.Count);
-            }
-
-            float laneContentWidth = Mathf.Max(laneViewport.width, (maxLane + 1) * (CardWidth + CardGap) + CardGap);
-            float rowsHeight = colonists.Count * RowHeight;
+            float laneContentWidth = Mathf.Max(laneViewport.width, (maxLane + 1) * (WorkControlMetrics.CardWidth + WorkControlMetrics.CardGap) + WorkControlMetrics.CardGap);
+            float rowsHeight = colonists.Count * WorkControlMetrics.RowHeight;
             float contentHeight = Mathf.Max(bodyRect.height, rowsHeight);
-            Rect laneContent = new Rect(0f, 0f, laneContentWidth, contentHeight);
 
-            // Wheel works over both the fixed names and the lanes.
-            // laneViewport, not gridViewport: the horizontal max must match the manual lane bar.
-            WorkGridScrollView.HandleWheel(bodyRect, laneViewport, laneContent, ref gridScroll);
-            if (Event.current.type == EventType.ScrollWheel && Event.current.shift)
-            {
-                OrderedWorkMod.DebugLog("[Scroll] shiftGeometry maxLane=" + maxLane
-                    + " content=" + laneContentWidth + " laneViewport=" + laneViewport.width
-                    + " scrollX=" + gridScroll.x);
-            }
-
-            bool showVerticalScrollbar = !autoHide
-                || Mouse.IsOver(bodyRect)
-                || Mouse.IsOver(vTrack)
-                || Mouse.IsOver(hTrack)
-                || WorkGridScrollView.IsDragging
-                || WorkGridScrollView.RecentlyScrolled;
-            bool showHorizontalScrollbar = !autoHide
-                || Mouse.IsOver(bodyRect)
-                || Mouse.IsOver(hTrack)
-                || Mouse.IsOver(vTrack)
-                || WorkGridScrollView.IsDragging
-                || WorkGridScrollView.RecentlyScrolled;
-
-            // Handle bar input before the scroll view so the content cannot eat MouseDown.
-            if (showVerticalScrollbar)
-            {
-                WorkGridScrollView.HandleVertical(vTrack, gridViewport, laneContent, ref gridScroll, this);
-            }
-            if (showHorizontalScrollbar)
-            {
-                WorkGridScrollView.HandleHorizontal(hTrack, laneViewport, laneContent, ref gridScroll, this);
-            }
-
-            Widgets.BeginScrollView(laneViewport, ref gridScroll, laneContent, false);
-            try
-            {
-                HandleDrop();
-
-                for (int i = 0; i < colonists.Count; i++)
-                {
-                    Pawn pawn = colonists[i];
-                    float rowY = i * RowHeight;
-                    Rect rowRect = new Rect(0f, rowY, laneContentWidth, RowHeight);
-
-                    Color rowColor = (i % 2 == 0)
-                        ? new Color(0.14f, 0.15f, 0.17f, 0.55f)
-                        : new Color(0.16f, 0.17f, 0.19f, 0.55f);
-                    Widgets.DrawBoxSolid(rowRect, rowColor);
-                    DrawRowState(rowRect, pawn);
-                    if (draggingPalette && paletteHoverPawn == pawn)
-                    {
-                        Widgets.DrawHighlight(rowRect);
-                    }
-
-                    DrawRowLane(pawn, rowY, available);
-                }
-            }
-            finally
-            {
-                Widgets.EndScrollView();
-                Text.Font = GameFont.Small;
-            }
-
-            DrawPawnColumn(colonists, namesViewport, leftWidth);
-
-            if (showVerticalScrollbar)
-            {
-                WorkGridScrollView.DrawVertical(vTrack, gridViewport, laneContent, ref gridScroll);
-            }
-            if (showHorizontalScrollbar)
-            {
-                WorkGridScrollView.DrawHorizontal(hTrack, laneViewport, laneContent, ref gridScroll);
-            }
-
-            DrawHeldCard();
+            WorkControlGrid.Draw(bodyRect, namesViewport, laneViewport, vTrack, hTrack,
+                leftWidth, laneContentWidth, contentHeight, colonists, available, autoHide,
+                ref gridScroll, interaction);
         }
 
         /// <summary>Top grip: drag up to grow the panel, down to shrink it; 4 pawn rows minimum.</summary>

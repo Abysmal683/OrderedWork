@@ -16,6 +16,15 @@
   the tags you want. Do not merge a giver into a type whose tags would let an incapable pawn do it.
 
 
+## Passion diagnostics
+
+With **Verbose diagnostics in Player.log** enabled, startup emits one line:
+
+```text
+[OrderedWork][Passion] VSE manager=True|False registered=N names=...
+```
+
+Use it when testing with VSE/Alpha Skills enabled, disabled or removed. Without verbose diagnostics, only failures emit warnings.
 ## Limitations (0.3.0-alpha.234)
 - Profiles and basic schedule presets exist; Details has Overview, schedule, zone, override and read-only clothing status sections. Clothing application, equipment, bulk zone and multi-pawn are not implemented yet.
 - Pawn order follows the colonist bar; if the bar is unavailable or returns no visible free colonists, the map's `FreeColonists` order is used. Dead pawns are filtered out.

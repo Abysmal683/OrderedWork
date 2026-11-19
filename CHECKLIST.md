@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.239)
+# Ordered Work — Current Checklist (0.3.0-alpha.241)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -70,6 +70,13 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] `WorkTypePaletteView` split into core, tooltip and passion partials.
 - [ ] Runtime smoke test after the refactor: settings, pins, weights, split/merge, save/load.
 
+## WorkControl extraction (alpha.241)
+
+- [x] Metrics, row renderer, grid and interaction separated.
+- [x] Main tab reduced to orchestration and top controls.
+- [x] Old row/interaction partials removed.
+- [x] Build 0/0 and tests pass.
+- [ ] Runtime check of selection, palette drag and card reorder.
 ## PassionSource split (alpha.239)
 
 - [x] Registry, metadata and icon resolver separated.

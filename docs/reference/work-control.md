@@ -1,5 +1,14 @@
 # Work Control reference
 
+## UI components
+
+| Component | Responsibility |
+|---|---|
+| `MainTabWindow_WorkControl` | tab lifecycle, top controls, filters and layout |
+| `WorkControlGrid` | matrix viewport, external bars and row loop |
+| `WorkControlRows` | pawn column, lane cards and tooltips |
+| `WorkControlInteraction` | palette/card drag, drop and add menu |
+| `WorkControlMetrics` | row/card constants and slot math |
 ## Work Control tab (0.3.0-alpha.234)
 - Open the new **Work Control** bottom tab (between Work and Schedule). It does **not** replace the vanilla Work tab.
 - **Pawn order** follows `Find.ColonistBar.GetColonistsInOrder()` filtered to visible free colonists, with `Find.CurrentMap.mapPawns.FreeColonists` as fallback. A revived pawn returns to its stable colonist-bar position; rows follow the bar if it changes.

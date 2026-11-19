@@ -3,6 +3,22 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.241] - 2026-11-19
+
+### Refactor — extract WorkControl components
+- Extracted `WorkControlMetrics` for row/card constants and slot math.
+- Extracted `WorkControlRows` for pawn column, lane cards, tooltips and held card.
+- Extracted `WorkControlGrid` for viewport, external bars and row loop.
+- Extracted `WorkControlInteraction` for palette/card drag, drop and add menu.
+- Removed the old row/interaction partial files; main tab now orchestrates.
+- Preserved selection, drag, drop and filter behavior; build 0/0 and tests pass.
+
+## [0.3.0-alpha.240] - 2026-11-19
+
+### Diagnostics — passion registry
+- Added one verbose startup line showing whether VSE was discovered, how many passions registered and their defNames.
+- Documented how to test with VSE/Alpha Skills present or removed.
+
 ## [0.3.0-alpha.239] - 2026-11-19
 
 ### Refactor — split PassionSource
