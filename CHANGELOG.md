@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.223] - 2026-11-19
+
+### Fixed — short Spanish button labels
+- Shortened Spanish Givers reset labels to fit their buttons: Reiniciar, Reiniciar todo, Confirmar.
+- Shortened the VSE expertise button label to `Espec.`.
+- Kept `Spanish` and `SpanishLatin` in sync.
+- Technical log output remains English by design.
+
 ## [0.3.0-alpha.222] - 2026-11-19
 
 ### Added — Spanish (Latin America) language folder
