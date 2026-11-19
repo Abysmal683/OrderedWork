@@ -1,6 +1,6 @@
 # Ordered Work — Current Checklist (0.3.0-alpha.234)
 
-Status: architecture cleanup complete; build 0/0 and 7/7 tests pass. Runtime checks remain for the final profile-only path.
+Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
 ## Architecture
 
@@ -19,7 +19,8 @@ Status: architecture cleanup complete; build 0/0 and 7/7 tests pass. Runtime che
 - [x] Merge is profile-backed; giver movement is final state, not history.
 - [x] `MainTabWindow_WorkControl` split into partial files: core, search, rows, interaction.
 - [x] Mod Settings split into partial files: core, settings, order, split/merge, helpers.
-- [x] `CREDITS.md` documents provenance and licensing posture.
+- [x] `docs/reference/credits.md` documents provenance and licensing posture.
+- [x] Project documentation follows the Diátaxis map in `docs/README.md`.
 
 ## Confirmed in game
 
@@ -80,7 +81,7 @@ Status: architecture cleanup complete; build 0/0 and 7/7 tests pass. Runtime che
 - [ ] Runtime smoke test in RimWorld.
 ## Future scope
 
-See `POLICY_DATA_DESIGN.md` for the relational policy model.
+See `docs/reference/policy-data.md` for the relational policy model.
 
 - [ ] Define `PawnPolicy` and sparse override contract before policy UI.
 - [x] Zone policy: assign existing `Area_Allowed` per pawn and map; no zone creation.

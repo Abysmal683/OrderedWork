@@ -1,4 +1,7 @@
-# Ordered Work — Consolidated Design Summary
+# Alpha 4 summary
+
+> Historical design summary. Current guidance lives in the reference and explanation docs.
+
 
 Status: `0.3.0-alpha.96`; profile-backed Split/Merge/Order and Work Control UI implemented; passion pipeline, SplitMerge, WorkOrderService and palette refactored. Policy tabs (Zones/Schedule) are designed but not implemented.
 
@@ -44,7 +47,9 @@ Part of a three-mod suite (standalone-first, optional integration): Work Control
 - Visual options: passion flame/quality estimate, compact icon + full name, skill level always or hover.
 - No matrix as primary input; no dual editing.
 
-## 4. Data model\n\nDetailed relational model: `POLICY_DATA_DESIGN.md`.
+## 4. Data model
+
+Detailed relational model: `../../reference/policy-data.md`.
 
 - `BaseOrder`: global WorkType/WorkGiver defaults; optional editor.
 - `ProfilePreset`: role/ordered jobs, loadout, area, schedule, rules.

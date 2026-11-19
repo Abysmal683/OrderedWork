@@ -1,5 +1,7 @@
 # Ordered Work — Design Notebook
 
+> Historical design notebook. Current contracts live in `docs/reference/`; use this file for rationale and rejected paths.
+
 Status: `0.3.0-alpha.96` implementation plus design notebook. Policy tabs (Zones/Schedule) are approved but not implemented.
 
 ## Goal
@@ -988,7 +990,6 @@ Design implication:
 - Future mode setting: Draw (default for new games) / Manual / Both; do not remove the vanilla Work tab.
 - Alpha.4 user test: initialization at game start, pins, + picker levels, incapable filtering, and resurrection reapply passed.
 - Close for today: next session starts with the view-mode setting, then row selection/double-click/search and the collapsible/optional result table.
-
 
 
 

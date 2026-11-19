@@ -131,7 +131,11 @@ Order:
 
 Popups must list the concrete names, not just "some mods changed".
 
-## 4.0 Modified state\n\nDo not persist a `modified` boolean. It goes stale after merges, mod changes, profile copies or manual edits. Compute modification by comparing the active profile with `reference.json`; there are only ~100 givers, so the cost is negligible and the result is always consistent. `modified` may be shown as a derived UI value, never written to disk.\n\n## 4.1 Giver identity
+## 4.0 Modified state
+
+Do not persist a `modified` boolean. It goes stale after merges, mod changes, profile copies or manual edits. Compute modification by comparing the active profile with `reference.json`; there are only ~100 givers, so the cost is negligible and the result is always consistent. `modified` may be shown as a derived UI value, never written to disk.
+
+## 4.1 Giver identity
 
 - Key givers by **defName**, never by `giverClass`.
 - Core has no duplicate WorkGiverDef defNames, but it intentionally repeats giver classes: `WorkGiver_DoBill` appears in 18 defs, and `ConstructDeliverResourcesToFrames`/`ToBlueprints` exist in both Construction and Hauling under different defNames. Duplicate `workType+priority` also occurs. Do not deduplicate by class or priority.
