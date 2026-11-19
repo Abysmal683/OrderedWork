@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.207] - 2026-11-19
+
+### Hardening — guarded dynamic hooks
+- `WorkGiverOrderSpikePatch` now wraps both getter postfixes in a guarded helper and logs at most one failure.
+- `OrderedWorkStartup.ApplyProfileNow` catches failures and logs instead of propagating into the UI.
+- Manual priorities and split Work tab column generation remain active.
+- Added the first keyed text layer (`OrderedWorkText` + English key file); migration of secondary strings is still incomplete.
+
 ## [0.3.0-alpha.206] - 2026-11-19
 
 ### Refactor — editor state and keyed UI text
