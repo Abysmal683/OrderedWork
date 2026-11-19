@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.219] - 2026-11-19
+
+### Localization — remaining Work Control and overview labels
+- Migrated Overview status/policy labels and Work Control search/filter labels.
+- Migrated filter scope names, Any/Clear, WorkType palette incapability suffix, passion weight fallback and learn-rate label.
+- Migrated Zone manage tooltip.
+- Added/deduplicated English and Spanish keys.
+- Technical log/debug output remains English by design.
+
 ## [0.3.0-alpha.218] - 2026-11-19
 
 ### Localization — Schedule fragments and palette diagnostics
