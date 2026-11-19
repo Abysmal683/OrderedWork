@@ -89,7 +89,7 @@ namespace OrderedWork.UI
         public override void DoWindowContents(Rect inRect)
         {
             EnforceMinimumWindowSize();
-            draggable = detailTab != DetailTab.Schedule;
+            draggable = detailTab != DetailTab.Schedule && detailTab != DetailTab.Work;
             if (workPanel == null && pawn != null)
             {
                 workPanel = new WorkPanel(pawn);
