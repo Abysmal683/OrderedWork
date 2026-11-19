@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.189] - 2026-11-19
+
+### Feature — Profile row details and working expertise filter
+- Profile assigned-work rows now show the best relevant skill level and passion icon with zebra striping.
+- The VSE `Expertise` filter checkbox is enabled only when the adapter is available; enabling it now appends expertise rows with star icon, level and tooltip.
+- Expertise panel/button remains VSE-owned through reflection.
+- Profile button remains offset from the close X.
+- Search label remains `Find`.
+
 ## [0.3.0-alpha.188] - 2026-11-19
 
 ### Fix — VSE API namespace
