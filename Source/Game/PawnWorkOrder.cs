@@ -58,7 +58,6 @@ namespace OrderedWork.Data
             {
                 if (order == null) order = new List<string>();
                 if (workOverrides == null) workOverrides = new List<PawnWorkOverride>();
-            if (workGiverOrders == null) workGiverOrders = new List<PawnWorkGiverOrder>();
                 if (workGiverOrders == null) workGiverOrders = new List<PawnWorkGiverOrder>();
                 if (scheduleOverrides == null) scheduleOverrides = new List<PawnScheduleOverride>();
                 if (scheduleWorkOverrides == null) scheduleWorkOverrides = new List<PawnScheduleWorkOverride>();
