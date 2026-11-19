@@ -112,7 +112,7 @@ namespace OrderedWork
                 inRect.x,
                 tabsRect.yMax,
                 inRect.width,
-                Mathf.Max(40f, inRect.height - tabsRect.height));
+                Mathf.Max(40f, inRect.height - tabsRect.yMax));
 
             // Use the height measured after last frame's draw. Zero means "not measured yet",
             // so fall back to the body height and let this frame measure the real content.
@@ -137,7 +137,7 @@ namespace OrderedWork
             }
 
             list.End();
-            settingsContentHeight = list.CurHeight + 72f;
+            settingsContentHeight = list.CurHeight + 96f;
             Widgets.EndScrollView();
         }
 

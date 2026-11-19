@@ -219,4 +219,5 @@
   <OrderedWork.Passion.Major>major</OrderedWork.Passion.Major>
   <OrderedWork.Passion.Minor>minor</OrderedWork.Passion.Minor>
   <OrderedWork.Passion.None>none</OrderedWork.Passion.None>
+  <OrderedWork.Work.Removed>Work type removed: </OrderedWork.Work.Removed>
 </LanguageData>

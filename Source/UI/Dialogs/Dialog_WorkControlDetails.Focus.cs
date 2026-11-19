@@ -322,7 +322,7 @@ namespace OrderedWork.UI
             const float gap = 4f;
             float chipWidth = Mathf.Max(80f, (content.width - gap * 4f) / 5f);
             float total = effective.Count * (chipWidth + gap);
-            Rect viewport = new Rect(0f, y, content.width, 26f);
+            Rect viewport = new Rect(0f, y, content.width, 42f);
             Rect view = new Rect(0f, 0f, total, 26f);
             Widgets.BeginScrollView(viewport, ref detailFocusVisibleScroll, view);
             try
@@ -391,7 +391,8 @@ namespace OrderedWork.UI
                     SetFocus(detailFocusHour, next);
                     detailFocusSelected = replaceIndex >= 0 ? replaceIndex : Mathf.Min(next.Count - 1, HourFocusStack.MaxFocus - 1);
                     Messages.Message(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.Modified", "Focus updated: ")
-                        + detailFocusHour.ToString("00") + ":00", MessageTypeDefOf.TaskCompletion, false);
+                        + detailFocusHour.ToString("00") + ":00 · " + WorkTypePaletteView.DisplayName(selected),
+                        MessageTypeDefOf.TaskCompletion, false);
                 }));
         }
 
@@ -416,11 +417,15 @@ namespace OrderedWork.UI
             {
                 return;
             }
+            string removedId = focus[index];
+            WorkTypeDef removedType = DefDatabase<WorkTypeDef>.GetNamedSilentFail(removedId);
             focus.RemoveAt(index);
             SetFocus(detailFocusHour, focus);
             detailFocusSelected = -1;
             Messages.Message(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.Removed", "Focus removed: ")
-                + detailFocusHour.ToString("00") + ":00", MessageTypeDefOf.TaskCompletion, false);
+                + detailFocusHour.ToString("00") + ":00 · "
+                + (removedType != null ? WorkTypePaletteView.DisplayName(removedType) : removedId),
+                MessageTypeDefOf.TaskCompletion, false);
         }
 
         private void CopyFocusHour()

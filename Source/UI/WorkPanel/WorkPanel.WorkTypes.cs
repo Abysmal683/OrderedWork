@@ -113,7 +113,7 @@ namespace OrderedWork.UI
                 },
                 delegate(int index, Rect row)
                 {
-                    return new Rect(row.x, row.y, Mathf.Max(20f, row.width - 52f), row.height);
+                    return new Rect(row.x, row.y, Mathf.Max(20f, row.width - 26f), row.height);
                 },
                 delegate(int index)
                 {

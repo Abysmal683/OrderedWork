@@ -3,6 +3,19 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.226] - 2026-11-19
+
+### Fixed — Work and Schedule layout pass
+- Work detail tab now uses the stacked layout with its own scroll, matching the vertical layout.
+- Schedule content uses a consistent 6 px inner margin and a shorter content height; removed the empty tail.
+- Added a separator below the hour header and a dedicated focus-section background that reaches the padded bottom.
+- Current-hour highlight changed from yellow to a subtle dark-gray column.
+- Visible focus strip now reserves scrollbar height instead of crushing the chips.
+- WorkType rows remove with right-click; the `x` button is gone and removal emits a message with the WorkType name.
+- Focus removal/modification messages now include the WorkType name.
+- Fixed the Mod Settings rules body extending below the window; increased bottom content padding.
+- Search field releases focus when clicking elsewhere, allowing camera keys to resume.
+
 ## [0.3.0-alpha.225] - 2026-11-19
 
 ### Fixed — Schedule focus layout and feedback

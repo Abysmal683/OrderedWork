@@ -43,7 +43,7 @@ namespace OrderedWork.UI
             doCloseButton = false;
             resizeable = true;
             draggable = false;
-            absorbInputAroundWindow = true;
+            absorbInputAroundWindow = false;
             closeOnClickedOutside = false;
             forcePause = false;
         }

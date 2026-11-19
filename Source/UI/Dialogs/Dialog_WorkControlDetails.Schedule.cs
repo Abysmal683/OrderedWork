@@ -19,6 +19,7 @@ namespace OrderedWork.UI
 
         private void DrawScheduleTab(Rect content)
         {
+            content = UiInset.All(content, 6f);
             EnsureDetailSchedule();
             Widgets.DrawBoxSolid(new Rect(0f, 0f, content.width, 196f), UiColors.PanelBody);
             float y = 0f;
@@ -84,6 +85,7 @@ namespace OrderedWork.UI
                 Text.Anchor = TextAnchor.UpperLeft;
             }
             y += 20f;
+            Widgets.DrawBoxSolid(new Rect(0f, y - 2f, content.width, 2f), UiColors.SectionSeparator);
             DrawScheduleRow(content, y, hourWidth, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.Origin", "Origin"), false, true);
             y += 42f;
             DrawScheduleRow(content, y, hourWidth, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.Edit", "Edit"), true, false);
@@ -176,11 +178,11 @@ namespace OrderedWork.UI
             }
             float x = 76f + hour * hourWidth;
             Widgets.DrawBoxSolid(new Rect(x, top, hourWidth - 1f, bottom - top),
-                new Color(1f, 0.88f, 0.35f, 0.10f));
+                new Color(0.08f, 0.09f, 0.10f, 0.38f));
             Widgets.DrawBoxSolid(new Rect(x, top, 2f, bottom - top),
-                new Color(1f, 0.88f, 0.35f, 0.55f));
+                new Color(0.38f, 0.40f, 0.43f, 0.45f));
             Widgets.DrawBoxSolid(new Rect(x + hourWidth - 3f, top, 2f, bottom - top),
-                new Color(1f, 0.88f, 0.35f, 0.55f));
+                new Color(0.38f, 0.40f, 0.43f, 0.45f));
         }
         private void DrawScheduleRow(Rect content, float y, float hourWidth, string label, bool editable, bool origin)
         {

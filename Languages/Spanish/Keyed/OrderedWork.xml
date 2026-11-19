@@ -219,4 +219,5 @@
   <OrderedWork.Passion.Major>mayor</OrderedWork.Passion.Major>
   <OrderedWork.Passion.Minor>menor</OrderedWork.Passion.Minor>
   <OrderedWork.Passion.None>ninguna</OrderedWork.Passion.None>
+  <OrderedWork.Work.Removed>Tipo de trabajo eliminado: </OrderedWork.Work.Removed>
 </LanguageData>
