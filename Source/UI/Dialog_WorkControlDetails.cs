@@ -189,16 +189,16 @@ namespace OrderedWork.UI
             Rect lockRect = new Rect(inRect.xMax - 22f, 2f, 18f, 18f);
             Color gold = new Color(0.82f, 0.64f, 0.24f);
             Widgets.DrawBoxSolid(new Rect(lockRect.x + 3f, lockRect.y + 8f, 12f, 8f), gold);
-            Widgets.DrawBoxSolid(new Rect(lockRect.x + 6f, lockRect.y + 3f, 2f, 7f), gold);
-            Widgets.DrawBoxSolid(new Rect(lockRect.x + 12f, lockRect.y + 3f, 2f, 7f), gold);
-            Widgets.DrawBoxSolid(new Rect(lockRect.x + 6f, lockRect.y + 3f, 8f, 2f), gold);
+            Widgets.DrawBoxSolid(new Rect(lockRect.x + 5f, lockRect.y + 3f, 2f, 7f), gold);
+            Widgets.DrawBoxSolid(new Rect(lockRect.x + 11f, lockRect.y + 3f, 2f, 7f), gold);
+            Widgets.DrawBoxSolid(new Rect(lockRect.x + 5f, lockRect.y + 3f, 8f, 2f), gold);
             Widgets.DrawBoxSolid(new Rect(lockRect.x + 8f, lockRect.y + 11f, 2f, 3f), new Color(0.16f, 0.14f, 0.10f));
             TooltipHandler.TipRegion(lockRect, "Movimiento del panel bloqueado en esta pestaña.");
         }
 
         private void DrawPawnNavigation(Rect inRect)
         {
-            Rect search = new Rect(inRect.xMax - 136f, 0f, 52f, 24f);
+            Rect search = new Rect(inRect.xMax - 150f, 0f, 66f, 24f);
             Rect left = new Rect(inRect.xMax - 82f, 0f, 26f, 24f);
             Rect right = new Rect(inRect.xMax - 52f, 0f, 26f, 24f);
             if (Widgets.ButtonText(search, "Buscar"))
