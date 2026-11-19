@@ -25,12 +25,15 @@ namespace OrderedWork.UI
         private readonly Pawn pawn;
         private bool initialized;
         private List<string> workDraft = new List<string>();
+        private List<string> workSaved = new List<string>();
         private List<string> workBaseline = new List<string>();
         private string selectedWorkType;
         private bool giversExpanded = true;
         private readonly Dictionary<string, List<string>> giverDrafts =
             new Dictionary<string, List<string>>(StringComparer.Ordinal);
         private readonly Dictionary<string, List<string>> giverBaselines =
+            new Dictionary<string, List<string>>(StringComparer.Ordinal);
+        private readonly Dictionary<string, List<string>> giverSaved =
             new Dictionary<string, List<string>>(StringComparer.Ordinal);
 
         private Vector2 workScroll;
@@ -97,10 +100,12 @@ namespace OrderedWork.UI
             }
             initialized = true;
             workDraft = WorkOrderService.GetOrder(pawn) ?? new List<string>();
+            workSaved = new List<string>(workDraft);
             workBaseline = BuildGlobalWorkTypeOrder();
             selectedWorkType = workDraft.FirstOrDefault() ?? AddableWorkTypes().FirstOrDefault()?.defName;
             giverDrafts.Clear();
             giverBaselines.Clear();
+            giverSaved.Clear();
             LoadSelectedGivers();
         }
 
@@ -112,11 +117,11 @@ namespace OrderedWork.UI
 
         private void DrawHeader(Rect rect)
         {
-            bool workChanged = !SameOrder(workDraft, workBaseline);
+            bool workChanged = !SameOrder(workDraft, workSaved);
             bool giverChanged = giverDrafts.Any(pair =>
             {
-                List<string> baseline;
-                return !giverBaselines.TryGetValue(pair.Key, out baseline) || !SameOrder(pair.Value, baseline);
+                List<string> saved;
+                return !giverSaved.TryGetValue(pair.Key, out saved) || !SameOrder(pair.Value, saved);
             });
             bool changed = workChanged || giverChanged;
             float buttonWidth = 86f;
@@ -143,10 +148,6 @@ namespace OrderedWork.UI
             Text.Font = GameFont.Medium;
             Widgets.Label(new Rect(rect.x, rect.y, 190f, 26f), "Trabajo");
             Text.Font = GameFont.Small;
-            if (giverChanged)
-            {
-                Widgets.Label(new Rect(rect.x + 104f, rect.y + 3f, 130f, 22f), "Changed");
-            }
         }
 
         private void DrawWorkTypesColumn(Rect rect)
@@ -202,7 +203,7 @@ namespace OrderedWork.UI
                     {
                         Widgets.DrawBoxSolid(row, new Color(0.22f, 0.42f, 0.62f, 0.65f));
                     }
-                    else if (dragKind == 1 && dragIndex >= 0 && hit.Contains(Event.current.mousePosition))
+                    else if (dragKind == 1 && dragMoved && dragIndex >= 0 && hit.Contains(Event.current.mousePosition))
                     {
                         Widgets.DrawBoxSolid(row, new Color(0.55f, 0.72f, 0.35f, 0.40f));
                     }
@@ -216,7 +217,11 @@ namespace OrderedWork.UI
                     }
 
                     Widgets.Label(new Rect(row.x + 4f, row.y + 3f, 22f, 18f), (i + 1).ToString());
-                    Widgets.LabelEllipses(new Rect(row.x + 26f, row.y + 3f, Mathf.Max(50f, row.width - 104f), 18f), workType.labelShort);
+                    Widgets.LabelEllipses(new Rect(row.x + 26f, row.y + 3f, Mathf.Max(50f, row.width - 156f), 18f), workType.labelShort);
+                    if (WorkTypeGiversChanged(workType.defName))
+                    {
+                        Widgets.Label(new Rect(row.xMax - 126f, row.y + 3f, 58f, 18f), "Changed");
+                    }
                     Rect remove = new Rect(row.xMax - 46f, row.y + 1f, 18f, 20f);
                     if (Widgets.ButtonText(remove, "x"))
                     {
@@ -302,21 +307,24 @@ namespace OrderedWork.UI
                 return;
             }
 
+            float statsHeight = Mathf.Clamp(body.height * 0.30f, 96f, 180f);
+            Rect listRect = new Rect(body.x, body.y, body.width, Mathf.Max(0f, body.height - statsHeight - Gap));
+            Rect statsRect = new Rect(body.x, listRect.yMax + Gap, body.width, statsHeight);
             List<Rect> rows = new List<Rect>();
-            Rect view = new Rect(0f, 0f, body.width - 16f, Mathf.Max(body.height, draft.Count * RowHeight));
-            Widgets.BeginScrollView(body, ref giverScroll, view);
+            Rect view = new Rect(0f, 0f, listRect.width - 16f, Mathf.Max(listRect.height, draft.Count * RowHeight));
+            Widgets.BeginScrollView(listRect, ref giverScroll, view);
             try
             {
                 for (int i = 0; i < draft.Count; i++)
                 {
                     string giverName = draft[i];
                     Rect row = new Rect(0f, i * RowHeight, view.width, RowHeight - 2f);
-                    Rect hit = new Rect(body.x + row.x, body.y + row.y - giverScroll.y, row.width, row.height);
+                    Rect hit = new Rect(listRect.x + row.x, listRect.y + row.y - giverScroll.y, row.width, row.height);
                     if (dragKind == 2 && dragIndex == i)
                     {
                         Widgets.DrawBoxSolid(row, new Color(0.22f, 0.42f, 0.62f, 0.65f));
                     }
-                    else if (dragKind == 2 && dragIndex >= 0 && hit.Contains(Event.current.mousePosition))
+                    else if (dragKind == 2 && dragMoved && dragIndex >= 0 && hit.Contains(Event.current.mousePosition))
                     {
                         Widgets.DrawBoxSolid(row, new Color(0.55f, 0.72f, 0.35f, 0.40f));
                     }
@@ -325,11 +333,7 @@ namespace OrderedWork.UI
                         UiZebra.Draw(row, i);
                     }
                     Widgets.Label(new Rect(row.x + 4f, row.y + 3f, 22f, 18f), (i + 1).ToString());
-                    Widgets.LabelEllipses(new Rect(row.x + 26f, row.y + 3f, Mathf.Max(50f, row.width - 106f), 18f), giverName);
-                    if (GiverChanged(giverName, i))
-                    {
-                        Widgets.Label(new Rect(row.xMax - 82f, row.y + 3f, 58f, 18f), "Changed");
-                    }
+                    Widgets.LabelEllipses(new Rect(row.x + 26f, row.y + 3f, Mathf.Max(50f, row.width - 46f), 18f), giverName);
                     Widgets.Label(new Rect(row.xMax - 20f, row.y + 3f, 18f, 18f), "≡");
                     rows.Add(hit);
                 }
@@ -339,15 +343,13 @@ namespace OrderedWork.UI
                 Widgets.EndScrollView();
             }
             HandleDrag(2, rows, MoveGiver);
+            DrawStats(statsRect);
         }
 
         private void DrawMetadataColumn(Rect rect)
         {
             Widgets.DrawBoxSolid(rect, UiColors.PanelBody);
-            WorkTypeDef workType = SelectedWorkType();
-            float skillsHeight = Mathf.Clamp(rect.height * 0.30f, 120f, 210f);
-            Rect skills = new Rect(rect.x + 6f, rect.y + 6f, rect.width - 12f, skillsHeight);
-            Rect stats = new Rect(rect.x + 6f, skills.yMax + Gap, rect.width - 12f, Mathf.Max(0f, rect.height - skillsHeight - 20f));
+            Rect skills = new Rect(rect.x + 6f, rect.y + 6f, rect.width - 12f, Mathf.Max(0f, rect.height - 12f));
 
             Widgets.Label(new Rect(skills.x, skills.y, skills.width - 58f, 20f), "Top 5 trabajos");
             string modeLabel = relevantMode == 0 ? "Lv" : relevantMode == 1 ? "P" : "Lv.P";
@@ -357,9 +359,6 @@ namespace OrderedWork.UI
                 relevantMode = (relevantMode + 1) % 3;
             }
             DrawTopWorkTypes(skills);
-
-            Widgets.Label(new Rect(stats.x, stats.y, stats.width, 20f), "Stats");
-            DrawStats(stats);
         }
 
         private void DrawTopWorkTypes(Rect rect)
@@ -430,6 +429,7 @@ namespace OrderedWork.UI
 
         private void DrawStats(Rect rect)
         {
+            Widgets.Label(new Rect(rect.x, rect.y, rect.width, 20f), "Stats del oficio");
             Rect body = new Rect(rect.x, rect.y + 24f, rect.width, Mathf.Max(0f, rect.height - 24f));
             Rect view = new Rect(0f, 0f, body.width - 16f, Mathf.Max(body.height, 170f));
             Widgets.BeginScrollView(body, ref metadataScroll, view);
@@ -795,7 +795,9 @@ namespace OrderedWork.UI
             if (!giverDrafts.ContainsKey(workType.defName))
             {
                 List<string> stored = WorkGiverOrderService.GetStoredOrder(pawn, workType);
-                giverDrafts[workType.defName] = stored != null ? MergeWithBaseline(stored, baseline) : new List<string>(baseline);
+                List<string> initial = stored != null ? MergeWithBaseline(stored, baseline) : new List<string>(baseline);
+                giverDrafts[workType.defName] = initial;
+                giverSaved[workType.defName] = new List<string>(initial);
             }
         }
 
@@ -844,6 +846,15 @@ namespace OrderedWork.UI
             return baselineIndex != index;
         }
 
+        private bool WorkTypeGiversChanged(string defName)
+        {
+            List<string> draft;
+            List<string> baseline;
+            return giverDrafts.TryGetValue(defName, out draft)
+                && giverBaselines.TryGetValue(defName, out baseline)
+                && !SameOrder(draft, baseline);
+        }
+
         private bool GiverChanged(string name, int index)
         {
             List<string> baseline = CurrentGiverBaseline();
@@ -877,6 +888,11 @@ namespace OrderedWork.UI
             }
             workBaseline = BuildGlobalWorkTypeOrder();
             workDraft = WorkOrderService.GetOrder(pawn) ?? workDraft;
+            workSaved = new List<string>(workDraft);
+            foreach (KeyValuePair<string, List<string>> pair in giverDrafts)
+            {
+                giverSaved[pair.Key] = new List<string>(pair.Value);
+            }
             Messages.Message("Work aplicado para " + pawn.LabelShort + ".", MessageTypeDefOf.TaskCompletion, false);
         }
 
