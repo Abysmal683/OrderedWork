@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.216] - 2026-11-19
+
+### Localization — dynamic messages and rows
+- Migrated Schedule applied message, Schedule info tooltip and preset save/load messages.
+- Migrated Clothing worn header, current policy fallback and not-configured text.
+- Migrated Overrides lock suffix.
+- Added English/Spanish keys for the new messages.
+
 ## [0.3.0-alpha.215] - 2026-11-19
 
 ### Localization — long skill and capacity tooltips
