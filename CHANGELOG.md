@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.195] - 2026-11-19
+
+### Fix — stat scrolling, VSE quality and passion details
+- Specialized stats view height now follows the discovered stat count, enabling a real scrollbar.
+- Removed the `showOnPawns` exclusion from `StatIndex`; skill-linked hidden-by-default stats such as VSE construction quality are now discoverable.
+- Stat tooltips continue to use the live vanilla explanation.
+- Skill tooltips now expose passion type, learning multiplier, negative-passion flag, XP and recommendation weights (level 0, per level, minimum).
+- Generic stats and specialized stats keep zebra styling.
+
 ## [0.3.0-alpha.194] - 2026-11-19
 
 ### Feature — dynamic WorkType stats
