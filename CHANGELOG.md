@@ -3,6 +3,12 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.177] - 2026-11-19
+
+### Fix — header polish
+- Shifted the lock shackle slightly left to align over the body.
+- Widened the pawn search button so `Buscar` is not clipped.
+
 ## [0.3.0-alpha.176] - 2026-11-19
 
 ### Fix — stats, navigation and final polish
