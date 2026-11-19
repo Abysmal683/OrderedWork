@@ -3,6 +3,17 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.162] - 2026-11-19
+
+### Fix — Work panel visual feedback pass 2
+- Moved WorkType-specific stats to the bottom 30% of the WorkGiver column.
+- Kept Top 5 WorkTypes as the full metadata column; no search button.
+- Fixed drag feedback so the green target only appears after real drag movement; blue remains the dragged row.
+- Removed giver-row `Changed` labels and the header `Changed` label.
+- WorkType rows now show `Changed` only when that WorkType's WorkGiver order differs from the global JSON baseline.
+- Apply/Cancel now compare against the last saved per-pawn draft, not against the global baseline, so they stay disabled when nothing was edited.
+- Guarded all stat reads to avoid the work-table stat crash.
+
 ## [0.3.0-alpha.161] - 2026-11-19
 
 ### Fix — Work editor feedback pass
