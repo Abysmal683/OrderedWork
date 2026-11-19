@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.179] - 2026-11-19
+
+### Feature — skill filter menu and direct Profile tab
+- Replaced the cycling skill filter with a `Filtro` menu containing checkboxes for level, passion, mods and future expertise.
+- Added direct `Perfil` inspect tab: selecting it opens the Ordered Work detail; its tab body also exposes `Abrir detalle`.
+- Added a Harmony postfix to `Pawn.GetInspectTabs` that appends the Profile tab without changing vanilla tabs.
+- Capacity stats use live `PawnCapacityDef` values.
+- Search button widened by more than 5%; lock shackle alignment adjusted.
+- Specialized stat panel displays the relevant skill level and live max level from `SkillRecord.MaxLevel`.
+
 ## [0.3.0-alpha.178] - 2026-11-19
 
 ### Fix — capacity stats and remaining polish
