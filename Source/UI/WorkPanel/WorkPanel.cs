@@ -163,9 +163,14 @@ namespace OrderedWork.UI
             const float metadataHeight = 300f;
             const float gap = 8f;
             Rect viewport = layout.Body;
-            Rect view = new Rect(0f, 0f, viewport.width,
+            float trackWidth = WorkGridScrollView.Thickness;
+            Rect contentViewport = new Rect(viewport.x, viewport.y,
+                Mathf.Max(0f, viewport.width - trackWidth - 4f), viewport.height);
+            Rect track = new Rect(viewport.xMax - trackWidth, viewport.y, trackWidth, viewport.height);
+            Rect view = new Rect(0f, 0f, contentViewport.width,
                 workHeight + gap + giversHeight + gap + metadataHeight);
-            Widgets.BeginScrollView(viewport, ref stackedScroll, view);
+            WorkGridScrollView.HandleVertical(track, contentViewport, view, ref stackedScroll);
+            Widgets.BeginScrollView(contentViewport, ref stackedScroll, view, false);
             try
             {
                 DrawWorkTypesColumn(new Rect(0f, 0f, view.width, workHeight));
@@ -178,6 +183,7 @@ namespace OrderedWork.UI
             {
                 Widgets.EndScrollView();
             }
+            WorkGridScrollView.DrawVertical(track, contentViewport, view, ref stackedScroll);
         }
 
 

@@ -32,7 +32,16 @@ namespace OrderedWork.UI
             try
             {
                 Widgets.DrawBoxSolid(new Rect(0f, 0f, panel.width, panel.height), UiColors.PanelBody);
-                DrawSchedulePanel(UiInset.All(new Rect(0f, 0f, panel.width, panel.height), 6f));
+                Rect inner = UiInset.All(new Rect(0f, 0f, panel.width, panel.height), 6f);
+                GUI.BeginGroup(inner);
+                try
+                {
+                    DrawSchedulePanel(new Rect(0f, 0f, inner.width, inner.height));
+                }
+                finally
+                {
+                    GUI.EndGroup();
+                }
             }
             finally
             {

@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.231] - 2026-11-19
+
+### Fixed — scroll ownership and schedule padding
+- The Schedule editor now uses a nested local group for its 6 px content inset, so controls no longer touch the panel background.
+- The Work stacked fallback uses the external `WorkGridScrollView` track; its scrollbar no longer overlays local list scrollbars.
+- The Schedule title remains outside the panel; the panel itself has one background color.
+- Schedule hour labels continue to use localized `TimeAssignmentDef` labels.
+
 ## [0.3.0-alpha.230] - 2026-11-19
 
 ### Fixed — external scrollbar and local schedule labels
