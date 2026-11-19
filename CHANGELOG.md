@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.183] - 2026-11-19
+
+### Feature — language pass and Profile summary
+- Converted remaining hardcoded Spanish UI labels to English across Work, Schedule, Zone, tabs, picker and impasse messages.
+- `Profile` tab now shows read-only Assigned work and Schedule summary instead of an empty launcher panel.
+- Kept `Open details` as an explicit secondary action; selecting the tab still opens the detail through `OnOpen`.
+- `Incapable` replaces the remaining `Incapaz` labels.
+- Profile tab hook uses the corrected Harmony postfix.
+
 ## [0.3.0-alpha.182] - 2026-11-19
 
 ### Fix — Profile inspect tab hook
