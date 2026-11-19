@@ -69,6 +69,8 @@ namespace OrderedWork.UI
 
             Rect brushRect = new Rect(0f, y, 210f, line);
             DrawBrush(brushRect);
+            Widgets.LabelEllipses(new Rect(brushRect.xMax + 8f, y, content.width - brushRect.width - 8f, line),
+                "Click izquierdo: pintar · Click derecho: vaciar");
             y += line + 8f;
 
             float hourWidth = Mathf.Max(22f, (content.width - 76f) / SchedulePreset.SlotCount);
@@ -178,7 +180,14 @@ namespace OrderedWork.UI
                 if (editable && Mouse.IsOver(cell)
                     && (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag))
                 {
-                    detailSchedule.Slots[hour] = detailBrush != null ? detailBrush.defName : "";
+                    if (Event.current.button == 1)
+                    {
+                        detailSchedule.Slots[hour] = "";
+                    }
+                    else if (Event.current.button == 0)
+                    {
+                        detailSchedule.Slots[hour] = detailBrush != null ? detailBrush.defName : "";
+                    }
                     Event.current.Use();
                 }
                 Color color = def != null ? AssignmentColor(def) : new Color(0.18f, 0.18f, 0.20f, 1f);

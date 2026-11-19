@@ -26,7 +26,9 @@ namespace OrderedWork.UI
             Clothing
         }
 
-        private readonly Pawn pawn;
+        private Pawn pawn;
+        private List<Pawn> detailPawns = new List<Pawn>();
+        private int detailPawnIndex;
         private DetailTab detailTab;
         private Vector2 overviewScroll;
         private Vector2 detailTabScroll;
@@ -35,6 +37,8 @@ namespace OrderedWork.UI
         public Dialog_WorkControlDetails(Pawn pawn)
         {
             this.pawn = pawn;
+            detailPawns = BuildDetailPawnList(pawn);
+            detailPawnIndex = Mathf.Max(0, detailPawns.IndexOf(pawn));
             doCloseX = true;
             doCloseButton = false;
             resizeable = true;
@@ -103,7 +107,9 @@ namespace OrderedWork.UI
             }
 
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(0f, 0f, inRect.width - 40f, 30f), PawnLabel(pawn));
+            Widgets.Label(new Rect(0f, 0f, inRect.width - 150f, 30f), PawnLabel(pawn));
+            DrawPawnNavigation(inRect);
+            DrawPanelLock(inRect);
             Text.Font = GameFont.Small;
 
             Rect tabRow = new Rect(0f, 64f, inRect.width, 28f);
@@ -139,6 +145,103 @@ namespace OrderedWork.UI
             }
         }
 
+        private static List<Pawn> BuildDetailPawnList(Pawn current)
+        {
+            List<Pawn> result = new List<Pawn>();
+            try
+            {
+                if (Find.ColonistBar != null)
+                {
+                    foreach (Pawn pawn in Find.ColonistBar.GetColonistsInOrder())
+                    {
+                        if (pawn != null && !pawn.Dead && pawn.IsFreeColonist && pawn.Spawned)
+                        {
+                            result.Add(pawn);
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                result.Clear();
+            }
+            if (result.Count == 0 && Find.CurrentMap != null)
+            {
+                result.AddRange(Find.CurrentMap.mapPawns.FreeColonists.Where(p => p != null && !p.Dead));
+            }
+            if (current != null && !result.Contains(current))
+            {
+                result.Add(current);
+            }
+            return result;
+        }
+
+        private void DrawPanelLock(Rect inRect)
+        {
+            if (detailTab != DetailTab.Work && detailTab != DetailTab.Schedule)
+            {
+                return;
+            }
+            Rect lockRect = new Rect(inRect.xMax - 20f, 34f, 16f, 16f);
+            Widgets.DrawBoxSolid(new Rect(lockRect.x + 4f, lockRect.y + 6f, 8f, 7f), new Color(0.80f, 0.62f, 0.22f));
+            Widgets.DrawBox(new Rect(lockRect.x + 5f, lockRect.y + 2f, 6f, 6f), 1);
+            TooltipHandler.TipRegion(lockRect, "Movimiento del panel bloqueado en esta pestaña.");
+        }
+
+        private void DrawPawnNavigation(Rect inRect)
+        {
+            Rect search = new Rect(inRect.xMax - 144f, 0f, 58f, 24f);
+            Rect left = new Rect(inRect.xMax - 82f, 0f, 26f, 24f);
+            Rect right = new Rect(inRect.xMax - 52f, 0f, 26f, 24f);
+            if (Widgets.ButtonText(search, "Buscar"))
+            {
+                Find.WindowStack.Add(new Dialog_PawnPicker(detailPawns, SetPawn));
+            }
+            if (Widgets.ButtonText(left, "<"))
+            {
+                StepPawn(-1);
+            }
+            if (Widgets.ButtonText(right, ">"))
+            {
+                StepPawn(1);
+            }
+            TooltipHandler.TipRegion(left, "Colono anterior");
+            TooltipHandler.TipRegion(right, "Colono siguiente");
+            TooltipHandler.TipRegion(search, "Buscar otro colono sin cerrar el detalle");
+        }
+
+        private void StepPawn(int delta)
+        {
+            if (detailPawns == null || detailPawns.Count == 0)
+            {
+                return;
+            }
+            int next = (detailPawnIndex + delta + detailPawns.Count) % detailPawns.Count;
+            SetPawn(detailPawns[next]);
+        }
+
+        private void SetPawn(Pawn selected)
+        {
+            if (selected == null || selected == pawn || selected.Dead)
+            {
+                return;
+            }
+            pawn = selected;
+            detailPawns = BuildDetailPawnList(pawn);
+            detailPawnIndex = Mathf.Max(0, detailPawns.IndexOf(pawn));
+            workPanel = null;
+            detailSchedule = null;
+            detailPresets = null;
+            detailScheduleName = "";
+            detailBrush = null;
+            detailZoneMap = null;
+            detailZoneArea = null;
+            detailZoneInitialized = false;
+            detailZoneMissing = false;
+            detailTabScroll = Vector2.zero;
+            overviewScroll = Vector2.zero;
+            Find.Selector.Select(pawn, true, false);
+        }
         private static void HandleTimeHotkeys()
         {
             Event current = Event.current;
