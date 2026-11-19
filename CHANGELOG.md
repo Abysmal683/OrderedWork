@@ -3,6 +3,19 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.163] - 2026-11-19
+
+### Refactor — Work panel layout and drag lists
+- Added `WorkPanelLayout` as the single source for header, body, column and stacked rects.
+- Added `UiDragList` for consistent row drawing, scroll, selection, drag/drop and commit.
+- WorkTypes and WorkGivers now use the same list component, fixing the scroll/hitbox selection mismatch.
+- Moved WorkType-specific stats to the lower 30% of the Givers column.
+- Top 5 now lists skills, not WorkTypes; filters remain Lv, P and Lv.P.
+- Removed Apply/Cancel; WorkType and WorkGiver changes are committed immediately.
+- Moved Recommend next to Givers.
+- Reset all WorkGivers now uses a two-step confirmation, expires after 5 seconds, and sits next to the selected Reset.
+- Restored Changed markers in both WorkType rows and Giver rows.
+
 ## [0.3.0-alpha.162] - 2026-11-19
 
 ### Fix — Work panel visual feedback pass 2
