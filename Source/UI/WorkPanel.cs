@@ -104,8 +104,82 @@ namespace OrderedWork.UI
         private void DrawHeader(Rect rect)
         {
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(rect.x, rect.y, 190f, 26f), "Trabajo");
+            Widgets.Label(new Rect(rect.x, rect.y, 150f, 26f), "Trabajo");
             Text.Font = GameFont.Small;
+
+            Rect load = new Rect(rect.xMax - 136f, rect.y + 2f, 64f, 24f);
+            Rect save = new Rect(rect.xMax - 68f, rect.y + 2f, 64f, 24f);
+            if (UiButtonBar.Button(load, "Load", true, "Load a named Work preset and replace this pawn's Work policy."))
+            {
+                Find.WindowStack.Add(new Dialog_WorkPreset(true, null, ApplyPreset));
+            }
+            if (UiButtonBar.Button(save, "Save", true, "Save this pawn's WorkType and WorkGiver order as a named preset."))
+            {
+                Find.WindowStack.Add(new Dialog_WorkPreset(false, CapturePreset, null));
+            }
+        }
+
+        private WorkPreset CapturePreset()
+        {
+            WorkPreset preset = new WorkPreset
+            {
+                WorkTypes = new List<string>(workDraft)
+            };
+            foreach (string workTypeName in workDraft)
+            {
+                WorkTypeDef workType = DefDatabase<WorkTypeDef>.GetNamedSilentFail(workTypeName);
+                if (workType == null)
+                {
+                    continue;
+                }
+                List<string> order;
+                if (!giverDrafts.TryGetValue(workTypeName, out order))
+                {
+                    order = WorkGiverOrderService.GetEffectiveOrder(pawn, workType);
+                }
+                preset.Givers[workTypeName] = new List<string>(order ?? new List<string>());
+            }
+            return preset;
+        }
+
+        private void ApplyPreset(WorkPreset preset)
+        {
+            if (preset == null)
+            {
+                return;
+            }
+            List<string> order = (preset.WorkTypes ?? new List<string>())
+                .Where(name =>
+                {
+                    WorkTypeDef def = DefDatabase<WorkTypeDef>.GetNamedSilentFail(name);
+                    return def != null && !WorkOrderService.IsIncapable(pawn, def);
+                })
+                .Distinct(StringComparer.Ordinal)
+                .ToList();
+            WorkOrderService.SaveAndApply(pawn, order);
+            WorkGiverOrderService.ResetAll(pawn);
+            foreach (KeyValuePair<string, List<string>> pair in preset.Givers ?? new Dictionary<string, List<string>>())
+            {
+                WorkTypeDef workType = DefDatabase<WorkTypeDef>.GetNamedSilentFail(pair.Key);
+                if (workType == null || pair.Value == null || pair.Value.Count == 0)
+                {
+                    continue;
+                }
+                List<string> valid = pair.Value
+                    .Where(name => DefDatabase<WorkGiverDef>.GetNamedSilentFail(name) != null)
+                    .Distinct(StringComparer.Ordinal)
+                    .ToList();
+                if (valid.Count > 0)
+                {
+                    WorkGiverOrderService.SaveOrder(pawn, workType, valid);
+                }
+            }
+            workDraft = WorkOrderService.GetOrder(pawn) ?? order;
+            selectedWorkType = workDraft.FirstOrDefault();
+            giverDrafts.Clear();
+            giverBaselines.Clear();
+            LoadSelectedGivers();
+            InvalidateTooltips();
         }
 
         private void DrawWorkTypesColumn(Rect rect)

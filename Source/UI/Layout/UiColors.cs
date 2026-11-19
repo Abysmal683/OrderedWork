@@ -16,6 +16,6 @@ namespace OrderedWork.UI.Layout
         public static readonly Color DisabledButtonBorder = new Color(0.45f, 0.40f, 0.28f, 1f);
         public static readonly Color WarningText = new Color(1f, 0.75f, 0.35f, 1f);
         public static readonly Color EmptyColumn = new Color(0.18f, 0.18f, 0.20f, 1f);
-        public static readonly Color SectionSeparator = new Color(0.45f, 0.66f, 0.38f, 0.95f);
+        public static readonly Color SectionSeparator = new Color(0.60f, 0.63f, 0.68f, 0.95f);
     }
 }
