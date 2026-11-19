@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OrderedWork.UI.Layout;
 using UnityEngine;
 using Verse;
 
@@ -59,6 +60,11 @@ namespace OrderedWork.UI
                 {
                     WorkTypeDef type = types[i];
                     Rect row = new Rect(0f, i * RowHeight, viewport.width - 16f, RowHeight - 2f);
+                    UiZebra.Draw(row, i);
+                    if (Mouse.IsOver(row))
+                    {
+                        Widgets.DrawBoxSolid(row, new Color(1f, 1f, 1f, 0.08f));
+                    }
                     string text = label != null ? label(type) : WorkTypePaletteView.DisplayName(type);
                     Widgets.LabelEllipses(row, text);
                     TooltipHandler.TipRegion(row, text);

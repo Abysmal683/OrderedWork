@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.231)
+# Ordered Work — Current Checklist (0.3.0-alpha.232)
 
 Status: architecture cleanup complete; build 0/0 and 7/7 tests pass. Runtime checks remain for the final profile-only path.
 

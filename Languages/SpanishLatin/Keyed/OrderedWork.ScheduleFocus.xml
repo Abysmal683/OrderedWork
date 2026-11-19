@@ -7,7 +7,7 @@
   <OrderedWork.ScheduleFocus.Empty>Sin foco para esta hora.</OrderedWork.ScheduleFocus.Empty>
   <OrderedWork.ScheduleFocus.Add>+ Agregar trabajo</OrderedWork.ScheduleFocus.Add>
   <OrderedWork.ScheduleFocus.Max>Máximo 3 tipos de trabajo de foco.</OrderedWork.ScheduleFocus.Max>
-  <OrderedWork.ScheduleFocus.RightClick>Clic derecho en una fila para quitar su foco.</OrderedWork.ScheduleFocus.RightClick>
+  <OrderedWork.ScheduleFocus.RightClick>Clic derecho en una fila para quitar su foco; clic derecho en una celda de hora para limpiar esa hora.</OrderedWork.ScheduleFocus.RightClick>
   <OrderedWork.ScheduleFocus.Visible>Visible: cómo se lee esta hora</OrderedWork.ScheduleFocus.Visible>
   <OrderedWork.ScheduleFocus.Passion>Pasión</OrderedWork.ScheduleFocus.Passion>
   <OrderedWork.ScheduleFocus.Level>Nivel</OrderedWork.ScheduleFocus.Level>
@@ -28,4 +28,9 @@
   <OrderedWork.ScheduleFocus.CopyEmpty>No hay foco para copiar en esta hora.</OrderedWork.ScheduleFocus.CopyEmpty>
   <OrderedWork.ScheduleFocus.Removed>Foco quitado: </OrderedWork.ScheduleFocus.Removed>
   <OrderedWork.ScheduleFocus.Modified>Foco modificado: </OrderedWork.ScheduleFocus.Modified>
-  <OrderedWork.ScheduleFocus.OrderChanged>Orden de foco modificado: </OrderedWork.ScheduleFocus.OrderChanged></LanguageData>
+  <OrderedWork.ScheduleFocus.OrderChanged>Orden de foco modificado: </OrderedWork.ScheduleFocus.OrderChanged>  <OrderedWork.ScheduleFocus.ClearHour>Limpiar hora</OrderedWork.ScheduleFocus.ClearHour>
+  <OrderedWork.ScheduleFocus.ClearAll>Limpiar todo</OrderedWork.ScheduleFocus.ClearAll>
+  <OrderedWork.ScheduleFocus.NothingToClear>No hay nada que limpiar en esta hora.</OrderedWork.ScheduleFocus.NothingToClear>
+  <OrderedWork.ScheduleFocus.ClearedHour>Hora limpiada: </OrderedWork.ScheduleFocus.ClearedHour>
+  <OrderedWork.ScheduleFocus.ClearedAll>Todo el foco limpiado: </OrderedWork.ScheduleFocus.ClearedAll>  <OrderedWork.ScheduleFocus.ClearedAllFormat>{0} horas, {1} trabajos</OrderedWork.ScheduleFocus.ClearedAllFormat>
+</LanguageData>

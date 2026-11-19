@@ -7,7 +7,7 @@
   <OrderedWork.ScheduleFocus.Empty>No focus for this hour.</OrderedWork.ScheduleFocus.Empty>
   <OrderedWork.ScheduleFocus.Add>+ Add work</OrderedWork.ScheduleFocus.Add>
   <OrderedWork.ScheduleFocus.Max>Maximum 3 focus WorkTypes.</OrderedWork.ScheduleFocus.Max>
-  <OrderedWork.ScheduleFocus.RightClick>Right click a row to remove its focus.</OrderedWork.ScheduleFocus.RightClick>
+  <OrderedWork.ScheduleFocus.RightClick>Right click a row to remove its focus; right-click an hour cell to clear that hour.</OrderedWork.ScheduleFocus.RightClick>
   <OrderedWork.ScheduleFocus.Visible>Visible: how this hour reads</OrderedWork.ScheduleFocus.Visible>
   <OrderedWork.ScheduleFocus.Passion>Passion</OrderedWork.ScheduleFocus.Passion>
   <OrderedWork.ScheduleFocus.Level>Level</OrderedWork.ScheduleFocus.Level>
@@ -28,4 +28,9 @@
   <OrderedWork.ScheduleFocus.CopyEmpty>No focus to copy in this hour.</OrderedWork.ScheduleFocus.CopyEmpty>
   <OrderedWork.ScheduleFocus.Removed>Focus removed: </OrderedWork.ScheduleFocus.Removed>
   <OrderedWork.ScheduleFocus.Modified>Focus updated: </OrderedWork.ScheduleFocus.Modified>
-  <OrderedWork.ScheduleFocus.OrderChanged>Focus order updated: </OrderedWork.ScheduleFocus.OrderChanged></LanguageData>
+  <OrderedWork.ScheduleFocus.OrderChanged>Focus order updated: </OrderedWork.ScheduleFocus.OrderChanged>  <OrderedWork.ScheduleFocus.ClearHour>Clear hour</OrderedWork.ScheduleFocus.ClearHour>
+  <OrderedWork.ScheduleFocus.ClearAll>Clear all</OrderedWork.ScheduleFocus.ClearAll>
+  <OrderedWork.ScheduleFocus.NothingToClear>Nothing to clear in this hour.</OrderedWork.ScheduleFocus.NothingToClear>
+  <OrderedWork.ScheduleFocus.ClearedHour>Hour cleared: </OrderedWork.ScheduleFocus.ClearedHour>
+  <OrderedWork.ScheduleFocus.ClearedAll>All focus cleared: </OrderedWork.ScheduleFocus.ClearedAll>  <OrderedWork.ScheduleFocus.ClearedAllFormat>{0} hours, {1} entries</OrderedWork.ScheduleFocus.ClearedAllFormat>
+</LanguageData>

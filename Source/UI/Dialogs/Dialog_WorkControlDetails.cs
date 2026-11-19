@@ -254,36 +254,18 @@ namespace OrderedWork.UI
             Find.Selector.ClearSelection();
             Find.Selector.Select(pawn, true, false);
         }
-        private static readonly PropertyInfo CameraRootPosProperty =
-            typeof(CameraDriver).GetProperty("RootPos", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
         private static readonly FieldInfo CameraRootPosField =
-            typeof(CameraDriver).GetField("RootPos", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-        private static readonly FieldInfo CameraRootSizeField =
-            typeof(CameraDriver).GetField("rootSize", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-        private static readonly PropertyInfo CameraRootSizeProperty =
-            typeof(CameraDriver).GetProperty("rootSize", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-        private static readonly MethodInfo CameraSetRootMethod =
-            typeof(CameraDriver).GetMethod("SetRootPosAndSize", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            typeof(CameraDriver).GetField("rootPos", BindingFlags.Instance | BindingFlags.NonPublic);
 
         private static void HandleCameraHotkeys()
         {
             if (Find.CameraDriver == null || !string.IsNullOrEmpty(GUI.GetNameOfFocusedControl())
-                || CameraSetRootMethod == null || (CameraRootSizeField == null && CameraRootSizeProperty == null))
+                || CameraRootPosField == null)
             {
                 return;
             }
-            object rootValue = CameraRootPosProperty != null
-                ? CameraRootPosProperty.GetValue(Find.CameraDriver, null)
-                : CameraRootPosField != null ? CameraRootPosField.GetValue(Find.CameraDriver) : null;
-            if (!(rootValue is Vector3))
-            {
-                return;
-            }
-            Vector3 position = (Vector3)rootValue;
-            object sizeValue = CameraRootSizeField != null
-                ? CameraRootSizeField.GetValue(Find.CameraDriver)
-                : CameraRootSizeProperty.GetValue(Find.CameraDriver, null);
-            float speed = (float)sizeValue * 0.9f * Time.unscaledDeltaTime;
+            Vector3 position = (Vector3)CameraRootPosField.GetValue(Find.CameraDriver);
+            float speed = Find.CameraDriver.RootSize * 0.9f * Time.unscaledDeltaTime;
             bool moved = false;
             if (Input.GetKey(KeyCode.W)) { position += Vector3.forward * speed; moved = true; }
             if (Input.GetKey(KeyCode.S)) { position += Vector3.back * speed; moved = true; }
@@ -291,7 +273,7 @@ namespace OrderedWork.UI
             if (Input.GetKey(KeyCode.D)) { position += Vector3.right * speed; moved = true; }
             if (moved)
             {
-                CameraSetRootMethod.Invoke(Find.CameraDriver, new object[] { position, sizeValue });
+                Find.CameraDriver.SetRootPosAndSize(position, Find.CameraDriver.RootSize);
             }
         }
         private static void HandleTimeHotkeys()

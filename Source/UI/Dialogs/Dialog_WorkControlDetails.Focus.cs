@@ -81,6 +81,12 @@ namespace OrderedWork.UI
                     Text.Font = GameFont.Small;
                 }
 
+                if (Event.current.type == EventType.MouseDown && Event.current.button == 1 && Mouse.IsOver(cell))
+                {
+                    ClearFocusHour(hour);
+                    Event.current.Use();
+                    continue;
+                }
                 if (Widgets.ButtonInvisible(cell))
                 {
                     detailFocusHour = hour;
@@ -167,16 +173,28 @@ namespace OrderedWork.UI
                 OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.RightClick", "Right click a row to remove its focus."));
             y += 22f;
 
-            if (UiButtonBar.Button(new Rect(0f, y, 132f, 24f),
-                OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.SavePreset", "Save focus preset")))
+            if (UiButtonBar.Button(new Rect(0f, y, 120f, 24f),
+                OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.SavePreset", "Save preset")))
             {
                 Find.WindowStack.Add(new Dialog_FocusPreset(false, BuildFocusPreset, null,
                     pawn != null ? pawn.LabelShort : null));
             }
-            if (UiButtonBar.Button(new Rect(138f, y, 132f, 24f),
-                OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.LoadPresetButton", "Load focus preset")))
+            if (UiButtonBar.Button(new Rect(126f, y, 120f, 24f),
+                OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.LoadPresetButton", "Load preset")))
             {
                 Find.WindowStack.Add(new Dialog_FocusPreset(true, null, ApplyFocusPreset));
+            }
+            if (UiButtonBar.Button(new Rect(252f, y, 120f, 24f),
+                OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.ClearHour", "Clear hour"), focus.Count > 0))
+            {
+                ClearFocusHour(detailFocusHour);
+            }
+            PawnWorkOrder focusEntry = DetailEntry();
+            bool canClearAll = focusEntry != null && focusEntry.hourFocusOverrides.Count > 0;
+            if (UiButtonBar.Button(new Rect(378f, y, 120f, 24f),
+                OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.ClearAll", "Clear all"), canClearAll))
+            {
+                ClearAllFocus();
             }
             y += 30f;
 
@@ -228,6 +246,44 @@ namespace OrderedWork.UI
             }
         }
 
+        private void ClearFocusHour(int hour)
+        {
+            List<string> focus = GetFocus(hour);
+            if (focus.Count == 0)
+            {
+                Messages.Message(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.NothingToClear",
+                    "Nothing to clear in this hour."), MessageTypeDefOf.RejectInput, false);
+                return;
+            }
+            List<string> names = focus.Select(id =>
+            {
+                WorkTypeDef type = DefDatabase<WorkTypeDef>.GetNamedSilentFail(id);
+                return type != null ? WorkTypePaletteView.DisplayName(type) : id;
+            }).ToList();
+            SetFocus(hour, new List<string>());
+            detailFocusSelected = -1;
+            Messages.Message(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.ClearedHour", "Hour cleared: ")
+                + hour.ToString("00") + ":00 · " + names.Count + " · " + string.Join(", ", names),
+                MessageTypeDefOf.TaskCompletion, false);
+        }
+
+        private void ClearAllFocus()
+        {
+            PawnWorkOrder entry = DetailEntry();
+            if (entry == null || entry.hourFocusOverrides.Count == 0)
+            {
+                Messages.Message(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.NothingToClear",
+                    "Nothing to clear in this hour."), MessageTypeDefOf.RejectInput, false);
+                return;
+            }
+            int hours = entry.hourFocusOverrides.Count;
+            int entries = entry.hourFocusOverrides.Sum(v => v.workTypeDefNames != null ? v.workTypeDefNames.Count : 0);
+            entry.hourFocusOverrides.Clear();
+            detailFocusSelected = -1;
+            Messages.Message(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.ClearedAll", "All focus cleared: ")
+                + string.Format(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.ClearedAllFormat", "{0} hours, {1} entries"), hours, entries),
+                MessageTypeDefOf.TaskCompletion, false);
+        }
         private WorkFocusPreset BuildFocusPreset()
         {
             WorkFocusPreset preset = new WorkFocusPreset

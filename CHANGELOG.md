@@ -3,6 +3,19 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.232] - 2026-11-19
+
+### Added — focus clearing and add-menu zebra
+- The WorkType add dropdown now uses zebra rows and hover feedback.
+- Right-clicking a focus hour cell clears that hour with a message containing the hour, count and ordered WorkType names.
+- Added `Clear hour` and `Clear all` actions; clear-all removes only per-pawn focus overrides.
+- Added the local UI layout rules in `docs/UI_LAYOUT_RULES.md`.
+- WASD camera handler now reads the actual private `CameraDriver.rootPos` field and uses the public `RootSize`/`SetRootPosAndSize` API.
+
+### Fixed — final schedule padding/scroll
+- Schedule content is drawn inside a real nested group, so the 6 px inset applies to controls.
+- Work stacked fallback uses an external scrollbar track.
+
 ## [0.3.0-alpha.231] - 2026-11-19
 
 ### Fixed — scroll ownership and schedule padding
