@@ -3,6 +3,18 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.165] - 2026-11-19
+
+### Fix — Work panel performance and hotkeys
+- Cached WorkType, giver and skill tooltips; only rebuild on policy changes or a 60-tick skill refresh.
+- Tooltips are now built only while the row is hovered.
+- Added a white border to the skill XP bar.
+- Selected WorkType rows use green; active drag uses blue; drop target appears only after real movement.
+- Added `1`–`4` and Space time controls while the detail window is open.
+- Shortened `Recommend` to `Recom.` and tightened `Givers`/`Agregar`.
+- `Reset all` turns red while waiting for its second confirmation.
+- Giver descriptions are read from `WorkGiverDef.description`.
+
 ## [0.3.0-alpha.164] - 2026-11-19
 
 ### Fix — Work panel visual feedback pass 3
