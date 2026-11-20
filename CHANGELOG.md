@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.329] - 2026-11-19
+
+### Added — Clothing stack Phase 1
+- Added the pure `ClothingPreset`, `ClothingRule`, `ClothingSelection` and conflict models to Core.
+- Added a null-safe resolver implementing `Locked > Emergency > Work`, policy denial, multi-layer slots, tool rules and free-slot reporting.
+- Added 9 resolver tests; suite is now 37 tests.
+- No UI, jobs, equipment application or save migration yet.
+
 ## [0.3.0-alpha.328] - 2026-11-19
 
 ### Changed — Nullable completion

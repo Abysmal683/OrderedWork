@@ -832,3 +832,75 @@ Emergency never removes Locked, and never bypasses ApparelPolicy.
 - Emergency clothing/tool use: our provider.
 - Security/medical mods: domain adapters, not reimplemented.
 - If a security or medicine mod already owns a complete domain, expose a setting to delegate and disable our partial provider.
+## 27. Simplification review
+
+The proposed `ClothingStack -> ClothingTier -> ClothingRule` model can be flattened without losing behavior.
+
+### Keep
+
+- Multiple priority layers: represented by ordered rules.
+- Piece priority: rule order inside the preset.
+- Locked / Emergency / WorkType phases: represented by a phase/kind field.
+- Multiple outfit layers or reusable outfit blocks: represented by an optional visual group or `OutfitRef`.
+- Tools: same rule shape with a tool target.
+- Free: absence of a rule; no `FreeRule` object.
+- ApparelPolicy permissions: external filter, not a stack tier.
+- Preview/conflict reporting: derived from resolution.
+
+### Proposed flat model
+
+```text
+ClothingPreset
+  id
+  name
+  schemaVersion
+  rules: ordered ClothingRule[]
+
+ClothingRule
+  phase: Locked | Emergency | Work
+  priority: int
+  group: string?        // optional visual outfit block
+  target: Apparel | Tool
+  slot / body layer
+  candidates: ThingDef / filter refs
+  mandatory: bool
+```
+
+Resolution:
+
+```text
+1. Sort rules by phase, then priority.
+2. Evaluate Locked first, Emergency second, Work third.
+3. Fill available slots/layers.
+4. Leave unmatched slots as Free.
+5. Filter every candidate through ApparelPolicy.
+```
+
+### What is lost
+
+- No separate `ClothingStack` object.
+- No separate `ClothingTier` object.
+- No `Free` rule object.
+- No mandatory three-level hierarchy.
+
+### What is preserved
+
+- Multiple layers.
+- Piece priority.
+- Locked pre-emption.
+- Emergency override.
+- WorkType trigger.
+- Tools.
+- Free fallback.
+- UI grouping via `group`.
+- Future reusable outfit blocks via optional `OutfitRef`, added only when needed.
+
+### When to add the second level back
+
+Add an `OutfitDefinition` only if:
+
+- the UI needs reusable named outfit blocks shared across presets;
+- users need to reorder entire outfits as a unit;
+- import/export needs stable outfit references.
+
+Until then, one preset with ordered rules is sufficient and much simpler.

@@ -1,6 +1,14 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.328)
+# Ordered Work — Current Checklist (0.3.0-alpha.329)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
+
+## Clothing stack Phase 1 (alpha.329)
+
+- [x] Pure clothing models in Core.
+- [x] Resolver with phase order, policy denial, layers, tools and free slots.
+- [x] 9 resolver tests; 37 total.
+- [ ] Persistence/UI/application/jobs.
+- [ ] Emergency, Simple Sidearms, medicine/security integration.
 
 ## Architecture
 

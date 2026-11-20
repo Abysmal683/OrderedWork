@@ -41,6 +41,15 @@ namespace OrderedWork.Tests
             Run("Profile create split moves selected givers", TestProfileCreateSplit);
             Run("Profile reconcile restores merge ownership", TestProfileRevertMerge);
             Run("Profile reconcile restores order sequence", TestProfileRevertOrder);
+            Run("Clothing lock outranks work", TestClothingLockWins);
+            Run("Clothing denied mandatory reports policy contradiction", TestClothingPolicyContradiction);
+            Run("Clothing emergency outranks work", TestClothingEmergencyWins);
+            Run("Clothing work fills an empty slot", TestClothingWorkFills);
+            Run("Clothing rules fill different body layers", TestClothingLayers);
+            Run("Clothing lower rule cannot replace occupied slot", TestClothingSlotConflict);
+            Run("Clothing tool selection is separate", TestClothingTool);
+            Run("Clothing leaves unmatched known slots free", TestClothingFreeSlots);
+            Run("Clothing resolver tolerates null inputs", TestClothingNullInputs);
 
             Console.WriteLine(failures == 0 ? "All tests passed." : failures + " test(s) failed.");
             return failures == 0 ? 0 : 1;
@@ -393,6 +402,126 @@ namespace OrderedWork.Tests
             List<string> baseOrder = new List<string> { "Hunter", "Doctor", "Cook" };
             HourFocusStack.BuildEffectiveOrder(baseOrder, new[] { "Cook" });
             AssertSequence(new[] { "Hunter", "Doctor", "Cook" }, baseOrder);
+        }
+        private static void TestClothingLockWins()
+        {
+            ClothingPreset preset = new ClothingPreset
+            {
+                Rules = new List<ClothingRule>
+                {
+                    new ClothingRule { Phase = ClothingRulePhase.Work, Target = ClothingTarget.Apparel, Slot = "Torso", BodyLayer = "Shell", Candidates = new List<string> { "WorkCoat" } },
+                    new ClothingRule { Phase = ClothingRulePhase.Locked, Target = ClothingTarget.Apparel, Slot = "Torso", BodyLayer = "Shell", Candidates = new List<string> { "RoyalCoat" }, Mandatory = true }
+                }
+            };
+            ClothingContext context = new ClothingContext(new[] { "WorkCoat", "RoyalCoat" });
+            ClothingResolution result = ClothingResolver.Resolve(preset, context);
+            Assert(result.Selections.Count == 1, "lock selection count");
+            Assert(result.Selections[0].DefName == "RoyalCoat", "lock wins");
+        }
+
+        private static void TestClothingPolicyContradiction()
+        {
+            ClothingPreset preset = new ClothingPreset
+            {
+                Rules = new List<ClothingRule>
+                {
+                    new ClothingRule { Phase = ClothingRulePhase.Locked, Target = ClothingTarget.Apparel, Slot = "Torso", BodyLayer = "Shell", Candidates = new List<string> { "RoyalCoat" }, Mandatory = true }
+                }
+            };
+            ClothingResolution result = ClothingResolver.Resolve(preset, new ClothingContext(Array.Empty<string>()));
+            Assert(result.Selections.Count == 0, "denied selection");
+            Assert(result.Conflicts.Count == 1, "denied conflict");
+            Assert(result.Conflicts[0].Reason == ClothingConflictReason.PolicyContradiction, "policy contradiction reason");
+        }
+
+        private static void TestClothingEmergencyWins()
+        {
+            ClothingPreset preset = new ClothingPreset
+            {
+                Rules = new List<ClothingRule>
+                {
+                    new ClothingRule { Phase = ClothingRulePhase.Work, Target = ClothingTarget.Apparel, Slot = "Torso", BodyLayer = "Shell", Candidates = new List<string> { "WorkCoat" } },
+                    new ClothingRule { Phase = ClothingRulePhase.Emergency, Target = ClothingTarget.Apparel, Slot = "Torso", BodyLayer = "Shell", Candidates = new List<string> { "EmergencyCoat" } }
+                }
+            };
+            ClothingResolution result = ClothingResolver.Resolve(preset, new ClothingContext(new[] { "WorkCoat", "EmergencyCoat" }));
+            Assert(result.Selections.Count == 1, "emergency selection count");
+            Assert(result.Selections[0].DefName == "EmergencyCoat", "emergency outranks work");
+        }
+        private static void TestClothingWorkFills()
+        {
+            ClothingPreset preset = new ClothingPreset
+            {
+                Rules = new List<ClothingRule>
+                {
+                    new ClothingRule { Phase = ClothingRulePhase.Work, Target = ClothingTarget.Apparel, Slot = "Torso", BodyLayer = "Shell", Candidates = new List<string> { "WorkCoat" } }
+                }
+            };
+            ClothingContext context = new ClothingContext(new[] { "WorkCoat" }, null,
+                new[] { new ClothingSlot("Torso", "Shell", ClothingTarget.Apparel) });
+            ClothingResolution result = ClothingResolver.Resolve(preset, context);
+            Assert(result.Selections.Count == 1, "work selection");
+            Assert(result.FreeSlots.Count == 0, "work fills free slot");
+        }
+
+        private static void TestClothingLayers()
+        {
+            ClothingPreset preset = new ClothingPreset
+            {
+                Rules = new List<ClothingRule>
+                {
+                    new ClothingRule { Phase = ClothingRulePhase.Work, Target = ClothingTarget.Apparel, Slot = "Torso", BodyLayer = "OnSkin", Candidates = new List<string> { "Shirt" } },
+                    new ClothingRule { Phase = ClothingRulePhase.Work, Target = ClothingTarget.Apparel, Slot = "Torso", BodyLayer = "Shell", Candidates = new List<string> { "Coat" } }
+                }
+            };
+            ClothingResolution result = ClothingResolver.Resolve(preset, new ClothingContext(new[] { "Shirt", "Coat" }));
+            Assert(result.Selections.Count == 2, "different layers selected");
+        }
+
+        private static void TestClothingSlotConflict()
+        {
+            ClothingPreset preset = new ClothingPreset
+            {
+                Rules = new List<ClothingRule>
+                {
+                    new ClothingRule { Phase = ClothingRulePhase.Work, Priority = 1, Target = ClothingTarget.Apparel, Slot = "Torso", BodyLayer = "Shell", Candidates = new List<string> { "CoatA" } },
+                    new ClothingRule { Phase = ClothingRulePhase.Work, Priority = 2, Target = ClothingTarget.Apparel, Slot = "Torso", BodyLayer = "Shell", Candidates = new List<string> { "CoatB" } }
+                }
+            };
+            ClothingResolution result = ClothingResolver.Resolve(preset, new ClothingContext(new[] { "CoatA", "CoatB" }));
+            Assert(result.Selections.Count == 1, "only one slot selection");
+            Assert(result.Selections[0].DefName == "CoatA", "priority selection");
+            Assert(result.Conflicts.Any(conflict => conflict.Reason == ClothingConflictReason.SlotOccupied), "occupied conflict");
+        }
+
+        private static void TestClothingTool()
+        {
+            ClothingPreset preset = new ClothingPreset
+            {
+                Rules = new List<ClothingRule>
+                {
+                    new ClothingRule { Phase = ClothingRulePhase.Work, Target = ClothingTarget.Tool, Slot = "Primary", Candidates = new List<string> { "Hammer" } }
+                }
+            };
+            ClothingResolution result = ClothingResolver.Resolve(preset, new ClothingContext(null, new[] { "Hammer" }));
+            Assert(result.Selections.Count == 1, "tool selection");
+            Assert(result.Selections[0].Target == ClothingTarget.Tool, "tool target");
+        }
+
+        private static void TestClothingFreeSlots()
+        {
+            ClothingPreset preset = new ClothingPreset { Rules = new List<ClothingRule>() };
+            ClothingResolution result = ClothingResolver.Resolve(preset, new ClothingContext(null, null,
+                new[] { new ClothingSlot("Feet", "OnSkin", ClothingTarget.Apparel) }));
+            Assert(result.FreeSlots.Count == 1, "free slot count");
+            Assert(result.FreeSlots[0].Slot == "Feet", "free slot identity");
+        }
+
+        private static void TestClothingNullInputs()
+        {
+            ClothingResolution result = ClothingResolver.Resolve(null, null);
+            Assert(result.Selections.Count == 0, "null preset selections");
+            Assert(result.Conflicts.Count == 0, "null preset conflicts");
         }
         private static void AssertSequence(IEnumerable<string> expected, IEnumerable<string> actual)
         {

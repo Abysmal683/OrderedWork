@@ -5,7 +5,7 @@ This is a working audit, not a user guide. It records the structural findings th
 ## Snapshot
 
 - 121 C# source files, about 660 KB.
-- 1 test file plus profile samples, about 13 KB, 28 cases.
+- 1 test file plus profile samples, about 13 KB, 37 cases.
 - Build: 0 errors, 0 warnings.
 - Language parity: 206 keys in English, Spanish and Spanish Latin, with no missing keys or duplicates.
 - Checklist: 48 open items; many are roadmap, but runtime coverage remains behind implementation.
