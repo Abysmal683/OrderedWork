@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +22,7 @@ namespace OrderedWork.Services
                 return result;
             }
 
-            WorkConfigProfile profile = null;
+            WorkConfigProfile? profile = null;
             try
             {
                 WorkConfigLoadResult loaded = WorkConfigStore.LoadCachedActive();
@@ -34,7 +33,7 @@ namespace OrderedWork.Services
                 Log.Warning("[Ordered Work] Could not load global giver order: " + ex.Message);
             }
 
-            WorkTypeConfig config;
+            WorkTypeConfig? config;
             if (profile != null && profile.WorkTypes != null
                 && profile.WorkTypes.TryGetValue(workType.defName, out config)
                 && config != null && config.Givers != null)
@@ -68,19 +67,19 @@ namespace OrderedWork.Services
             return order;
         }
 
-        public static List<string> GetStoredOrder(Pawn pawn, WorkTypeDef workType)
+        public static List<string>? GetStoredOrder(Pawn? pawn, WorkTypeDef? workType)
         {
             if (pawn == null || workType == null)
             {
                 return null;
             }
             OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
-            PawnWorkOrder entry = component != null ? component.GetEntry(pawn) : null;
+            PawnWorkOrder? entry = component != null ? component.GetEntry(pawn) : null;
             if (entry == null || entry.workGiverOrders == null)
             {
                 return null;
             }
-            PawnWorkGiverOrder value = entry.workGiverOrders.FirstOrDefault(
+            PawnWorkGiverOrder? value = entry.workGiverOrders.FirstOrDefault(
                 o => o != null && string.Equals(o.workTypeDefName, workType.defName, StringComparison.Ordinal));
             return value != null && value.giverDefNames != null
                 ? new List<string>(value.giverDefNames)
@@ -89,7 +88,7 @@ namespace OrderedWork.Services
 
         public static List<string> GetEffectiveOrder(Pawn pawn, WorkTypeDef workType)
         {
-            List<string> stored = GetStoredOrder(pawn, workType);
+            List<string>? stored = GetStoredOrder(pawn, workType);
             List<string> result = stored ?? GetGlobalOrder(workType);
             AppendRuntimeGivers(pawn, workType, result);
             return result;
@@ -98,7 +97,7 @@ namespace OrderedWork.Services
         public static bool HasAnyOverride(Pawn pawn)
         {
             OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
-            PawnWorkOrder entry = component != null ? component.GetEntry(pawn) : null;
+            PawnWorkOrder? entry = component != null ? component.GetEntry(pawn) : null;
             return entry != null && entry.workGiverOrders != null && entry.workGiverOrders.Count > 0;
         }
 
@@ -114,7 +113,7 @@ namespace OrderedWork.Services
                 return;
             }
             OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
-            PawnWorkOrder entry = component != null ? component.GetOrCreateEntry(pawn) : null;
+            PawnWorkOrder? entry = component != null ? component.GetOrCreateEntry(pawn) : null;
             if (entry == null)
             {
                 Log.Warning("[Ordered Work] Cannot save WorkGiver order without a game component.");
@@ -145,7 +144,7 @@ namespace OrderedWork.Services
                 return;
             }
             OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
-            PawnWorkOrder entry = component != null ? component.GetEntry(pawn) : null;
+            PawnWorkOrder? entry = component != null ? component.GetEntry(pawn) : null;
             if (entry == null || entry.workGiverOrders == null)
             {
                 return;
@@ -157,7 +156,7 @@ namespace OrderedWork.Services
         public static void ResetAll(Pawn pawn)
         {
             OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
-            PawnWorkOrder entry = component != null ? component.GetEntry(pawn) : null;
+            PawnWorkOrder? entry = component != null ? component.GetEntry(pawn) : null;
             if (entry != null)
             {
                 entry.workGiverOrders.Clear();
@@ -173,14 +172,14 @@ namespace OrderedWork.Services
             }
 
             OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
-            PawnWorkOrder entry = component != null ? component.GetEntry(pawn) : null;
+            PawnWorkOrder? entry = component != null ? component.GetEntry(pawn) : null;
             if (entry == null || entry.workGiverOrders == null || entry.workGiverOrders.Count == 0)
             {
                 return false;
             }
 
             Dictionary<string, int> ranks = new Dictionary<string, int>(StringComparer.Ordinal);
-            foreach (PawnWorkGiverOrder value in entry.workGiverOrders)
+            foreach (PawnWorkGiverOrder? value in entry.workGiverOrders)
             {
                 if (value == null || string.IsNullOrEmpty(value.workTypeDefName))
                 {
@@ -204,7 +203,7 @@ namespace OrderedWork.Services
             bool changed = false;
             // Reorder only within each WorkType, preserving the cross-WorkType grouping.
             List<string> workTypes = new List<string>();
-            foreach (WorkGiver giver in source)
+            foreach (WorkGiver? giver in source)
             {
                 if (giver != null && giver.def != null && giver.def.workType != null
                     && !workTypes.Contains(giver.def.workType.defName))
@@ -270,7 +269,7 @@ namespace OrderedWork.Services
             {
                 return;
             }
-            List<WorkGiver> runtime;
+            List<WorkGiver>? runtime;
             try
             {
                 runtime = pawn.workSettings.WorkGiversInOrderNormal;
@@ -283,7 +282,7 @@ namespace OrderedWork.Services
             {
                 return;
             }
-            foreach (WorkGiver giver in runtime)
+            foreach (WorkGiver? giver in runtime)
             {
                 if (giver != null && giver.def != null && giver.def.workType == workType
                     && !order.Contains(giver.def.defName))

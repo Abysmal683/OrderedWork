@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +25,7 @@ namespace OrderedWork.Services
                 return new List<StatDef>();
             }
             Build();
-            List<StatDef> cached;
+            List<StatDef>? cached;
             if (byWorkType.TryGetValue(workType.defName, out cached))
             {
                 return new List<StatDef>(cached);
@@ -37,7 +36,7 @@ namespace OrderedWork.Services
             {
                 foreach (SkillDef skill in workType.relevantSkills)
                 {
-                    List<StatDef> stats;
+                    List<StatDef>? stats;
                     if (skill != null && bySkill.TryGetValue(skill.defName, out stats))
                     {
                         foreach (StatDef stat in stats)
@@ -88,7 +87,7 @@ namespace OrderedWork.Services
 
                     foreach (string skill in skills)
                     {
-                        List<StatDef> stats;
+                        List<StatDef>? stats;
                         if (!bySkill.TryGetValue(skill, out stats))
                         {
                             stats = new List<StatDef>();

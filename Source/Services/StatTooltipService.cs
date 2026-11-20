@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using RimWorld;
@@ -9,12 +8,12 @@ namespace OrderedWork.Services
     /// <summary>Per-pawn stat tooltip cache using RimWorld's live explanation.</summary>
     public sealed class StatTooltipService
     {
-        private readonly Pawn pawn;
+        private readonly Pawn? pawn;
         private readonly Dictionary<string, string> cache =
             new Dictionary<string, string>(StringComparer.Ordinal);
         private int cacheTick = -1;
 
-        public StatTooltipService(Pawn pawn)
+        public StatTooltipService(Pawn? pawn)
         {
             this.pawn = pawn;
         }
@@ -35,7 +34,7 @@ namespace OrderedWork.Services
             {
                 return "Stat";
             }
-            string cached;
+            string? cached;
             if (cache.TryGetValue(stat.defName, out cached))
             {
                 return cached;
@@ -48,7 +47,7 @@ namespace OrderedWork.Services
             catch (Exception)
             {
             }
-            string explanation = null;
+            string? explanation = null;
             try
             {
                 if (stat.Worker != null)
@@ -61,7 +60,7 @@ namespace OrderedWork.Services
             {
             }
             string result = stat.LabelCap + "\nCurrent: "
-                + stat.Worker.ValueToString(value, true, stat.toStringNumberSense);
+                + (stat.Worker != null ? stat.Worker.ValueToString(value, true, stat.toStringNumberSense) : value.ToString());
             if (!string.IsNullOrEmpty(explanation))
             {
                 result += "\n" + explanation;
