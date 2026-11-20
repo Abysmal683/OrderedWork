@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,14 +22,14 @@ namespace OrderedWork.UI
                     ref specializedStatsScroll);
                 return;
             }
-            WorkTypeDef workType = SelectedWorkType();
+            WorkTypeDef? workType = SelectedWorkType();
             Rect header = new Rect(rect.x + 6f, rect.y + 4f, rect.width - 12f, 24f);
             string title = workType != null
                 ? OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.Givers", "Givers") + " · " + workType.labelShort
                 : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Work.Givers", "Givers");
             Widgets.Label(new Rect(header.x, header.y, header.width - 218f, 22f), title);
-            List<string> draft = CurrentGiverDraft();
-            List<string> baseline = CurrentGiverBaseline();
+            List<string>? draft = CurrentGiverDraft();
+            List<string>? baseline = CurrentGiverBaseline();
             bool changed = draft != null && baseline != null && !SameOrder(draft, baseline);
             if (UiButtonBar.Button(new Rect(header.xMax - 212f, header.y, 70f, 22f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Reset", "Reset"), changed && workType != null,
                 OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Givers.ResetTip", "Reset this WorkType's giver order to the saved global JSON order.")))
@@ -120,7 +119,7 @@ namespace OrderedWork.UI
 
         private string GiverTooltip(string giverDefName)
         {
-            string cached;
+            string? cached;
             if (giverTooltipCache.TryGetValue(giverDefName, out cached))
             {
                 return cached;
@@ -151,7 +150,7 @@ namespace OrderedWork.UI
 
         private void MoveGiver(int from, int to)
         {
-            List<string> draft = CurrentGiverDraft();
+            List<string>? draft = CurrentGiverDraft();
             if (draft == null || from < 0 || from >= draft.Count || to < 0 || to >= draft.Count || from == to)
             {
                 return;
@@ -163,7 +162,7 @@ namespace OrderedWork.UI
 
         private void LoadSelectedGivers()
         {
-            WorkTypeDef workType = SelectedWorkType();
+            WorkTypeDef? workType = SelectedWorkType();
             if (workType != null)
             {
                 LoadGiversFor(workType);
@@ -184,12 +183,12 @@ namespace OrderedWork.UI
 
         private void LoadGiversFor(WorkTypeDef workType)
         {
-            List<string> baseline = WorkGiverOrderService.GetGlobalOrder(pawn, workType);
+            List<string>? baseline = WorkGiverOrderService.GetGlobalOrder(pawn, workType);
             giverBaselines[workType.defName] = baseline;
             workTypeTooltipCache.Clear();
             if (!giverDrafts.ContainsKey(workType.defName))
             {
-                List<string> stored = WorkGiverOrderService.GetStoredOrder(pawn, workType);
+                List<string>? stored = WorkGiverOrderService.GetStoredOrder(pawn, workType);
                 List<string> initial = stored != null ? MergeWithBaseline(stored, baseline) : new List<string>(baseline);
                 giverDrafts[workType.defName] = initial;
             }
@@ -208,32 +207,32 @@ namespace OrderedWork.UI
             return result;
         }
 
-        private List<string> CurrentGiverDraft()
+        private List<string>? CurrentGiverDraft()
         {
-            WorkTypeDef workType = SelectedWorkType();
+            WorkTypeDef? workType = SelectedWorkType();
             if (workType == null)
             {
                 return null;
             }
-            List<string> draft;
+            List<string>? draft;
             return giverDrafts.TryGetValue(workType.defName, out draft) ? draft : null;
         }
 
-        private List<string> CurrentGiverBaseline()
+        private List<string>? CurrentGiverBaseline()
         {
-            WorkTypeDef workType = SelectedWorkType();
+            WorkTypeDef? workType = SelectedWorkType();
             if (workType == null)
             {
                 return null;
             }
-            List<string> baseline;
+            List<string>? baseline;
             return giverBaselines.TryGetValue(workType.defName, out baseline) ? baseline : null;
         }
 
         private bool WorkTypeGiversChanged(string defName)
         {
-            List<string> draft;
-            List<string> baseline;
+            List<string>? draft;
+            List<string>? baseline;
             return giverDrafts.TryGetValue(defName, out draft)
                 && giverBaselines.TryGetValue(defName, out baseline)
                 && !SameOrder(draft, baseline);
@@ -241,7 +240,7 @@ namespace OrderedWork.UI
 
         private bool GiverChanged(string name, int index)
         {
-            List<string> baseline = CurrentGiverBaseline();
+            List<string>? baseline = CurrentGiverBaseline();
             if (baseline == null)
             {
                 return false;
@@ -253,13 +252,13 @@ namespace OrderedWork.UI
         private void CommitGivers()
         {
             InvalidateTooltips();
-            WorkTypeDef workType = SelectedWorkType();
+            WorkTypeDef? workType = SelectedWorkType();
             if (workType == null)
             {
                 return;
             }
-            List<string> draft = CurrentGiverDraft();
-            List<string> baseline = CurrentGiverBaseline();
+            List<string>? draft = CurrentGiverDraft();
+            List<string>? baseline = CurrentGiverBaseline();
             if (draft == null || baseline == null)
             {
                 return;

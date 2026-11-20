@@ -37,8 +37,8 @@ namespace OrderedWork.UI.Layout
             Rect viewport,
             int count,
             Action<int, Rect> drawRow,
-            Func<int, Rect, Rect> selectionRect,
-            Action<int> onSelect,
+            Func<int, Rect, Rect>? selectionRect,
+            Action<int>? onSelect,
             Action<int, int> onMove,
             Action onCommit)
         {
