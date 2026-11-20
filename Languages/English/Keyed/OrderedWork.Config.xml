@@ -173,4 +173,5 @@
   <OrderedWork.Config.General.LogStores>Stores</OrderedWork.Config.General.LogStores>
   <OrderedWork.Config.General.LogPassion>Passion / VSE</OrderedWork.Config.General.LogPassion>
   <OrderedWork.Config.General.LogConfig>Config mod</OrderedWork.Config.General.LogConfig>
-  <OrderedWork.Config.General.LogHarmony>Harmony</OrderedWork.Config.General.LogHarmony></LanguageData>
+  <OrderedWork.Config.General.LogHarmony>Harmony</OrderedWork.Config.General.LogHarmony>  <OrderedWork.Config.SplitMerge.ApplyFailed>Split/Merge could not be applied. Save your game, restart RimWorld and try again.</OrderedWork.Config.SplitMerge.ApplyFailed>
+</LanguageData>

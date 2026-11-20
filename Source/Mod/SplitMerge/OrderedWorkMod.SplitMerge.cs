@@ -190,11 +190,11 @@ namespace OrderedWork
             string allWarning = MergeValidationWarning(true);
             if (UiButtonBar.Button(selectedRect, ConfigText("OrderedWork.Config.SplitMerge.MergeSelected", "Merge selected"), string.IsNullOrEmpty(selectedWarning)))
             {
-                SaveMerge(mergeDraft);
+                SafeSplitMergeAction(delegate { SaveMerge(mergeDraft); });
             }
             if (UiButtonBar.Button(allRect, ConfigText("OrderedWork.Config.SplitMerge.MergeAll", "Merge all"), string.IsNullOrEmpty(allWarning)))
             {
-                SaveMerge(originNames);
+                SafeSplitMergeAction(delegate { SaveMerge(originNames); });
             }
             if (UiButtonBar.Button(cancelRect, ConfigText("OrderedWork.Config.SplitMerge.CancelDraft", "Cancel draft"), mergeDirty))
             {

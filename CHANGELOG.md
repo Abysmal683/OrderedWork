@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.256] - 2026-11-19
+
+### Fixed — Split/Merge without restart
+- Wrapped Split/Merge save actions in a try/catch.
+- Failures now log the exception and show a reject message instructing the player to save and restart.
+- Drafts and profile files are left in place after a failed apply.
+
 ## [0.3.0-alpha.255] - 2026-11-19
 
 ### Refactor — config panel components

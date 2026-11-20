@@ -36,7 +36,7 @@ namespace OrderedWork
 
             if (UiButtonBar.Button(actionRect, actionLabel, string.IsNullOrEmpty(warning)))
             {
-                onSave();
+                SafeSplitMergeAction(onSave);
             }
             if (UiButtonBar.Button(cancelRect, ConfigText("OrderedWork.Config.SplitMerge.CancelDraft", "Cancel draft"), canCancel))
             {

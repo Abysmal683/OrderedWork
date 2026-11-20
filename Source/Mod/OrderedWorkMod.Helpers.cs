@@ -137,6 +137,20 @@ namespace OrderedWork
             }
         }
 
+        internal void SafeSplitMergeAction(Action action)
+        {
+            try
+            {
+                action?.Invoke();
+            }
+            catch (Exception exception)
+            {
+                Log.Error("[Ordered Work] Split/Merge action failed: " + exception);
+                Messages.Message(ConfigText("OrderedWork.Config.SplitMerge.ApplyFailed",
+                    "Split/Merge could not be applied. Save your game, restart RimWorld and try again."),
+                    MessageTypeDefOf.RejectInput, false);
+            }
+        }
         private void MoveWorkTypeProfile(List<WorkTypeDef> ordered, int from, int to)
         {
             if (ordered == null || from < 0 || from >= ordered.Count || to < 0 || to >= ordered.Count || from == to)

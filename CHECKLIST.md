@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.255)
+# Ordered Work — Current Checklist (0.3.0-alpha.256)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -87,6 +87,13 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Dialog closes without opening another panel.
 - [x] Build 0/0 and tests pass.
 - [ ] Confirm with BakTest runtime.
+## Split/Merge safety (alpha.256)
+
+- [x] Save Split/Merge actions are wrapped in a try/catch.
+- [x] Failure logs and shows a reject message.
+- [x] User is told to save and restart when apply fails.
+- [x] Build 0/0 and tests pass.
+- [ ] SplitMergePanel component extraction remains pending.
 ## Config panel components (alpha.255)
 
 - [x] `WorkOrderRulesPanel` owns its draft and baseline.
