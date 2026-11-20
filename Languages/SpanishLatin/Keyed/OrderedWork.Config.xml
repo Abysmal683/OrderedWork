@@ -188,4 +188,6 @@
   <OrderedWork.Config.SplitMerge.MergeMissing>faltan: {0}</OrderedWork.Config.SplitMerge.MergeMissing>
   <OrderedWork.Config.SplitMerge.MergeExtra>sobran: {0}</OrderedWork.Config.SplitMerge.MergeExtra>
   <OrderedWork.Config.SplitMerge.Select>Seleccionar</OrderedWork.Config.SplitMerge.Select>
-  <OrderedWork.Config.SplitMerge.RevertMerge>Revertir fusión</OrderedWork.Config.SplitMerge.RevertMerge></LanguageData>
+  <OrderedWork.Config.SplitMerge.RevertMerge>Revertir fusión</OrderedWork.Config.SplitMerge.RevertMerge>  <OrderedWork.Config.SplitMerge.OrderNone>No hay tipos de trabajo con WorkGivers desordenados.</OrderedWork.Config.SplitMerge.OrderNone>
+  <OrderedWork.Config.SplitMerge.OrderCandidates>Tipos de trabajo con WorkGivers desordenados</OrderedWork.Config.SplitMerge.OrderCandidates>
+  <OrderedWork.Config.SplitMerge.RevertOrder>Revertir orden</OrderedWork.Config.SplitMerge.RevertOrder></LanguageData>

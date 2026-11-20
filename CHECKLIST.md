@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.264)
+# Ordered Work — Current Checklist (0.3.0-alpha.265)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -161,6 +161,13 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Paint, erase, load, save and apply preserve their behavior.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of paint, erase, load, save and apply.
+## Order candidates (alpha.265)
+
+- [x] Order tab lists WorkTypes whose Giver order differs from `reference.json`.
+- [x] Selecting a row loads the existing Order editor.
+- [x] Revert Order clears the Order selection/draft.
+- [x] Build 0/0 and tests pass.
+- [ ] Runtime check of order selection/revert.
 ## Merge candidates (alpha.264)
 
 - [x] Merge tab lists WorkTypes with missing/extra Givers against `reference.json`.

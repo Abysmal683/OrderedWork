@@ -188,4 +188,6 @@
   <OrderedWork.Config.SplitMerge.MergeMissing>missing: {0}</OrderedWork.Config.SplitMerge.MergeMissing>
   <OrderedWork.Config.SplitMerge.MergeExtra>extra: {0}</OrderedWork.Config.SplitMerge.MergeExtra>
   <OrderedWork.Config.SplitMerge.Select>Select</OrderedWork.Config.SplitMerge.Select>
-  <OrderedWork.Config.SplitMerge.RevertMerge>Revert Merge</OrderedWork.Config.SplitMerge.RevertMerge></LanguageData>
+  <OrderedWork.Config.SplitMerge.RevertMerge>Revert Merge</OrderedWork.Config.SplitMerge.RevertMerge>  <OrderedWork.Config.SplitMerge.OrderNone>No WorkTypes with out-of-order Givers.</OrderedWork.Config.SplitMerge.OrderNone>
+  <OrderedWork.Config.SplitMerge.OrderCandidates>WorkTypes with out-of-order Givers</OrderedWork.Config.SplitMerge.OrderCandidates>
+  <OrderedWork.Config.SplitMerge.RevertOrder>Revert Order</OrderedWork.Config.SplitMerge.RevertOrder></LanguageData>

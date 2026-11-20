@@ -471,6 +471,74 @@ namespace OrderedWork
         }
 
 
+        private void DrawOrderCandidates(Listing_Standard list)
+        {
+            WorkConfigProfile profile = host.LoadEditingProfile();
+            WorkConfigProfile reference = WorkConfigStore.LoadReference();
+            if (profile == null || reference == null)
+            {
+                return;
+            }
+
+            List<KeyValuePair<string, WorkTypeConfig>> candidates = new List<KeyValuePair<string, WorkTypeConfig>>();
+            foreach (KeyValuePair<string, WorkTypeConfig> pair in profile.WorkTypes)
+            {
+                WorkTypeConfig current = pair.Value;
+                WorkTypeConfig baseline;
+                if (current == null || current.Givers == null
+                    || !reference.WorkTypes.TryGetValue(pair.Key, out baseline)
+                    || baseline == null || baseline.Givers == null)
+                {
+                    continue;
+                }
+                List<string> currentOrder = current.Givers
+                    .Where(g => g != null).OrderBy(g => g.Order).Select(g => g.DefName).ToList();
+                List<string> referenceOrder = baseline.Givers
+                    .Where(g => g != null).OrderBy(g => g.Order).Select(g => g.DefName).ToList();
+                if (currentOrder.Count == referenceOrder.Count
+                    && currentOrder.OrderBy(id => id, StringComparer.Ordinal)
+                        .SequenceEqual(referenceOrder.OrderBy(id => id, StringComparer.Ordinal), StringComparer.Ordinal)
+                    && !currentOrder.SequenceEqual(referenceOrder, StringComparer.Ordinal))
+                {
+                    candidates.Add(pair);
+                }
+            }
+
+            if (candidates.Count == 0)
+            {
+                list.Label(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.OrderNone",
+                    "No WorkTypes with out-of-order Givers."));
+                return;
+            }
+
+            list.Label(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.OrderCandidates",
+                "WorkTypes with out-of-order Givers"));
+            for (int i = 0; i < candidates.Count; i++)
+            {
+                KeyValuePair<string, WorkTypeConfig> pair = candidates[i];
+                WorkTypeConfig current = pair.Value;
+                List<string> currentOrder = current.Givers
+                    .Where(g => g != null).OrderBy(g => g.Order).Select(g => g.DefName).ToList();
+                Rect row = list.GetRect(24f);
+                UiZebra.Draw(row, i);
+                string label = (current.Label ?? DefDatabase<WorkTypeDef>.GetNamedSilentFail(pair.Key)?.labelShort ?? pair.Key)
+                    + " · " + currentOrder.Count + " givers";
+                Widgets.LabelEllipses(new Rect(row.x + 4f, row.y, row.width - 92f, 22f), label);
+                if (Widgets.ButtonText(new Rect(row.xMax - 84f, row.y, 80f, 22f),
+                    OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.Select", "Select")))
+                {
+                    host.SelectedGiverType = pair.Key;
+                    host.ResetGiverOrderDraft();
+                }
+            }
+
+            if (UiButtonBar.Button(list.GetRect(26f),
+                OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.RevertOrder", "Revert Order"), true))
+            {
+                host.SelectedGiverType = "";
+                host.ResetGiverOrderDraft();
+            }
+        }
         private void DrawMergeCandidates(Listing_Standard list)
         {
             WorkConfigProfile profile = host.LoadEditingProfile();
