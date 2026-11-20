@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,7 +49,7 @@ namespace OrderedWork.UI
                 {
                     preset.WorkTypeMods[workTypeName] = workTypeMod;
                 }
-                List<string> order;
+                List<string>? order;
                 if (!giverDrafts.TryGetValue(workTypeName, out order))
                 {
                     order = WorkGiverOrderService.GetEffectiveOrder(pawn, workType);

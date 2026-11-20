@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,8 +44,8 @@ namespace OrderedWork.UI
                         }
                     }
 
-                    SkillDef skill = BestSkillDef(selected);
-                    SkillRecord record = skill != null && pawn.skills != null ? pawn.skills.GetSkill(skill) : null;
+                    SkillDef? skill = BestSkillDef(selected);
+                    SkillRecord? record = skill != null && pawn.skills != null ? pawn.skills.GetSkill(skill) : null;
                     if (skill != null && record != null)
                     {
                         UiZebra.Draw(new Rect(0f, y, view.width, 20f), stats.Count);
@@ -133,7 +132,7 @@ namespace OrderedWork.UI
             }
         }
 
-        private static string CapacityTooltip(PawnCapacityDef capacity)
+        private static string CapacityTooltip(PawnCapacityDef? capacity)
         {
             if (capacity == null)
             {
