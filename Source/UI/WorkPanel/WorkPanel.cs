@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +26,7 @@ namespace OrderedWork.UI
         private readonly Pawn pawn;
         private bool initialized;
         private List<string> workDraft = new List<string>();
-        private string selectedWorkType;
+        private string? selectedWorkType;
         private bool giversExpanded = true;
         private readonly Dictionary<string, List<string>> giverDrafts =
             new Dictionary<string, List<string>>(StringComparer.Ordinal);
