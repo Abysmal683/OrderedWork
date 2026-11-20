@@ -120,7 +120,7 @@ namespace OrderedWork
         private void ResetSplitMergeDrag()
         {
             splitMerge.DragSide = 0;
-            splitMerge.DragGiver = null;
+            splitMerge.DragGiver = "";
             splitMerge.DragMoved = false;
             splitMerge.ScrollDragColumn = 0;
             splitMerge.MergeDropIndex = -1;

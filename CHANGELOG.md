@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.321] - 2026-11-19
+
+### Changed — Nullable SplitMergePanel base
+- Migrated the `SplitMergePanel` base state and drag field contract.
+- Build warning-free; 8 files still opt out.
+- Tests remain at 28 cases.
+
 ## [0.3.0-alpha.320] - 2026-11-19
 
 ### Changed — Nullable Mod SplitMerge host

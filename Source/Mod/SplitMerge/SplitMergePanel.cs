@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +23,7 @@ namespace OrderedWork
         private const float SplitMergeColumnHeight = 240f;
         private const float SplitMergeScrollbarWidth = 6f;
         private const int MaxVisibleListRows = 10;
-        private OrderedWorkMod host;
+        private OrderedWorkMod host = null!;
 
         internal int EditorMode;
         internal string SplitOrigin = "";
@@ -41,7 +40,7 @@ namespace OrderedWork
         internal float MergeTargetScroll;
         internal int DragSide;
         internal bool DragMergeMode;
-        internal string DragGiver;
+        internal string DragGiver = "";
         internal float DragStartY;
         internal bool DragMoved;
         internal Rect OriginArea;
@@ -124,7 +123,7 @@ namespace OrderedWork
         internal void ResetDrag()
         {
             DragSide = 0;
-            DragGiver = null;
+            DragGiver = "";
             DragMoved = false;
             ScrollDragColumn = 0;
             MergeDropIndex = -1;
