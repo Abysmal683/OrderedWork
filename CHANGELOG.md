@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.306] - 2026-11-19
+
+### Changed — Nullable details dialog batch
+- Migrated `Dialog_WorkControlDetails` base, `Overview` and `Overrides`.
+- Build warning-free; 46 files still opt out.
+- Schedule and Zone tabs remain opted out pending a smaller pass.
+
 ## [0.3.0-alpha.305] - 2026-11-19
 
 ### Changed — Nullable schedule dialog batch

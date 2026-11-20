@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -33,7 +32,7 @@ namespace OrderedWork.UI
         private DetailTab detailTab;
         private Vector2 overviewScroll;
         private Vector2 detailTabScroll;
-        private WorkPanel workPanel;
+        private WorkPanel? workPanel;
 
         public Dialog_WorkControlDetails(Pawn pawn)
         {
@@ -60,8 +59,8 @@ namespace OrderedWork.UI
             {
                 return;
             }
-            FieldInfo field = typeof(Window).GetField("resizer", BindingFlags.Instance | BindingFlags.NonPublic);
-            WindowResizer resizer = field != null ? field.GetValue(this) as WindowResizer : null;
+            FieldInfo? field = typeof(Window).GetField("resizer", BindingFlags.Instance | BindingFlags.NonPublic);
+            WindowResizer? resizer = field != null ? field.GetValue(this) as WindowResizer : null;
             if (resizer != null)
             {
                 resizer.minWindowSize = new Vector2(500f, 700f);
@@ -132,7 +131,7 @@ namespace OrderedWork.UI
             switch (detailTab)
             {
                 case DetailTab.Work:
-                    workPanel.Draw(content);
+                    workPanel?.Draw(content);
                     break;
                 case DetailTab.Schedule:
                     DrawScrollableTab(content, DrawScheduleTab, 860f, 540f);
@@ -152,7 +151,7 @@ namespace OrderedWork.UI
             }
         }
 
-        private static List<Pawn> BuildDetailPawnList(Pawn current)
+        private static List<Pawn> BuildDetailPawnList(Pawn? current)
         {
             List<Pawn> result = new List<Pawn>();
             try
@@ -237,7 +236,7 @@ namespace OrderedWork.UI
             {
                 return;
             }
-            pawn = selected;
+            pawn = selected!;
             detailPawns = BuildDetailPawnList(pawn);
             detailPawnIndex = Mathf.Max(0, detailPawns.IndexOf(pawn));
             workPanel = null;
@@ -252,7 +251,7 @@ namespace OrderedWork.UI
             Find.Selector.ClearSelection();
             Find.Selector.Select(pawn, true, false);
         }
-        private static readonly FieldInfo CameraRootPosField =
+        private static readonly FieldInfo? CameraRootPosField =
             typeof(CameraDriver).GetField("rootPos", BindingFlags.Instance | BindingFlags.NonPublic);
 
         private static void HandleCameraHotkeys()
@@ -262,7 +261,11 @@ namespace OrderedWork.UI
             {
                 return;
             }
-            Vector3 position = (Vector3)CameraRootPosField.GetValue(Find.CameraDriver);
+            object? cameraPosition = CameraRootPosField.GetValue(Find.CameraDriver);
+            if (cameraPosition is not Vector3 position)
+            {
+                return;
+            }
             float speed = Find.CameraDriver.RootSize * 0.9f * Time.unscaledDeltaTime;
             bool moved = false;
             if (Input.GetKey(KeyCode.W)) { position += Vector3.forward * speed; moved = true; }
@@ -322,7 +325,7 @@ namespace OrderedWork.UI
         {
             try
             {
-                MethodInfo method = typeof(TimeControls).GetMethod("PlaySoundOf",
+                MethodInfo? method = typeof(TimeControls).GetMethod("PlaySoundOf",
                     BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
                 if (method != null)
                 {

@@ -1,4 +1,3 @@
-#nullable disable
 using System.Collections.Generic;
 using System.Linq;
 using OrderedWork.Data;
@@ -14,7 +13,7 @@ namespace OrderedWork.UI
     {
         private void DrawOverridesTab(Rect content)
         {
-            PawnWorkOrder entry = OrderedWorkGameComponent.GetOrCreate()?.GetEntry(pawn);
+            PawnWorkOrder? entry = OrderedWorkGameComponent.GetOrCreate()?.GetEntry(pawn);
             int count = CountOverrides(entry);
             float height = 80f + (count * 22f) + 120f;
             Rect view = new Rect(0f, 0f,
@@ -59,7 +58,7 @@ namespace OrderedWork.UI
                 {
                     foreach (PawnScheduleOverride value in entry.scheduleOverrides)
                     {
-                        TimeAssignmentDef assignment = SchedulePolicyResolver.ResolveDef(value.assignmentDefName);
+                        TimeAssignmentDef? assignment = SchedulePolicyResolver.ResolveDef(value.assignmentDefName);
                         DrawRow(rows, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Overrides.Hour", "Hour ") + value.hour + " | "
                             + (assignment != null ? assignment.label : value.assignmentDefName)
                             + " | " + value.source, rowIndex++);
@@ -105,7 +104,7 @@ namespace OrderedWork.UI
             }
         }
 
-        private static int CountOverrides(PawnWorkOrder entry)
+        private static int CountOverrides(PawnWorkOrder? entry)
         {
             if (entry == null)
             {
