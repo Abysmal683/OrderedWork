@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +11,8 @@ namespace OrderedWork.UI
 {
     public partial class Dialog_WorkControlDetails
     {
-        private Map detailZoneMap;
-        private Area detailZoneArea;
+        private Map? detailZoneMap;
+        private Area? detailZoneArea;
         private bool detailZoneInitialized;
         private bool detailZoneMissing;
 
@@ -70,8 +69,8 @@ namespace OrderedWork.UI
                     OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Zone.ManageTip", "Open the vanilla area manager. Create, delete, expand or reduce areas there; Ordered Work only assigns existing areas."));
             }
 
-            PawnWorkOrder entry = OrderedWorkGameComponent.GetOrCreate()?.GetOrCreateEntry(pawn);
-            PawnZoneBinding binding = entry?.zones?.FirstOrDefault(z => z.mapUniqueId == (detailZoneMap != null ? detailZoneMap.uniqueID : 0));
+            PawnWorkOrder? entry = OrderedWorkGameComponent.GetOrCreate()?.GetOrCreateEntry(pawn!);
+            PawnZoneBinding? binding = entry?.zones?.FirstOrDefault(z => z.mapUniqueId == (detailZoneMap != null ? detailZoneMap.uniqueID : 0));
             if (detailZoneMissing || (binding != null && detailZoneArea == null && !binding.unrestricted))
             {
                 GUI.color = new Color(1f, 0.75f, 0.35f, 1f);
@@ -88,13 +87,13 @@ namespace OrderedWork.UI
             if (!detailZoneInitialized)
             {
                 detailZoneInitialized = true;
-                PawnWorkOrder entry = OrderedWorkGameComponent.GetOrCreate()?.GetEntry(pawn);
-                PawnZoneBinding binding = entry?.zones?.FirstOrDefault(z => z.mapUniqueId == (detailZoneMap != null ? detailZoneMap.uniqueID : 0));
+                PawnWorkOrder? entry = OrderedWorkGameComponent.GetOrCreate()?.GetEntry(pawn!);
+                PawnZoneBinding? binding = entry?.zones?.FirstOrDefault(z => z.mapUniqueId == (detailZoneMap != null ? detailZoneMap.uniqueID : 0));
                 if (binding != null)
                 {
                     detailZoneArea = ResolveArea(detailZoneMap, binding);
                     detailZoneMissing = !binding.unrestricted && detailZoneArea == null;
-                    if (detailZoneMissing && detailZoneMap == pawn.Map && pawn.playerSettings != null)
+                    if (detailZoneMissing && pawn != null && detailZoneMap == pawn.Map && pawn.playerSettings != null)
                     {
                         detailZoneArea = pawn.playerSettings.AreaRestrictionInPawnCurrentMap;
                     }
@@ -106,12 +105,12 @@ namespace OrderedWork.UI
             }
         }
 
-        private static string MapLabel(Map map)
+        private static string MapLabel(Map? map)
         {
             return map == null ? "—" : map.ToString();
         }
 
-        private static Area ResolveArea(Map map, PawnZoneBinding binding)
+        private static Area? ResolveArea(Map? map, PawnZoneBinding? binding)
         {
             if (map == null || binding == null || binding.unrestricted)
             {
@@ -130,8 +129,8 @@ namespace OrderedWork.UI
                 options.Add(new FloatMenuOption(MapLabel(captured), delegate
                 {
                     detailZoneMap = captured;
-                    PawnWorkOrder entry = OrderedWorkGameComponent.GetOrCreate()?.GetEntry(pawn);
-                    PawnZoneBinding binding = entry?.zones?.FirstOrDefault(z => z.mapUniqueId == captured.uniqueID);
+                    PawnWorkOrder? entry = OrderedWorkGameComponent.GetOrCreate()?.GetEntry(pawn!);
+                    PawnZoneBinding? binding = entry?.zones?.FirstOrDefault(z => z.mapUniqueId == captured.uniqueID);
                     detailZoneArea = binding != null
                         ? ResolveArea(captured, binding)
                         : (captured == pawn.Map ? pawn.playerSettings?.AreaRestrictionInPawnCurrentMap : null);
@@ -171,8 +170,8 @@ namespace OrderedWork.UI
             {
                 return false;
             }
-            PawnWorkOrder entry = OrderedWorkGameComponent.GetOrCreate()?.GetEntry(pawn);
-            PawnZoneBinding binding = entry?.zones?.FirstOrDefault(z => z.mapUniqueId == detailZoneMap.uniqueID);
+            PawnWorkOrder? entry = OrderedWorkGameComponent.GetOrCreate()?.GetEntry(pawn!);
+            PawnZoneBinding? binding = entry?.zones?.FirstOrDefault(z => z.mapUniqueId == detailZoneMap.uniqueID);
             if (binding != null)
             {
                 if (binding.unrestricted != (detailZoneArea == null))
@@ -209,7 +208,7 @@ namespace OrderedWork.UI
                 return;
             }
             OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
-            PawnWorkOrder entry = component?.GetOrCreateEntry(pawn);
+            PawnWorkOrder? entry = component?.GetOrCreateEntry(pawn!);
             if (entry == null)
             {
                 return;
@@ -219,8 +218,8 @@ namespace OrderedWork.UI
             {
                 mapUniqueId = detailZoneMap.uniqueID,
                 areaId = detailZoneArea != null ? detailZoneArea.ID : 0,
-                areaUniqueId = detailZoneArea != null ? detailZoneArea.GetUniqueLoadID() : null,
-                areaLabel = detailZoneArea != null ? detailZoneArea.Label : null,
+                areaUniqueId = detailZoneArea != null ? detailZoneArea.GetUniqueLoadID() : "",
+                areaLabel = detailZoneArea != null ? detailZoneArea.Label : "",
                 unrestricted = detailZoneArea == null,
                 source = PolicySource.Manual
             });

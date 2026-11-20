@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using UnityEngine;
 using Verse;
@@ -9,14 +8,14 @@ namespace OrderedWork.UI
     {
         private readonly ScheduleEditorState scheduleState = new ScheduleEditorState();
         private readonly ScheduleBrush scheduleBrush = new ScheduleBrush();
-        private ScheduleApplyController scheduleApply;
-        private ScheduleEditorView scheduleView;
+        private ScheduleApplyController? scheduleApply;
+        private ScheduleEditorView? scheduleView;
 
         private void DrawScheduleTab(Rect content)
         {
             scheduleApply = scheduleApply ?? new ScheduleApplyController(scheduleState, pawn);
             scheduleView = scheduleView ?? new ScheduleEditorView(scheduleState, scheduleBrush, scheduleApply);
-            scheduleView.Draw(content, pawn, delegate(Rect area, float y, float hourWidth)
+            scheduleView?.Draw(content, pawn, delegate(Rect area, float y, float hourWidth)
             {
                 DrawFocusSection(area, y, hourWidth);
             });
