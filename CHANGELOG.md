@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.294] - 2026-11-19
+
+### Changed — Nullable second batch
+- Migrated `ActiveWorkService`, `PassionMetadata` and `ScheduleAdapter` off `#nullable disable`.
+- Build is warning-free with 118 legacy source files still opted out.
+- Tests remain at 28 cases.
+
 ## [0.3.0-alpha.293] - 2026-11-19
 
 ### Changed — Nullable first migration batch

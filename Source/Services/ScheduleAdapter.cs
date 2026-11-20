@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using OrderedWork.Config;
@@ -25,7 +24,7 @@ namespace OrderedWork.Services
             int changed = 0;
             for (int hour = 0; hour < SchedulePolicyResolver.Hours; hour++)
             {
-                TimeAssignmentDef def = ResolveForApply(slots[hour]);
+                TimeAssignmentDef? def = ResolveForApply(slots[hour]);
                 if (def == null)
                 {
                     continue;
@@ -67,7 +66,7 @@ namespace OrderedWork.Services
                 return false;
             }
             OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
-            PawnWorkOrder entry = component?.GetOrCreateEntry(pawn);
+            PawnWorkOrder? entry = component?.GetOrCreateEntry(pawn);
             if (entry == null)
             {
                 return false;
@@ -76,8 +75,8 @@ namespace OrderedWork.Services
             int changed = 0;
             for (int hour = 0; hour < SchedulePreset.SlotCount; hour++)
             {
-                string slot = preset.Slots != null && hour < preset.Slots.Count ? preset.Slots[hour] : null;
-                TimeAssignmentDef def = ResolveForApply(slot);
+                string? slot = preset.Slots != null && hour < preset.Slots.Count ? preset.Slots[hour] : null;
+                TimeAssignmentDef? def = ResolveForApply(slot);
                 if (def == null)
                 {
                     continue;
@@ -92,7 +91,7 @@ namespace OrderedWork.Services
             return true;
         }
 
-        private static TimeAssignmentDef ResolveForApply(string slotName)
+        private static TimeAssignmentDef? ResolveForApply(string? slotName)
         {
             if (string.IsNullOrEmpty(slotName))
             {
@@ -102,7 +101,7 @@ namespace OrderedWork.Services
             return def ?? TimeAssignmentDefOf.Anything;
         }
 
-        private static int ModIndex(SchedulePreset preset, TimeAssignmentDef def)
+        private static int ModIndex(SchedulePreset? preset, TimeAssignmentDef? def)
         {
             if (def == null || def.modContentPack == null)
             {
@@ -110,6 +109,10 @@ namespace OrderedWork.Services
             }
             string packageId = def.modContentPack.PackageId;
             if (string.IsNullOrEmpty(packageId))
+            {
+                return -1;
+            }
+            if (preset == null)
             {
                 return -1;
             }
@@ -122,7 +125,7 @@ namespace OrderedWork.Services
             return index;
         }
 
-        public static SchedulePreset CaptureCurrent(Pawn pawn, string name)
+        public static SchedulePreset? CaptureCurrent(Pawn? pawn, string? name)
         {
             if (pawn == null || pawn.timetable == null)
             {

@@ -1,4 +1,3 @@
-#nullable disable
 using System.Collections.Generic;
 using RimWorld;
 using Verse;
@@ -14,8 +13,8 @@ namespace OrderedWork.Services
     {
         private sealed class CacheEntry
         {
-            public Job Job;
-            public WorkTypeDef WorkType;
+            public Job? Job;
+            public WorkTypeDef? WorkType;
             public int Tick;
         }
 
@@ -26,16 +25,16 @@ namespace OrderedWork.Services
             cache.Clear();
         }
 
-        public static WorkTypeDef GetActiveWorkType(Pawn pawn)
+        public static WorkTypeDef? GetActiveWorkType(Pawn? pawn)
         {
-            Job job = pawn != null ? pawn.CurJob : null;
-            if (job == null)
+            Job? job = pawn != null ? pawn.CurJob : null;
+            if (job == null || pawn == null)
             {
                 return null;
             }
 
             int tick = Find.TickManager != null ? Find.TickManager.TicksGame : 0;
-            CacheEntry entry;
+            CacheEntry? entry;
             if (cache.TryGetValue(pawn, out entry)
                 && ReferenceEquals(entry.Job, job)
                 && tick - entry.Tick < 5)
@@ -43,12 +42,12 @@ namespace OrderedWork.Services
                 return entry.WorkType;
             }
 
-            WorkTypeDef workType = job.workGiverDef != null ? job.workGiverDef.workType : null;
+            WorkTypeDef? workType = job.workGiverDef != null ? job.workGiverDef.workType : null;
             cache[pawn] = new CacheEntry { Job = job, WorkType = workType, Tick = tick };
             return workType;
         }
 
-        public static bool IsActive(Pawn pawn, WorkTypeDef workType)
+        public static bool IsActive(Pawn? pawn, WorkTypeDef? workType)
         {
             return workType != null && GetActiveWorkType(pawn) == workType;
         }

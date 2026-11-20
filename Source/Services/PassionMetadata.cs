@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using RimWorld;
 
@@ -28,7 +27,7 @@ namespace OrderedWork.Services
 
         public static string LabelOf(Passion passion)
         {
-            string label = VseLabelOf(passion);
+            string? label = VseLabelOf(passion);
             if (!string.IsNullOrEmpty(label))
             {
                 return label;
@@ -37,7 +36,7 @@ namespace OrderedWork.Services
         }
 
         /// <summary>Returns the VSE label only when the optional mod is present.</summary>
-        public static string VseLabelOf(Passion passion)
+        public static string? VseLabelOf(Passion passion)
         {
             object def = PassionRegistry.GetVseDef(passion);
             if (def == null)
@@ -59,7 +58,7 @@ namespace OrderedWork.Services
             }
         }
 
-        public static string DescriptionOf(Passion passion)
+        public static string? DescriptionOf(Passion passion)
         {
             object def = PassionRegistry.GetVseDef(passion);
             if (def == null)
@@ -119,7 +118,7 @@ namespace OrderedWork.Services
         }
 
         /// <summary>Optional VSE passion colour enum name. Returns null without VSE.</summary>
-        public static string ColorNameOf(Passion passion)
+        public static string? ColorNameOf(Passion passion)
         {
             object def = PassionRegistry.GetVseDef(passion);
             if (def == null)
