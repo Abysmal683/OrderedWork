@@ -1,7 +1,13 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.337)
+# Ordered Work — Current Checklist (0.3.0-alpha.338)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
+## Clothing editor layout (alpha.338)
+
+- [x] Grid/rule/editor no longer overlap.
+- [x] Computed vertical flow.
+- [ ] UX review with user.
+- [ ] Per-pawn overrides and equip jobs.
 ## Clothing touch cards (alpha.336)
 
 - [x] Candidate cards instead of button rows.

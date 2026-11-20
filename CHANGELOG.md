@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.338] - 2026-11-19
+
+### Fixed — Clothing editor layout overlap
+- Replaced the fixed rule-editor Y position with a computed flow after the slot grid and rule list.
+- Increased the editor window height and reduced the editor pane height to avoid label overlap.
+- Build warning-free; 39 tests pass.
+
 ## [0.3.0-alpha.337] - 2026-11-19
 
 ### Changed — Touch cards add immediately

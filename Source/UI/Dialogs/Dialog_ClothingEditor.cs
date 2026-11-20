@@ -25,6 +25,8 @@ namespace OrderedWork.UI
         private string candidateText = "";
         private Vector2 scroll;
         private bool deletePending;
+        private float gridBottom;
+        private float ruleEditorTop;
 
         public Dialog_ClothingEditor(OrderedWorkMod host, string? initialWorkType = null)
         {
@@ -40,7 +42,7 @@ namespace OrderedWork.UI
             SelectAssignedPreset();
         }
 
-        public override Vector2 InitialSize => new Vector2(840f, 680f);
+        public override Vector2 InitialSize => new Vector2(900f, 860f);
 
         public override void DoWindowContents(Rect inRect)
         {
@@ -132,8 +134,10 @@ namespace OrderedWork.UI
             }
             ClothingContext context = ClothingContextBuilder.Build(null, preset);
             ClothingResolution resolution = ClothingResolver.Resolve(preset, context);
-            Rect gridRect = new Rect(0f, deletePending ? 104f : 76f, inRect.width * 0.46f, ClothingSlotGrid.Height(context.KnownSlots.Count));
-            Widgets.Label(new Rect(gridRect.x, gridRect.y - 20f, gridRect.width, 18f), "Slots · click to select/create a rule");
+            float gridTop = deletePending ? 104f : 76f;
+            Rect gridRect = new Rect(0f, gridTop, inRect.width, ClothingSlotGrid.Height(context.KnownSlots.Count));
+            gridBottom = gridRect.yMax;
+            Widgets.Label(new Rect(gridRect.x, gridRect.y - 20f, gridRect.width, 18f), "Slots · click to select/create a rule · right-click to remove");
             ClothingSlot? selectedSlot = null;
             if (preset.Rules != null && selectedRule >= 0 && selectedRule < preset.Rules.Count)
             {
@@ -151,7 +155,7 @@ namespace OrderedWork.UI
                 return;
             }
 
-            Rect listRect = new Rect(inRect.width * 0.48f, deletePending ? 104f : 76f, inRect.width * 0.52f, 220f);
+            Rect listRect = new Rect(0f, gridBottom + 30f, inRect.width, 100f);
             Widgets.Label(new Rect(listRect.x, listRect.y - 20f, listRect.width, 18f), "Rules");
             int count = preset.Rules?.Count ?? 0;
             UiScrollPane.Draw(listRect, ref scroll, Mathf.Max(listRect.height, count * 30f + 4f), this, delegate(Rect view)
@@ -172,6 +176,7 @@ namespace OrderedWork.UI
             });
 
             Rect buttons = new Rect(listRect.x, listRect.yMax + 4f, listRect.width, 26f);
+            ruleEditorTop = buttons.yMax + 10f;
             Rect[] cells = UiFlex.Columns(buttons, 4f, 1f, 1f, 1f);
             if (Widgets.ButtonText(cells[0], "Add"))
             {
@@ -246,7 +251,7 @@ namespace OrderedWork.UI
             }
             ClothingRule rule = preset.Rules[selectedRule];
 
-            Rect area = new Rect(0f, 340f, 800f, 240f);
+            Rect area = new Rect(0f, ruleEditorTop, 880f, 200f);
             UiRows rows = new UiRows(area, 24f, 4f);
             Widgets.Label(rows.Next(), "Selected rule " + (selectedRule + 1));
             Rect phaseRow = rows.Next();

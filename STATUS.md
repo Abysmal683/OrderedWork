@@ -1,8 +1,8 @@
 # Ordered Work — Current Status
 
-Version: `0.3.0-alpha.337` (runtime checkpoint). Build 0/0; tests pass.
+Version: `0.3.0-alpha.338` (runtime checkpoint). Build 0/0; tests pass.
 
-## Latest checkpoint (.337)
+## Latest checkpoint (.338)
 
 - Profiles append visible live WorkTypes and missing Givers on load; Hospitality `Diplomat` can be selected in Order, Split and Merge.
 - The Work tab reorders the list returned by `PawnTable.get_Columns`, which rebuilds from the table def on every call.
@@ -17,7 +17,7 @@ Version: `0.3.0-alpha.337` (runtime checkpoint). Build 0/0; tests pass.
 - Verification, build-path, nullable and documentation-index references are current.
 - Global reset clears settings/passions and rebuilds only the active profile from reference; other files remain.
 - Nullable is complete and warnings-as-errors are enabled.
-- Clothing editor uses touch cards that add immediately; grid right-click removes rules. Equip/jobs/overrides remain pending.
+- Clothing editor layout was corrected; touch cards add immediately and grid right-click removes rules. UX review and execution remain pending.
 - WorkType order has `Restore reference order` beside Apply/Cancel; right-click toggles hidden with a visible hint.
 - Passion weights render in full and Rules sections start collapsed.
 - Hidden mod WorkTypes are not added and stale visible flags are cleared during reconciliation.

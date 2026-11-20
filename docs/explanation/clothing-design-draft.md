@@ -1106,3 +1106,9 @@ Implemented:
 - Right-clicking a grid cell removes the matching rule.
 - Drag/drop is intentionally not used.
 - Multi-select remains card-toggle based.
+## 36. Editor layout correction
+
+- Removed the fixed `y=340` rule editor position that overlapped a tall slot grid.
+- Grid, rule list and rule editor now stack from computed positions.
+- Editor window is taller and the rule editor height is fixed to the remaining flow.
+- This is a layout safety fix, not a UX redesign; the interaction model remains to be reviewed with the user.

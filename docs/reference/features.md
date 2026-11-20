@@ -41,7 +41,7 @@ With **Verbose diagnostics in Player.log** enabled, startup emits one line:
 ```
 
 Use it when testing with VSE/Alpha Skills enabled, disabled or removed. Without verbose diagnostics, only failures emit warnings.
-## Limitations (0.3.0-alpha.337)
+## Limitations (0.3.0-alpha.338)
 - Profiles and basic schedule presets exist; Details has Overview, schedule, zone, override and read-only clothing status sections. Clothing application, equipment, bulk zone and multi-pawn are not implemented yet. `Reset config mod all` clears UI settings, passion weights and drafts, then rebuilds the active profile from `reference.json`; other profile/pending/reference files remain.
 - Hidden WorkTypes are Config-only: they are excluded from Work tab and Work Control and run through a fixed priority overlay. Incapable pawns skip them.
 - The Work tab column order is applied once at `PawnColumnDefGenerator` generation time from the profile `naturalPriority`; the previous per-frame `PawnTable.get_Columns`/`PawnTableOnGUI` hooks were removed. Alternate Work-tab replacements still need runtime compatibility verification.
