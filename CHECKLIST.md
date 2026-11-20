@@ -166,14 +166,14 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Hover test runs inside the clipped group.
 - [x] Tooltip rect is read from the pointer after `GUI.EndGroup`.
 - [x] Passion tooltip registration matches `TooltipHandler` coordinates.
-- [ ] Runtime confirmation of passion tooltips.
+- [x] Runtime confirmation of passion tooltips.
 ## Tooltip and button polish (alpha.269)
 
 - [x] Passion tooltip hit test uses the hovered row and pointer-sized tooltip rect.
 - [x] Split/Merge action buttons expose tooltips.
 - [x] Disabled action labels use native centered text.
 - [x] User documentation updated for the profile-backed editor, Action word, Revert and 10-row caps.
-- [ ] Runtime check of passion and Split/Merge tooltips.
+- [x] Runtime check of passion and Split/Merge tooltips.
 ## Controls polish (alpha.267)
 
 - [x] Merge/Order rows support Revert with confirmation.
@@ -183,7 +183,7 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Ctrl+wheel direction fixed; passion weights support it.
 - [x] Split Action word field added to create and metadata editors.
 - [x] Passion-weight tooltips no longer render below the table.
-- [ ] Runtime check of Merge/Order Revert and split Action word.
+- [x] Runtime check of Merge/Order Revert and split Action word.
 ## UI consolidation (alpha.266)
 
 - [x] Block disabling `Allow empty origin` when any WorkType has no Givers.
@@ -193,21 +193,21 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Removed Order's old reference-reset block.
 - [x] Added Order warning text.
 - [x] Fixed Spanish split delete fallback text.
-- [ ] Runtime check of the three tabs.
+- [x] Runtime check of the three tabs.
 ## Order candidates (alpha.265)
 
 - [x] Order tab lists WorkTypes whose Giver order differs from `reference.json`.
 - [x] Selecting a row loads the existing Order editor.
 - [x] Revert Order clears the Order selection/draft (superseded by alpha.267 candidate-row Revert).
 - [x] Build 0/0 and tests pass.
-- [ ] Runtime check of order selection/revert.
+- [x] Runtime check of order selection/revert.
 ## Merge candidates (alpha.264)
 
 - [x] Merge tab lists WorkTypes with missing/extra Givers against `reference.json`.
 - [x] Selecting a row loads the existing Merge editor.
 - [x] Revert Merge clears the merge draft/selection (superseded by alpha.267 candidate-row Revert).
 - [x] Build 0/0 and tests pass.
-- [ ] Runtime check of merge selection and revert.
+- [x] Runtime check of merge selection and revert.
 ## WorkControl extraction (alpha.241)
 
 - [x] Metrics, row renderer, grid and interaction separated.

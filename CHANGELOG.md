@@ -9,6 +9,9 @@ This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - The hover test still runs on the row inside the group, but the tooltip rect is now read from the pointer position after `GUI.EndGroup`.
 - This keeps the tooltip in the same coordinate space as `TooltipHandler` and restores passion tooltips.
 
+### Verified
+- User confirmed passion and Split/Merge tooltips, the centered disabled Merge label, Merge/Order Revert, split Action word and the three editor tabs at runtime.
+
 ## [0.3.0-alpha.269] - 2026-11-19
 
 ### Fixed — Tooltips and disabled action labels
