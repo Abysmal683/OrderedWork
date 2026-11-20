@@ -54,6 +54,7 @@ namespace OrderedWork.Config
                     Description = workType.description,
                     Visible = existingProfile != null && existingProfile.WorkTypes.TryGetValue(workType.defName, out WorkTypeConfig? existing) && existing != null ? existing.Visible : workType.visible,
                     Hidden = existingProfile != null && existingProfile.WorkTypes.TryGetValue(workType.defName, out WorkTypeConfig? existingHidden) && existingHidden != null && existingHidden.Hidden,
+                    ClothingPresetId = existingProfile != null && existingProfile.WorkTypes.TryGetValue(workType.defName, out WorkTypeConfig? existingClothing) && existingClothing != null ? existingClothing.ClothingPresetId : "",
                     Order = order++,
                     Mod = workType.modContentPack != null ? workType.modContentPack.PackageId : "unknown"
                 };

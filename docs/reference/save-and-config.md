@@ -103,6 +103,7 @@ Immutable-ish snapshot of the original vanilla/modded state used by reset and di
       "description": null,
       "visible": true,
       "hidden": false,
+      "clothingPresetId": "",
       "order": 1,
       "mod": "Ludeon.RimWorld",
       "givers": [
@@ -117,6 +118,7 @@ Immutable-ish snapshot of the original vanilla/modded state used by reset and di
       "description": "Prioriza emergencias",
       "visible": true,
       "hidden": false,
+      "clothingPresetId": "",
       "order": 24,
       "mod": "nightmare123487.OrderedWork",
       "givers": [

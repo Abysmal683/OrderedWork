@@ -1,7 +1,14 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.331)
+# Ordered Work — Current Checklist (0.3.0-alpha.332)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
+## Clothing functional UI (alpha.332)
+
+- [x] WorkType clothing assignment field.
+- [x] Work Control Clothes overview.
+- [x] Shared preset editor with rule assignment.
+- [ ] Body-grid rule composer and ThingDef picker.
+- [ ] Per-pawn overrides, equip/return, emergency and providers.
 ## Clothing preview UI (alpha.331)
 
 - [x] Details Clothing read-only resolver preview.

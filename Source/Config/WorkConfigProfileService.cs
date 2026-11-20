@@ -78,6 +78,7 @@ namespace OrderedWork.Config
                     Description = type.Description,
                     Visible = type.Visible,
                     Hidden = type.Hidden,
+                    ClothingPresetId = type.ClothingPresetId,
                     Order = type.Order,
                     Mod = type.Mod,
                     Givers = new List<GiverConfig>()

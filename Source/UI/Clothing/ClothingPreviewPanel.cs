@@ -65,10 +65,17 @@ namespace OrderedWork.UI.Clothing
         private static PreviewData GetPreview(Pawn? pawn, PawnWorkOrder? entry)
         {
             List<ClothingPreset> presets = ClothingPresetStore.LoadAll();
+            WorkTypeDef? activeWorkType = ActiveWorkService.GetActiveWorkType(pawn);
             string assignedId = entry?.clothingPresetId ?? "";
+            WorkConfigProfile? profile = WorkConfigStore.LoadEditingProfile(WorkConfigStore.LoadSelectedProfileName());
+            if (activeWorkType != null && profile != null
+                && profile.WorkTypes.TryGetValue(activeWorkType.defName, out WorkTypeConfig? activeConfig)
+                && activeConfig != null && !string.IsNullOrEmpty(activeConfig.ClothingPresetId))
+            {
+                assignedId = activeConfig.ClothingPresetId;
+            }
             ClothingPreset? preset = presets.FirstOrDefault(value => value.Id == assignedId)
                 ?? presets.FirstOrDefault();
-            WorkTypeDef? activeWorkType = ActiveWorkService.GetActiveWorkType(pawn);
             int tick = Find.TickManager != null ? Find.TickManager.TicksGame : 0;
             string presetId = preset?.Id ?? "";
 

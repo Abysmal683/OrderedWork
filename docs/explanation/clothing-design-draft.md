@@ -1049,3 +1049,27 @@ No execution UI until the preview is validated.
    - priority;
    - emergency assignment;
    - keep items later.
+## 31. Functional UI pass
+
+Implemented:
+
+- `WorkTypeConfig.ClothingPresetId` stores the WorkType assignment.
+- `Dialog_ClothingOverview` lists every WorkType and assigned preset.
+- `Dialog_ClothingEditor` is the shared editor:
+  - WorkType selector;
+  - preset selector;
+  - create/delete preset;
+  - add/delete/reorder rules;
+  - phase, target, slot, body layer, priority, mandatory and comma-separated candidates;
+  - save preset;
+  - assign preset to WorkType.
+- Work Control has a `Clothes` button opening the overview.
+- Details preview resolves the WorkType assignment first.
+
+Still basic:
+
+- no body-grid rule composer in the editor;
+- no ThingDef picker yet;
+- no per-pawn overrides;
+- no equip/return jobs;
+- no emergency or external providers.

@@ -111,7 +111,8 @@ namespace OrderedWork.UI
             Rect viewRect = new Rect(inRect.xMax - Pad - 120f, titleY + 2f, 120f, 24f);
             Rect detailsRect = new Rect(viewRect.x - 4f - 80f, titleY + 2f, 80f, 24f);
             Rect recommendRect = new Rect(detailsRect.x - 4f - 98f, titleY + 2f, 98f, 24f);
-            DrawTopControls(recommendRect, detailsRect, viewRect);
+            Rect clothesRect = new Rect(recommendRect.x - 4f - 80f, titleY + 2f, 80f, 24f);
+            DrawTopControls(clothesRect, recommendRect, detailsRect, viewRect);
 
             List<WorkTypeDef> available = WorkOrderService.GetAvailableWorkTypes();
             List<WorkTypeDef> paletteTypes = GetPaletteOrder(available)

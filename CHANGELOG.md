@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.332] - 2026-11-19
+
+### Added — Clothing assignment and editor
+- Added `WorkTypeConfig.ClothingPresetId` and preserved it through profile clone/build.
+- Added the shared `Dialog_ClothingEditor`: preset creation, rule editing, save and WorkType assignment.
+- Added `Dialog_ClothingOverview` from a new Work Control `Clothes` button.
+- Details preview now prefers the active WorkType assignment.
+- No equip/return jobs or per-pawn overrides yet.
+
 ## [0.3.0-alpha.331] - 2026-11-19
 
 ### Added — Clothing preview UI

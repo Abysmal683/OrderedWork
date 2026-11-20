@@ -12,10 +12,19 @@ namespace OrderedWork.UI
 {
     public partial class MainTabWindow_WorkControl : MainTabWindow
     {
-        private void DrawTopControls(Rect recommendRect, Rect detailsRect, Rect viewRect)
+        private void DrawTopControls(Rect clothesRect, Rect recommendRect, Rect detailsRect, Rect viewRect)
         {
             List<Pawn> selected = WorkControlInteraction.GetSelectedColonists();
             bool hasSelection = selected.Count > 0;
+
+            if (UiButtonBar.Button(clothesRect, "Clothes"))
+            {
+                Find.WindowStack.Add(new Dialog_ClothingOverview(LoadedModManager.GetMod<OrderedWorkMod>()));
+            }
+            if (Mouse.IsOver(clothesRect))
+            {
+                TooltipHandler.TipRegion(clothesRect, "WorkType clothing presets");
+            }
 
             if (UiButtonBar.Button(recommendRect, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Recommend", "Recommend"), hasSelection))
             {
