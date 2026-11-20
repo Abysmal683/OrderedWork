@@ -1,4 +1,3 @@
-#nullable disable
 using OrderedWork.Core;
 using RimWorld;
 using Verse;
@@ -11,7 +10,7 @@ namespace OrderedWork.Services
     /// </summary>
     public static class RecommendationScorer
     {
-        public static int Score(Pawn pawn, WorkTypeDef workType, OrderedWorkSettings settings)
+        public static int Score(Pawn? pawn, WorkTypeDef? workType, OrderedWorkSettings? settings)
         {
             int level = BestSkillLevel(pawn, workType, out Passion passion);
             if (level < 0)
@@ -31,7 +30,7 @@ namespace OrderedWork.Services
                 prioritizeLowSkill);
         }
 
-        public static int BestSkillLevel(Pawn pawn, WorkTypeDef workType, out Passion passion)
+        public static int BestSkillLevel(Pawn? pawn, WorkTypeDef? workType, out Passion passion)
         {
             passion = Passion.None;
             if (pawn == null || pawn.skills == null || workType == null || workType.relevantSkills == null)

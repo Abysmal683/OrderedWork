@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.297] - 2026-11-19
+
+### Changed — Nullable fifth batch
+- Migrated `PassionIconResolver`, `PassionSource` and `RecommendationScorer` off `#nullable disable`.
+- Build remains warning-free; 109 legacy files still opt out.
+- CodeGraph synchronized: 142 files, 2,478 nodes, 6,239 edges.
+- Tests remain at 28 cases.
+
 ## [0.3.0-alpha.296] - 2026-11-19
 
 ### Changed — Nullable fourth batch

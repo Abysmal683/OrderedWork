@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.296)
+# Ordered Work — Current Checklist (0.3.0-alpha.297)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -161,6 +161,13 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Paint, erase, load, save and apply preserve their behavior.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of paint, erase, load, save and apply.
+## Nullable fifth batch (alpha.297)
+
+- [x] Migrated `PassionIconResolver`, `PassionSource`, `RecommendationScorer`.
+- [x] Build warning-free; 109 legacy files remain opted out.
+- [x] CodeGraph synchronized and status checked.
+- [ ] Migrate remaining Services (`SchedulePolicyResolver`, `HourFocusService`).
+- [ ] Migrate UI in small reviewable groups.
 ## Nullable fourth batch (alpha.296)
 
 - [x] Migrated `WorkGiverOrderService`, `StatIndex`, `StatTooltipService`.

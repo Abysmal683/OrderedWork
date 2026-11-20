@@ -1,4 +1,3 @@
-#nullable disable
 using System.Collections.Generic;
 using RimWorld;
 using UnityEngine;
@@ -13,8 +12,8 @@ namespace OrderedWork.Services
         public sealed class PassionInfo
         {
             public Passion Passion;
-            public string DefName;
-            public string Label;
+            public string DefName = "";
+            public string Label = "";
         }
 
         public static List<PassionInfo> Registered
@@ -32,27 +31,27 @@ namespace OrderedWork.Services
             return PassionMetadata.LabelOf(passion);
         }
 
-        public static string VseLabelOf(Passion passion)
+        public static string? VseLabelOf(Passion passion)
         {
             return PassionMetadata.VseLabelOf(passion);
         }
 
-        public static Texture2D IconOf(Passion passion)
+        public static Texture2D? IconOf(Passion passion)
         {
             return PassionIconResolver.IconOf(passion);
         }
 
-        public static Texture2D WorkBoxIconOf(Passion passion)
+        public static Texture2D? WorkBoxIconOf(Passion passion)
         {
             return PassionIconResolver.WorkBoxIconOf(passion);
         }
 
-        public static string ColorNameOf(Passion passion)
+        public static string? ColorNameOf(Passion passion)
         {
             return PassionMetadata.ColorNameOf(passion);
         }
 
-        public static string DescriptionOf(Passion passion)
+        public static string? DescriptionOf(Passion passion)
         {
             return PassionMetadata.DescriptionOf(passion);
         }
