@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -118,7 +117,7 @@ namespace OrderedWork.Startup
                 Type controller = AccessTools.TypeByName("WorkTab.Controller");
                 if (controller != null)
                 {
-                    FieldInfo allColumns = controller.GetField("allColumns",
+                    FieldInfo? allColumns = controller.GetField("allColumns",
                         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
                     if (allColumns != null)
                     {

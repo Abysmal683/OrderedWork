@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.303] - 2026-11-19
+
+### Changed — Nullable Harmony/Game/Startup batch
+- Migrated all 7 Harmony, 3 Game and 2 Startup files off `#nullable disable`.
+- Build remains warning-free; 80 UI/Mod/localization files still opt out.
+- Tests remain at 28 cases.
+
 ## [0.3.0-alpha.302] - 2026-11-19
 
 ### Changed — Nullable Config completion

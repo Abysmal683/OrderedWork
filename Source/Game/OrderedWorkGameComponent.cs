@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using OrderedWork.Services;
@@ -92,7 +91,7 @@ namespace OrderedWork.Data
         {
             if (pawn == null || entries == null)
             {
-                return null;
+                return null!;
             }
             for (int i = 0; i < entries.Count; i++)
             {
@@ -103,20 +102,20 @@ namespace OrderedWork.Data
                     return entry;
                 }
             }
-            return null;
+            return null!;
         }
 
         public List<string> GetOrder(Pawn pawn)
         {
             PawnWorkOrder entry = GetEntry(pawn);
-            return entry != null ? entry.order : null;
+            return entry != null ? entry.order : null!;
         }
 
         public PawnWorkOrder GetOrCreateEntry(Pawn pawn)
         {
             if (pawn == null)
             {
-                return null;
+                return null!;
             }
             PawnWorkOrder entry = GetEntry(pawn);
             if (entry == null)
@@ -181,7 +180,7 @@ namespace OrderedWork.Data
         {
             if (Current.Game == null)
             {
-                return null;
+                return null!;
             }
 
             OrderedWorkGameComponent component = Current.Game.GetComponent<OrderedWorkGameComponent>();
@@ -199,7 +198,7 @@ namespace OrderedWork.Data
             catch (Exception ex)
             {
                 Log.Error("[Ordered Work] Could not create OrderedWorkGameComponent: " + ex);
-                return null;
+                return null!;
             }
         }
     }

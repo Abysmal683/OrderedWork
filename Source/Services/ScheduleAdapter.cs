@@ -71,7 +71,7 @@ namespace OrderedWork.Services
             {
                 return false;
             }
-            entry.schedulePresetId = null;
+            entry.schedulePresetId = "";
             int changed = 0;
             for (int hour = 0; hour < SchedulePreset.SlotCount; hour++)
             {

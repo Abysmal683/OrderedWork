@@ -1,4 +1,3 @@
-#nullable disable
 using HarmonyLib;
 using RimWorld;
 using UnityEngine;

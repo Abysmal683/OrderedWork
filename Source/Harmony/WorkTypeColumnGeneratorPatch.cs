@@ -1,4 +1,3 @@
-#nullable disable
 using HarmonyLib;
 using OrderedWork.Config;
 using RimWorld;
@@ -23,7 +22,7 @@ namespace OrderedWork.Patches
             }
             try
             {
-                WorkConfigProfile profile = WorkConfigStore.LoadCachedActive()?.Profile;
+                WorkConfigProfile? profile = WorkConfigStore.LoadCachedActive()?.Profile;
                 if (profile == null)
                 {
                     return;

@@ -1,4 +1,3 @@
-#nullable disable
 using System.Linq;
 using HarmonyLib;
 using OrderedWork.Services;
@@ -17,7 +16,7 @@ namespace OrderedWork.Patches
             {
                 return;
             }
-            Pawn pawn = WorkOrderService.GetOwningPawn(__instance);
+            Pawn? pawn = WorkOrderService.GetOwningPawn(__instance);
             __result = pawn != null && WorkOrderService.IsIncapable(pawn, w) ? 0 : rank;
         }
     }
@@ -29,7 +28,11 @@ namespace OrderedWork.Patches
         {
             if (!WorkOrderService.IsApplying)
             {
-                HiddenWorkTypeService.RefreshPawn(WorkOrderService.GetOwningPawn(__instance));
+                Pawn? pawn = WorkOrderService.GetOwningPawn(__instance);
+                if (pawn != null)
+                {
+                    HiddenWorkTypeService.RefreshPawn(pawn);
+                }
             }
         }
     }

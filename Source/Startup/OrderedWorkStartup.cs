@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,9 +18,9 @@ namespace OrderedWork
         {
             try
             {
-                OrderedWorkMod mod = LoadedModManager.GetMod<OrderedWorkMod>();
-                OrderedWorkSettings settings = mod?.GetSettings<OrderedWorkSettings>();
-                if (settings == null)
+                OrderedWorkMod? mod = LoadedModManager.GetMod<OrderedWorkMod>();
+                OrderedWorkSettings? settings = mod?.GetSettings<OrderedWorkSettings>();
+                if (settings == null || mod == null)
                 {
                     return;
                 }
@@ -220,7 +219,7 @@ namespace OrderedWork
             Type controller = AccessTools.TypeByName("WorkTab.Controller");
             if (controller != null)
             {
-                FieldInfo allColumns = controller.GetField("allColumns",
+                FieldInfo? allColumns = controller.GetField("allColumns",
                     BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
                 if (allColumns != null)
                 {
@@ -231,7 +230,7 @@ namespace OrderedWork
 
         private static void RebuildCaches()
         {
-            FieldInfo field = typeof(WorkTypeDef).GetField("workGiversByPriority", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            FieldInfo? field = typeof(WorkTypeDef).GetField("workGiversByPriority", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             if (field == null)
             {
                 return;

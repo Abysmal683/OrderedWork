@@ -42,7 +42,7 @@ namespace OrderedWork.Services
                     if (existingColony)
                     {
                         // Capture the established vanilla order but do not write priorities.
-                        component.SetOrder(pawn, Normalize(pawn, ReadVanillaOrder(pawn)));
+                        component.SetOrder(pawn!, Normalize(pawn, ReadVanillaOrder(pawn)));
                     }
                     else
                     {
@@ -101,13 +101,13 @@ namespace OrderedWork.Services
 
                 // Ignore the settling window right after spawn/resurrection, where the
                 // vanilla Work tab may still be partially initialized.
-                PawnWorkOrder entry = component.GetEntry(pawn);
+                PawnWorkOrder entry = component.GetEntry(pawn!);
                 if (entry != null && CurrentTick < entry.captureSuppressedUntilTick)
                 {
                     return;
                 }
 
-                component.SetOrder(pawn, Normalize(pawn, ReadVanillaOrder(pawn)));
+                component.SetOrder(pawn!, Normalize(pawn, ReadVanillaOrder(pawn)));
             }
             catch (Exception ex)
             {
@@ -135,7 +135,7 @@ namespace OrderedWork.Services
                     return;
                 }
 
-                PawnWorkOrder entry = component.GetEntry(pawn);
+                PawnWorkOrder entry = component.GetEntry(pawn!);
                 int suppressUntil = CurrentTick + PostSpawnCaptureSuppressionTicks;
                 if (entry != null)
                 {
@@ -149,7 +149,7 @@ namespace OrderedWork.Services
                 else if (!AutoRecommendNewColony)
                 {
                     // Auto recommend off: capture the vanilla order but do not write.
-                    component.SetOrder(pawn, Normalize(pawn, ReadVanillaOrder(pawn)));
+                    component.SetOrder(pawn!, Normalize(pawn, ReadVanillaOrder(pawn)));
                     PawnWorkOrder created = component.GetEntry(pawn);
                     if (created != null)
                     {
@@ -197,7 +197,7 @@ namespace OrderedWork.Services
                 }
 
                 int suppressUntil = CurrentTick + PostSpawnCaptureSuppressionTicks;
-                PawnWorkOrder entry = component.GetEntry(pawn);
+                PawnWorkOrder entry = component.GetEntry(pawn!);
                 if (entry != null)
                 {
                     entry.captureSuppressedUntilTick = suppressUntil;
@@ -209,7 +209,7 @@ namespace OrderedWork.Services
 
                 if (!AutoRecommendNewColony)
                 {
-                    component.SetOrder(pawn, Normalize(pawn, ReadVanillaOrder(pawn)));
+                    component.SetOrder(pawn!, Normalize(pawn, ReadVanillaOrder(pawn)));
                     PawnWorkOrder copied = component.GetEntry(pawn);
                     if (copied != null)
                     {

@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +17,13 @@ namespace OrderedWork.Data
 
     public class PawnWorkGiverOrder : IExposable
     {
-        public string workTypeDefName;
+        public string workTypeDefName = "";
         public List<string> giverDefNames = new List<string>();
         public PolicySource source = PolicySource.Manual;
 
         public void ExposeData()
         {
-            Scribe_Values.Look(ref workTypeDefName, "workTypeDefName");
+            Scribe_Values.Look(ref workTypeDefName, "workTypeDefName", "");
             Scribe_Collections.Look(ref giverDefNames, "giverDefNames", LookMode.Value);
             Scribe_Values.Look(ref source, "source", PolicySource.Manual);
             if (Scribe.mode == LoadSaveMode.LoadingVars && giverDefNames == null)
@@ -36,7 +35,7 @@ namespace OrderedWork.Data
 
     public class PawnWorkOverride : IExposable
     {
-        public string workTypeDefName;
+        public string workTypeDefName = "";
         public int rank;
         public bool enabled = true;
         public bool locked;
@@ -44,7 +43,7 @@ namespace OrderedWork.Data
 
         public void ExposeData()
         {
-            Scribe_Values.Look(ref workTypeDefName, "workTypeDefName");
+            Scribe_Values.Look(ref workTypeDefName, "workTypeDefName", "");
             Scribe_Values.Look(ref rank, "rank", 0);
             Scribe_Values.Look(ref enabled, "enabled", true);
             Scribe_Values.Look(ref locked, "locked", false);
@@ -55,13 +54,13 @@ namespace OrderedWork.Data
     public class PawnScheduleOverride : IExposable
     {
         public int hour;
-        public string assignmentDefName;
+        public string assignmentDefName = "";
         public PolicySource source = PolicySource.Manual;
 
         public void ExposeData()
         {
             Scribe_Values.Look(ref hour, "hour", 0);
-            Scribe_Values.Look(ref assignmentDefName, "assignmentDefName");
+            Scribe_Values.Look(ref assignmentDefName, "assignmentDefName", "");
             Scribe_Values.Look(ref source, "source", PolicySource.Manual);
         }
     }
@@ -70,8 +69,8 @@ namespace OrderedWork.Data
     {
         public int mapUniqueId;
         public int areaId;
-        public string areaUniqueId;
-        public string areaLabel;
+        public string areaUniqueId = "";
+        public string areaLabel = "";
         public bool unrestricted;
         public PolicySource source = PolicySource.Manual;
 
@@ -79,8 +78,8 @@ namespace OrderedWork.Data
         {
             Scribe_Values.Look(ref mapUniqueId, "mapUniqueId", 0);
             Scribe_Values.Look(ref areaId, "areaId", 0);
-            Scribe_Values.Look(ref areaUniqueId, "areaUniqueId");
-            Scribe_Values.Look(ref areaLabel, "areaLabel");
+            Scribe_Values.Look(ref areaUniqueId, "areaUniqueId", "");
+            Scribe_Values.Look(ref areaLabel, "areaLabel", "");
             Scribe_Values.Look(ref unrestricted, "unrestricted", false);
             Scribe_Values.Look(ref source, "source", PolicySource.Manual);
         }
@@ -89,13 +88,13 @@ namespace OrderedWork.Data
     public class PawnScheduleWorkOverride : IExposable
     {
         public int hour;
-        public string workTypeDefName;
+        public string workTypeDefName = "";
         public PolicySource source = PolicySource.Manual;
 
         public void ExposeData()
         {
             Scribe_Values.Look(ref hour, "hour", 0);
-            Scribe_Values.Look(ref workTypeDefName, "workTypeDefName");
+            Scribe_Values.Look(ref workTypeDefName, "workTypeDefName", "");
             Scribe_Values.Look(ref source, "source", PolicySource.Manual);
         }
     }
@@ -120,14 +119,14 @@ namespace OrderedWork.Data
 
     public class PawnClothingOverride : IExposable
     {
-        public string workTypeDefName;
-        public string apparelPolicyId;
+        public string workTypeDefName = "";
+        public string apparelPolicyId = "";
         public PolicySource source = PolicySource.Manual;
 
         public void ExposeData()
         {
-            Scribe_Values.Look(ref workTypeDefName, "workTypeDefName");
-            Scribe_Values.Look(ref apparelPolicyId, "apparelPolicyId");
+            Scribe_Values.Look(ref workTypeDefName, "workTypeDefName", "");
+            Scribe_Values.Look(ref apparelPolicyId, "apparelPolicyId", "");
             Scribe_Values.Look(ref source, "source", PolicySource.Manual);
         }
     }
