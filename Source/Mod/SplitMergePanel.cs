@@ -87,6 +87,8 @@ namespace OrderedWork
                     break;
             }
         }
+
+
         internal void DrawSplitEditor(Listing_Standard list)
         {
             host.EnsureSplitMergeDefaults();
@@ -134,7 +136,7 @@ namespace OrderedWork
             DrawGiverColumn(left, originNames, draftSet, true, false, ref SplitOriginScroll, OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.InSplit", "(in split)"), 1);
             DrawGiverColumn(right, SplitDraft, draftSet, false, false, ref SplitDraftScroll, null, 2);
 
-            string warning = host.SplitValidationWarning();
+            string warning = SplitValidationWarning();
             host.DrawSplitMergeActions(list, OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.Add", "Add split"), warning,
                 delegate
                 {
@@ -202,7 +204,7 @@ namespace OrderedWork
             MergeDropIndex = -1;
 
             DrawGiverColumn(left, originNames, draftSet, true, true, ref MergeOriginScroll, OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.InMerge", "(in merge)"), 1);
-            host.DrawMergeDestinationColumn(right, existingTarget, MergeDraft, ref MergeTargetScroll);
+            DrawMergeDestinationColumn(right, existingTarget, MergeDraft, ref MergeTargetScroll);
 
             if (DragSide == 2 && DragMergeMode && DragMoved && MergeDropIndex >= 0)
             {
@@ -215,8 +217,8 @@ namespace OrderedWork
             Rect allRect = new Rect(selectedRect.xMax + 6f, actionsRect.y, buttonWidth, 28f);
             Rect cancelRect = new Rect(allRect.xMax + 6f, actionsRect.y, buttonWidth, 28f);
 
-            string selectedWarning = host.MergeValidationWarning(false);
-            string allWarning = host.MergeValidationWarning(true);
+            string selectedWarning = MergeValidationWarning(false);
+            string allWarning = MergeValidationWarning(true);
             if (UiButtonBar.Button(selectedRect, OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.MergeSelected", "Merge selected"), string.IsNullOrEmpty(selectedWarning)))
             {
                 host.SafeSplitMergeAction(delegate { host.SaveMerge(MergeDraft); });
@@ -241,6 +243,190 @@ namespace OrderedWork
             }
 
             host.HandleSplitMergeDrag();
+        }
+
+        internal string SplitValidationWarning()
+        {
+            if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(SplitOrigin) == null)
+            {
+                return OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.WarnSelectOrigin", "Select a valid origin work type.");
+            }
+            if (string.IsNullOrWhiteSpace(SplitName))
+            {
+                return OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.WarnEnterName", "Enter a name for the new work type.");
+            }
+            if (SplitDraft.Count == 0)
+            {
+                return OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.WarnDragOne", "Drag at least one origin giver into Split destination.");
+            }
+            List<WorkGiverDef> originGivers = OrderedWorkMod.GiversForWorkType(SplitOrigin);
+            if (!OrderedWorkMod.Settings.allowEmptyOrigin && originGivers.Count > 0 && SplitDraft.Count >= originGivers.Count)
+            {
+                return OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.WarnLeaveOrigin", "This split would leave the origin empty. Leave at least one giver or enable 'Allow empty origin'.");
+            }
+            foreach (string giver in SplitDraft)
+            {
+                if (!OrderedWorkMod.GiverBelongsTo(giver, SplitOrigin))
+                {
+                    return OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.WarnGiversBelong", "Every split giver must belong to the selected origin.");
+                }
+            }
+            return null;
+        }
+
+        internal string MergeValidationWarning(bool all)
+        {
+            if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(MergeOrigin) == null)
+            {
+                return OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.WarnSelectOrigin", "Select a valid origin work type.");
+            }
+            if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(MergeTarget) == null)
+            {
+                return OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.WarnDifferentTarget", "Select a different target work type.");
+            }
+            if (MergeTarget == MergeOrigin)
+            {
+                return OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.WarnTargetDifferent", "Target must be a different work type.");
+            }
+            List<WorkGiverDef> originGivers = OrderedWorkMod.GiversForWorkType(MergeOrigin);
+            if (all)
+            {
+                if (originGivers.Count == 0)
+                {
+                    return OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.WarnNoGivers", "Origin work type has no givers to move.");
+                }
+                if (!OrderedWorkMod.Settings.allowEmptyOrigin)
+                {
+                    return OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.WarnMergeAllEmpty", "Merge all would leave the origin empty. Enable 'Allow empty origin' to confirm.");
+                }
+                return null;
+            }
+            if (MergeDraft.Count == 0)
+            {
+                return OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.WarnDragMerge", "Drag at least one origin giver into Merge destination.");
+            }
+            if (!OrderedWorkMod.Settings.allowEmptyOrigin && MergeDraft.Count >= originGivers.Count)
+            {
+                return OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.WarnMergeSelectedEmpty", "Merge selected would leave the origin empty. Enable 'Allow empty origin' to confirm.");
+            }
+            foreach (string giver in MergeDraft)
+            {
+                if (!OrderedWorkMod.GiverBelongsTo(giver, MergeOrigin))
+                {
+                    return OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.WarnMergeGiversBelong", "Every merge giver must belong to the selected origin.");
+                }
+            }
+            return null;
+        }
+
+
+
+
+        internal void DrawMergeDestinationColumn(Rect area, List<string> existingNames, List<string> incomingNames, ref float scroll)
+        {
+            Widgets.DrawBoxSolid(area, UiColors.ColumnBackground);
+
+            int fixedCount = existingNames != null ? existingNames.Count : 0;
+            int incomingCount = incomingNames != null ? incomingNames.Count : 0;
+            int total = fixedCount + incomingCount;
+            float maxScroll = total > 0
+                ? Mathf.Max(0f, total * SplitMergeRowHeight - area.height)
+                : 0f;
+            float contentWidth = area.width - (maxScroll > 0f ? SplitMergeScrollbarWidth + 2f : 0f);
+            Rect track = new Rect(area.xMax - SplitMergeScrollbarWidth, area.y, SplitMergeScrollbarWidth, area.height);
+
+            OrderedWorkMod.HandleColumnWheel(area, track, maxScroll, ref scroll);
+            host.HandleColumnScrollbarInput(2, track, area.height, maxScroll, ref scroll);
+            OrderedWorkMod.ClampColumnScroll(maxScroll, ref scroll);
+
+            if (total == 0)
+            {
+                Widgets.Label(
+                    new Rect(area.x + 6f, area.y + 4f, contentWidth - 12f, area.height - 8f),
+                    OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.DragTarget", "Select a target, then drag origin givers here."));
+                host.DrawColumnScrollbar(track, area.height, maxScroll, scroll, 2);
+                return;
+            }
+
+            Event current = Event.current;
+            for (int i = 0; i < total; i++)
+            {
+                float y = area.y + i * SplitMergeRowHeight - scroll;
+                if (y + SplitMergeRowHeight <= area.y || y >= area.yMax)
+                {
+                    continue;
+                }
+
+                bool isFixed = i < fixedCount;
+                string name = isFixed ? existingNames[i] : incomingNames[i - fixedCount];
+                Rect row = new Rect(area.x + 3f, y, contentWidth - 6f, SplitMergeRowHeight - 2f);
+                UiZebra.Draw(row, i);
+                bool dragged = !isFixed
+                    && DragSide == 2
+                    && DragMergeMode
+                    && DragGiver == name;
+                bool dropTarget = !isFixed
+                    && DragSide != 0
+                    && DragMergeMode
+                    && DragMoved
+                    && row.Contains(current.mousePosition);
+
+                if (isFixed)
+                {
+                    host.DrawSplitMergeRow(row, (i + 1) + ". " + name, true, false, false, OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.Fixed", "(fixed)"), false);
+                }
+                else
+                {
+                    int position = fixedCount + (i - fixedCount) + 1;
+                    host.DrawSplitMergeRow(row, position + ". " + name, false, dragged, dropTarget, null);
+                }
+
+                if (!dragged && DragSide == 0)
+                {
+                    TooltipHandler.TipRegion(row, OrderedWorkMod.GiverTooltip(DefDatabase<WorkGiverDef>.GetNamedSilentFail(name)));
+                }
+
+                if (!isFixed
+                    && current.type == EventType.MouseDown
+                    && current.button == 0
+                    && row.Contains(current.mousePosition))
+                {
+                    DragSide = 2;
+                    DragMergeMode = true;
+                    DragGiver = name;
+                    DragStartY = current.mousePosition.y;
+                    DragMoved = false;
+                    current.Use();
+                }
+            }
+
+            // Work out where a dragged merge row would be inserted, including the empty area of
+            // the column. A drop above all incoming rows inserts at 0; below them appends.
+            if ((DragSide == 1 || DragSide == 2) && DragMergeMode && DragMoved && Mouse.IsOver(area))
+            {
+                int hovered = -1;
+                for (int j = 0; j < incomingCount; j++)
+                {
+                    float y = area.y + (fixedCount + j) * SplitMergeRowHeight - scroll;
+                    Rect row = new Rect(area.x + 3f, y, contentWidth - 6f, SplitMergeRowHeight - 2f);
+                    if (row.Contains(current.mousePosition))
+                    {
+                        hovered = j;
+                        break;
+                    }
+                }
+                if (hovered >= 0)
+                {
+                    MergeDropIndex = hovered;
+                }
+                else
+                {
+                    float incomingTop = area.y + fixedCount * SplitMergeRowHeight - scroll;
+                    MergeDropIndex = current.mousePosition.y < incomingTop ? 0 : incomingCount;
+                }
+            }
+
+            host.DrawColumnScrollbar(track, area.height, maxScroll, scroll, 2);
         }
 
         internal void DrawGiverColumn(

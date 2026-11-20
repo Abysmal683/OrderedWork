@@ -44,7 +44,7 @@ namespace OrderedWork
 
         internal void SaveSplit()
         {
-            if (!string.IsNullOrEmpty(SplitValidationWarning()))
+            if (!string.IsNullOrEmpty(splitMerge.SplitValidationWarning()))
             {
                 return;
             }
@@ -215,7 +215,7 @@ namespace OrderedWork
             return defName;
         }
 
-        private static bool GiverBelongsTo(string giverName, string workTypeDefName)
+        internal static bool GiverBelongsTo(string giverName, string workTypeDefName)
         {
             if (string.IsNullOrEmpty(giverName) || string.IsNullOrEmpty(workTypeDefName))
             {
