@@ -205,4 +205,5 @@
   <OrderedWork.Config.SplitMeta.ActionWord>Action word</OrderedWork.Config.SplitMeta.ActionWord>  <OrderedWork.Config.SplitMerge.AddTip>Create a new WorkType from the selected origin Givers.</OrderedWork.Config.SplitMerge.AddTip>
   <OrderedWork.Config.SplitMerge.MergeSelectedTip>Move the selected origin Givers into the target.</OrderedWork.Config.SplitMerge.MergeSelectedTip>
   <OrderedWork.Config.SplitMerge.MergeAllTip>Move every origin Giver into the target.</OrderedWork.Config.SplitMerge.MergeAllTip>
-  <OrderedWork.Config.SplitMerge.CancelDraftTip>Clear the unsaved draft only.</OrderedWork.Config.SplitMerge.CancelDraftTip></LanguageData>
+  <OrderedWork.Config.SplitMerge.CancelDraftTip>Clear the unsaved draft only.</OrderedWork.Config.SplitMerge.CancelDraftTip>  <OrderedWork.Config.SplitMerge.OrderNoReference>no reference order</OrderedWork.Config.SplitMerge.OrderNoReference>
+</LanguageData>

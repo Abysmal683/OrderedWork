@@ -21,6 +21,7 @@ namespace OrderedWork.Config
             WorkConfigProfile loaded = WorkConfigSerializer.TryLoad(WorkConfigPaths.ProfilePath(profile));
             if (loaded != null)
             {
+                WorkConfigProfileService.ReconcileWithLive(loaded);
                 return new WorkConfigLoadResult
                 {
                     Profile = loaded,
@@ -32,6 +33,7 @@ namespace OrderedWork.Config
             loaded = WorkConfigSerializer.TryLoad(WorkConfigPaths.ProfilePath("default"));
             if (loaded != null)
             {
+                WorkConfigProfileService.ReconcileWithLive(loaded);
                 return new WorkConfigLoadResult
                 {
                     Profile = loaded,
@@ -58,6 +60,7 @@ namespace OrderedWork.Config
             WorkConfigProfile pending = LoadPending(selected);
             if (pending != null)
             {
+                WorkConfigProfileService.ReconcileWithLive(pending);
                 return pending;
             }
             WorkConfigLoadResult active = LoadActiveWithFallback(selected);

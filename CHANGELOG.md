@@ -3,6 +3,17 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.271] - 2026-11-19
+
+### Fixed — Mod-added WorkTypes and profile reconciliation
+- Profiles now append visible live WorkTypes and missing Givers on load. A mod-added WorkType such as Hospitality's `Diplomat` can be selected in Order, Split and Merge without recreating the profile.
+- Hidden WorkTypes are not added, and an existing vanilla WorkType hidden by another mod is kept hidden instead of being forced visible.
+- Deleting a split or reverting a merge restores the origin's visibility when its Givers return.
+- Passion tooltips resolve both local-group and screen-space mouse coordinates before registering at the pointer.
+
+### Documentation
+- Added the project health audit and documented profile reconciliation and visibility behavior.
+
 ## [0.3.0-alpha.270] - 2026-11-19
 
 ### Fixed — Passion tooltip registration after the clipped group

@@ -43,6 +43,90 @@ namespace OrderedWork.Config
             return ordered;
         }
 
+        /// <summary>
+        /// Appends visible live WorkTypes and Givers that are missing from the profile.
+        /// This keeps profiles usable after a mod adds a WorkType or a Giver.
+        /// </summary>
+        public static void ReconcileWithLive(WorkConfigProfile profile)
+        {
+            if (profile == null)
+            {
+                return;
+            }
+            Normalize(profile);
+            int nextOrder = profile.WorkTypes.Values
+                .Where(value => value != null)
+                .Select(value => value.Order)
+                .DefaultIfEmpty(-1)
+                .Max() + 1;
+            HashSet<string> knownMods = new HashSet<string>(
+                profile.Mods.Where(mod => mod != null).Select(mod => mod.PackageId), StringComparer.Ordinal);
+
+            foreach (WorkTypeDef workType in DefDatabase<WorkTypeDef>.AllDefsListForReading
+                .Where(value => value != null))
+            {
+                WorkTypeConfig config;
+                if (!profile.WorkTypes.TryGetValue(workType.defName, out config) || config == null)
+                {
+                    if (!workType.visible)
+                    {
+                        continue;
+                    }
+                    config = new WorkTypeConfig
+                    {
+                        Vanilla = !workType.defName.StartsWith("OrderedWork_", StringComparison.Ordinal),
+                        Base = null,
+                        Label = workType.labelShort,
+                        ActionWord = workType.gerundLabel,
+                        Description = workType.description,
+                        Visible = true,
+                        Order = nextOrder++,
+                        Mod = workType.modContentPack != null ? workType.modContentPack.PackageId : "unknown"
+                    };
+                    profile.WorkTypes[workType.defName] = config;
+                    if (knownMods.Add(config.Mod))
+                    {
+                        profile.Mods.Add(new WorkConfigMod { PackageId = config.Mod, Name = config.Mod });
+                    }
+                }
+                else
+                {
+                    if (string.IsNullOrWhiteSpace(config.ActionWord))
+                    {
+                        config.ActionWord = workType.gerundLabel;
+                    }
+                    if (config.Vanilla && !workType.visible && config.Visible)
+                    {
+                        config.Visible = false;
+                    }
+                }
+
+                config.Givers = config.Givers ?? new List<GiverConfig>();
+                HashSet<string> knownGivers = new HashSet<string>(
+                    config.Givers.Where(giver => giver != null).Select(giver => giver.DefName), StringComparer.Ordinal);
+                int giverOrder = config.Givers.Count;
+                foreach (WorkGiverDef giver in DefDatabase<WorkGiverDef>.AllDefsListForReading
+                    .Where(value => value != null && value.workType == workType)
+                    .OrderByDescending(value => value.priorityInType))
+                {
+                    if (knownGivers.Add(giver.defName))
+                    {
+                        string packageId = giver.modContentPack != null ? giver.modContentPack.PackageId : "unknown";
+                        config.Givers.Add(new GiverConfig
+                        {
+                            DefName = giver.defName,
+                            Order = giverOrder++,
+                            Mod = packageId
+                        });
+                        if (knownMods.Add(packageId))
+                        {
+                            profile.Mods.Add(new WorkConfigMod { PackageId = packageId, Name = packageId });
+                        }
+                    }
+                }
+            }
+        }
+
         public static void Normalize(WorkConfigProfile profile)
         {
             if (profile.WorkTypes == null)

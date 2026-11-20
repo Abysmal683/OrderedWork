@@ -33,6 +33,7 @@ Start with the need, not the file list.
 | Architecture and design history | [design-notebook.md](explanation/design-notebook.md) |
 | Why hourly focus is an overlay | [schedule-focus.md](explanation/schedule-focus.md) |
 | Split/merge editor rationale | [split-merge.md](explanation/split-merge.md) |
+| Project health and refactor priorities | [project-health-audit.md](explanation/project-health-audit.md) |
 
 ## Archive
 

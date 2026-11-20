@@ -37,16 +37,17 @@ namespace OrderedWork.UI
 
             GUI.BeginGroup(viewport);
             string pendingTooltip = null;
+            Vector2 pendingMouse = default(Vector2);
             for (int i = 0; i < registered.Count; i++)
             {
                 DrawRow(viewport, scroll.y, i, registered[i], settings,
-                    ref pendingTooltip);
+                    ref pendingTooltip, ref pendingMouse);
             }
             GUI.EndGroup();
             if (!string.IsNullOrEmpty(pendingTooltip))
             {
-                Vector2 mouse = Event.current.mousePosition;
-                TooltipHandler.TipRegion(new Rect(mouse.x - 1f, mouse.y - 1f, 2f, 2f), pendingTooltip);
+                Rect tipRect = new Rect(pendingMouse.x - 1f, pendingMouse.y - 1f, 2f, 2f);
+                TooltipHandler.TipRegion(tipRect, pendingTooltip);
             }
             WorkGridScrollView.DrawVertical(track, viewport, content, ref scroll);
 
@@ -67,7 +68,8 @@ namespace OrderedWork.UI
             int index,
             PassionSource.PassionInfo info,
             OrderedWorkSettings settings,
-            ref string pendingTooltip)
+            ref string pendingTooltip,
+            ref Vector2 pendingMouse)
         {
             PassionWeightEntry entry = PassionWeightPolicy.Find(settings, info.Passion);
             if (entry == null)
@@ -76,7 +78,7 @@ namespace OrderedWork.UI
             }
 
             Rect row = new Rect(0f, index * PassionRowHeight - scroll, viewport.width, 24f);
-
+            Rect screenRow = new Rect(viewport.x, viewport.y + row.y, viewport.width, 24f);
             UiZebra.Draw(row, index);
             WorkTypePaletteView.PassionVisual visual = WorkTypePaletteView.ResolvePassionVisual(info.Passion);
             if (visual.Texture != null)
@@ -97,9 +99,18 @@ namespace OrderedWork.UI
                     ? rateLine
                     : description + "\n\n" + rateLine;
             }
-            if (!string.IsNullOrEmpty(description) && Mouse.IsOver(row))
+            if (!string.IsNullOrEmpty(description))
             {
-                pendingTooltip = description;
+                Vector2 mouse = Event.current.mousePosition;
+                bool screenHit = screenRow.Contains(mouse);
+                bool localHit = row.Contains(mouse);
+                if (screenHit || localHit)
+                {
+                    pendingTooltip = description;
+                    pendingMouse = screenHit
+                        ? mouse
+                        : new Vector2(viewport.x + mouse.x, viewport.y + mouse.y);
+                }
             }
 
             float fieldWidth = Mathf.Max(54f, (row.width - 170f - 24f) / 3f);

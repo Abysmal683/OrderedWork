@@ -205,4 +205,5 @@
   <OrderedWork.Config.SplitMeta.ActionWord>Palabra de acción</OrderedWork.Config.SplitMeta.ActionWord>  <OrderedWork.Config.SplitMerge.AddTip>Crea un nuevo tipo de trabajo con los Givers de origen seleccionados.</OrderedWork.Config.SplitMerge.AddTip>
   <OrderedWork.Config.SplitMerge.MergeSelectedTip>Mueve los Givers de origen seleccionados al destino.</OrderedWork.Config.SplitMerge.MergeSelectedTip>
   <OrderedWork.Config.SplitMerge.MergeAllTip>Mueve todos los Givers de origen al destino.</OrderedWork.Config.SplitMerge.MergeAllTip>
-  <OrderedWork.Config.SplitMerge.CancelDraftTip>Borra solo el borrador no guardado.</OrderedWork.Config.SplitMerge.CancelDraftTip></LanguageData>
+  <OrderedWork.Config.SplitMerge.CancelDraftTip>Borra solo el borrador no guardado.</OrderedWork.Config.SplitMerge.CancelDraftTip>  <OrderedWork.Config.SplitMerge.OrderNoReference>sin orden de referencia</OrderedWork.Config.SplitMerge.OrderNoReference>
+</LanguageData>

@@ -9,7 +9,7 @@
 | `WorkControlRows` | pawn column, lane cards and tooltips |
 | `WorkControlInteraction` | palette/card drag, drop and add menu |
 | `WorkControlMetrics` | row/card constants and slot math |
-## Work Control tab (0.3.0-alpha.270)
+## Work Control tab (0.3.0-alpha.271)
 - Open the new **Work Control** bottom tab (between Work and Schedule). It does **not** replace the vanilla Work tab.
 - **Pawn order** follows `Find.ColonistBar.GetColonistsInOrder()` filtered to visible free colonists, with `Find.CurrentMap.mapPawns.FreeColonists` as fallback. A revived pawn returns to its stable colonist-bar position; rows follow the bar if it changes.
 - Layout mirrors the Work tab: one row per player free colonist. The fixed left column shows the pawn **portrait** (about 32×32, scaled to row height), an **ellipsized** name/title, and compact right-side age/health. Hovering the row shows a tooltip with the full name, age, title, health and active WorkType count. The rest of the row is the colonist's horizontal WorkType lane. Outer/internal margins are ~4 px.

@@ -149,7 +149,7 @@ Order:
 7. Vanilla WorkType with no givers: `visible=false`.
 8. Missing mods: report; do not rewrite the file automatically.
 9. New givers from loaded mods: append at end with `order = max+1`; report a popup/list.
-10. New WorkTypes: append at end; report.
+10. New visible WorkTypes and missing Givers are appended to the profile at load; hidden WorkTypes are not added. An existing vanilla WorkType hidden by another mod is kept hidden instead of being forced visible.
 11. Normalize order.
 12. Apply to defs and rebuild caches.
 

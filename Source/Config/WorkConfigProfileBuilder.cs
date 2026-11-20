@@ -23,6 +23,19 @@ namespace OrderedWork.Config
                 WorkConfigStore.LoadEditingProfile(WorkConfigStore.LoadSelectedProfileName()));
             WorkConfigProfile existingProfile = WorkConfigStore.LoadPending(profile.Profile)
                 ?? (WorkConfigStore.LoadActiveWithFallback(profile.Profile)?.Profile);
+            if (existingProfile != null)
+            {
+                HashSet<string> captured = new HashSet<string>(
+                    workTypes.Select(workType => workType.defName), StringComparer.Ordinal);
+                foreach (string defName in existingProfile.WorkTypes.Keys)
+                {
+                    WorkTypeDef hidden = DefDatabase<WorkTypeDef>.GetNamedSilentFail(defName);
+                    if (hidden != null && captured.Add(hidden.defName))
+                    {
+                        workTypes.Add(hidden);
+                    }
+                }
+            }
             int order = 0;
             foreach (WorkTypeDef workType in workTypes)
             {

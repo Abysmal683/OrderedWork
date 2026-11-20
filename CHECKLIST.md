@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.270)
+# Ordered Work — Current Checklist (0.3.0-alpha.271)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -161,6 +161,16 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Paint, erase, load, save and apply preserve their behavior.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of paint, erase, load, save and apply.
+## Profile reconciliation and mod WorkTypes (alpha.271)
+
+- [x] Missing visible live WorkTypes and Givers are appended to the profile on load.
+- [x] Hidden WorkTypes are not added; stale visible flags are cleared on reconciliation.
+- [x] Split delete and Merge revert restore origin visibility when Givers return.
+- [x] Passion tooltip handles local and screen mouse coordinates.
+- [x] Project health audit saved under `docs/explanation/project-health-audit.md`.
+- [ ] Runtime check with Hospitality enabled and Order selecting `Diplomat`.
+- [ ] Runtime check that a hidden mod WorkType stays hidden.
+- [ ] Runtime check of passion tooltips after profile reconciliation.
 ## Passion tooltip coordinate fix (alpha.270)
 
 - [x] Hover test runs inside the clipped group.

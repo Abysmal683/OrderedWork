@@ -34,7 +34,11 @@ namespace OrderedWork
             Func<string> getSelected, Action<string> setSelected, Action<string> setStatus)
         {
             string selected = getSelected();
-            WorkConfigLoadResult active = WorkConfigStore.LoadActiveWithFallback(activeProfile);
+            WorkConfigLoadResult active = WorkConfigStore.LoadCachedActive();
+            if (active == null || active.ResolvedProfile != activeProfile)
+            {
+                active = WorkConfigStore.LoadActiveWithFallback(activeProfile);
+            }
             WorkConfigProfile reference = WorkConfigStore.LoadReference();
             if (active == null || active.Profile == null || string.IsNullOrEmpty(selected))
             {
