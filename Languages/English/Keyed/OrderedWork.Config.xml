@@ -194,4 +194,12 @@
   <OrderedWork.Config.Order.NoSelectionWarning>Select a WorkType with out-of-order Givers.</OrderedWork.Config.Order.NoSelectionWarning>
   <OrderedWork.Config.Order.ReorderWarning>Apply reorders only the Givers already present.</OrderedWork.Config.Order.ReorderWarning>  <OrderedWork.Config.Rules.AllowEmptyBlocked>Cannot disable empty-origin support: {0} WorkTypes have no Givers. Restore them first.</OrderedWork.Config.Rules.AllowEmptyBlocked>
   <OrderedWork.Config.SplitMerge.GiversSuffix>Givers</OrderedWork.Config.SplitMerge.GiversSuffix>
-</LanguageData>
+  <OrderedWork.Config.SplitMerge.ActionWord>Action word</OrderedWork.Config.SplitMerge.ActionWord>
+  <OrderedWork.Config.SplitMerge.ActionWordTip>Verb shown in action contexts for this WorkType, for example Hauling. Defaults to the name.</OrderedWork.Config.SplitMerge.ActionWordTip>
+  <OrderedWork.Config.SplitMerge.NameTip>Name shown for the new WorkType and used to build its stable defName.</OrderedWork.Config.SplitMerge.NameTip>
+  <OrderedWork.Config.SplitMerge.DescriptionTip>Description shown in tooltips for this WorkType.</OrderedWork.Config.SplitMerge.DescriptionTip>
+  <OrderedWork.Config.SplitMerge.Revert>Revert</OrderedWork.Config.SplitMerge.Revert>
+  <OrderedWork.Config.SplitMerge.ConfirmRevert>Confirm</OrderedWork.Config.SplitMerge.ConfirmRevert>
+  <OrderedWork.Config.SplitMerge.MergeReverted>Merge reverted for {0}.</OrderedWork.Config.SplitMerge.MergeReverted>
+  <OrderedWork.Config.SplitMerge.OrderReverted>Giver order restored for {0}.</OrderedWork.Config.SplitMerge.OrderReverted>
+  <OrderedWork.Config.SplitMeta.ActionWord>Action word</OrderedWork.Config.SplitMeta.ActionWord></LanguageData>

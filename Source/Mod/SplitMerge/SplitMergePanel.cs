@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using OrderedWork.Config;
+using OrderedWork.UI;
 using OrderedWork.UI.Layout;
 using RimWorld;
 using UnityEngine;
@@ -21,12 +22,14 @@ namespace OrderedWork
         private const float SplitMergeRowHeight = 24f;
         private const float SplitMergeColumnHeight = 240f;
         private const float SplitMergeScrollbarWidth = 6f;
+        private const int MaxVisibleListRows = 10;
         private OrderedWorkMod host;
 
         internal int EditorMode;
         internal string SplitOrigin = "";
         internal string SplitName = "";
         internal string SplitDescription = "";
+        internal string SplitActionWord = "";
         internal readonly List<string> SplitDraft = new List<string>();
         internal float SplitOriginScroll;
         internal float SplitDraftScroll;
@@ -49,7 +52,13 @@ namespace OrderedWork
         internal string MetaDefName = "";
         internal string MetaLabel = "";
         internal string MetaDescription = "";
+        internal string MetaActionWord = "";
         private string splitPendingDelete = "";
+        private string mergePendingRevert = "";
+        private string orderPendingRevert = "";
+        private float splitListScroll;
+        private float mergeListScroll;
+        private float orderListScroll;
 
         internal void Draw(Listing_Standard list, OrderedWorkMod owner)
         {
@@ -127,6 +136,7 @@ namespace OrderedWork
                 Vanilla = false,
                 Base = SplitOrigin,
                 Label = SplitName.Trim(),
+                ActionWord = SplitActionWord.Trim(),
                 Description = SplitDescription.Trim(),
                 Visible = true,
                 Order = profile.WorkTypes.Count == 0 ? 0 : profile.WorkTypes.Values.Max(w => w != null ? w.Order : 0) + 1,
@@ -155,6 +165,7 @@ namespace OrderedWork
 
             SplitName = "";
             SplitDescription = "";
+            SplitActionWord = "";
             SplitDraft.Clear();
             SplitDraftScroll = 0f;
             SplitDirty = false;
@@ -246,6 +257,182 @@ namespace OrderedWork
         }
 
 
+        private void RevertMerge(string defName)
+        {
+            WorkConfigProfile profile = host.LoadEditingProfile();
+            WorkConfigProfile reference = WorkConfigStore.LoadReference();
+            if (profile == null || reference == null || string.IsNullOrEmpty(defName)
+                || !profile.WorkTypes.TryGetValue(defName, out WorkTypeConfig current)
+                || current == null || current.Givers == null
+                || !reference.WorkTypes.TryGetValue(defName, out WorkTypeConfig baseline)
+                || baseline == null || baseline.Givers == null)
+            {
+                return;
+            }
+
+            HashSet<string> referenceNames = new HashSet<string>(
+                baseline.Givers.Where(g => g != null).Select(g => g.DefName), StringComparer.Ordinal);
+            HashSet<string> currentNames = new HashSet<string>(
+                current.Givers.Where(g => g != null).Select(g => g.DefName), StringComparer.Ordinal);
+            List<GiverConfig> extras = current.Givers
+                .Where(g => g != null && !referenceNames.Contains(g.DefName))
+                .ToList();
+            foreach (GiverConfig missing in baseline.Givers.Where(g => g != null && !currentNames.Contains(g.DefName)))
+            {
+                KeyValuePair<string, WorkTypeConfig> ownerEntry = profile.WorkTypes
+                    .FirstOrDefault(pair => pair.Key != defName && pair.Value != null && pair.Value.Givers != null
+                        && pair.Value.Givers.Any(g => g != null && g.DefName == missing.DefName));
+                if (string.IsNullOrEmpty(ownerEntry.Key) || ownerEntry.Value == null)
+                {
+                    continue;
+                }
+                ownerEntry.Value.Givers.RemoveAll(g => g != null && g.DefName == missing.DefName);
+                WorkTypeConfig ownerReference;
+                if (reference.WorkTypes.TryGetValue(ownerEntry.Key, out ownerReference))
+                {
+                    RestoreGiverOrder(ownerEntry.Value, ownerReference);
+                }
+            }
+            foreach (GiverConfig extra in extras)
+            {
+                KeyValuePair<string, WorkTypeConfig> ownerEntry = reference.WorkTypes
+                    .FirstOrDefault(pair => pair.Value != null && pair.Value.Givers != null
+                        && pair.Value.Givers.Any(g => g != null && g.DefName == extra.DefName));
+                if (string.IsNullOrEmpty(ownerEntry.Key) || ownerEntry.Key == defName
+                    || !profile.WorkTypes.TryGetValue(ownerEntry.Key, out WorkTypeConfig owner)
+                    || owner == null)
+                {
+                    continue;
+                }
+                owner.Givers = owner.Givers ?? new List<GiverConfig>();
+                if (!owner.Givers.Any(g => g != null && g.DefName == extra.DefName))
+                {
+                    owner.Givers.Add(new GiverConfig
+                    {
+                        DefName = extra.DefName,
+                        Order = owner.Givers.Count,
+                        Mod = extra.Mod
+                    });
+                }
+                RestoreGiverOrder(owner, ownerEntry.Value);
+            }
+
+            current.Givers = baseline.Givers
+                .Where(g => g != null)
+                .Select((g, index) => new GiverConfig
+                {
+                    DefName = g.DefName,
+                    Order = index,
+                    Mod = g.Mod
+                })
+                .ToList();
+            WorkConfigStore.SaveProfile(profile, true);
+            WorkConfigStore.SavePending(profile);
+            OrderedWorkStartup.ApplyProfileNow(profile, OrderedWorkMod.Settings, host);
+            Messages.Message(string.Format(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.MergeReverted",
+                "Merge reverted for {0}."), defName), MessageTypeDefOf.TaskCompletion, false);
+            mergePendingRevert = "";
+        }
+
+        private void RevertOrder(string defName)
+        {
+            WorkConfigProfile profile = host.LoadEditingProfile();
+            WorkConfigProfile reference = WorkConfigStore.LoadReference();
+            if (profile == null || reference == null || string.IsNullOrEmpty(defName)
+                || !profile.WorkTypes.TryGetValue(defName, out WorkTypeConfig current)
+                || current == null
+                || !reference.WorkTypes.TryGetValue(defName, out WorkTypeConfig baseline)
+                || baseline == null || baseline.Givers == null)
+            {
+                return;
+            }
+
+            Dictionary<string, GiverConfig> byName = (current.Givers ?? new List<GiverConfig>())
+                .Where(g => g != null)
+                .GroupBy(g => g.DefName, StringComparer.Ordinal)
+                .ToDictionary(group => group.Key, group => group.First(), StringComparer.Ordinal);
+            current.Givers = baseline.Givers
+                .Where(g => g != null)
+                .Select((g, index) =>
+                {
+                    GiverConfig existing;
+                    if (byName.TryGetValue(g.DefName, out existing))
+                    {
+                        existing.Order = index;
+                        return existing;
+                    }
+                    return new GiverConfig { DefName = g.DefName, Order = index, Mod = g.Mod };
+                })
+                .ToList();
+            WorkConfigStore.SaveProfile(profile, true);
+            WorkConfigStore.SavePending(profile);
+            OrderedWorkStartup.ApplyProfileNow(profile, OrderedWorkMod.Settings, host);
+            Messages.Message(string.Format(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.OrderReverted",
+                "Giver order restored for {0}."), defName), MessageTypeDefOf.TaskCompletion, false);
+            orderPendingRevert = "";
+        }
+
+        private static void RestoreGiverOrder(WorkTypeConfig target, WorkTypeConfig reference)
+        {
+            if (target == null || reference == null || reference.Givers == null)
+            {
+                return;
+            }
+            Dictionary<string, int> order = new Dictionary<string, int>(StringComparer.Ordinal);
+            for (int i = 0; i < reference.Givers.Count; i++)
+            {
+                GiverConfig giver = reference.Givers[i];
+                if (giver != null && !order.ContainsKey(giver.DefName))
+                {
+                    order[giver.DefName] = i;
+                }
+            }
+            target.Givers = (target.Givers ?? new List<GiverConfig>())
+                .Where(g => g != null)
+                .OrderBy(g =>
+                {
+                    int index;
+                    return order.TryGetValue(g.DefName, out index) ? index : int.MaxValue;
+                })
+                .ThenBy(g => g.Order)
+                .ToList();
+            for (int i = 0; i < target.Givers.Count; i++)
+            {
+                target.Givers[i].Order = i;
+            }
+        }
+
+        private void DrawScrollableList(Listing_Standard list, int count, ref float scroll, string owner,
+            Action<Rect, int> drawRow)
+        {
+            int visible = Math.Min(count, MaxVisibleListRows);
+            Rect outRect = list.GetRect(visible * SplitMergeRowHeight);
+            float barWidth = WorkGridScrollView.Thickness;
+            Rect viewport = new Rect(outRect.x, outRect.y, outRect.width - barWidth - 2f, outRect.height);
+            Rect content = new Rect(0f, 0f, viewport.width, count * SplitMergeRowHeight);
+            Rect track = new Rect(viewport.xMax + 2f, outRect.y, barWidth, outRect.height);
+            float maxScroll = Mathf.Max(0f, content.height - viewport.height);
+            scroll = Mathf.Clamp(scroll, 0f, maxScroll);
+            OrderedWorkMod.HandleCtrlWheel(viewport, maxScroll, ref scroll, SplitMergeRowHeight);
+            Vector2 scrollVector = new Vector2(0f, scroll);
+            WorkGridScrollView.HandleVertical(track, viewport, content, ref scrollVector, owner);
+
+            GUI.BeginGroup(viewport);
+            for (int i = 0; i < count; i++)
+            {
+                float y = i * SplitMergeRowHeight - scrollVector.y;
+                if (y + SplitMergeRowHeight <= 0f || y >= viewport.height)
+                {
+                    continue;
+                }
+                drawRow(new Rect(0f, y, viewport.width, SplitMergeRowHeight - 2f), i);
+            }
+            GUI.EndGroup();
+
+            scroll = Mathf.Clamp(scrollVector.y, 0f, maxScroll);
+            WorkGridScrollView.DrawVertical(track, viewport, content, ref scrollVector);
+        }
+
         private void DrawExistingSplits(Listing_Standard list)
         {
             WorkConfigProfile profile = host.LoadEditingProfile();
@@ -265,10 +452,10 @@ namespace OrderedWork
             }
 
             list.Label(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.Splits", "Existing splits"));
-            foreach (KeyValuePair<string, WorkTypeConfig> pair in splits)
+            DrawScrollableList(list, splits.Count, ref splitListScroll, "split-list", delegate(Rect row, int index)
             {
-                Rect row = list.GetRect(24f);
-                UiZebra.Draw(row, splits.IndexOf(pair));
+                KeyValuePair<string, WorkTypeConfig> pair = splits[index];
+                UiZebra.Draw(row, index);
                 Widgets.LabelEllipses(new Rect(row.x + 4f, row.y, row.width - 184f, 22f),
                     (pair.Value.Label ?? pair.Key) + " · " + pair.Value.Base + " · " + (pair.Value.Givers != null ? pair.Value.Givers.Count : 0));
                 if (Widgets.ButtonText(new Rect(row.xMax - 174f, row.y, 80f, 22f),
@@ -277,6 +464,7 @@ namespace OrderedWork
                     MetaDefName = pair.Key;
                     MetaLabel = pair.Value.Label ?? "";
                     MetaDescription = pair.Value.Description ?? "";
+                    MetaActionWord = pair.Value.ActionWord ?? "";
                     splitPendingDelete = "";
                     SplitDirty = true;
                 }
@@ -296,7 +484,7 @@ namespace OrderedWork
                         host.SafeSplitMergeAction(delegate { DeleteSplit(defName); });
                     }
                 }
-            }
+            });
 
             if (!string.IsNullOrEmpty(MetaDefName))
             {
@@ -310,9 +498,14 @@ namespace OrderedWork
             list.Gap(6f);
             list.Label(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.Metadata", "Split metadata") + ": " + MetaDefName);
             MetaLabel = UiFieldRow.Text(list.GetRect(26f),
-                OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMeta.Label", "Label"), MetaLabel, 86f);
+                OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMeta.Label", "Label"), MetaLabel, 86f,
+                OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.NameTip", "Name shown for the new WorkType and used to build its stable defName."));
+            MetaActionWord = UiFieldRow.Text(list.GetRect(26f),
+                OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMeta.ActionWord", "Action word"), MetaActionWord, 86f,
+                OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.ActionWordTip", "Verb shown in action contexts for this WorkType, for example Hauling. Defaults to the name."));
             MetaDescription = UiFieldRow.Text(list.GetRect(26f),
-                OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMeta.Description", "Description"), MetaDescription, 86f);
+                OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMeta.Description", "Description"), MetaDescription, 86f,
+                OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.DescriptionTip", "Description shown in tooltips for this WorkType."));
             Rect buttons = list.GetRect(26f);
             Rect[] cells = UiFlex.Columns(buttons, 6f, 1f, 1f);
             if (UiButtonBar.Button(cells[0], OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.SaveMetadata", "Save metadata"), true))
@@ -335,6 +528,7 @@ namespace OrderedWork
                 return;
             }
             split.Label = string.IsNullOrWhiteSpace(MetaLabel) ? MetaDefName : MetaLabel.Trim();
+            split.ActionWord = MetaActionWord != null ? MetaActionWord.Trim() : "";
             split.Description = MetaDescription != null ? MetaDescription.Trim() : "";
             WorkConfigStore.SaveProfile(profile, true);
             WorkConfigStore.SavePending(profile);
@@ -392,6 +586,7 @@ namespace OrderedWork
             SplitOrigin = "";
             SplitName = "";
             SplitDescription = "";
+            SplitActionWord = "";
             SplitDraft.Clear();
             SplitOriginScroll = 0f;
             SplitDraftScroll = 0f;
@@ -414,9 +609,15 @@ namespace OrderedWork
 
             Rect nameRow = list.GetRect(26f);
             Widgets.Label(new Rect(nameRow.x, nameRow.y, 110f, 24f), OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.NewName", "New name"));
+            TooltipHandler.TipRegion(nameRow, OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.NameTip", "Name shown for the new WorkType and used to build its stable defName."));
             SplitName = Widgets.TextField(new Rect(nameRow.x + 114f, nameRow.y, Mathf.Max(60f, nameRow.width - 114f), 24f), SplitName ?? "");
+            Rect actionRow = list.GetRect(26f);
+            Widgets.Label(new Rect(actionRow.x, actionRow.y, 110f, 24f), OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.ActionWord", "Action word"));
+            TooltipHandler.TipRegion(actionRow, OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.ActionWordTip", "Verb shown in action contexts for this WorkType, for example Hauling. Defaults to the name."));
+            SplitActionWord = Widgets.TextField(new Rect(actionRow.x + 114f, actionRow.y, Mathf.Max(60f, actionRow.width - 114f), 24f), SplitActionWord ?? "");
             Rect descRow = list.GetRect(26f);
             Widgets.Label(new Rect(descRow.x, descRow.y, 110f, 24f), OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.Description", "Description"));
+            TooltipHandler.TipRegion(descRow, OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.DescriptionTip", "Description shown in tooltips for this WorkType."));
             SplitDescription = Widgets.TextField(new Rect(descRow.x + 114f, descRow.y, Mathf.Max(60f, descRow.width - 114f), 24f), SplitDescription ?? "");
             if (!string.IsNullOrWhiteSpace(SplitName))
             {
@@ -456,6 +657,7 @@ namespace OrderedWork
                 {
                     SplitName = "";
                     SplitDescription = "";
+            SplitActionWord = "";
                     SplitDraft.Clear();
                     SplitDraftScroll = 0f;
                     SplitDirty = false;
@@ -509,25 +711,40 @@ namespace OrderedWork
 
             list.Label(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.OrderCandidates",
                 "WorkTypes with out-of-order Givers"));
-            for (int i = 0; i < candidates.Count; i++)
+            DrawScrollableList(list, candidates.Count, ref orderListScroll, "order-list", delegate(Rect row, int i)
             {
                 KeyValuePair<string, WorkTypeConfig> pair = candidates[i];
                 WorkTypeConfig current = pair.Value;
                 List<string> currentOrder = current.Givers
                     .Where(g => g != null).OrderBy(g => g.Order).Select(g => g.DefName).ToList();
-                Rect row = list.GetRect(24f);
                 UiZebra.Draw(row, i);
                 string label = (current.Label ?? DefDatabase<WorkTypeDef>.GetNamedSilentFail(pair.Key)?.labelShort ?? pair.Key)
                     + " · " + currentOrder.Count + " " + OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.GiversSuffix", "Givers");
-                Widgets.LabelEllipses(new Rect(row.x + 4f, row.y, row.width - 92f, 22f), label);
-                if (Widgets.ButtonText(new Rect(row.xMax - 84f, row.y, 80f, 22f),
+                Widgets.LabelEllipses(new Rect(row.x + 4f, row.y, row.width - 184f, 22f), label);
+                if (Widgets.ButtonText(new Rect(row.xMax - 174f, row.y, 80f, 22f),
                     OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.Select", "Select")))
                 {
                     host.SelectedGiverType = pair.Key;
                     host.ResetGiverOrderDraft();
+                    orderPendingRevert = "";
                 }
-            }
-
+                bool confirming = orderPendingRevert == pair.Key;
+                if (Widgets.ButtonText(new Rect(row.xMax - 88f, row.y, 84f, 22f),
+                    confirming
+                        ? OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.ConfirmRevert", "Confirm")
+                        : OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.Revert", "Revert")))
+                {
+                    if (!confirming)
+                    {
+                        orderPendingRevert = pair.Key;
+                    }
+                    else
+                    {
+                        string defName = pair.Key;
+                        host.SafeSplitMergeAction(delegate { RevertOrder(defName); });
+                    }
+                }
+            });
         }
         private void DrawMergeCandidates(Listing_Standard list)
         {
@@ -570,7 +787,7 @@ namespace OrderedWork
 
             list.Label(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.MergeCandidates",
                 "Giver reconciliation against the vanilla reference"));
-            for (int i = 0; i < candidates.Count; i++)
+            DrawScrollableList(list, candidates.Count, ref mergeListScroll, "merge-list", delegate(Rect row, int i)
             {
                 KeyValuePair<string, WorkTypeConfig> pair = candidates[i];
                 WorkTypeConfig current = pair.Value;
@@ -583,13 +800,12 @@ namespace OrderedWork
                         .Where(g => g != null).Select(g => g.DefName), StringComparer.Ordinal);
                 int missing = referenceNames.Count(name => !currentNames.Contains(name));
                 int extra = currentNames.Count(name => !referenceNames.Contains(name));
-                Rect row = list.GetRect(24f);
                 UiZebra.Draw(row, i);
                 string label = (current.Label ?? DefDatabase<WorkTypeDef>.GetNamedSilentFail(pair.Key)?.labelShort ?? pair.Key)
                     + " · " + string.Format(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.MergeMissing", "missing: {0}"), missing)
                     + " · " + string.Format(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.MergeExtra", "extra: {0}"), extra);
-                Widgets.LabelEllipses(new Rect(row.x + 4f, row.y, row.width - 92f, 22f), label);
-                if (Widgets.ButtonText(new Rect(row.xMax - 84f, row.y, 80f, 22f),
+                Widgets.LabelEllipses(new Rect(row.x + 4f, row.y, row.width - 184f, 22f), label);
+                if (Widgets.ButtonText(new Rect(row.xMax - 174f, row.y, 80f, 22f),
                     OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.Select", "Select")))
                 {
                     MergeOrigin = pair.Key;
@@ -597,13 +813,29 @@ namespace OrderedWork
                     MergeOriginScroll = 0f;
                     MergeTargetScroll = 0f;
                     MergeDropIndex = -1;
+                    mergePendingRevert = "";
                     if (MergeTarget == MergeOrigin)
                     {
                         MergeTarget = "";
                     }
                 }
-            }
-
+                bool confirming = mergePendingRevert == pair.Key;
+                if (Widgets.ButtonText(new Rect(row.xMax - 88f, row.y, 84f, 22f),
+                    confirming
+                        ? OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.ConfirmRevert", "Confirm")
+                        : OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.Revert", "Revert")))
+                {
+                    if (!confirming)
+                    {
+                        mergePendingRevert = pair.Key;
+                    }
+                    else
+                    {
+                        string defName = pair.Key;
+                        host.SafeSplitMergeAction(delegate { RevertMerge(defName); });
+                    }
+                }
+            });
         }
         internal void DrawMergeEditor(Listing_Standard list)
         {
@@ -960,6 +1192,7 @@ namespace OrderedWork
             SplitOrigin = "";
             SplitName = "";
             SplitDescription = "";
+            SplitActionWord = "";
             SplitDraft.Clear();
             SplitOriginScroll = 0f;
             SplitDraftScroll = 0f;
@@ -987,6 +1220,7 @@ namespace OrderedWork
             MetaDefName = "";
             MetaLabel = "";
             MetaDescription = "";
+            MetaActionWord = "";
         }
     }
 }

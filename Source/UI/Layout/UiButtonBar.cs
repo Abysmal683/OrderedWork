@@ -39,7 +39,7 @@ namespace OrderedWork.UI.Layout
 
             TextAnchor previousAnchor = Text.Anchor;
             Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(rect, label);
+            Widgets.Label(new Rect(rect.x, rect.y + 2f, rect.width, rect.height), label);
             Text.Anchor = previousAnchor;
             return false;
         }

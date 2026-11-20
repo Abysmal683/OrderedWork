@@ -37,6 +37,7 @@ namespace OrderedWork.Config
                     Vanilla = !isSplit && !workType.defName.StartsWith("OrderedWork_", StringComparison.Ordinal),
                     Base = isSplit ? existingType.Base : null,
                     Label = workType.labelShort,
+                    ActionWord = workType.gerundLabel,
                     Description = workType.description,
                     Visible = workType.visible,
                     Order = order++,

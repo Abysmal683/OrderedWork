@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.266)
+# Ordered Work — Current Checklist (0.3.0-alpha.268)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -161,6 +161,16 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Paint, erase, load, save and apply preserve their behavior.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of paint, erase, load, save and apply.
+## Controls polish (alpha.267)
+
+- [x] Merge/Order rows support Revert with confirmation.
+- [x] Merge Revert returns extra Givers to their reference owner.
+- [x] Order Revert restores the reference Giver sequence.
+- [x] Candidate lists and Order editor columns show 10 rows with scrollbar and Ctrl+wheel.
+- [x] Ctrl+wheel direction fixed; passion weights support it.
+- [x] Split Action word field added to create and metadata editors.
+- [x] Passion-weight tooltips no longer render below the table.
+- [ ] Runtime check of Merge/Order Revert and split Action word.
 ## UI consolidation (alpha.266)
 
 - [x] Block disabling `Allow empty origin` when any WorkType has no Givers.

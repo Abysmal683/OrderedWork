@@ -3,6 +3,21 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.268] - 2026-11-19
+
+### Fixed — Passion-weight tooltip hit test
+- The tooltip now tests the mouse against the viewport's absolute screen row instead of the clipped group's local row, so hovering outside the table no longer opens a passion tooltip.
+
+## [0.3.0-alpha.267] - 2026-11-19
+
+### Fixed — Split/Merge/Order controls
+- Added Revert with confirmation to Merge and Order candidate rows; Merge returns Givers to their reference owner, Order restores the reference sequence.
+- Capped Split/Merge/Order candidate lists and the Order editor columns at 10 visible rows with a scrollbar and Ctrl+wheel scrolling.
+- Fixed Ctrl+wheel direction and applied it to the passion-weight list.
+- Added the Action word field to split creation and split metadata, with explanatory tooltips.
+- Fixed passion-weight tooltips appearing below the table.
+- Adjusted disabled action-button label centering.
+
 ## [0.3.0-alpha.266] - 2026-11-19
 
 ### Fixed — Split/Merge/Order UI consolidation

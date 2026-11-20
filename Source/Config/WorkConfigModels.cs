@@ -22,6 +22,7 @@ namespace OrderedWork.Config
         public bool Vanilla { get; set; }
         public string Base { get; set; }
         public string Label { get; set; }
+        public string ActionWord { get; set; }
         public string Description { get; set; }
         public bool Visible { get; set; } = true;
         public int Order { get; set; }

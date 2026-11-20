@@ -194,4 +194,12 @@
   <OrderedWork.Config.Order.NoSelectionWarning>Selecciona un tipo de trabajo con WorkGivers desordenados.</OrderedWork.Config.Order.NoSelectionWarning>
   <OrderedWork.Config.Order.ReorderWarning>Aplicar solo reordena los WorkGivers existentes.</OrderedWork.Config.Order.ReorderWarning>  <OrderedWork.Config.Rules.AllowEmptyBlocked>No se puede desactivar el origen vacío: {0} tipos de trabajo no tienen WorkGivers. Restáuralos primero.</OrderedWork.Config.Rules.AllowEmptyBlocked>
   <OrderedWork.Config.SplitMerge.GiversSuffix>WorkGivers</OrderedWork.Config.SplitMerge.GiversSuffix>
-</LanguageData>
+  <OrderedWork.Config.SplitMerge.ActionWord>Palabra de acción</OrderedWork.Config.SplitMerge.ActionWord>
+  <OrderedWork.Config.SplitMerge.ActionWordTip>Verbo que se muestra en contextos de acción para este tipo de trabajo, por ejemplo Transportar. Si se deja vacío, usa el nombre.</OrderedWork.Config.SplitMerge.ActionWordTip>
+  <OrderedWork.Config.SplitMerge.NameTip>Nombre del nuevo tipo de trabajo; también se usa para generar su defName estable.</OrderedWork.Config.SplitMerge.NameTip>
+  <OrderedWork.Config.SplitMerge.DescriptionTip>Descripción que se muestra en los tooltips de este tipo de trabajo.</OrderedWork.Config.SplitMerge.DescriptionTip>
+  <OrderedWork.Config.SplitMerge.Revert>Revertir</OrderedWork.Config.SplitMerge.Revert>
+  <OrderedWork.Config.SplitMerge.ConfirmRevert>Confirmar</OrderedWork.Config.SplitMerge.ConfirmRevert>
+  <OrderedWork.Config.SplitMerge.MergeReverted>Fusión revertida para {0}.</OrderedWork.Config.SplitMerge.MergeReverted>
+  <OrderedWork.Config.SplitMerge.OrderReverted>Orden de Givers restaurado para {0}.</OrderedWork.Config.SplitMerge.OrderReverted>
+  <OrderedWork.Config.SplitMeta.ActionWord>Palabra de acción</OrderedWork.Config.SplitMeta.ActionWord></LanguageData>

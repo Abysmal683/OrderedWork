@@ -143,6 +143,7 @@ namespace OrderedWork
                 Vanilla = source.Vanilla,
                 Base = source.Base,
                 Label = source.Label,
+                ActionWord = source.ActionWord,
                 Description = source.Description,
                 Visible = source.Visible,
                 Order = source.Order,

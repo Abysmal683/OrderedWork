@@ -84,7 +84,9 @@ namespace OrderedWork
                 string label = string.IsNullOrWhiteSpace(wt.Label) ? def.defName : wt.Label;
                 def.labelShort = label;
                 def.pawnLabel = label;
-                def.gerundLabel = label;
+                def.gerundLabel = string.IsNullOrWhiteSpace(wt.ActionWord)
+                    ? (string.IsNullOrWhiteSpace(def.gerundLabel) ? label : def.gerundLabel)
+                    : wt.ActionWord;
                 if (!string.IsNullOrWhiteSpace(wt.Description))
                 {
                     def.description = wt.Description;

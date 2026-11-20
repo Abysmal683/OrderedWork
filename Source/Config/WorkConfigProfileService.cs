@@ -81,6 +81,7 @@ namespace OrderedWork.Config
                     Vanilla = true,
                     Base = null,
                     Label = workType.labelShort,
+                    ActionWord = workType.gerundLabel,
                     Description = workType.description,
                     Visible = workType.visible,
                     Order = order++,

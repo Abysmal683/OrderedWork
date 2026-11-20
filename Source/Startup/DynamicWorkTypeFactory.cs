@@ -37,12 +37,13 @@ namespace OrderedWork.Startup
                 }
 
                 string label = string.IsNullOrWhiteSpace(split.Label) ? entry.Key : split.Label;
+                string actionWord = string.IsNullOrWhiteSpace(split.ActionWord) ? label : split.ActionWord;
                 WorkTypeDef def = new WorkTypeDef
                 {
                     defName = entry.Key,
                     labelShort = label,
                     pawnLabel = label,
-                    gerundLabel = label,
+                    gerundLabel = actionWord,
                     description = string.IsNullOrWhiteSpace(split.Description)
                         ? "Split from " + baseDef.labelShort
                         : split.Description,

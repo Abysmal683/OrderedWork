@@ -32,6 +32,7 @@ namespace OrderedWork.UI
             Rect track = new Rect(viewport.xMax + 2f, outRect.y, barWidth, outRect.height);
             float maxScroll = Mathf.Max(0f, content.height - viewport.height);
             scroll.y = Mathf.Clamp(scroll.y, 0f, maxScroll);
+            OrderedWorkMod.HandleCtrlWheel(viewport, maxScroll, ref scroll.y, PassionRowHeight);
             WorkGridScrollView.HandleVertical(track, viewport, content, ref scroll, typeof(PassionWeightsView));
 
             GUI.BeginGroup(viewport);
@@ -76,6 +77,7 @@ namespace OrderedWork.UI
             }
 
             Rect row = new Rect(0f, index * PassionRowHeight - scroll, viewport.width, 24f);
+            Rect screenRow = new Rect(viewport.x, viewport.y + row.y, viewport.width, 24f);
             UiZebra.Draw(row, index);
             WorkTypePaletteView.PassionVisual visual = WorkTypePaletteView.ResolvePassionVisual(info.Passion);
             if (visual.Texture != null)
@@ -96,10 +98,10 @@ namespace OrderedWork.UI
                     ? rateLine
                     : description + "\n\n" + rateLine;
             }
-            if (!string.IsNullOrEmpty(description) && Mouse.IsOver(row))
+            if (!string.IsNullOrEmpty(description) && Mouse.IsOver(screenRow))
             {
                 pendingTooltip = description;
-                pendingTooltipRect = new Rect(viewport.x + row.x, viewport.y + row.y, 170f, 24f);
+                pendingTooltipRect = screenRow;
             }
 
             float fieldWidth = Mathf.Max(54f, (row.width - 170f - 24f) / 3f);

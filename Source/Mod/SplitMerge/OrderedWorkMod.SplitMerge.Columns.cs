@@ -42,12 +42,41 @@ namespace OrderedWork
                 return;
             }
 
-            float delta = current.delta.y;
-            if (Mathf.Abs(delta) > 0.001f)
-            {
-                scroll += delta > 0f ? -SplitMergeRowHeight : SplitMergeRowHeight;
-            }
+            ApplyWheelStep(current, maxScroll, ref scroll, SplitMergeRowHeight);
             current.Use();
+        }
+
+        internal static void HandleCtrlWheel(Rect area, float maxScroll, ref float scroll, float step)
+        {
+            if (maxScroll <= 0f)
+            {
+                return;
+            }
+
+            Event current = Event.current;
+            if (current.type != EventType.ScrollWheel || !Mouse.IsOver(area))
+            {
+                return;
+            }
+
+            bool ctrl = current.control || Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
+            if (!ctrl)
+            {
+                return;
+            }
+
+            ApplyWheelStep(current, maxScroll, ref scroll, step);
+            current.Use();
+        }
+
+        private static void ApplyWheelStep(Event current, float maxScroll, ref float scroll, float step)
+        {
+            float delta = current.delta.y;
+            if (Mathf.Abs(delta) <= 0.001f)
+            {
+                return;
+            }
+            scroll = Mathf.Clamp(scroll + (delta > 0f ? step : -step), 0f, maxScroll);
         }
 
         internal void HandleColumnScrollbarInput(int columnId, Rect track, float visibleHeight, float maxScroll, ref float scroll)

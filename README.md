@@ -2,7 +2,7 @@
 
 Ordered Work is a RimWorld 1.7 work-management mod: it orders WorkTypes and WorkGivers, supports split/merge editing, and adds per-pawn Work Control, schedule presets, hourly focus and zone policy. It does not delete WorkTypes or WorkGivers.
 
-> Current build: **0.3.0-alpha.266**. Test in a throwaway colony; do not use it in a main save.
+> Current build: **0.3.0-alpha.268**. Test in a throwaway colony; do not use it in a main save.
 
 ## Start here
 
