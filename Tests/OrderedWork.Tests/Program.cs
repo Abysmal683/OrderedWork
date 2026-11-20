@@ -37,6 +37,7 @@ namespace OrderedWork.Tests
             Run("AtomicJsonRecordStore roundtrips and backs up", TestAtomicStoreRoundtrip);
             Run("AtomicJsonRecordStore rejects unsupported schema", TestAtomicStoreSchema);
             Run("Profile normalize drops null, empty and duplicate givers", TestProfileNormalize);
+            Run("Profile clone rebuilds an independent reference copy", TestProfileClone);
             Run("Profile create split moves selected givers", TestProfileCreateSplit);
             Run("Profile reconcile restores merge ownership", TestProfileRevertMerge);
             Run("Profile reconcile restores order sequence", TestProfileRevertOrder);
@@ -180,6 +181,26 @@ namespace OrderedWork.Tests
             Assert(profile.WorkTypes["A"].Givers[0].DefName == "G", "normalized giver name");
         }
 
+        private static void TestProfileClone()
+        {
+            WorkConfigProfile source = new WorkConfigProfile
+            {
+                Profile = "reference",
+                WorkTypes =
+                {
+                    ["A"] = new WorkTypeConfig
+                    {
+                        Label = "A",
+                        Givers = new List<GiverConfig> { new GiverConfig { DefName = "G", Order = 0 } }
+                    }
+                }
+            };
+            WorkConfigProfile clone = WorkConfigProfileService.CloneForProfile(source, "active");
+            Assert(clone.Profile == "active", "clone profile name");
+            Assert(clone.WorkTypes["A"].Givers[0].DefName == "G", "clone giver");
+            clone.WorkTypes["A"].Givers[0].DefName = "Changed";
+            Assert(source.WorkTypes["A"].Givers[0].DefName == "G", "clone is independent");
+        }
         private static void TestProfileCreateSplit()
         {
             WorkConfigProfile profile = new WorkConfigProfile();

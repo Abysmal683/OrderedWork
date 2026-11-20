@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.290)
+# Ordered Work — Current Checklist (0.3.0-alpha.291)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -161,6 +161,13 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Paint, erase, load, save and apply preserve their behavior.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of paint, erase, load, save and apply.
+## Global reset semantics (alpha.291)
+
+- [x] Reset clears passion weights, filters, colors and drafts.
+- [x] Reset rebuilds only the active profile from `reference.json`.
+- [x] Other profile/pending/reference files remain untouched.
+- [x] Added profile clone test; 28 cases total.
+- [ ] Runtime check of reset with a custom active profile.
 ## Documentation alignment (alpha.290)
 
 - [x] Added verification reference and linked it from the docs map.

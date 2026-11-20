@@ -167,16 +167,50 @@ namespace OrderedWork
 
         private void ResetAllSettings()
         {
-            // Session/UI reset only. Never delete or overwrite profile, pending or reference JSON.
+            // Settings reset is session-only; the active profile is rebuilt from reference.json
+            // without deleting any profile/pending/reference file.
             try
             {
-                Settings.workTypeColors.Clear();
                 Settings.autoRecommendNewColony = true;
                 Settings.autoHideScrollbars = true;
                 Settings.paletteStressTest = false;
+                Settings.keepDestroyedPawnOrders = false;
+                Settings.allowEmptyOrigin = false;
                 Settings.workControlHeight = 0f;
-                selectedGiverType = WorkConfigStore.GetOrderedVisibleWorkTypes(
-                    WorkConfigStore.LoadEditingProfile(activeProfileName)).FirstOrDefault()?.defName ?? "";
+                Settings.prioritizeLowSkillPassion = true;
+                Settings.verboseLogging = false;
+                Settings.logCategories = 0;
+                Settings.skillFilterLevel = true;
+                Settings.skillFilterPassion = true;
+                Settings.skillFilterExpertise = false;
+                Settings.skillFilterMods = true;
+                Settings.recommendationPins.Clear();
+                Settings.recommendationPins.Add("Patient");
+                Settings.recommendationPins.Add("PatientBedRest");
+                Settings.recommendationPins.Add("Firefighter");
+                Settings.workTypeColors.Clear();
+                PassionWeightPolicy.ResetToDefaults(Settings);
+
+                string profileName = string.IsNullOrWhiteSpace(activeProfileName) ? "default" : activeProfileName.Trim();
+                WorkConfigProfile reference = WorkConfigStore.LoadReference();
+                if (reference != null)
+                {
+                    WorkConfigProfile clean = WorkConfigProfileService.CloneForProfile(reference, profileName);
+                    if (!WorkConfigStore.SaveProfile(clean, true))
+                    {
+                        throw new IOException("Could not write the reference-based active profile.");
+                    }
+                    WorkConfigStore.SavePending(clean);
+                    OrderedWorkStartup.ApplyProfileNow(clean, Settings, this);
+                    selectedGiverType = WorkConfigStore.GetOrderedVisibleWorkTypes(clean).FirstOrDefault()?.defName ?? "";
+                }
+                else
+                {
+                    Log.Warning("[Ordered Work] Reset skipped active profile: reference.json is missing.");
+                    selectedGiverType = WorkConfigStore.GetOrderedVisibleWorkTypes(
+                        WorkConfigStore.LoadEditingProfile(activeProfileName)).FirstOrDefault()?.defName ?? "";
+                }
+
                 splitMerge.ResetDrafts();
                 ResetEditorUiState();
                 dragKind = 0;

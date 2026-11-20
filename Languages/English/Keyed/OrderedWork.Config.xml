@@ -21,7 +21,7 @@
   <OrderedWork.Config.General.ResetInfo>Reset the mod configuration without touching pawn 1..N priorities.</OrderedWork.Config.General.ResetInfo>
   <OrderedWork.Config.General.ResetButton>Reset config mod all</OrderedWork.Config.General.ResetButton>
   <OrderedWork.Config.General.ResetTip>Reset all Ordered Work configuration.</OrderedWork.Config.General.ResetTip>
-  <OrderedWork.Config.General.ResetConfirmInfo>This clears Ordered Work UI settings, colors, toggles, panel height and unsaved drafts. Profile, pending and reference JSON files are not deleted. Pawn work priorities are not touched.</OrderedWork.Config.General.ResetConfirmInfo>
+  <OrderedWork.Config.General.ResetConfirmInfo>This clears UI settings, colors, toggles, passion weights and drafts, and rebuilds the active profile from reference.json. Other profile, pending and reference files are not deleted. Pawn work priorities are not touched.</OrderedWork.Config.General.ResetConfirmInfo>
   <OrderedWork.Config.General.ResetConfirm>Confirm reset config mod all</OrderedWork.Config.General.ResetConfirm>
   <OrderedWork.Config.General.ResetConfirmTip>Confirm the full configuration reset.</OrderedWork.Config.General.ResetConfirmTip>
   <OrderedWork.Config.General.CancelReset>Cancel reset</OrderedWork.Config.General.CancelReset>

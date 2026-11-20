@@ -43,6 +43,57 @@ namespace OrderedWork.Config
             return ordered;
         }
 
+        /// <summary>Builds a clean active profile from the stored vanilla reference.</summary>
+        public static WorkConfigProfile CloneForProfile(WorkConfigProfile source, string profileName)
+        {
+            WorkConfigProfile clone = new WorkConfigProfile
+            {
+                Profile = string.IsNullOrWhiteSpace(profileName) ? "default" : profileName.Trim(),
+                CreatedUtc = System.DateTime.UtcNow.ToString("o")
+            };
+            if (source == null)
+            {
+                return clone;
+            }
+            foreach (WorkConfigMod mod in source.Mods ?? new List<WorkConfigMod>())
+            {
+                if (mod != null)
+                {
+                    clone.Mods.Add(new WorkConfigMod { PackageId = mod.PackageId, Name = mod.Name });
+                }
+            }
+            foreach (KeyValuePair<string, WorkTypeConfig> entry in source.WorkTypes ?? new Dictionary<string, WorkTypeConfig>())
+            {
+                WorkTypeConfig type = entry.Value;
+                if (type == null)
+                {
+                    continue;
+                }
+                WorkTypeConfig copy = new WorkTypeConfig
+                {
+                    Vanilla = type.Vanilla,
+                    Base = type.Base,
+                    Label = type.Label,
+                    ActionWord = type.ActionWord,
+                    Description = type.Description,
+                    Visible = type.Visible,
+                    Hidden = type.Hidden,
+                    Order = type.Order,
+                    Mod = type.Mod,
+                    Givers = new List<GiverConfig>()
+                };
+                foreach (GiverConfig giver in type.Givers ?? new List<GiverConfig>())
+                {
+                    if (giver != null)
+                    {
+                        copy.Givers.Add(new GiverConfig { DefName = giver.DefName, Order = giver.Order, Mod = giver.Mod });
+                    }
+                }
+                clone.WorkTypes[entry.Key] = copy;
+            }
+            return clone;
+        }
+
         /// <summary>
         /// Appends visible live WorkTypes and Givers that are missing from the profile.
         /// This keeps profiles usable after a mod adds a WorkType or a Giver.

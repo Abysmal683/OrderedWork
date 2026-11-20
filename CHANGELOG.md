@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.291] - 2026-11-19
+
+### Changed — Global reset semantics
+- `Reset config mod all` now clears passion weights, UI toggles, filters, colors and drafts, then rebuilds the **active** profile from `reference.json`.
+- Other profile, pending and reference JSON files are preserved; the active profile file is overwritten with the clean reference content, not deleted.
+- Added a profile clone test; the suite is now 28 cases.
+- Nullable remains enabled in Core; the main project is intentionally left disabled because a dry run produced 876 nullability warnings.
+
 ## [0.3.0-alpha.290] - 2026-11-19
 
 ### Documentation — Current behavior alignment

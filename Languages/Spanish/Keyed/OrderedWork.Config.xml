@@ -21,7 +21,7 @@
   <OrderedWork.Config.General.ResetInfo>Reinicia la configuración del mod sin tocar las prioridades 1..N de los peones.</OrderedWork.Config.General.ResetInfo>
   <OrderedWork.Config.General.ResetButton>Reiniciar toda la configuración</OrderedWork.Config.General.ResetButton>
   <OrderedWork.Config.General.ResetTip>Reinicia toda la configuración de Ordered Work.</OrderedWork.Config.General.ResetTip>
-  <OrderedWork.Config.General.ResetConfirmInfo>Esto limpia ajustes de UI, colores, toggles, altura del panel y borradores sin guardar. No elimina los archivos JSON de perfil, pending ni referencia. Las prioridades de los pawns no se tocan.</OrderedWork.Config.General.ResetConfirmInfo>
+  <OrderedWork.Config.General.ResetConfirmInfo>Esto limpia ajustes de UI, colores, toggles, pesos de pasiones y borradores, y reconstruye el perfil activo desde reference.json. No elimina los demás archivos de perfil, pending ni referencia. Las prioridades de los pawns no se tocan.</OrderedWork.Config.General.ResetConfirmInfo>
   <OrderedWork.Config.General.ResetConfirm>Confirmar reinicio total</OrderedWork.Config.General.ResetConfirm>
   <OrderedWork.Config.General.ResetConfirmTip>Confirma el reinicio completo de la configuración.</OrderedWork.Config.General.ResetConfirmTip>
   <OrderedWork.Config.General.CancelReset>Cancelar reinicio</OrderedWork.Config.General.CancelReset>

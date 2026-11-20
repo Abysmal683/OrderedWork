@@ -3,7 +3,7 @@
 ## Mod Settings — Rules and General
 
 - The settings window has two in-memory tabs: **Rules** (WorkType order and Split/Merge/Order editor) and **General** (auto settings, palette stress test, dense-rank spike, reset). Tab selection is not persisted.
-- `Reset config mod all` clears UI settings, colors, toggles, panel height and unsaved drafts. It does not delete or overwrite profile, pending or reference JSON files, and does not touch pawn priorities.
+- `Reset config mod all` clears UI settings, colors, toggles, passion weights and drafts, then rebuilds the active profile from `reference.json`. Other profile, pending and reference JSON files are not deleted; pawn priorities are untouched.
 - The editor has `Split` / `Merge` / `Order` modes. Split and Merge use two columns with the left column always **Origin**; the right header is `Split destination` or `Destination`.
 - Split and Merge action buttons expose tooltips. `Add split`, `Merge selected`, `Merge all` and `Cancel draft` explain their effect on hover.
 - Candidate lists and the Order editor columns show at most **10 rows**. Use the scrollbar or `Ctrl+wheel` over the list/column; a plain wheel scrolls the outer settings.
