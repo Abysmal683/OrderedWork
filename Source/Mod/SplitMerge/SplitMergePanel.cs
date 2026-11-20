@@ -49,6 +49,7 @@ namespace OrderedWork
         internal string MetaDefName = "";
         internal string MetaLabel = "";
         internal string MetaDescription = "";
+        private string splitPendingDelete = "";
 
         internal void Draw(Listing_Standard list, OrderedWorkMod owner)
         {
@@ -244,9 +245,169 @@ namespace OrderedWork
         }
 
 
+        private void DrawExistingSplits(Listing_Standard list)
+        {
+            WorkConfigProfile profile = host.LoadEditingProfile();
+            if (profile == null)
+            {
+                return;
+            }
+
+            List<KeyValuePair<string, WorkTypeConfig>> splits = profile.WorkTypes
+                .Where(pair => pair.Value != null && !pair.Value.Vanilla && !string.IsNullOrEmpty(pair.Value.Base))
+                .OrderBy(pair => pair.Value.Label ?? pair.Key, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+            if (splits.Count == 0)
+            {
+                list.Label(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.NoSplits", "No splits created yet."));
+                return;
+            }
+
+            list.Label(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.Splits", "Existing splits"));
+            foreach (KeyValuePair<string, WorkTypeConfig> pair in splits)
+            {
+                Rect row = list.GetRect(24f);
+                UiZebra.Draw(row, splits.IndexOf(pair));
+                Widgets.LabelEllipses(new Rect(row.x + 4f, row.y, row.width - 184f, 22f),
+                    (pair.Value.Label ?? pair.Key) + " · " + pair.Value.Base + " · " + (pair.Value.Givers != null ? pair.Value.Givers.Count : 0));
+                if (Widgets.ButtonText(new Rect(row.xMax - 174f, row.y, 80f, 22f),
+                    OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.Edit", "Edit")))
+                {
+                    MetaDefName = pair.Key;
+                    MetaLabel = pair.Value.Label ?? "";
+                    MetaDescription = pair.Value.Description ?? "";
+                    splitPendingDelete = "";
+                    SplitDirty = true;
+                }
+                bool confirming = splitPendingDelete == pair.Key;
+                if (Widgets.ButtonText(new Rect(row.xMax - 88f, row.y, 84f, 22f),
+                    confirming
+                        ? OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.ConfirmDelete", "Confirm")
+                        : OrderedWorkMod.ConfigText("OrderedWork.Config.Common.Delete", "Delete")))
+                {
+                    if (!confirming)
+                    {
+                        splitPendingDelete = pair.Key;
+                    }
+                    else
+                    {
+                        string defName = pair.Key;
+                        host.SafeSplitMergeAction(delegate { DeleteSplit(defName); });
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(MetaDefName))
+            {
+                DrawSplitMetadataEditor(list);
+            }
+
+            if (UiButtonBar.Button(list.GetRect(26f),
+                OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.RevertSplit", "Revert Split"), true))
+            {
+                RevertSplitDraft();
+            }
+        }
+
+        private void DrawSplitMetadataEditor(Listing_Standard list)
+        {
+            list.Gap(6f);
+            list.Label(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.Metadata", "Split metadata") + ": " + MetaDefName);
+            MetaLabel = UiFieldRow.Text(list.GetRect(26f),
+                OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMeta.Label", "Label"), MetaLabel, 86f);
+            MetaDescription = UiFieldRow.Text(list.GetRect(26f),
+                OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMeta.Description", "Description"), MetaDescription, 86f);
+            Rect buttons = list.GetRect(26f);
+            Rect[] cells = UiFlex.Columns(buttons, 6f, 1f, 1f);
+            if (UiButtonBar.Button(cells[0], OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.SaveMetadata", "Save metadata"), true))
+            {
+                host.SafeSplitMergeAction(delegate { SaveSplitMetadata(); });
+            }
+            if (UiButtonBar.Button(cells[1], OrderedWorkMod.ConfigText("OrderedWork.Config.Common.Cancel", "Cancel"), true))
+            {
+                ResetMetadata();
+            }
+        }
+
+        private void SaveSplitMetadata()
+        {
+            WorkConfigProfile profile = host.LoadEditingProfile();
+            if (profile == null || string.IsNullOrEmpty(MetaDefName)
+                || !profile.WorkTypes.TryGetValue(MetaDefName, out WorkTypeConfig split)
+                || split == null || split.Vanilla || string.IsNullOrEmpty(split.Base))
+            {
+                return;
+            }
+            split.Label = string.IsNullOrWhiteSpace(MetaLabel) ? MetaDefName : MetaLabel.Trim();
+            split.Description = MetaDescription != null ? MetaDescription.Trim() : "";
+            WorkConfigStore.SaveProfile(profile, true);
+            WorkConfigStore.SavePending(profile);
+            OrderedWorkStartup.ApplyProfileNow(profile, OrderedWorkMod.Settings, host);
+            Messages.Message(string.Format(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.MetadataSaved", "Split metadata saved: {0}"), MetaDefName),
+                MessageTypeDefOf.TaskCompletion, false);
+            ResetMetadata();
+        }
+
+        private void DeleteSplit(string defName)
+        {
+            WorkConfigProfile profile = host.LoadEditingProfile();
+            if (profile == null || string.IsNullOrEmpty(defName)
+                || !profile.WorkTypes.TryGetValue(defName, out WorkTypeConfig split)
+                || split == null || split.Vanilla || string.IsNullOrEmpty(split.Base))
+            {
+                return;
+            }
+            if (!profile.WorkTypes.TryGetValue(split.Base, out WorkTypeConfig origin) || origin == null)
+            {
+                Messages.Message(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.BaseMissing",
+                    "Cannot delete this split: its base WorkType is missing."), MessageTypeDefOf.RejectInput, false);
+                return;
+            }
+            origin.Givers = origin.Givers ?? new List<GiverConfig>();
+            foreach (GiverConfig giver in split.Givers ?? new List<GiverConfig>())
+            {
+                if (giver != null && origin.Givers.All(g => g == null || g.DefName != giver.DefName))
+                {
+                    origin.Givers.Add(new GiverConfig
+                    {
+                        DefName = giver.DefName,
+                        Order = origin.Givers.Count,
+                        Mod = giver.Mod
+                    });
+                }
+            }
+            for (int i = 0; i < origin.Givers.Count; i++)
+            {
+                origin.Givers[i].Order = i;
+            }
+            profile.WorkTypes.Remove(defName);
+            WorkConfigStore.SaveProfile(profile, true);
+            WorkConfigStore.SavePending(profile);
+            OrderedWorkStartup.ApplyProfileNow(profile, OrderedWorkMod.Settings, host);
+            Messages.Message(string.Format(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.Deleted", "Split deleted and Givers returned: {0}"), defName),
+                MessageTypeDefOf.TaskCompletion, false);
+            splitPendingDelete = "";
+            ResetMetadata();
+            RevertSplitDraft();
+        }
+
+        private void RevertSplitDraft()
+        {
+            SplitOrigin = "";
+            SplitName = "";
+            SplitDescription = "";
+            SplitDraft.Clear();
+            SplitOriginScroll = 0f;
+            SplitDraftScroll = 0f;
+            SplitDirty = false;
+            splitPendingDelete = "";
+            ResetMetadata();
+        }
         internal void DrawSplitEditor(Listing_Standard list)
         {
             host.EnsureSplitMergeDefaults();
+            DrawExistingSplits(list);
+            list.Gap(8f);
 
             Rect originRect = list.GetRect(28f);
             host.DrawWorkTypeSelector(originRect, OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.OriginWorkType", "Origin work type: "), SplitOrigin, OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.SelectOrigin", "Select origin work type"), delegate(string defName)
@@ -313,6 +474,8 @@ namespace OrderedWork
         internal void DrawMergeEditor(Listing_Standard list)
         {
             host.EnsureSplitMergeDefaults();
+            DrawExistingSplits(list);
+            list.Gap(8f);
 
             Rect selectorRect = list.GetRect(28f);
             float selectorHalf = (selectorRect.width - 8f) * 0.5f;

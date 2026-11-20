@@ -14,4 +14,4 @@ Goal: move config-tab state and drawing out of `OrderedWorkMod`.
 
 - [ ] `SplitMergePanel` owns split/merge/drag/scroll/metadata state.
 - [ ] Remove the remaining config fields from `OrderedWorkMod`.
-- [x] SplitMerge state/drawing/validation/persistence/metadata extracted.\n- [ ] Runtime check of profile, work order, giver-order and SplitMerge panels.
+- [x] SplitMerge state/drawing/validation/persistence/metadata extracted.\n- [x] Split tab lists existing splits with edit/delete/metadata/revert draft.\n- [ ] Runtime check of profile, work order, giver-order and SplitMerge panels.

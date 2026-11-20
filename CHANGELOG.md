@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.263] - 2026-11-19
+
+### Added — split list and metadata editing
+- Split tab now lists existing split WorkTypes with base and giver count.
+- Added edit metadata, two-step delete, and revert-draft actions.
+- Deleting a split returns its Givers to its Base when available.
+- Metadata edits only change Label and Description; defName and Base stay stable.
+- Added the split-list keys in English, Spanish and SpanishLatin.
+
 ## [0.3.0-alpha.262] - 2026-11-19
 
 ### Refactor — finish SplitMergePanel and group mod panels

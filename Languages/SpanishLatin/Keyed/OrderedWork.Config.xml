@@ -174,4 +174,13 @@
   <OrderedWork.Config.General.LogPassion>Pasión / VSE</OrderedWork.Config.General.LogPassion>
   <OrderedWork.Config.General.LogConfig>Config mod</OrderedWork.Config.General.LogConfig>
   <OrderedWork.Config.General.LogHarmony>Harmony</OrderedWork.Config.General.LogHarmony>  <OrderedWork.Config.SplitMerge.ApplyFailed>No se pudo aplicar Dividir/Fusionar. Guarda la partida, reinicia RimWorld e inténtalo de nuevo.</OrderedWork.Config.SplitMerge.ApplyFailed>
-</LanguageData>
+  <OrderedWork.Config.SplitMerge.NoSplits>Aún no hay divisiones creadas.</OrderedWork.Config.SplitMerge.NoSplits>
+  <OrderedWork.Config.SplitMerge.Splits>Divisiones existentes</OrderedWork.Config.SplitMerge.Splits>
+  <OrderedWork.Config.SplitMerge.Edit>Editar</OrderedWork.Config.SplitMerge.Edit>
+  <OrderedWork.Config.SplitMerge.ConfirmDelete>Confirmar</OrderedWork.Config.SplitMerge.ConfirmDelete>
+  <OrderedWork.Config.SplitMerge.RevertSplit>Revertir división</OrderedWork.Config.SplitMerge.RevertSplit>
+  <OrderedWork.Config.SplitMerge.Metadata>Metadatos de la división</OrderedWork.Config.SplitMerge.Metadata>
+  <OrderedWork.Config.SplitMerge.SaveMetadata>Guardar metadatos</OrderedWork.Config.SplitMerge.SaveMetadata>
+  <OrderedWork.Config.SplitMerge.MetadataSaved>Metadatos de la división guardados: {0}</OrderedWork.Config.SplitMerge.MetadataSaved>
+  <OrderedWork.Config.SplitMerge.BaseMissing>No se puede eliminar esta división: falta su tipo de trabajo base.</OrderedWork.Config.SplitMerge.BaseMissing>
+  <OrderedWork.Config.SplitMerge.Deleted>División eliminada y WorkGivers devueltos: {0}</OrderedWork.Config.SplitMerge.Deleted></LanguageData>

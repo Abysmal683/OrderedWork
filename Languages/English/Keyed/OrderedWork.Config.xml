@@ -174,4 +174,13 @@
   <OrderedWork.Config.General.LogPassion>Passion / VSE</OrderedWork.Config.General.LogPassion>
   <OrderedWork.Config.General.LogConfig>Config mod</OrderedWork.Config.General.LogConfig>
   <OrderedWork.Config.General.LogHarmony>Harmony</OrderedWork.Config.General.LogHarmony>  <OrderedWork.Config.SplitMerge.ApplyFailed>Split/Merge could not be applied. Save your game, restart RimWorld and try again.</OrderedWork.Config.SplitMerge.ApplyFailed>
-</LanguageData>
+  <OrderedWork.Config.SplitMerge.NoSplits>No splits created yet.</OrderedWork.Config.SplitMerge.NoSplits>
+  <OrderedWork.Config.SplitMerge.Splits>Existing splits</OrderedWork.Config.SplitMerge.Splits>
+  <OrderedWork.Config.SplitMerge.Edit>Edit</OrderedWork.Config.SplitMerge.Edit>
+  <OrderedWork.Config.SplitMerge.ConfirmDelete>Confirm</OrderedWork.Config.SplitMerge.ConfirmDelete>
+  <OrderedWork.Config.SplitMerge.RevertSplit>Revert Split</OrderedWork.Config.SplitMerge.RevertSplit>
+  <OrderedWork.Config.SplitMerge.Metadata>Split metadata</OrderedWork.Config.SplitMerge.Metadata>
+  <OrderedWork.Config.SplitMerge.SaveMetadata>Save metadata</OrderedWork.Config.SplitMerge.SaveMetadata>
+  <OrderedWork.Config.SplitMerge.MetadataSaved>Split metadata saved: {0}</OrderedWork.Config.SplitMerge.MetadataSaved>
+  <OrderedWork.Config.SplitMerge.BaseMissing>Cannot delete this split: its base WorkType is missing.</OrderedWork.Config.SplitMerge.BaseMissing>
+  <OrderedWork.Config.SplitMerge.Deleted>Split deleted and Givers returned: {0}</OrderedWork.Config.SplitMerge.Deleted></LanguageData>
