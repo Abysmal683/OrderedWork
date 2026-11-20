@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.261] - 2026-11-19
+
+### Refactor — finish SplitMerge persistence and metadata
+- Moved `SaveSplit` and `SaveMerge` into `SplitMergePanel`.
+- Moved split metadata editing into the panel; the host keeps only a reset bridge.
+- The panel now owns drafts, drawing, validation, persistence and metadata.
+- Remaining host pieces are shared callbacks/helpers and the top-level settings host.
+
 ## [0.3.0-alpha.260] - 2026-11-19
 
 ### Refactor — move SplitMerge destination and validation

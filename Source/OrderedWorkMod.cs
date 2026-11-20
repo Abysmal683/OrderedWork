@@ -45,6 +45,7 @@ namespace OrderedWork
 
         // Order mode origin. Kept as UI-only state; the saved order itself lives in settings.
         private string selectedGiverType = "";
+        internal string SelectedGiverType { get { return selectedGiverType; } set { selectedGiverType = value; } }
 
 
         private int dragKind;

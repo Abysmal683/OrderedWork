@@ -17,7 +17,7 @@ namespace OrderedWork
 {
     public partial class OrderedWorkMod : Mod
     {
-        private WorkConfigProfile LoadEditingProfile()
+        internal WorkConfigProfile LoadEditingProfile()
         {
             WorkConfigProfile pending = WorkConfigStore.LoadPending(activeProfileName);
             if (pending != null)

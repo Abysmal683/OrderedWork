@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.260)
+# Ordered Work — Current Checklist (0.3.0-alpha.261)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -99,7 +99,7 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Split/merge drafts, scrolls, drag state and metadata moved to `SplitMergePanel`.
 - [x] Old state fields removed from `OrderedWorkMod`.
 - [x] Split/Merge save actions guarded by `SafeSplitMergeAction`.
-- [x] Move SplitMerge top-level editor into the panel.\n- [x] Move Split/Merge editors and giver column into the panel.\n- [x] Move destination column and split/merge validation.\n- [ ] Move persistence and metadata.
+- [x] Move SplitMerge top-level editor into the panel.\n- [x] Move Split/Merge editors and giver column into the panel.\n- [x] Move destination column and split/merge validation.\n- [x] Move persistence and metadata.
 - [ ] Runtime panel check.
 ## Config panel components (alpha.255)
 
