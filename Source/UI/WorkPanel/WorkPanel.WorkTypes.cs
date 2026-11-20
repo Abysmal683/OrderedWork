@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -99,8 +98,8 @@ namespace OrderedWork.UI
 
                     Widgets.Label(new Rect(row.x + 4f, row.y + 3f, 22f, 18f), (index + 1).ToString());
                     Widgets.LabelEllipses(new Rect(row.x + 26f, row.y + 3f, Mathf.Max(50f, row.width - 216f), 18f), workType.labelShort);
-                    SkillDef bestSkill = BestSkillDef(workType);
-                    SkillRecord bestRecord = bestSkill != null && pawn.skills != null ? pawn.skills.GetSkill(bestSkill) : null;
+                    SkillDef? bestSkill = BestSkillDef(workType);
+                    SkillRecord? bestRecord = bestSkill != null && pawn.skills != null ? pawn.skills.GetSkill(bestSkill) : null;
                     WorkTypePaletteView.DrawPassionIcon(
                         new Rect(row.xMax - 190f, row.y + 3f, 16f, 16f),
                         bestRecord != null ? bestRecord.passion : Passion.None);
@@ -207,22 +206,26 @@ namespace OrderedWork.UI
 
         private string AddWorkTypeLabel(WorkTypeDef workType)
         {
-            SkillRecord record = BestSkill(workType);
+            SkillRecord? record = BestSkill(workType);
             if (record == null)
             {
                 return workType.labelShort;
             }
-            SkillDef skill = BestSkillDef(workType);
+            SkillDef? skill = BestSkillDef(workType);
             return workType.labelShort + " · " + (skill != null ? skill.label : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkTypes.SkillFallback", "skill"))
                 + " " + record.Level + " · " + WorkTypePaletteView.PassionText(record.passion);
         }
 
-        private string WorkTypeTooltip(WorkTypeDef workType, int rank)
+        private string WorkTypeTooltip(WorkTypeDef? workType, int rank)
         {
-            string cached;
+            string? cached;
             if (workType != null && workTypeTooltipCache.TryGetValue(workType.defName, out cached))
             {
                 return cached;
+            }
+            if (workType == null)
+            {
+                return "";
             }
             StringBuilder builder = new StringBuilder();
             builder.AppendLine(workType.labelShort);
@@ -239,8 +242,8 @@ namespace OrderedWork.UI
                 }
             }
 
-            List<string> current;
-            List<string> baseline;
+            List<string>? current;
+            List<string>? baseline;
             if (!giverDrafts.TryGetValue(workType.defName, out current))
             {
                 current = WorkGiverOrderService.GetEffectiveOrder(pawn, workType);
