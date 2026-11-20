@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using OrderedWork.Config;
@@ -20,7 +19,7 @@ namespace OrderedWork.Services
         public static List<string> Resolve(Pawn pawn, PawnWorkOrder entry)
         {
             string[] slots = new string[Hours];
-            SchedulePreset preset = entry != null && !string.IsNullOrEmpty(entry.schedulePresetId)
+            SchedulePreset? preset = entry != null && !string.IsNullOrEmpty(entry.schedulePresetId)
                 ? SchedulePresetStore.TryLoadById(entry.schedulePresetId)
                 : null;
             if (entry != null && !string.IsNullOrEmpty(entry.schedulePresetId) && preset == null)
@@ -37,7 +36,7 @@ namespace OrderedWork.Services
                 if (string.IsNullOrEmpty(slots[hour]) && pawn != null && pawn.timetable != null)
                 {
                     TimeAssignmentDef current = pawn.timetable.GetAssignment(hour);
-                    slots[hour] = current != null ? current.defName : null;
+                    slots[hour] = current != null ? current.defName : "";
                 }
             }
 
@@ -58,7 +57,7 @@ namespace OrderedWork.Services
             return new List<string>(slots);
         }
 
-        public static TimeAssignmentDef ResolveDef(string defName)
+        public static TimeAssignmentDef? ResolveDef(string? defName)
         {
             return string.IsNullOrEmpty(defName)
                 ? null

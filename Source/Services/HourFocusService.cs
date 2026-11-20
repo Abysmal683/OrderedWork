@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +18,7 @@ namespace OrderedWork.Services
         private sealed class FocusState
         {
             public int Hour;
-            public string Signature;
+            public string Signature = "";
             public bool HasFocus;
         }
 
@@ -63,7 +62,7 @@ namespace OrderedWork.Services
         private static void ApplyPawn(OrderedWorkGameComponent component, Pawn pawn, Map map)
         {
             int hour = GenLocalDate.HourOfDay(map);
-            FocusState state;
+            FocusState? state;
             if (states.TryGetValue(pawn, out state) && state.Hour == hour)
             {
                 return;

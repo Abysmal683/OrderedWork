@@ -97,7 +97,7 @@ namespace OrderedWork.Services
             {
                 return null;
             }
-            TimeAssignmentDef def = SchedulePolicyResolver.ResolveDef(slotName);
+            TimeAssignmentDef? def = SchedulePolicyResolver.ResolveDef(slotName);
             return def ?? TimeAssignmentDefOf.Anything;
         }
 
