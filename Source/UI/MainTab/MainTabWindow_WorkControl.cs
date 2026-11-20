@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +33,7 @@ namespace OrderedWork.UI
         private Vector2 paletteScroll;
         private string searchText = "";
         private string workFilterText = "";
-        private WorkTypeDef workFilter;
+        private WorkTypeDef? workFilter;
         private bool invertWorkFilter;
         private WorkFilterScope workFilterScope = WorkFilterScope.Line;
 
@@ -63,8 +62,8 @@ namespace OrderedWork.UI
         private float resizeStartHeight;
 
         private readonly WorkControlInteraction interaction = new WorkControlInteraction();
-        private List<Pawn> cachedFilteredColonists;
-        private string cachedFilterSignature;
+        private List<Pawn>? cachedFilteredColonists;
+        private string? cachedFilterSignature;
         private int cachedFilterTick = -1;
 
         public override void DoWindowContents(Rect inRect)

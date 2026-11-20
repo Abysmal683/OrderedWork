@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -275,7 +274,7 @@ namespace OrderedWork.UI
 
         private bool IsSearchMatch(Pawn pawn)
         {
-            string term = searchText?.Trim();
+            string? term = searchText?.Trim();
             if (string.IsNullOrEmpty(term))
             {
                 return true;

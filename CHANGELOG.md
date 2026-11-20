@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.316] - 2026-11-19
+
+### Changed — Nullable MainTab root and search
+- Migrated `MainTabWindow_WorkControl` and `.Search`.
+- Build warning-free; 28 files still opt out.
+- Tests remain at 28 cases.
+
 ## [0.3.0-alpha.315] - 2026-11-19
 
 ### Changed — Nullable Focus dialogs
