@@ -4,7 +4,7 @@ namespace OrderedWork
 {
     public partial class OrderedWorkMod : Mod
     {
-        private void ResetGiverOrderDraft()
+        internal void ResetGiverOrderDraft()
         {
             orderEditorPanel.Reset();
         }

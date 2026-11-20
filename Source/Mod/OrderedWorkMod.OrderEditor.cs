@@ -17,7 +17,7 @@ namespace OrderedWork
 {
     public partial class OrderedWorkMod : Mod
     {
-        private void DrawOrderEditor(Listing_Standard list)
+        internal void DrawOrderEditor(Listing_Standard list)
         {
             EnsureSplitMergeDefaults();
             list.Label(ConfigText("OrderedWork.Config.Order.Info", "Giver order: choose a WorkType, then drag the destination list. Top = first."));

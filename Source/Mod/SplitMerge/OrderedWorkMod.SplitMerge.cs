@@ -17,38 +17,7 @@ namespace OrderedWork
 {
     public partial class OrderedWorkMod : Mod
     {
-        private void DrawSplitMergeEditor(Listing_Standard list)
-        {
-            list.Label(ConfigText("OrderedWork.Config.SplitMerge.Info", "Split / Merge / Order editor. Drafts are temporary; saved entries apply on restart."));
-            list.Gap(28f);
-
-            Rect modeRect = list.GetRect(28f);
-            UiTabBar.Draw(modeRect, new[] { ConfigText("OrderedWork.Config.SplitMerge.SplitTab", "Split"), ConfigText("OrderedWork.Config.SplitMerge.MergeTab", "Merge"), ConfigText("OrderedWork.Config.SplitMerge.OrderTab", "Order") }, splitMerge.EditorMode,
-                delegate(int index)
-                {
-                    if (splitMerge.EditorMode == index) return;
-                    splitMerge.EditorMode = index;
-                    ResetEditorUiState();
-                    ResetGiverOrderDraft();
-                });
-            list.Label(ConfigText("OrderedWork.Config.SplitMerge.Tip", "Tip: Ctrl+wheel or drag a column scrollbar to scroll that column; a plain wheel scrolls the settings."));
-            list.Gap(4f);
-
-            switch (splitMerge.EditorMode)
-            {
-                case EditorMerge:
-                    DrawMergeEditor(list);
-                    break;
-                case EditorOrder:
-                    DrawOrderEditor(list);
-                    break;
-                default:
-                    DrawSplitEditor(list);
-                    break;
-            }
-        }
-
-        private void DrawSplitEditor(Listing_Standard list)
+        internal void DrawSplitEditor(Listing_Standard list)
         {
             EnsureSplitMergeDefaults();
 
@@ -124,7 +93,7 @@ namespace OrderedWork
             return active != null ? active.Profile : null;
         }
 
-        private void DrawMergeEditor(Listing_Standard list)
+        internal void DrawMergeEditor(Listing_Standard list)
         {
             EnsureSplitMergeDefaults();
 

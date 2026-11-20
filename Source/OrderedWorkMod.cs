@@ -146,7 +146,7 @@ namespace OrderedWork
 
 
 
-        private void ResetEditorUiState()
+        internal void ResetEditorUiState()
         {
             ResetSplitMergeDrag();
         }

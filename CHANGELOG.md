@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.258] - 2026-11-19
+
+### Refactor — move SplitMerge top-level editor
+- Moved `DrawSplitMergeEditor` into `SplitMergePanel`.
+- The panel now owns the editor mode, tab strip and dispatch to Split/Merge/Order.
+- Kept the lower editors in the host for the next extraction step.
+
 ## [0.3.0-alpha.257] - 2026-11-19
 
 ### Refactor — SplitMergePanel state

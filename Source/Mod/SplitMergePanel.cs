@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
+using OrderedWork.UI.Layout;
 using UnityEngine;
+using Verse;
 
 namespace OrderedWork
 {
@@ -9,6 +12,9 @@ namespace OrderedWork
     /// </summary>
     internal sealed class SplitMergePanel
     {
+        internal const int EditorSplit = 0;
+        internal const int EditorMerge = 1;
+        internal const int EditorOrder = 2;
         internal int EditorMode;
         internal string SplitOrigin = "";
         internal string SplitName = "";
@@ -36,6 +42,43 @@ namespace OrderedWork
         internal string MetaLabel = "";
         internal string MetaDescription = "";
 
+        internal void Draw(Listing_Standard list, OrderedWorkMod host)
+        {
+            list.Label(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.Info", "Split / Merge / Order editor. Drafts are temporary; saved entries apply on restart."));
+            list.Gap(28f);
+
+            Rect modeRect = list.GetRect(28f);
+            UiTabBar.Draw(modeRect, new[]
+            {
+                OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.SplitTab", "Split"),
+                OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.MergeTab", "Merge"),
+                OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.OrderTab", "Order")
+            }, EditorMode, delegate(int index)
+            {
+                if (EditorMode == index)
+                {
+                    return;
+                }
+                EditorMode = index;
+                host.ResetEditorUiState();
+                host.ResetGiverOrderDraft();
+            });
+            list.Label(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.Tip", "Tip: Ctrl+wheel or drag a column scrollbar to scroll that column; a plain wheel scrolls the settings."));
+            list.Gap(4f);
+
+            switch (EditorMode)
+            {
+                case EditorMerge:
+                    host.DrawMergeEditor(list);
+                    break;
+                case EditorOrder:
+                    host.DrawOrderEditor(list);
+                    break;
+                default:
+                    host.DrawSplitEditor(list);
+                    break;
+            }
+        }
         internal void ResetDrafts()
         {
             SplitOrigin = "";

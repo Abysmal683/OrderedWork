@@ -103,7 +103,7 @@ namespace OrderedWork
                     ConfigText("OrderedWork.Config.Rules.AllowEmpty", "Allow empty origin (Rules-wide)"),
                     ref Settings.allowEmptyOrigin,
                     ConfigText("OrderedWork.Config.Rules.AllowEmptyTip", "Applies to both Split and Merge. Vanilla origins hide; splits delete. Disable to require at least one giver left in the origin."));
-                DrawSplitMergeEditor(list);
+                splitMerge.Draw(list, this);
             }
 
             list.Gap(10f);
