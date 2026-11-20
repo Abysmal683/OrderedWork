@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using OrderedWork.Config;
-using OrderedWork.UI;
 using OrderedWork.UI.Layout;
 using RimWorld;
 using UnityEngine;
@@ -66,9 +65,10 @@ namespace OrderedWork
                 }
                 if (Mouse.IsOver(row) && Event.current.type == EventType.MouseDown && Event.current.button == 1
                     && profile.WorkTypes.TryGetValue(type.defName, out WorkTypeConfig hiddenConfig)
-                    && hiddenConfig != null && hiddenConfig.Hidden)
+                    && hiddenConfig != null)
                 {
-                    hiddenConfig.Hidden = false;
+                    hiddenConfig.Hidden = !hiddenConfig.Hidden;
+                    hiddenConfig.Visible = true;
                     WorkConfigStore.SaveProfile(profile, true);
                     WorkConfigStore.SavePending(profile);
                     OrderedWorkStartup.ApplyProfileNow(profile, OrderedWorkMod.Settings, host);
@@ -107,52 +107,10 @@ namespace OrderedWork
                 RestoreReference(host, activeProfile);
             }
 
-            Rect addHidden = list.GetRect(24f);
-            if (Widgets.ButtonText(addHidden,
-                OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.AddHidden", "Add hidden WorkType")))
-            {
-                List<WorkTypeDef> candidates = DefDatabase<WorkTypeDef>.AllDefsListForReading
-                    .Where(type => type != null)
-                    .Where(type => !profile.WorkTypes.TryGetValue(type.defName, out WorkTypeConfig existing)
-                        || existing == null || !existing.Hidden)
-                    .OrderBy(type => type.labelShort)
-                    .ToList();
-                if (candidates.Count > 0)
-                {
-                    Find.WindowStack.Add(new WorkTypeDropdownWindow(
-                        OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.AddHidden", "Add hidden WorkType"),
-                        candidates,
-                        null,
-                        delegate(WorkTypeDef type)
-                        {
-                            if (type == null)
-                            {
-                                return;
-                            }
-                            if (!profile.WorkTypes.TryGetValue(type.defName, out WorkTypeConfig existing) || existing == null)
-                            {
-                                existing = new WorkTypeConfig
-                                {
-                                    Vanilla = true,
-                                    Label = type.labelShort,
-                                    ActionWord = type.gerundLabel,
-                                    Description = type.description,
-                                    Visible = true,
-                                    Order = profile.WorkTypes.Count
-                                };
-                                profile.WorkTypes[type.defName] = existing;
-                            }
-                            existing.Hidden = true;
-                            existing.Visible = true;
-                            WorkConfigStore.SaveProfile(profile, true);
-                            WorkConfigStore.SavePending(profile);
-                            OrderedWorkStartup.ApplyProfileNow(profile, OrderedWorkMod.Settings, host);
-                            initialized = false;
-                        }));
-                }
-            }
-            TooltipHandler.TipRegion(addHidden,
-                OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.AddHiddenTip", "Mark a WorkType hidden but active. Right-click its order row to remove the hidden mark."));
+            list.Gap(4f);
+            string hiddenHint = OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.HiddenHint",
+                "Right-click a WorkType row to mark it hidden or visible. Hidden WorkTypes stay active but are invisible in Work tab and Work Control.");
+            list.Label(hiddenHint);
         }
 
         private void RestoreReference(OrderedWorkMod host, string activeProfile)

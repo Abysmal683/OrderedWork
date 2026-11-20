@@ -3,6 +3,20 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.281] - 2026-11-19
+
+### Changed — Hidden WorkType workflow
+- Removed the separate `Add hidden WorkType` button.
+- Right-click any WorkType order row to toggle hidden; the row shows `[hidden]`.
+- Added a persistent hint under the order buttons explaining that hidden WorkTypes stay active but disappear from Work tab and Work Control.
+
+## [0.3.0-alpha.280] - 2026-11-19
+
+### Fixed — Work tab order at column generation
+- Applies the profile `naturalPriority` values in a `PawnColumnDefGenerator.ImpliedPawnColumnDefs` prefix, before Work tab columns are generated from the def list.
+- This mirrors the load-time behavior used by XML work-tab reorganizers and is the path confirmed working in runtime.
+- The `get_Columns` and `PawnTableOnGUI` guards remain as fallbacks.
+
 ## [0.3.0-alpha.279] - 2026-11-19
 
 ### Fixed — Work tab order before the getter source

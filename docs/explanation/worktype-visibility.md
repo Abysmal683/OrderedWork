@@ -15,8 +15,8 @@ Status: implemented in `0.3.0-alpha.278`; runtime verification pending.
 
 ## Config workflow
 
-- `Add hidden WorkType` in the Rules tab opens the WorkType picker and marks the selected WorkType hidden.
-- Right-click its row in the WorkType order list to remove the hidden mark.
+- Right-click any row in the WorkType order list to toggle its hidden mark; the row shows `[hidden]`.
+- The Rules tab includes a short hint explaining that hidden WorkTypes stay active but disappear from Work tab and Work Control.
 - Reordering the row reorders the hidden layer as well.
 - Applying a hidden change requires a restart for the safe boundary.
 

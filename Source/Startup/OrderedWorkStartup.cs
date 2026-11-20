@@ -136,6 +136,27 @@ namespace OrderedWork
 
 
 
+        internal static void ApplyWorkTypeNaturalPriority(WorkConfigProfile profile)
+        {
+            if (profile == null)
+            {
+                return;
+            }
+            int order = 0;
+            foreach (KeyValuePair<string, WorkTypeConfig> entry in profile.WorkTypes
+                .Where(entry => entry.Value != null)
+                .OrderBy(entry => entry.Value.Order))
+            {
+                WorkTypeDef def = DefDatabase<WorkTypeDef>.GetNamedSilentFail(entry.Key);
+                if (def == null)
+                {
+                    continue;
+                }
+                def.naturalPriority = 10000 - order * 10;
+                order++;
+            }
+        }
+
         internal static void RefreshWorkTabColumnOrder()
         {
             WorkConfigProfile profile = WorkConfigStore.LoadCachedActive()?.Profile;

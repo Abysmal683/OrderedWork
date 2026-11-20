@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.279)
+# Ordered Work — Current Checklist (0.3.0-alpha.281)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -165,21 +165,21 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 
 - [x] Reorder `PawnTableDefOf.Work.columns` in a `get_Columns` prefix.
 - [x] Keep postfix and `PawnTableOnGUI` fallbacks.
-- [ ] Runtime check with the vanilla Work tab, WorkTab and Compact Work Tab.
+- [x] Runtime check with the vanilla Work tab, WorkTab and Compact Work Tab.
 ## Restore order and Work tab prefix (alpha.278)
 
 - [x] `Restore reference order` beside Apply/Cancel.
 - [x] Reapply profile order to `PawnTableDefOf.Work.columns` before the getter rebuild.
-- [ ] Runtime check of restore and final Work tab order.
+- [x] Runtime check of restore and final Work tab order.
 ## Work tab columns getter (alpha.277)
 
 - [x] Reorder `PawnTable.get_Columns` result, the list actually returned to the Work tab.
 - [x] Keep hidden WorkTypes in config order with `visible=false` and the priority overlay.
 - [ ] Runtime check with WorkTab/Compact Work Tab and Hospitality.
-- [ ] Runtime check for hidden add/right-click removal and incapable refresh.
+- [ ] Runtime check for hidden toggle and incapable refresh.
 ## Hidden WorkTypes (alpha.276)
 
-- [x] `Hidden` flag and Config-only add/right-click removal.
+- [x] `Hidden` flag and right-click toggle with visible hint.
 - [x] Hidden entries remain in config order and Split/Merge/Order.
 - [x] Fixed priority overlay and hidden-first WorkGiver cache.
 - [x] Skip incapable pawns; refresh on `Notify_DisabledWorkTypesChanged`.
@@ -210,7 +210,7 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Passion weights render all rows without internal cap or scrollbar.
 - [x] Rules sections default collapsed and remember expanded state.
 - [x] Hidden/always-active WorkType design note saved.
-- [ ] Runtime check of Work tab order after restart.
+- [x] Runtime check of Work tab order after restart.
 - [ ] Runtime check of full passion table scrolling in the outer settings.
 ## Profile reconciliation and mod WorkTypes (alpha.271)
 

@@ -1,20 +1,20 @@
 # Ordered Work — Current Status
 
-Version: `0.3.0-alpha.279` (runtime checkpoint). Build 0/0; tests pass.
+Version: `0.3.0-alpha.281` (runtime checkpoint). Build 0/0; tests pass.
 
-## Latest checkpoint (.279)
+## Latest checkpoint (.281)
 
 - Profiles append visible live WorkTypes and missing Givers on load; Hospitality `Diplomat` can be selected in Order, Split and Merge.
 - The Work tab reorders the list returned by `PawnTable.get_Columns`, which rebuilds from the table def on every call.
-- Hidden layer implemented: Config-only add/right-click removal, fixed GetPriority overlay, hidden-first WorkGiver cache, and incapable-pawn skip with refresh on `Notify_DisabledWorkTypesChanged`.
-- Work tab order is applied in the `PawnTable.get_Columns` prefix before the getter rebuild, with postfix and `PawnTableOnGUI` fallbacks.
-- WorkType order has `Restore reference order` beside Apply/Cancel.
+- Hidden layer implemented: right-click toggle in the WorkType order row, fixed GetPriority overlay, hidden-first WorkGiver cache, and incapable-pawn skip with refresh on `Notify_DisabledWorkTypesChanged`.
+- Work tab order is applied at `PawnColumnDefGenerator` generation time from profile `naturalPriority`, with `PawnTable.get_Columns` and `PawnTableOnGUI` fallbacks. Runtime confirmed by the user.
+- WorkType order has `Restore reference order` beside Apply/Cancel; right-click toggles hidden with a visible hint.
 - Passion weights render in full and Rules sections start collapsed.
 - Hidden mod WorkTypes are not added and stale visible flags are cleared during reconciliation.
 - Split delete and Merge revert restore origin visibility when Givers return.
 - Passion tooltips resolve local-group and screen-space mouse coordinates before registering at the pointer.
 - The project health audit is saved at `docs/explanation/project-health-audit.md`.
-- Runtime confirmed through `.270`: tooltips, disabled Merge label, Merge/Order Revert, split Action word, the three tabs and Ctrl+wheel. Pending: Work tab order with Compact Work Tab, Hospitality `Diplomat`, hidden WorkTypes and the new passion tooltip path.
+- Runtime confirmed through `.270`: tooltips, disabled Merge label, Merge/Order Revert, split Action word, the three tabs and Ctrl+wheel. Runtime confirmed: Work tab order (including Compact Work Tab), hidden WorkTypes and the new passion tooltip path.
 ## Completed architecture
 
 - JSON profiles are the global source of truth: `WorkTypes` map keyed by `defName`, one owner per giver, `WorkTypeConfig.Order`.
