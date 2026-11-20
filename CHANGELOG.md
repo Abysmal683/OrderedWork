@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.290] - 2026-11-19
+
+### Documentation — Current behavior alignment
+- Added `docs/reference/verification.md` for `scripts/verify.ps1`, build-path overrides and nullable/analyzer status.
+- Updated the README and develop guide to use the verification script.
+- Corrected the historical design-notebook and policy-data status text; marked archive material as historical.
+
 ## [0.3.0-alpha.289] - 2026-11-19
 
 ### Hardened — Reset and preset actions

@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.289)
+# Ordered Work — Current Checklist (0.3.0-alpha.290)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -161,6 +161,12 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Paint, erase, load, save and apply preserve their behavior.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of paint, erase, load, save and apply.
+## Documentation alignment (alpha.290)
+
+- [x] Added verification reference and linked it from the docs map.
+- [x] README/develop guide use `scripts/verify.ps1`.
+- [x] Corrected design-notebook and policy-data status text.
+- [ ] Review the longer design-notebook history before the clothing pass.
 ## Reset and preset hardening (alpha.289)
 
 - [x] Reset config all is guarded and never deletes profile/pending/reference files.

@@ -2,7 +2,7 @@
 
 > Historical design notebook. Current contracts live in `docs/reference/`; use this file for rationale and rejected paths.
 
-Status: `0.3.0-alpha.96` implementation plus design notebook. Policy tabs (Zones/Schedule) are approved but not implemented.
+Historical design notebook. Current contracts are in `docs/reference/`. The implementation snapshot is `0.3.0-alpha.290`; Zones and Schedule have implemented slices, while clothing application and assigned-workbench priority remain pending.
 
 ## Goal
 

@@ -156,7 +156,7 @@ clothing_preset
   rules           WorkTypeDef -> apparel policy/outfit reference
 ```
 
-Clothing is not implemented in the first policy slice.
+Clothing fields are reserved and shown read-only; automatic clothing application is not implemented.
 
 ### Per-save tables (Scribe XML)
 

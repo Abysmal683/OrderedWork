@@ -23,7 +23,9 @@ Start with the need, not the file list.
 | Policy data model | [policy-data.md](reference/policy-data.md) |
 | Save and config layout | [save-and-config.md](reference/save-and-config.md) |
 | Hourly focus fields and storage | [schedule-focus.md](reference/schedule-focus.md) |
-| UI layout constraints | [ui-layout-rules.md](reference/ui-layout-rules.md) |\n| Localization boundaries | [localization.md](reference/localization.md) |
+| UI layout constraints | [ui-layout-rules.md](reference/ui-layout-rules.md) |
+| Build verification | [verification.md](reference/verification.md) |
+| Localization boundaries | [localization.md](reference/localization.md) |
 | Credits and compatibility | [credits.md](reference/credits.md) |
 
 ## Explanation
