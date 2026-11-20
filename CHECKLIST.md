@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.269)
+# Ordered Work — Current Checklist (0.3.0-alpha.270)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -161,6 +161,12 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Paint, erase, load, save and apply preserve their behavior.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of paint, erase, load, save and apply.
+## Passion tooltip coordinate fix (alpha.270)
+
+- [x] Hover test runs inside the clipped group.
+- [x] Tooltip rect is read from the pointer after `GUI.EndGroup`.
+- [x] Passion tooltip registration matches `TooltipHandler` coordinates.
+- [ ] Runtime confirmation of passion tooltips.
 ## Tooltip and button polish (alpha.269)
 
 - [x] Passion tooltip hit test uses the hovered row and pointer-sized tooltip rect.

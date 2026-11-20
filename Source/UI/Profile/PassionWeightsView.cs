@@ -37,16 +37,16 @@ namespace OrderedWork.UI
 
             GUI.BeginGroup(viewport);
             string pendingTooltip = null;
-            Rect pendingTooltipRect = default(Rect);
             for (int i = 0; i < registered.Count; i++)
             {
                 DrawRow(viewport, scroll.y, i, registered[i], settings,
-                    ref pendingTooltip, ref pendingTooltipRect);
+                    ref pendingTooltip);
             }
             GUI.EndGroup();
             if (!string.IsNullOrEmpty(pendingTooltip))
             {
-                TooltipHandler.TipRegion(pendingTooltipRect, pendingTooltip);
+                Vector2 mouse = Event.current.mousePosition;
+                TooltipHandler.TipRegion(new Rect(mouse.x - 1f, mouse.y - 1f, 2f, 2f), pendingTooltip);
             }
             WorkGridScrollView.DrawVertical(track, viewport, content, ref scroll);
 
@@ -67,8 +67,7 @@ namespace OrderedWork.UI
             int index,
             PassionSource.PassionInfo info,
             OrderedWorkSettings settings,
-            ref string pendingTooltip,
-            ref Rect pendingTooltipRect)
+            ref string pendingTooltip)
         {
             PassionWeightEntry entry = PassionWeightPolicy.Find(settings, info.Passion);
             if (entry == null)
@@ -100,9 +99,7 @@ namespace OrderedWork.UI
             }
             if (!string.IsNullOrEmpty(description) && Mouse.IsOver(row))
             {
-                Vector2 mouse = Event.current.mousePosition;
                 pendingTooltip = description;
-                pendingTooltipRect = new Rect(mouse.x - 1f, mouse.y - 1f, 2f, 2f);
             }
 
             float fieldWidth = Mathf.Max(54f, (row.width - 170f - 24f) / 3f);

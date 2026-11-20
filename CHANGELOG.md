@@ -3,6 +3,12 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.270] - 2026-11-19
+
+### Fixed — Passion tooltip registration after the clipped group
+- The hover test still runs on the row inside the group, but the tooltip rect is now read from the pointer position after `GUI.EndGroup`.
+- This keeps the tooltip in the same coordinate space as `TooltipHandler` and restores passion tooltips.
+
 ## [0.3.0-alpha.269] - 2026-11-19
 
 ### Fixed — Tooltips and disabled action labels
