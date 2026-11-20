@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.250] - 2026-11-19
+
+### Fixed — horizontal tracks in Schedule and Zone
+- Schedule and Zone keep an external horizontal scrollbar when the window is compressed.
+- Horizontal and vertical tracks are reserved outside the content viewport.
+- Overrides and Clothing intentionally retain their native scroll view.
+
 ## [0.3.0-alpha.249] - 2026-11-19
 
 ### Refactor — scroll pane unification

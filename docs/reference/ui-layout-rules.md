@@ -57,6 +57,6 @@ Margin is outside the background. Padding is inside it.
 
 ## Migration status
 
-Migrated to `UiScrollPane`: local preset dialogs, pawn picker, WorkType dropdown, WorkPanel Skills/Stats/Unable and Details Overview.
+Migrated to `UiScrollPane`: local preset dialogs, pawn picker, WorkType dropdown, WorkPanel Skills/Stats/Unable and Details Overview. Schedule and Zone use external vertical and horizontal tracks when their content is compressed.
 
 Deliberately native/custom: the settings global scroll, SplitMerge column bars, Details Overrides/Clothing, the focus horizontal strip and the WorkType combo's thin bar. These either own a different input model or never nest inside another local scroll.

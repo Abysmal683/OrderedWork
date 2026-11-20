@@ -337,17 +337,23 @@ namespace OrderedWork.UI
         {
             const float gap = 4f;
             float trackWidth = WorkGridScrollView.Thickness;
+            float trackHeight = WorkGridScrollView.Thickness;
             Rect viewport = new Rect(content.x, content.y,
-                Mathf.Max(0f, content.width - trackWidth - gap), content.height);
-            Rect track = new Rect(content.xMax - trackWidth, content.y, trackWidth, content.height);
+                Mathf.Max(0f, content.width - trackWidth - gap),
+                Mathf.Max(0f, content.height - trackHeight - gap));
+            Rect vTrack = new Rect(content.xMax - trackWidth, content.y, trackWidth,
+                Mathf.Max(0f, content.height - trackHeight - gap));
+            Rect hTrack = new Rect(content.x, content.yMax - trackHeight, viewport.width, trackHeight);
             Rect view = new Rect(0f, 0f,
                 Mathf.Max(viewport.width, minWidth),
                 Mathf.Max(viewport.height, minHeight));
-            WorkGridScrollView.HandleVertical(track, viewport, view, ref detailTabScroll, this);
+            WorkGridScrollView.HandleVertical(vTrack, viewport, view, ref detailTabScroll, this);
+            WorkGridScrollView.HandleHorizontal(hTrack, viewport, view, ref detailTabScroll, this);
             Widgets.BeginScrollView(viewport, ref detailTabScroll, view, false);
             draw(view);
             Widgets.EndScrollView();
-            WorkGridScrollView.DrawVertical(track, viewport, view, ref detailTabScroll);
+            WorkGridScrollView.DrawVertical(vTrack, viewport, view, ref detailTabScroll);
+            WorkGridScrollView.DrawHorizontal(hTrack, viewport, view, ref detailTabScroll);
         }
 
 

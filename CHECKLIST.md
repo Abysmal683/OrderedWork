@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.249)
+# Ordered Work — Current Checklist (0.3.0-alpha.250)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -76,6 +76,7 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Local dialogs migrated.
 - [x] WorkPanel Skills, Stats and Unable lists migrated.
 - [x] Details Overview migrated.
+- [x] Schedule and Zone keep an external horizontal track when compressed.
 - [x] Native/custom exceptions documented.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime wheel/shift-wheel check.

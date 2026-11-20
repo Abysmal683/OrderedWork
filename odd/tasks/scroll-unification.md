@@ -14,6 +14,7 @@ Goal: one external-track scroll pane for local lists and dialogs.
 - [x] WorkPanel Stats (specialized and generic).
 - [x] WorkPanel Unable WorkTypes.
 - [x] Details Overview.
+- [x] Schedule and Zone horizontal tracks when compressed.
 
 ## Deliberate native/custom exceptions
 
