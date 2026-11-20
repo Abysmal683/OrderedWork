@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +13,7 @@ namespace OrderedWork.UI
     /// </summary>
     internal sealed class ScheduleBrush
     {
-        internal TimeAssignmentDef Selected;
+        internal TimeAssignmentDef? Selected;
 
         internal void Reset()
         {

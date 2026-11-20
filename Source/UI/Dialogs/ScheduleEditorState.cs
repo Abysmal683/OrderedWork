@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +13,7 @@ namespace OrderedWork.UI
     /// </summary>
     internal sealed class ScheduleEditorState
     {
-        internal SchedulePreset Draft;
+        internal SchedulePreset? Draft;
         internal string Name = "";
 
         internal void Reset()
@@ -50,7 +49,7 @@ namespace OrderedWork.UI
             return false;
         }
 
-        internal TimeAssignmentDef ResolveDraft(int hour)
+        internal TimeAssignmentDef? ResolveDraft(int hour)
         {
             if (Draft == null || Draft.Slots == null || hour < 0 || hour >= Draft.Slots.Count)
             {
@@ -59,7 +58,7 @@ namespace OrderedWork.UI
             return SchedulePolicyResolver.ResolveDef(Draft.Slots[hour]);
         }
 
-        internal void SetDraft(SchedulePreset preset)
+        internal void SetDraft(SchedulePreset? preset)
         {
             Draft = preset;
             Name = preset != null ? preset.Name ?? "" : "";

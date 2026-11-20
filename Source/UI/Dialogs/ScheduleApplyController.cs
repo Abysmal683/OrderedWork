@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using OrderedWork.Config;
@@ -14,9 +13,9 @@ namespace OrderedWork.UI
     internal sealed class ScheduleApplyController
     {
         private readonly ScheduleEditorState state;
-        private readonly Pawn pawn;
+        private readonly Pawn? pawn;
 
-        internal ScheduleApplyController(ScheduleEditorState state, Pawn pawn)
+        internal ScheduleApplyController(ScheduleEditorState state, Pawn? pawn)
         {
             this.state = state;
             this.pawn = pawn;
@@ -24,7 +23,7 @@ namespace OrderedWork.UI
 
         internal bool HasChanges
         {
-            get { return state.HasChanges(pawn); }
+            get { return pawn != null && state.HasChanges(pawn); }
         }
 
         internal void New()
@@ -49,18 +48,18 @@ namespace OrderedWork.UI
 
         internal void OpenSave()
         {
-            if (state.Draft == null)
+            if (state.Draft == null || pawn == null)
             {
                 return;
             }
             string initialName = string.IsNullOrWhiteSpace(state.Name) ? pawn.LabelShort : state.Name;
             Find.WindowStack.Add(new Dialog_SchedulePreset(false,
-                delegate { return state.Draft; }, null, initialName));
+                delegate { return state.Draft!; }, null, initialName));
         }
 
         internal bool Apply()
         {
-            if (state.Draft == null)
+            if (state.Draft == null || pawn == null)
             {
                 return false;
             }

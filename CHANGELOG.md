@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.305] - 2026-11-19
+
+### Changed — Nullable schedule dialog batch
+- Migrated `ScheduleBrush`, `ScheduleEditorState`, `ScheduleVisuals`, `ScheduleApplyController` and `WorkTypeDropdownWindow`.
+- Build warning-free; 49 files still opt out.
+- Tests remain at 28 cases.
+
 ## [0.3.0-alpha.304] - 2026-11-19
 
 ### Changed — Nullable UI first pass

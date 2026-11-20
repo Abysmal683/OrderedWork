@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,15 +19,15 @@ namespace OrderedWork.UI
         private readonly string title;
         private readonly List<WorkTypeDef> types;
         private readonly Action<WorkTypeDef> onSelect;
-        private readonly Func<WorkTypeDef, string> label;
+        private readonly Func<WorkTypeDef, string>? label;
         private Vector2 scroll;
 
         internal WorkTypeDropdownWindow(
             string title,
             IEnumerable<WorkTypeDef> types,
-            WorkTypeDef selected,
+            WorkTypeDef? selected,
             Action<WorkTypeDef> onSelect,
-            Func<WorkTypeDef, string> label = null)
+            Func<WorkTypeDef, string>? label = null)
         {
             this.title = title;
             this.types = (types ?? Enumerable.Empty<WorkTypeDef>())

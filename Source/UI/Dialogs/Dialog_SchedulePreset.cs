@@ -16,8 +16,8 @@ namespace OrderedWork.UI
     public sealed class Dialog_SchedulePreset : Window
     {
         private readonly bool loadMode;
-        private readonly Func<SchedulePreset> capture;
-        private readonly Action<SchedulePreset> onLoad;
+        private readonly Func<SchedulePreset>? capture;
+        private readonly Action<SchedulePreset>? onLoad;
         private List<SchedulePreset> presets;
         private string presetName = "";
         private SchedulePreset? pendingDelete;
@@ -25,8 +25,8 @@ namespace OrderedWork.UI
         private bool closeAfterSave;
         private Vector2 scroll;
 
-        public Dialog_SchedulePreset(bool loadMode, Func<SchedulePreset> capture,
-            Action<SchedulePreset> onLoad, string? initialName = null)
+        public Dialog_SchedulePreset(bool loadMode, Func<SchedulePreset>? capture,
+            Action<SchedulePreset>? onLoad, string? initialName = null)
         {
             this.loadMode = loadMode;
             this.capture = capture;
