@@ -11,13 +11,30 @@ namespace OrderedWork.UI
 {
     public partial class Dialog_WorkControlDetails
     {
+        private Pawn overviewCachePawn;
+        private int overviewCacheOrderVersion = -1;
+        private int overviewCacheTick = -1;
+        private List<SkillRecord> overviewCacheSkills;
+        private List<string> overviewCacheOrder;
+
         private void DrawOverview(Rect content)
         {
-            List<SkillRecord> topSkills = pawn.skills != null && pawn.skills.skills != null
-                ? pawn.skills.skills.Where(s => s != null).OrderByDescending(s => s.Level).Take(8).ToList()
-                : new List<SkillRecord>();
-            List<string> order = WorkOrderService.GetOrder(pawn);
             PawnWorkOrder entry = OrderedWorkGameComponent.GetOrCreate()?.GetEntry(pawn);
+            int orderVersion = entry != null ? entry.orderVersion : -1;
+            int tick = Find.TickManager != null ? Find.TickManager.TicksGame : 0;
+            if (overviewCachePawn != pawn || overviewCacheOrderVersion != orderVersion
+                || tick - overviewCacheTick >= 60 || overviewCacheSkills == null || overviewCacheOrder == null)
+            {
+                overviewCachePawn = pawn;
+                overviewCacheOrderVersion = orderVersion;
+                overviewCacheTick = tick;
+                overviewCacheSkills = pawn.skills != null && pawn.skills.skills != null
+                    ? pawn.skills.skills.Where(s => s != null).OrderByDescending(s => s.Level).Take(8).ToList()
+                    : new List<SkillRecord>();
+                overviewCacheOrder = WorkOrderService.GetOrder(pawn);
+            }
+            List<SkillRecord> topSkills = overviewCacheSkills;
+            List<string> order = overviewCacheOrder;
 
             float contentHeight = 32f + 22f + 22f + (topSkills.Count * 20f) + 10f + 22f
                 + (Mathf.Max(1, order.Count) * 20f) + 132f;

@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.253] - 2026-11-19
+
+### Performance — filter and Overview snapshots
+- Cached Work Control filtered colonists by filter signature with a 60-tick ceiling.
+- Cached Details Overview skills/order by pawn and order revision with a 60-tick ceiling.
+- Documented both invalidation paths.
+
 ## [0.3.0-alpha.252] - 2026-11-19
 
 ### Fixed — bounded lane cache

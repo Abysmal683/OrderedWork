@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.252)
+# Ordered Work — Current Checklist (0.3.0-alpha.253)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -93,7 +93,7 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] WorkGiver order uses the cached profile.
 - [x] WorkControl lanes cached by order revision.
 - [x] Frame/tick boundaries documented.
-- [ ] Filter and Overview snapshots.
+- [x] Filter and Overview snapshots.
 - [ ] Runtime large-colony check.
 ## Dead code cleanup (alpha.246)
 

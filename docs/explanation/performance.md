@@ -16,7 +16,7 @@ Why: profile JSON reads were happening inside `DoWindowContents` through `GetGlo
 
 Why: Work Control and tooltips rebuild lanes per row per frame. The cache is bypassed when no stored entry exists, so recommendation-only pawns are not held stale.
 
-### Existing tick budgets
+### Work Control filter snapshot\n\n`GetFilteredColonists` caches the filtered pawn list by search text, Work filter, invert flag, scope and colonist count. It refreshes at most every 60 ticks; filter changes invalidate it immediately through the signature.\n\n### Details Overview snapshot\n\n`DrawOverview` caches top skills and work order by pawn and `orderVersion`, with the same 60-tick ceiling for skill changes.\n\n### Existing tick budgets
 
 `HourFocusService` runs once per 2500 ticks. VSE discovery retries every 300 ticks. Stat/skill tooltips already cache for 60 ticks.
 

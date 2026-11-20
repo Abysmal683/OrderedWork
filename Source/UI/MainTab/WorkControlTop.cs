@@ -113,6 +113,24 @@ namespace OrderedWork.UI
             return result;
         }
 
+        private List<Pawn> GetFilteredColonists(List<Pawn> allColonists, bool filtering)
+        {
+            int tick = Find.TickManager != null ? Find.TickManager.TicksGame : 0;
+            string signature = (searchText ?? "") + "\u001f" + (workFilterText ?? "") + "\u001f"
+                + invertWorkFilter + "\u001f" + workFilterScope + "\u001f" + allColonists.Count;
+            if (cachedFilteredColonists != null && cachedFilterSignature == signature
+                && tick - cachedFilterTick < 60)
+            {
+                return cachedFilteredColonists;
+            }
+
+            cachedFilteredColonists = filtering
+                ? allColonists.Where(p => IsSearchMatch(p) && MatchesLineWorkFilter(p)).ToList()
+                : new List<Pawn>(allColonists);
+            cachedFilterSignature = signature;
+            cachedFilterTick = tick;
+            return cachedFilteredColonists;
+        }
         private static void DrawCentered(Rect inRect, string message)
         {
             TextAnchor previous = Text.Anchor;

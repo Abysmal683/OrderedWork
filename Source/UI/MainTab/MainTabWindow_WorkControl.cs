@@ -62,6 +62,9 @@ namespace OrderedWork.UI
         private float resizeStartHeight;
 
         private readonly WorkControlInteraction interaction = new WorkControlInteraction();
+        private List<Pawn> cachedFilteredColonists;
+        private string cachedFilterSignature;
+        private int cachedFilterTick = -1;
 
         public override void DoWindowContents(Rect inRect)
         {
@@ -138,9 +141,7 @@ namespace OrderedWork.UI
             DrawSearchRow(searchY);
 
             bool filtering = !string.IsNullOrWhiteSpace(searchText) || ScopeFiltersLine;
-            List<Pawn> colonists = allColonists
-                .Where(p => IsSearchMatch(p) && MatchesLineWorkFilter(p))
-                .ToList();
+            List<Pawn> colonists = GetFilteredColonists(allColonists, filtering);
 
             if (filtering)
             {

@@ -12,8 +12,8 @@ Goal: remove per-frame profile IO and lane rebuilding.
 
 ## Next
 
-- [ ] Work Control filter snapshot.
-- [ ] Details Overview snapshot.
+- [x] Work Control filter snapshot.
+- [x] Details Overview snapshot.
 - [ ] Optional UI refresh interval.
 - [ ] Stopwatch logging under the WorkControl category.
 - [ ] Runtime frame-time check with a large colony.
