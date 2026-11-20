@@ -214,7 +214,15 @@ namespace OrderedWork.UI
             rule.Mandatory = mandatory;
             Rect candidates = rows.Next();
             Widgets.Label(new Rect(candidates.x, candidates.y, 110f, 24f), "Candidates");
-            candidateText = Widgets.TextField(new Rect(candidates.x + 114f, candidates.y, 560f, 24f), candidateText ?? "");
+            candidateText = Widgets.TextField(new Rect(candidates.x + 114f, candidates.y, 430f, 24f), candidateText ?? "");
+            if (Widgets.ButtonText(new Rect(candidates.x + 550f, candidates.y, 90f, 24f), "Pick..."))
+            {
+                Find.WindowStack.Add(new Dialog_ThingDefPicker(rule.Target, delegate(string defName)
+                {
+                    AddCandidate(defName);
+                    rule.Candidates = ParseCandidates(candidateText);
+                }));
+            }
             rule.Candidates = ParseCandidates(candidateText);
             Widgets.Label(new Rect(candidates.x + 114f, candidates.y + 24f, 650f, 18f),
                 "Comma-separated ThingDef defNames. A policy-denied candidate is reported, never forced.");
@@ -379,6 +387,20 @@ namespace OrderedWork.UI
                 BodyLayer = "Shell",
                 Priority = 0
             };
+        }
+
+        private void AddCandidate(string? defName)
+        {
+            if (string.IsNullOrWhiteSpace(defName))
+            {
+                return;
+            }
+            List<string> values = ParseCandidates(candidateText);
+            if (!values.Contains(defName, StringComparer.Ordinal))
+            {
+                values.Add(defName);
+            }
+            candidateText = string.Join(", ", values);
         }
 
         private static List<string> ParseCandidates(string? text)

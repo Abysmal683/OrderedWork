@@ -1,7 +1,14 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.332)
+# Ordered Work — Current Checklist (0.3.0-alpha.333)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
+## Clothing candidate picker (alpha.333)
+
+- [x] Searchable ThingDef picker.
+- [x] Apparel/tool filtering.
+- [x] One-pick append into the rule candidate text.
+- [ ] Body-grid composer and multi-select.
+- [ ] Per-pawn overrides and equip jobs.
 ## Clothing functional UI (alpha.332)
 
 - [x] WorkType clothing assignment field.

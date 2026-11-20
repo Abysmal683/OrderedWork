@@ -1073,3 +1073,10 @@ Still basic:
 - no per-pawn overrides;
 - no equip/return jobs;
 - no emergency or external providers.
+## 32. Candidate picker
+
+- Added a searchable `Dialog_ThingDefPicker`.
+- Apparel target lists `ThingDef.IsApparel`.
+- Tool target lists non-apparel `CompEquippable` defs.
+- One candidate is appended per pick; comma-separated text remains editable.
+- No visual body grid or multi-select yet.

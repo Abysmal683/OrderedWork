@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.333] - 2026-11-19
+
+### Added — Clothing candidate picker
+- Added a searchable `Dialog_ThingDefPicker`.
+- Apparel rules list apparel defs; tool rules list non-apparel equippable defs.
+- Picking appends a candidate to the current rule while keeping comma-separated text editable.
+- No body grid, multi-select or equip jobs yet.
+
 ## [0.3.0-alpha.332] - 2026-11-19
 
 ### Added — Clothing assignment and editor
