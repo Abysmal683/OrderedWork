@@ -115,6 +115,7 @@ namespace OrderedWork.Data
                 entries.Add(entry);
             }
             entry.order = order != null ? new List<string>(order) : new List<string>();
+            entry.orderVersion++;
         }
 
         /// <summary>

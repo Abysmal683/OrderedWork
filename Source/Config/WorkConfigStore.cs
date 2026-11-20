@@ -11,6 +11,12 @@ namespace OrderedWork.Config
     public static class WorkConfigStore
     {
         public const int CurrentSchemaVersion = 3;
+        private static WorkConfigLoadResult cachedActive;
+        private static WorkConfigProfile cachedEditing;
+        private static string cachedEditingName;
+        private static bool cacheValid;
+        private static string cachedSelectedProfile;
+        private static bool selectedProfileCached;
 
         public static string RootDirectory
         {
@@ -42,9 +48,37 @@ namespace OrderedWork.Config
             return WorkConfigResolver.LoadActiveWithFallback(requested);
         }
 
+        /// <summary>Cached active profile for read-only UI/tooltip consumers.</summary>
+        public static WorkConfigLoadResult LoadCachedActive()
+        {
+            if (!cacheValid || cachedActive == null)
+            {
+                cachedActive = WorkConfigResolver.LoadActiveWithFallback(LoadSelectedProfileName());
+                cacheValid = true;
+            }
+            return cachedActive;
+        }
+
         public static WorkConfigProfile LoadEditingProfile(string selected)
         {
-            return WorkConfigResolver.LoadEditingProfile(selected);
+            if (cacheValid && cachedEditing != null && cachedEditingName == selected)
+            {
+                return cachedEditing;
+            }
+            cachedEditing = WorkConfigResolver.LoadEditingProfile(selected);
+            cachedEditingName = selected;
+            cacheValid = true;
+            return cachedEditing;
+        }
+
+        public static void InvalidateCache()
+        {
+            cacheValid = false;
+            cachedActive = null;
+            cachedEditing = null;
+            cachedEditingName = null;
+            cachedSelectedProfile = null;
+            selectedProfileCached = false;
         }
 
         public static WorkConfigProfile LoadPending(string profile)
@@ -54,7 +88,9 @@ namespace OrderedWork.Config
 
         public static bool PromotePending(string profile)
         {
-            return WorkConfigResolver.PromotePending(profile);
+            bool result = WorkConfigResolver.PromotePending(profile);
+            InvalidateCache();
+            return result;
         }
 
         public static List<WorkTypeDef> GetOrderedVisibleWorkTypes(WorkConfigProfile profile)
@@ -69,12 +105,16 @@ namespace OrderedWork.Config
 
         public static bool SavePending(WorkConfigProfile profile)
         {
-            return WorkConfigSerializer.SavePending(profile);
+            bool result = WorkConfigSerializer.SavePending(profile);
+            InvalidateCache();
+            return result;
         }
 
         public static bool SaveProfile(WorkConfigProfile profile, bool backupExisting)
         {
-            return WorkConfigSerializer.SaveProfile(profile, backupExisting);
+            bool result = WorkConfigSerializer.SaveProfile(profile, backupExisting);
+            InvalidateCache();
+            return result;
         }
 
         public static WorkConfigProfile LoadReference()
@@ -84,7 +124,9 @@ namespace OrderedWork.Config
 
         public static bool EnsureReference()
         {
-            return WorkConfigSerializer.EnsureReference();
+            bool result = WorkConfigSerializer.EnsureReference();
+            InvalidateCache();
+            return result;
         }
 
         public static WorkConfigProfile BuildReferenceProfile(string name)
@@ -99,12 +141,20 @@ namespace OrderedWork.Config
 
         public static string LoadSelectedProfileName()
         {
-            return WorkConfigResolver.LoadSelectedProfileName();
+            if (!selectedProfileCached)
+            {
+                cachedSelectedProfile = WorkConfigResolver.LoadSelectedProfileName();
+                selectedProfileCached = true;
+            }
+            return cachedSelectedProfile;
         }
 
         public static void SaveSelectedProfileName(string profile)
         {
             WorkConfigResolver.SaveSelectedProfileName(profile);
+            InvalidateCache();
+            cachedSelectedProfile = profile;
+            selectedProfileCached = true;
         }
     }
 }

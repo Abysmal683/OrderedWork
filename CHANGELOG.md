@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.251] - 2026-11-19
+
+### Performance — frame-time caches
+- Cached active and editing profiles with explicit invalidation on save, pending and selection.
+- WorkGiver order reads the cached profile instead of reloading JSON.
+- Cached WorkControl lanes by `PawnWorkOrder.orderVersion`; `SetOrder` advances the revision.
+- Added the performance explanation and frame-optimization checklist.
+
 ## [0.3.0-alpha.250] - 2026-11-19
 
 ### Fixed — horizontal tracks in Schedule and Zone

@@ -113,7 +113,7 @@ namespace OrderedWork.UI
 
             if (pawn != null && from >= 0 && slot >= 0 && !(slot == from || slot == from + 1))
             {
-                List<string> ids = WorkControlRows.BuildLane(pawn).ids;
+                List<string> ids = new List<string>(WorkControlRows.BuildLane(pawn).ids);
                 if (from < ids.Count)
                 {
                     string moved = ids[from];

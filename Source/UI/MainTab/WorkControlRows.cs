@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using OrderedWork.Data;
 using OrderedWork.Services;
 using RimWorld;
 using UnityEngine;
@@ -23,8 +24,33 @@ namespace OrderedWork.UI
             public readonly List<string> ids = new List<string>();
         }
 
+        private sealed class LaneCache
+        {
+            public int Version;
+            public LaneData Data;
+        }
+
+        private static readonly Dictionary<Pawn, LaneCache> laneCache = new Dictionary<Pawn, LaneCache>();
+        private static Game cachedGame;
+
         internal static LaneData BuildLane(Pawn pawn)
         {
+            if (cachedGame != Current.Game)
+            {
+                laneCache.Clear();
+                cachedGame = Current.Game;
+            }
+
+            OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
+            PawnWorkOrder entry = component != null ? component.GetEntry(pawn) : null;
+            int version = entry != null ? entry.orderVersion : -1;
+            LaneCache cached;
+            if (entry != null && laneCache.TryGetValue(pawn, out cached)
+                && cached.Version == version && cached.Data != null)
+            {
+                return cached.Data;
+            }
+
             LaneData lane = new LaneData();
             foreach (string id in WorkOrderService.GetOrder(pawn))
             {
@@ -34,6 +60,10 @@ namespace OrderedWork.UI
                     lane.types.Add(workType);
                     lane.ids.Add(id);
                 }
+            }
+            if (entry != null)
+            {
+                laneCache[pawn] = new LaneCache { Version = version, Data = lane };
             }
             return lane;
         }

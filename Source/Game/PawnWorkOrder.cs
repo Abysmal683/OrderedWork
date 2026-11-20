@@ -14,6 +14,8 @@ namespace OrderedWork.Data
         public Pawn pawn;
         public string pawnId;
         public int policySchemaVersion = CurrentPolicySchemaVersion;
+        // Runtime-only revision used by UI view caches; intentionally not scribed.
+        public int orderVersion;
 
         // Legacy full snapshot. Still authoritative when no workPresetId is present.
         public List<string> order = new List<string>();

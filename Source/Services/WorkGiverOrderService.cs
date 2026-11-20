@@ -25,8 +25,7 @@ namespace OrderedWork.Services
             WorkConfigProfile profile = null;
             try
             {
-                WorkConfigLoadResult loaded = WorkConfigStore.LoadActiveWithFallback(
-                    WorkConfigStore.LoadSelectedProfileName());
+                WorkConfigLoadResult loaded = WorkConfigStore.LoadCachedActive();
                 profile = loaded != null ? loaded.Profile : null;
             }
             catch (Exception ex)

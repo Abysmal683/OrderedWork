@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.250)
+# Ordered Work — Current Checklist (0.3.0-alpha.251)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -87,6 +87,14 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Dialog closes without opening another panel.
 - [x] Build 0/0 and tests pass.
 - [ ] Confirm with BakTest runtime.
+## Frame optimization (alpha.251)
+
+- [x] Active profile cached with explicit invalidation.
+- [x] WorkGiver order uses the cached profile.
+- [x] WorkControl lanes cached by order revision.
+- [x] Frame/tick boundaries documented.
+- [ ] Filter and Overview snapshots.
+- [ ] Runtime large-colony check.
 ## Dead code cleanup (alpha.246)
 
 - [x] Seven unused localisation keys removed.
