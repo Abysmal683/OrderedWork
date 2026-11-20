@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,7 +16,7 @@ namespace OrderedWork
 {
     public partial class OrderedWorkMod : Mod
     {
-        public static OrderedWorkSettings Settings;
+        public static OrderedWorkSettings Settings = null!;
 
         private const int TabRules = 0;
         private const int TabGeneral = 1;
@@ -193,7 +192,7 @@ namespace OrderedWork
                 PassionWeightPolicy.ResetToDefaults(Settings);
 
                 string profileName = string.IsNullOrWhiteSpace(activeProfileName) ? "default" : activeProfileName.Trim();
-                WorkConfigProfile reference = WorkConfigStore.LoadReference();
+                WorkConfigProfile? reference = WorkConfigStore.LoadReference();
                 if (reference != null)
                 {
                     WorkConfigProfile clean = WorkConfigProfileService.CloneForProfile(reference, profileName);

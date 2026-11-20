@@ -30,10 +30,10 @@ Most of these are not new bugs. They are legacy fields, Unity/RimWorld APIs with
 ## Current state
 
 - `OrderedWork.Core`: `Nullable=enable`, annotated and warning-free.
-- `OrderedWork` main: project property is `enable`, but the existing files use `#nullable disable` while they are migrated. New files should omit that directive and be nullable-safe.
+- `OrderedWork` main: `Nullable=enable`; all files migrated and nullable warnings are errors.
 - Tests: unchanged.
 
-This is a staged rollout: it stops the 876-warning avalanche while allowing new code and refactored files to opt in immediately. Migrated batches: five Config files, plus all eighteen Services files, including `HiddenWorkTypeService`, `PassionWeightPolicy`, `WorkOrderService.Apply` and `WorkOrderService.Lifecycle`. All Config, Services, Harmony, Game and Startup files are migrated; UI Layout, Shared, Profile and Palette are migrated. 2 files still opt out (Localization 1, root 1).
+Migration is complete across Config, Services, Harmony, Game, Startup, UI, Mod and SplitMerge. No `#nullable disable` directives remain; nullable warnings are errors.
 
 ## How to migrate a file
 
@@ -54,4 +54,4 @@ For Unity/RimWorld members that are not nullable-annotated, use `MaybeNull`/`Not
 
 ## CI gate
 
-`scripts/verify.ps1` runs the build and tests. Once the migration is complete, the project can remove the remaining `#nullable disable` directives and enable nullable warnings as errors.
+`scripts/verify.ps1` runs the build and tests. The migration is complete: every legacy `#nullable disable` has been removed and nullable warnings are errors.

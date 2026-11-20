@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.328] - 2026-11-19
+
+### Changed — Nullable completion
+- Migrated the last two files: `OrderedWorkText` and `OrderedWorkMod`.
+- Removed every `#nullable disable` from the main project.
+- Enabled nullable warnings as errors in the main project and Core.
+- Build warning-free; all 28 tests pass.
+
 ## [0.3.0-alpha.327] - 2026-11-19
 
 ### Changed — Nullable SplitMerge merge tab

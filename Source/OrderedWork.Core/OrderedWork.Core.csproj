@@ -4,6 +4,7 @@
     <AssemblyName>OrderedWork.Core</AssemblyName>
     <RootNamespace>OrderedWork.Core</RootNamespace>
     <Nullable>enable</Nullable>
+    <WarningsAsErrors>nullable</WarningsAsErrors>
     <LangVersion>latest</LangVersion>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisLevel>latest-recommended</AnalysisLevel>
