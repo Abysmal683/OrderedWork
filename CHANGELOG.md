@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.254] - 2026-11-19
+
+### Added — active work indicator
+- Added `ActiveWorkService` with a 5-tick per-pawn cache.
+- Work detail rows and WorkControl lane cards mark the current job's WorkType.
+- WorkControl tooltip reports `Active now`.
+- Sleep, food, joy and jobs without a work giver show no marker.
+- The global palette remains unmarked because it represents multiple pawns.
+
 ## [0.3.0-alpha.253] - 2026-11-19
 
 ### Performance — filter and Overview snapshots

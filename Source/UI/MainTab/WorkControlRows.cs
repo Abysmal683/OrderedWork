@@ -288,6 +288,12 @@ namespace OrderedWork.UI
             {
                 Widgets.DrawHighlight(cardRect);
             }
+            if (ActiveWorkService.IsActive(pawn, workType))
+            {
+                Widgets.DrawBox(cardRect, 1);
+                Widgets.DrawBoxSolid(new Rect(cardRect.x + 4f, cardRect.y + 4f, 4f, 4f),
+                    new Color(0.55f, 0.88f, 0.42f, 1f));
+            }
 
             Rect removeRect = new Rect(cardRect.xMax - 20f, cardRect.y + (cardRect.height - 18f) / 2f, 18f, 18f);
             Rect bodyRect = new Rect(cardRect.x, cardRect.y, cardRect.width - 20f, cardRect.height);
@@ -405,6 +411,10 @@ namespace OrderedWork.UI
 
             int rank = WorkOrderService.GetOrder(pawn).IndexOf(workType.defName) + 1;
             builder.AppendLine(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Priority", "Priority: ") + (rank > 0 ? rank.ToString() : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Off", "Off")));
+            if (ActiveWorkService.IsActive(pawn, workType))
+            {
+                builder.AppendLine(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.ActiveNow", "Active now"));
+            }
 
             PawnSpecificOverrideHook?.Invoke(pawn, workType, builder);
             return builder.ToString();

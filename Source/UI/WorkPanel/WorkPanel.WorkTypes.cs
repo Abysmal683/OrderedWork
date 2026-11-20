@@ -89,6 +89,12 @@ namespace OrderedWork.UI
                     {
                         Widgets.DrawBoxSolid(row, new Color(0.30f, 0.52f, 0.28f, 0.48f));
                     }
+                    if (ActiveWorkService.IsActive(pawn, workType))
+                    {
+                        Widgets.DrawBoxSolid(new Rect(row.x, row.y, 3f, row.height),
+                            new Color(0.55f, 0.88f, 0.42f, 0.95f));
+                        Widgets.DrawBox(new Rect(row.x, row.y, row.width, row.height), 1);
+                    }
 
                     Widgets.Label(new Rect(row.x + 4f, row.y + 3f, 22f, 18f), (index + 1).ToString());
                     Widgets.LabelEllipses(new Rect(row.x + 26f, row.y + 3f, Mathf.Max(50f, row.width - 216f), 18f), workType.labelShort);

@@ -16,7 +16,9 @@
   the tags you want. Do not merge a giver into a type whose tags would let an incapable pawn do it.
 
 
-## Diagnostic categories
+## Active work indicator
+
+The Work detail row and WorkControl lane card mark the WorkType currently used by the pawn's `CurJob`. Sleep, food, joy and jobs without a `workGiverDef` show no marker. The global palette is intentionally unmarked because it can represent multiple pawns.## Diagnostic categories
 
 Diagnostics are enabled per subsystem in **Mod Settings → Diagnostics**:
 

@@ -217,4 +217,5 @@
   <OrderedWork.Work.Removed>Work type removed: </OrderedWork.Work.Removed>
   <OrderedWork.Common.NoneShort>None</OrderedWork.Common.NoneShort>
   <OrderedWork.Work.RightClickRemove>Right-click to remove this WorkType.</OrderedWork.Work.RightClickRemove>
+  <OrderedWork.Common.ActiveNow>Active now</OrderedWork.Common.ActiveNow>
 </LanguageData>

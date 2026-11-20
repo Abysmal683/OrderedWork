@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.253)
+# Ordered Work — Current Checklist (0.3.0-alpha.254)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -87,6 +87,14 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Dialog closes without opening another panel.
 - [x] Build 0/0 and tests pass.
 - [ ] Confirm with BakTest runtime.
+## Active work indicator (alpha.254)
+
+- [x] Current WorkType service with a 5-tick cache.
+- [x] Detail Work row highlight.
+- [x] WorkControl card highlight and tooltip.
+- [x] No global palette marker.
+- [x] Build 0/0 and tests pass.
+- [ ] Runtime check for sleep/food/joy/null work givers.
 ## Frame optimization (alpha.251)
 
 - [x] Active profile cached with explicit invalidation.

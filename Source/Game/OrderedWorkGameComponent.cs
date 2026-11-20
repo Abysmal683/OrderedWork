@@ -20,6 +20,7 @@ namespace OrderedWork.Data
         public OrderedWorkGameComponent(Game game) : base()
         {
             HourFocusService.Reset();
+            ActiveWorkService.Reset();
         }
 
         public override void ExposeData()
@@ -125,6 +126,7 @@ namespace OrderedWork.Data
         public void Cleanup()
         {
             HourFocusService.Reset();
+            ActiveWorkService.Reset();
             if (entries == null)
             {
                 return;
