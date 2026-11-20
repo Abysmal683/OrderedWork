@@ -19,4 +19,6 @@
 
 ## Component ownership
 
+The WorkType order row has `Apply work order`, `Cancel work order` and `Restore reference order`; restore uses `reference.json` and does not touch pawn priorities.
+
 `ProfilesPanel`, `WorkOrderRulesPanel`, `OrderEditorPanel` and `SplitMergePanel` own their local draft state. `SplitMergePanel` owns the split/merge editor state, metadata, candidate list state and persistence actions; the host provides profile selection and shared status callbacks.

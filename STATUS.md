@@ -1,13 +1,14 @@
 # Ordered Work — Current Status
 
-Version: `0.3.0-alpha.277` (runtime checkpoint). Build 0/0; tests pass.
+Version: `0.3.0-alpha.278` (runtime checkpoint). Build 0/0; tests pass.
 
-## Latest checkpoint (.277)
+## Latest checkpoint (.278)
 
 - Profiles append visible live WorkTypes and missing Givers on load; Hospitality `Diplomat` can be selected in Order, Split and Merge.
 - The Work tab reorders the list returned by `PawnTable.get_Columns`, which rebuilds from the table def on every call.
 - Hidden layer implemented: Config-only add/right-click removal, fixed GetPriority overlay, hidden-first WorkGiver cache, and incapable-pawn skip with refresh on `Notify_DisabledWorkTypesChanged`.
-- Work tab order is applied from the `PawnTable.get_Columns` returned list; the previous `PawnTableDefOf.Work.columns` paths were insufficient.
+- Work tab order is applied from `PawnTable.get_Columns` and the `PawnTableOnGUI` prefix reorders the table def before the getter rebuild.
+- WorkType order has `Restore reference order` beside Apply/Cancel.
 - Passion weights render in full and Rules sections start collapsed.
 - Hidden mod WorkTypes are not added and stale visible flags are cleared during reconciliation.
 - Split delete and Merge revert restore origin visibility when Givers return.

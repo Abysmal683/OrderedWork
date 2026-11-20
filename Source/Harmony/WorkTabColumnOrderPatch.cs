@@ -49,3 +49,22 @@ namespace OrderedWork.Patches
         }
     }
 }
+namespace OrderedWork.Patches
+{
+    [HarmonyPatch(typeof(PawnTable), nameof(PawnTable.PawnTableOnGUI))]
+    internal static class Patch_PawnTable_WorkColumnsBeforeGUI
+    {
+        private static void Prefix(PawnTable __instance)
+        {
+            if (__instance == null)
+            {
+                return;
+            }
+            PawnTableDef definition = Traverse.Create(__instance).Field("def").GetValue<PawnTableDef>();
+            if (definition == PawnTableDefOf.Work)
+            {
+                OrderedWorkStartup.RefreshWorkTabColumnOrder();
+            }
+        }
+    }
+}

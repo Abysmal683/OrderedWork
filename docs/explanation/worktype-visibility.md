@@ -1,6 +1,6 @@
 # Hidden and always-active WorkTypes
 
-Status: implemented in `0.3.0-alpha.277`; runtime verification pending.
+Status: implemented in `0.3.0-alpha.278`; runtime verification pending.
 
 ## Model
 

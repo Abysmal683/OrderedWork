@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.278] - 2026-11-19
+
+### Added — Restore WorkType order
+- Added `Restore reference order` beside Apply/Cancel in the WorkType order row.
+- Restore writes the order from `reference.json`, applies the profile and leaves pawn priorities untouched.
+
+### Fixed — Work tab order before the getter rebuild
+- Reapply the profile-defined order to `PawnTableDefOf.Work.columns` in the `PawnTable.PawnTableOnGUI` prefix, before `Columns` rebuilds its filtered list.
+- Kept the `get_Columns` postfix as a second guard.
+
 ## [0.3.0-alpha.277] - 2026-11-19
 
 ### Fixed — Work tab columns getter

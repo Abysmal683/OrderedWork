@@ -208,4 +208,6 @@
   <OrderedWork.Config.SplitMerge.CancelDraftTip>Borra solo el borrador no guardado.</OrderedWork.Config.SplitMerge.CancelDraftTip>  <OrderedWork.Config.SplitMerge.OrderNoReference>sin orden de referencia</OrderedWork.Config.SplitMerge.OrderNoReference>
   <OrderedWork.Config.Rules.HiddenSuffix>oculto</OrderedWork.Config.Rules.HiddenSuffix>
   <OrderedWork.Config.Rules.AddHidden>Agregar WorkType oculto</OrderedWork.Config.Rules.AddHidden>
-  <OrderedWork.Config.Rules.AddHiddenTip>Marca un WorkType como oculto pero activo. Clic derecho en su fila de orden para quitar la marca.</OrderedWork.Config.Rules.AddHiddenTip></LanguageData>
+  <OrderedWork.Config.Rules.AddHiddenTip>Marca un WorkType como oculto pero activo. Clic derecho en su fila de orden para quitar la marca.</OrderedWork.Config.Rules.AddHiddenTip>  <OrderedWork.Config.Rules.RestoreWorkOrder>Restaurar orden de referencia</OrderedWork.Config.Rules.RestoreWorkOrder>
+  <OrderedWork.Config.Rules.RestoreWorkOrderTip>Restaura el orden de WorkTypes desde reference.json.</OrderedWork.Config.Rules.RestoreWorkOrderTip>
+  <OrderedWork.Config.Rules.OrderRestored>Orden de WorkTypes restaurado desde la referencia.</OrderedWork.Config.Rules.OrderRestored></LanguageData>

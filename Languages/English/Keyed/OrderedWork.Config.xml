@@ -208,4 +208,6 @@
   <OrderedWork.Config.SplitMerge.CancelDraftTip>Clear the unsaved draft only.</OrderedWork.Config.SplitMerge.CancelDraftTip>  <OrderedWork.Config.SplitMerge.OrderNoReference>no reference order</OrderedWork.Config.SplitMerge.OrderNoReference>
   <OrderedWork.Config.Rules.HiddenSuffix>hidden</OrderedWork.Config.Rules.HiddenSuffix>
   <OrderedWork.Config.Rules.AddHidden>Add hidden WorkType</OrderedWork.Config.Rules.AddHidden>
-  <OrderedWork.Config.Rules.AddHiddenTip>Mark a WorkType hidden but active. Right-click its order row to remove the hidden mark.</OrderedWork.Config.Rules.AddHiddenTip></LanguageData>
+  <OrderedWork.Config.Rules.AddHiddenTip>Mark a WorkType hidden but active. Right-click its order row to remove the hidden mark.</OrderedWork.Config.Rules.AddHiddenTip>  <OrderedWork.Config.Rules.RestoreWorkOrder>Restore reference order</OrderedWork.Config.Rules.RestoreWorkOrder>
+  <OrderedWork.Config.Rules.RestoreWorkOrderTip>Restore WorkType order from reference.json.</OrderedWork.Config.Rules.RestoreWorkOrderTip>
+  <OrderedWork.Config.Rules.OrderRestored>Work type order restored from reference.</OrderedWork.Config.Rules.OrderRestored></LanguageData>

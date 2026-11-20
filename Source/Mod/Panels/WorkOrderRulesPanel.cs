@@ -81,7 +81,7 @@ namespace OrderedWork
 
             list.Gap(4f);
             Rect buttons = list.GetRect(28f);
-            Rect[] cells = UiFlex.Columns(buttons, 6f, 1f, 1f);
+            Rect[] cells = UiFlex.Columns(buttons, 6f, 1f, 1f, 1f);
             bool changedOrder = !draft.SequenceEqual(baseline);
             if (UiButtonBar.Button(cells[0],
                 OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.ApplyWorkOrder", "Apply work order"), changedOrder,
@@ -99,6 +99,12 @@ namespace OrderedWork
             {
                 draft.Clear();
                 draft.AddRange(baseline);
+            }
+            if (UiButtonBar.Button(cells[2],
+                OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.RestoreWorkOrder", "Restore reference order"), true,
+                OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.RestoreWorkOrderTip", "Restore WorkType order from reference.json.")))
+            {
+                RestoreReference(host, activeProfile);
             }
 
             Rect addHidden = list.GetRect(24f);
@@ -147,6 +153,46 @@ namespace OrderedWork
             }
             TooltipHandler.TipRegion(addHidden,
                 OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.AddHiddenTip", "Mark a WorkType hidden but active. Right-click its order row to remove the hidden mark."));
+        }
+
+        private void RestoreReference(OrderedWorkMod host, string activeProfile)
+        {
+            WorkConfigProfile profile = WorkConfigStore.LoadEditingProfile(activeProfile);
+            WorkConfigProfile reference = WorkConfigStore.LoadReference();
+            if (profile == null || reference == null)
+            {
+                return;
+            }
+
+            List<string> restored = reference.WorkTypes
+                .Where(entry => entry.Value != null && profile.WorkTypes.ContainsKey(entry.Key))
+                .OrderBy(entry => entry.Value.Order)
+                .Select(entry => entry.Key)
+                .ToList();
+            foreach (string defName in draft)
+            {
+                if (!restored.Contains(defName))
+                {
+                    restored.Add(defName);
+                }
+            }
+            for (int i = 0; i < restored.Count; i++)
+            {
+                if (profile.WorkTypes.TryGetValue(restored[i], out WorkTypeConfig config) && config != null)
+                {
+                    config.Order = i;
+                }
+            }
+
+            WorkConfigStore.SaveProfile(profile, true);
+            WorkConfigStore.SavePending(profile);
+            OrderedWorkStartup.ApplyProfileNow(profile, OrderedWorkMod.Settings, host);
+            draft.Clear();
+            draft.AddRange(restored);
+            baseline.Clear();
+            baseline.AddRange(restored);
+            Messages.Message(OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.OrderRestored",
+                "Work type order restored from reference."), MessageTypeDefOf.TaskCompletion, false);
         }
 
         private void Move(int from, int to)
