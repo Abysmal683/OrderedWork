@@ -1112,3 +1112,192 @@ Implemented:
 - Grid, rule list and rule editor now stack from computed positions.
 - Editor window is taller and the rule editor height is fixed to the remaining flow.
 - This is a layout safety fix, not a UX redesign; the interaction model remains to be reviewed with the user.
+## 37. Neutral clothing preset editor — proposed layout
+
+The editor edits only a `ClothingPreset`. It does not assign it to a WorkType or pawn and does not know which panel opened it.
+
+### Toolbar
+
+```text
+[preset name] [dirty marker]
+[New] [Load] [Save] [Save as]
+```
+
+- `New`: create unsaved preset.
+- `Load`: standard load dialog.
+- `Save`: overwrite the named current preset; if unnamed, request a name.
+- `Save as`: name field plus existing-preset list; delete lives in this save flow.
+- Delete is not a separate top-level action.
+
+### Dirty state
+
+- Amber banner: `Unsaved changes — save before leaving.`
+- Closing, New, Load or replacing the preset with dirty state asks:
+  - Save
+  - Discard
+  - Cancel
+
+### Body
+
+```text
++--------------------------------------------------------------+
+| Title / preset name / dirty banner                            |
+| [New] [Load] [Save] [Save as]                                 |
++---------------------------+----------------------------------+
+| Slot grid                 | Rule list                        |
+|                           | [Add] [Up] [Down] [Delete]       |
++---------------------------+----------------------------------+
+| Selected rule card/editor                                     |
+| phase | target | slot | layer | priority | mandatory          |
++--------------------------------------------------------------+
+| Candidate cards / picker                                      |
++--------------------------------------------------------------+
+| Status line                                                   |
++--------------------------------------------------------------+
+```
+
+- The grid and rule list both use the shared scroll/row helpers.
+- Clicking a grid slot selects/creates the matching rule.
+- Right-clicking a grid slot removes the rule.
+- Candidate cards are touch cards; tapping adds; no drag/drop.
+- The layout is neutral: no WorkType selector, no pawn selector, no Assign button.
+
+### Ownership
+
+- `ClothingPresetStore` owns persistence.
+- `ClothingResolver` owns selection.
+- The editor owns the draft preset and dirty state.
+- WorkType/Pawn panels own assignment and overrides.
+- The editor may be opened from those panels, but saving does not assign.
+## 38. Save/Load contract verification
+
+### Current behavior
+
+`WorkPresetStore`:
+
+- File path is based on the sanitized preset **name**.
+- `Save` overwrites the same name path.
+- `Delete` deletes by name.
+- Two identical names cannot coexist in the normal path.
+- Sanitization can still collapse different display names into the same file path.
+
+`ClothingPresetStore`:
+
+- File path is based on the preset **Id**, not the name.
+- `Save` overwrites by Id.
+- Duplicate display names are currently possible because the name is not part of the key.
+- `Delete` is by Id.
+- There is no Save As, Load dialog, dirty guard or duplicate-name validation yet.
+
+`AtomicJsonRecordStore.Save`:
+
+- Copies a valid existing file to `.bak`.
+- Replaces the main file atomically.
+- Preserves the object identity fields, including Id and Name, unless the caller changes them.
+
+### Required contract
+
+- `ClothingPreset.Id` remains stable.
+- `ClothingPreset.Name` is the unique user-facing key.
+- Names are trimmed and compared case-insensitively.
+- No two presets may share a name.
+- `Save` with an existing name overwrites that preset and preserves its Id/name; content changes only.
+- `Save` with no name / first save opens the save dialog.
+- `Save As` opens the name dialog and must enforce uniqueness.
+- Delete lives inside the save dialog list.
+- No assign-to-WorkType action in this editor.
+- Dirty state is visible and blocks silent loss on New/Load/close.
+
+### Save semantics
+
+- `Save As` is always a **renamed copy**: new preset, new Id, copied rules, original untouched.
+- `Save`/override keeps the same Id and name; it only replaces content.
+- An override never changes the name.
+- The only way to change a preset name is `Save As`, which creates another preset.
+- Duplicate names are rejected case-insensitively.
+- Name editing happens only inside the Save/Save As dialog, never in the editor toolbar.
+## 39. Editor section — provisional center layout
+
+This is a provisional interpretation, not final UI.
+
+### Top: preset context
+
+The editor is neutral and preset-scoped. No WorkType or pawn assignment here.
+
+### Middle: Vision + Draw + Touch
+
+Vision, Draw and Touch are separate surfaces:
+
+```text
++------------------------------+--------+--------+
+| VISION                       | DRAW   | TOUCH  |
+| squares / composition         | 15-20% | 15-20% |
+| 60-70%                       |        |        |
++------------------------------+--------+--------+
+```
+
+Provisional proportions:
+
+- `70 / 15 / 15`
+- or `60 / 20 / 20`
+
+#### Vision
+
+- The square grid lives here.
+- It represents the visual composition.
+- Its exact interaction model is still undecided.
+- Two visual styles are being considered; do not implement either yet.
+
+#### Draw
+
+- Separate from Vision.
+- Represents what will be placed in the indicated block/order.
+- Follows a top-to-bottom composition.
+- It is not the square grid and not the touch palette.
+
+#### Touch
+
+- Add elements and inspect info.
+- Touch cards; tapping adds.
+- Right-click removal stays a grid/vision action.
+
+### Bottom: third row
+
+```text
++-----------------------------------+-----------------------------+
+| AGGREGATE STATS + DETAIL          | TOUCHED OBJECT OVERVIEW     |
+| summed stats and detailed info    | Work/WorkGiver-style detail |
++-----------------------------------+-----------------------------+
+```
+
+- **Left:** aggregate stats of the current composition plus detailed information.
+- **Right:** overview/detail of the touched object, following existing WorkType/WorkGiver detail mechanics.
+- Exact stat aggregation and object-detail API still need definition.
+
+No implementation yet.
+
+## 40. Save contract
+
+```text
+Save
+  -> existing named preset: override by Id
+  -> preserves Id and name
+  -> replaces content only
+  -> creates .bak
+
+Save As
+  -> renamed copy
+  -> new Id
+  -> copies rules
+  -> original remains untouched
+  -> the only operation that changes a name
+
+Delete
+  -> inside the save flow
+  -> never a standalone editor action
+```
+
+- Names are unique, case-insensitive.
+- Name editing happens only inside Save/Save As.
+- A copy is not auto-assigned to a WorkType.
+- The editor remains neutral and assignment-free.
