@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using OrderedWork.Data;
+using OrderedWork.UI.Clothing;
 using OrderedWork.UI.Layout;
 using RimWorld;
 using UnityEngine;
@@ -14,7 +15,8 @@ namespace OrderedWork.UI
         {
             PawnWorkOrder? entry = OrderedWorkGameComponent.GetOrCreate()?.GetEntry(pawn);
             List<Apparel> worn = pawn.apparel?.WornApparel?.Where(a => a != null).ToList() ?? new List<Apparel>();
-            float height = 360f + (worn.Count * 22f) + ((entry != null ? entry.clothingOverrides.Count : 0) * 22f);
+            float previewHeight = ClothingPreviewPanel.Height();
+            float height = previewHeight + 360f + (worn.Count * 22f) + ((entry != null ? entry.clothingOverrides.Count : 0) * 22f);
             Rect view = new Rect(0f, 0f,
                 Mathf.Max(content.width, 620f),
                 Mathf.Max(content.height, height));
@@ -22,7 +24,8 @@ namespace OrderedWork.UI
             Widgets.BeginScrollView(content, ref detailTabScroll, view);
             try
             {
-                UiRows rows = new UiRows(view, 20f, 4f);
+                ClothingPreviewPanel.Draw(new Rect(0f, 0f, view.width, previewHeight), pawn, entry);
+                UiRows rows = new UiRows(new Rect(0f, previewHeight, view.width, view.height - previewHeight), 20f, 4f);
                 ApparelPolicy? policy = pawn.outfits?.CurrentApparelPolicy;
                 string policyLabel = policy != null
                     ? (string.IsNullOrEmpty(policy.RenamableLabel) ? policy.BaseLabel : policy.RenamableLabel)

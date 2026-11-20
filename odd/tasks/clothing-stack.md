@@ -24,7 +24,7 @@ Branch: `feat/clothing-stack`
 - T3: Add tests for phase order, policy denial, layers, duplicate slots, tools and free slots. Done (9 tests).
 - T4: Build and run all tests; commit the work unit. Done.
 
-- T5: Add `ClothingPresetStore` JSON persistence. Done.\n- T6: Add nullable RimWorld adapter for policy/defs/slots. Done.\n\n## Log
+- T5: Add `ClothingPresetStore` JSON persistence. Done.\n- T6: Add nullable RimWorld adapter for policy/defs/slots. Done.\n- T7: Add read-only Details Clothing preview. Done.\n\n## Log
 
 - L1: User requested implementation after approving the flat model: presets contain ordered rules; `Locked > Emergency > Work > Free`; policy is law; tool rules included.
-- L2: Phase 1 is intentionally model/resolver only; no execution or UI.\n- L3: Build 0/0; 37 tests pass; resolver handles null inputs and ApparelPolicy denial.\n- L4: Phase 1.5 adds JSON persistence and a read-only ThingDef/ApparelPolicy adapter. 39 tests pass.
+- L2: Phase 1 is intentionally model/resolver only; no execution or UI.\n- L3: Build 0/0; 37 tests pass; resolver handles null inputs and ApparelPolicy denial.\n- L4: Phase 1.5 adds JSON persistence and a read-only ThingDef/ApparelPolicy adapter. 39 tests pass.\n- L5: Read-only Details preview uses a 60-tick cached context/resolution and does not equip.

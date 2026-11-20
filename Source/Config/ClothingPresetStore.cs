@@ -43,9 +43,20 @@ namespace OrderedWork.Config
             return Store.PathFor(id);
         }
 
+        private static List<ClothingPreset>? cached;
+
         public static List<ClothingPreset> LoadAll()
         {
-            return Store.LoadAll();
+            if (cached == null)
+            {
+                cached = Store.LoadAll();
+            }
+            return cached;
+        }
+
+        public static void InvalidateCache()
+        {
+            cached = null;
         }
 
         public static ClothingPreset? TryLoadById(string id)
@@ -65,12 +76,22 @@ namespace OrderedWork.Config
                 return false;
             }
             preset.Normalize();
-            return Store.Save(preset);
+            bool saved = Store.Save(preset);
+            if (saved)
+            {
+                cached = null;
+            }
+            return saved;
         }
 
         public static bool Delete(string id)
         {
-            return Store.Delete(id);
+            bool deleted = Store.Delete(id);
+            if (deleted)
+            {
+                cached = null;
+            }
+            return deleted;
         }
 
         private static string NormalizeId(string id)

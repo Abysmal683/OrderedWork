@@ -1,7 +1,15 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.330)
+# Ordered Work — Current Checklist (0.3.0-alpha.331)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
+## Clothing preview UI (alpha.331)
+
+- [x] Details Clothing read-only resolver preview.
+- [x] Slot grid, selections, conflicts and free slots.
+- [x] 60-tick preview cache.
+- [ ] Preset selector/refresh and slot details.
+- [ ] Mod Settings Clothing editor.
+- [ ] Per-pawn overrides.
 ## Clothing Phase 1.5 (alpha.330)
 
 - [x] JSON preset store.

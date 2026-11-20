@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.331] - 2026-11-19
+
+### Added — Clothing preview UI
+- Replaced the read-only Clothing tab text with a resolver preview: slot grid, selected pieces, conflicts and free-slot count.
+- Cached the live context/resolution for 60 ticks to avoid scanning defs every frame.
+- Added `ClothingPresetStore` cache invalidation around save/delete.
+- No equip, jobs or state mutation yet.
+
 ## [0.3.0-alpha.330] - 2026-11-19
 
 ### Added — Clothing Phase 1.5

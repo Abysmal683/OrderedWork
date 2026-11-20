@@ -1,6 +1,6 @@
 # Clothing policy — design draft
 
-Status: Phase 1.5 implemented; UI/application/jobs pending.
+Status: Phase 1.5 and read-only Details preview implemented; editing/application/jobs pending.
 
 This file collects the current clothing data, implemented UI, prior design decisions, constraints, and open questions so the next pass starts from a single source.
 
@@ -926,3 +926,126 @@ Not implemented:
 - Simple Sidearms;
 - medicine/security;
 - retained inventory.
+## 29. UI plan
+
+### Principle
+
+Start with a **read-only preview** in Details. Do not start with the full editor.
+
+The resolver already exists; the first UI should expose its result and make conflicts visible. Editing comes after the preview is useful.
+
+### Screen 1 — Details -> Clothing preview
+
+Reuse `Dialog_WorkControlDetails.Clothing`; replace the current read-only text with:
+
+```text
+[Pawn] [WorkType: current]
+  ApparelPolicy: current policy / not configured
+  Preset: current / none
+  Refresh preview [button]
+
+  Body slot grid
+  Stack rules / selected pieces
+  Conflicts
+  Free slots
+```
+
+Components:
+
+- `ClothingPreviewPanel`
+- `ClothingSlotGrid`
+- `ClothingSelectedList`
+- `ClothingConflictList`
+- `ClothingSummary`
+
+States:
+
+- selected / locked / emergency / work / free;
+- policy denied;
+- slot occupied;
+- missing candidates;
+- no preset.
+
+No `Equip now`, no jobs, no pathfinding.
+
+### Screen 2 — Mod Settings -> Clothing editor
+
+Separate tab, not mixed into WorkType order:
+
+```text
+Left: WorkType list
+Center: body slot grid
+Right: selected rules / priority
+Bottom: candidate palette
+```
+
+Features:
+
+- select WorkType;
+- select/create preset;
+- add/remove rule;
+- choose phase (`Locked`, `Emergency`, `Work`);
+- choose slot/body layer;
+- add candidates;
+- reorder rules;
+- group labels;
+- preview conflicts;
+- duplicate/delete preset.
+
+Use the Nice Inventory Tab grid as interaction reference, not as copied code/assets.
+
+### Screen 3 — Per-pawn overrides
+
+In Details, after preview:
+
+- force / disable a rule;
+- prioritize a piece;
+- set emergency preset;
+- keep item (later inventory slice).
+
+### Visual language
+
+- Green: selected.
+- Blue: locked.
+- Amber: emergency.
+- Gray: free/unassigned.
+- Red: conflict/policy denied.
+- Dim: candidate unavailable.
+
+### Implementation order
+
+1. Read-only Details preview.
+2. Slot-grid component driven by `ClothingContextBuilder`.
+3. Stack/conflict lists.
+4. Global editor.
+5. Per-pawn overrides.
+
+No execution UI until the preview is validated.
+## 30. Read-only preview implemented
+
+- `ClothingPreviewPanel` in Details -> Clothing.
+- Shows active WorkType, ApparelPolicy, preset (assigned or preview fallback).
+- Uses cached context/resolution (60 ticks).
+- Draws slot grid, selections, conflicts and free-slot count.
+- No equip, jobs, pathfinding or state mutation.
+
+### Next UI
+
+1. Details preview polish:
+   - preset selector/refresh;
+   - slot tooltips and candidate details;
+   - conflict details;
+   - emergency preview state.
+2. Mod Settings -> Clothing editor:
+   - WorkType list;
+   - preset library;
+   - body grid;
+   - rule stack;
+   - candidate palette;
+   - phase/priority controls;
+   - validation and duplicate/delete.
+3. Per-pawn overrides:
+   - force/disable;
+   - priority;
+   - emergency assignment;
+   - keep items later.
