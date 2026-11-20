@@ -38,6 +38,7 @@ Start with the need, not the file list.
 | Project health and refactor priorities | [project-health-audit.md](explanation/project-health-audit.md) |
 | Nullable migration | [nullable-migration.md](explanation/nullable-migration.md) |
 | Hidden and always-active WorkTypes | [worktype-visibility.md](explanation/worktype-visibility.md) |
+| Clothing policy draft | [clothing-design-draft.md](explanation/clothing-design-draft.md) |
 
 ## Archive
 
