@@ -16,4 +16,4 @@
 
 ## Component ownership
 
-`ProfilesPanel`, `WorkOrderRulesPanel` and `OrderEditorPanel` own their local draft state. `OrderedWorkMod` remains the settings host and supplies shared profile selection, status and drag helpers. `SplitMerge` is the remaining large state block to extract.
+`ProfilesPanel`, `WorkOrderRulesPanel`, `OrderEditorPanel` and `SplitMergePanel` own their local draft state. SplitMerge drawing and host callbacks still live in `OrderedWorkMod`; the state component is extracted first to isolate scroll/drag/metadata without changing the drawing path.

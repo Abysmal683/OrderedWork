@@ -49,14 +49,14 @@ namespace OrderedWork
                 return;
             }
 
-            string newDefName = BuildSplitDefName(splitName);
+            string newDefName = BuildSplitDefName(splitMerge.SplitName);
             WorkConfigProfile profile = LoadEditingProfile();
-            if (profile == null || !profile.WorkTypes.TryGetValue(splitOrigin, out WorkTypeConfig origin) || origin == null)
+            if (profile == null || !profile.WorkTypes.TryGetValue(splitMerge.SplitOrigin, out WorkTypeConfig origin) || origin == null)
             {
                 return;
             }
 
-            List<string> incoming = splitDraft.Distinct().ToList();
+            List<string> incoming = splitMerge.SplitDraft.Distinct().ToList();
             foreach (string giverName in incoming)
             {
                 foreach (WorkTypeConfig workType in profile.WorkTypes.Values)
@@ -75,9 +75,9 @@ namespace OrderedWork
             WorkTypeConfig split = new WorkTypeConfig
             {
                 Vanilla = false,
-                Base = splitOrigin,
-                Label = splitName.Trim(),
-                Description = splitDescription.Trim(),
+                Base = splitMerge.SplitOrigin,
+                Label = splitMerge.SplitName.Trim(),
+                Description = splitMerge.SplitDescription.Trim(),
                 Visible = true,
                 Order = profile.WorkTypes.Count == 0 ? 0 : profile.WorkTypes.Values.Max(w => w != null ? w.Order : 0) + 1,
                 Mod = Content != null && Content.ModMetaData != null ? Content.PackageId : "nightmare123487.OrderedWork",
@@ -91,7 +91,7 @@ namespace OrderedWork
             profile.WorkTypes[newDefName] = split;
             if (!origin.Vanilla && (origin.Givers == null || origin.Givers.Count == 0))
             {
-                profile.WorkTypes.Remove(splitOrigin);
+                profile.WorkTypes.Remove(splitMerge.SplitOrigin);
             }
             if (origin.Vanilla && (origin.Givers == null || origin.Givers.Count == 0))
             {
@@ -100,14 +100,14 @@ namespace OrderedWork
             WorkConfigStore.SaveProfile(profile, true);
             WorkConfigStore.SavePending(profile);
             OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
-            Messages.Message(string.Format(ConfigText("OrderedWork.Config.SplitMerge.SplitSaved", "Split saved: {0} (restart to apply)."), splitName), MessageTypeDefOf.TaskCompletion, false);
+            Messages.Message(string.Format(ConfigText("OrderedWork.Config.SplitMerge.SplitSaved", "Split saved: {0} (restart to apply)."), splitMerge.SplitName), MessageTypeDefOf.TaskCompletion, false);
             ResetGiverOrderDraft();
 
-            splitName = "";
-            splitDescription = "";
-            splitDraft.Clear();
-            splitDraftScroll = 0f;
-            splitDirty = false;
+            splitMerge.SplitName = "";
+            splitMerge.SplitDescription = "";
+            splitMerge.SplitDraft.Clear();
+            splitMerge.SplitDraftScroll = 0f;
+            splitMerge.SplitDirty = false;
         }
 
         private void SaveMerge(List<string> givers)
@@ -116,16 +116,16 @@ namespace OrderedWork
             {
                 return;
             }
-            if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(mergeTarget) == null || mergeTarget == mergeOrigin)
+            if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(splitMerge.MergeTarget) == null || splitMerge.MergeTarget == splitMerge.MergeOrigin)
             {
                 return;
             }
 
             WorkConfigProfile profile = LoadEditingProfile();
             if (profile == null
-                || !profile.WorkTypes.TryGetValue(mergeOrigin, out WorkTypeConfig origin)
+                || !profile.WorkTypes.TryGetValue(splitMerge.MergeOrigin, out WorkTypeConfig origin)
                 || origin == null
-                || !profile.WorkTypes.TryGetValue(mergeTarget, out WorkTypeConfig target)
+                || !profile.WorkTypes.TryGetValue(splitMerge.MergeTarget, out WorkTypeConfig target)
                 || target == null)
             {
                 return;
@@ -178,7 +178,7 @@ namespace OrderedWork
             // hidden until another mod gives them content.
             if (!origin.Vanilla && (origin.Givers == null || origin.Givers.Count == 0))
             {
-                profile.WorkTypes.Remove(mergeOrigin);
+                profile.WorkTypes.Remove(splitMerge.MergeOrigin);
             }
             if (origin.Vanilla && (origin.Givers == null || origin.Givers.Count == 0))
             {
@@ -188,11 +188,11 @@ namespace OrderedWork
             WorkConfigStore.SaveProfile(profile, true);
             WorkConfigStore.SavePending(profile);
             OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
-            Messages.Message(string.Format(ConfigText("OrderedWork.Config.SplitMerge.MergeSaved", "Merge saved for {0} (restart to apply)."), mergeTarget), MessageTypeDefOf.TaskCompletion, false);
-            mergeDraft.Clear();
+            Messages.Message(string.Format(ConfigText("OrderedWork.Config.SplitMerge.MergeSaved", "Merge saved for {0} (restart to apply)."), splitMerge.MergeTarget), MessageTypeDefOf.TaskCompletion, false);
+            splitMerge.MergeDraft.Clear();
             ResetGiverOrderDraft();
-            mergeTargetScroll = 0f;
-            mergeDirty = false;
+            splitMerge.MergeTargetScroll = 0f;
+            splitMerge.MergeDirty = false;
         }
 
         private string BuildSplitDefName(string label)

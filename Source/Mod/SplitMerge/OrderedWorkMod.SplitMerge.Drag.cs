@@ -19,11 +19,11 @@ namespace OrderedWork
     {
         private bool IsValidDropHover(bool originSide, bool mergeMode, Rect row)
         {
-            if (smDragSide == 0 || smDragMergeMode != mergeMode || !smDragMoved)
+            if (splitMerge.DragSide == 0 || splitMerge.DragMergeMode != mergeMode || !splitMerge.DragMoved)
             {
                 return false;
             }
-            bool wantsOrigin = smDragSide == 2;
+            bool wantsOrigin = splitMerge.DragSide == 2;
             return wantsOrigin == originSide && row.Contains(Event.current.mousePosition);
         }
 
@@ -58,26 +58,26 @@ namespace OrderedWork
 
         private string SplitValidationWarning()
         {
-            if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(splitOrigin) == null)
+            if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(splitMerge.SplitOrigin) == null)
             {
                 return ConfigText("OrderedWork.Config.SplitMerge.WarnSelectOrigin", "Select a valid origin work type.");
             }
-            if (string.IsNullOrWhiteSpace(splitName))
+            if (string.IsNullOrWhiteSpace(splitMerge.SplitName))
             {
                 return ConfigText("OrderedWork.Config.SplitMerge.WarnEnterName", "Enter a name for the new work type.");
             }
-            if (splitDraft.Count == 0)
+            if (splitMerge.SplitDraft.Count == 0)
             {
                 return ConfigText("OrderedWork.Config.SplitMerge.WarnDragOne", "Drag at least one origin giver into Split destination.");
             }
-            List<WorkGiverDef> originGivers = GiversForWorkType(splitOrigin);
-            if (!Settings.allowEmptyOrigin && originGivers.Count > 0 && splitDraft.Count >= originGivers.Count)
+            List<WorkGiverDef> originGivers = GiversForWorkType(splitMerge.SplitOrigin);
+            if (!Settings.allowEmptyOrigin && originGivers.Count > 0 && splitMerge.SplitDraft.Count >= originGivers.Count)
             {
                 return ConfigText("OrderedWork.Config.SplitMerge.WarnLeaveOrigin", "This split would leave the origin empty. Leave at least one giver or enable 'Allow empty origin'.");
             }
-            foreach (string giver in splitDraft)
+            foreach (string giver in splitMerge.SplitDraft)
             {
-                if (!GiverBelongsTo(giver, splitOrigin))
+                if (!GiverBelongsTo(giver, splitMerge.SplitOrigin))
                 {
                     return ConfigText("OrderedWork.Config.SplitMerge.WarnGiversBelong", "Every split giver must belong to the selected origin.");
                 }
@@ -87,19 +87,19 @@ namespace OrderedWork
 
         private string MergeValidationWarning(bool all)
         {
-            if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(mergeOrigin) == null)
+            if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(splitMerge.MergeOrigin) == null)
             {
                 return ConfigText("OrderedWork.Config.SplitMerge.WarnSelectOrigin", "Select a valid origin work type.");
             }
-            if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(mergeTarget) == null)
+            if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(splitMerge.MergeTarget) == null)
             {
                 return ConfigText("OrderedWork.Config.SplitMerge.WarnDifferentTarget", "Select a different target work type.");
             }
-            if (mergeTarget == mergeOrigin)
+            if (splitMerge.MergeTarget == splitMerge.MergeOrigin)
             {
                 return ConfigText("OrderedWork.Config.SplitMerge.WarnTargetDifferent", "Target must be a different work type.");
             }
-            List<WorkGiverDef> originGivers = GiversForWorkType(mergeOrigin);
+            List<WorkGiverDef> originGivers = GiversForWorkType(splitMerge.MergeOrigin);
             if (all)
             {
                 if (originGivers.Count == 0)
@@ -112,17 +112,17 @@ namespace OrderedWork
                 }
                 return null;
             }
-            if (mergeDraft.Count == 0)
+            if (splitMerge.MergeDraft.Count == 0)
             {
                 return ConfigText("OrderedWork.Config.SplitMerge.WarnDragMerge", "Drag at least one origin giver into Merge destination.");
             }
-            if (!Settings.allowEmptyOrigin && mergeDraft.Count >= originGivers.Count)
+            if (!Settings.allowEmptyOrigin && splitMerge.MergeDraft.Count >= originGivers.Count)
             {
                 return ConfigText("OrderedWork.Config.SplitMerge.WarnMergeSelectedEmpty", "Merge selected would leave the origin empty. Enable 'Allow empty origin' to confirm.");
             }
-            foreach (string giver in mergeDraft)
+            foreach (string giver in splitMerge.MergeDraft)
             {
-                if (!GiverBelongsTo(giver, mergeOrigin))
+                if (!GiverBelongsTo(giver, splitMerge.MergeOrigin))
                 {
                     return ConfigText("OrderedWork.Config.SplitMerge.WarnMergeGiversBelong", "Every merge giver must belong to the selected origin.");
                 }
@@ -132,7 +132,7 @@ namespace OrderedWork
 
         private void HandleSplitMergeDrag()
         {
-            if (smDragSide == 0)
+            if (splitMerge.DragSide == 0)
             {
                 return;
             }
@@ -140,11 +140,11 @@ namespace OrderedWork
             Event current = Event.current;
             if (current.type == EventType.MouseDrag)
             {
-                if (!smDragMoved && Mathf.Abs(current.mousePosition.y - smDragStartY) > 3f)
+                if (!splitMerge.DragMoved && Mathf.Abs(current.mousePosition.y - splitMerge.DragStartY) > 3f)
                 {
-                    smDragMoved = true;
+                    splitMerge.DragMoved = true;
                 }
-                if (smDragMoved)
+                if (splitMerge.DragMoved)
                 {
                     current.Use();
                 }
@@ -156,24 +156,24 @@ namespace OrderedWork
                 return;
             }
 
-            bool dropInOrigin = smOriginArea.Contains(current.mousePosition);
-            bool dropInDest = smDestArea.Contains(current.mousePosition);
+            bool dropInOrigin = splitMerge.OriginArea.Contains(current.mousePosition);
+            bool dropInDest = splitMerge.DestArea.Contains(current.mousePosition);
 
-            if (smDragSide == 1 && dropInDest)
+            if (splitMerge.DragSide == 1 && dropInDest)
             {
-                AddDraftGiver(smDragGiver, smDragMergeMode);
-                if (smDragMergeMode && smMergeDropIndex >= 0)
+                AddDraftGiver(splitMerge.DragGiver, splitMerge.DragMergeMode);
+                if (splitMerge.DragMergeMode && splitMerge.MergeDropIndex >= 0)
                 {
-                    ReorderMergeDraft(smDragGiver, smMergeDropIndex);
+                    ReorderMergeDraft(splitMerge.DragGiver, splitMerge.MergeDropIndex);
                 }
             }
-            else if (smDragSide == 2 && dropInOrigin)
+            else if (splitMerge.DragSide == 2 && dropInOrigin)
             {
-                RemoveDraftGiver(smDragGiver, smDragMergeMode);
+                RemoveDraftGiver(splitMerge.DragGiver, splitMerge.DragMergeMode);
             }
-            else if (smDragSide == 2 && smDragMergeMode && dropInDest && smMergeDropIndex >= 0)
+            else if (splitMerge.DragSide == 2 && splitMerge.DragMergeMode && dropInDest && splitMerge.MergeDropIndex >= 0)
             {
-                ReorderMergeDraft(smDragGiver, smMergeDropIndex);
+                ReorderMergeDraft(splitMerge.DragGiver, splitMerge.MergeDropIndex);
             }
 
             ResetSplitMergeDrag();
@@ -182,45 +182,45 @@ namespace OrderedWork
 
         private void ReorderMergeDraft(string giverName, int targetIndex)
         {
-            int current = mergeDraft.IndexOf(giverName);
+            int current = splitMerge.MergeDraft.IndexOf(giverName);
             if (current < 0)
             {
                 return;
             }
-            mergeDraft.RemoveAt(current);
-            mergeDraft.Insert(Mathf.Clamp(targetIndex, 0, mergeDraft.Count), giverName);
+            splitMerge.MergeDraft.RemoveAt(current);
+            splitMerge.MergeDraft.Insert(Mathf.Clamp(targetIndex, 0, splitMerge.MergeDraft.Count), giverName);
         }
 
         private void ResetSplitMergeDrag()
         {
-            smDragSide = 0;
-            smDragGiver = null;
-            smDragMoved = false;
-            smScrollDragColumn = 0;
-            smMergeDropIndex = -1;
+            splitMerge.DragSide = 0;
+            splitMerge.DragGiver = null;
+            splitMerge.DragMoved = false;
+            splitMerge.ScrollDragColumn = 0;
+            splitMerge.MergeDropIndex = -1;
         }
 
         private void AddDraftGiver(string giverName, bool mergeMode)
         {
-            string origin = mergeMode ? mergeOrigin : splitOrigin;
+            string origin = mergeMode ? splitMerge.MergeOrigin : splitMerge.SplitOrigin;
             if (!GiverBelongsTo(giverName, origin))
             {
                 return;
             }
-            List<string> draft = mergeMode ? mergeDraft : splitDraft;
+            List<string> draft = mergeMode ? splitMerge.MergeDraft : splitMerge.SplitDraft;
             if (!draft.Contains(giverName))
             {
                 draft.Add(giverName);
-                if (mergeMode) mergeDirty = true; else splitDirty = true;
+                if (mergeMode) splitMerge.MergeDirty = true; else splitMerge.SplitDirty = true;
             }
         }
 
         private void RemoveDraftGiver(string giverName, bool mergeMode)
         {
-            List<string> draft = mergeMode ? mergeDraft : splitDraft;
+            List<string> draft = mergeMode ? splitMerge.MergeDraft : splitMerge.SplitDraft;
             if (draft.Remove(giverName))
             {
-                if (mergeMode) mergeDirty = true; else splitDirty = true;
+                if (mergeMode) splitMerge.MergeDirty = true; else splitMerge.SplitDirty = true;
             }
         }
 
@@ -233,27 +233,27 @@ namespace OrderedWork
             {
                 selectedGiverType = "";
             }
-            if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(splitOrigin) == null)
+            if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(splitMerge.SplitOrigin) == null)
             {
-                splitOrigin = fallback;
-                splitDraft.Clear();
+                splitMerge.SplitOrigin = fallback;
+                splitMerge.SplitDraft.Clear();
             }
-            if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(mergeOrigin) == null)
+            if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(splitMerge.MergeOrigin) == null)
             {
-                mergeOrigin = fallback;
-                mergeDraft.Clear();
+                splitMerge.MergeOrigin = fallback;
+                splitMerge.MergeDraft.Clear();
             }
-            if (!string.IsNullOrEmpty(mergeTarget)
-                && (mergeTarget == mergeOrigin || DefDatabase<WorkTypeDef>.GetNamedSilentFail(mergeTarget) == null))
+            if (!string.IsNullOrEmpty(splitMerge.MergeTarget)
+                && (splitMerge.MergeTarget == splitMerge.MergeOrigin || DefDatabase<WorkTypeDef>.GetNamedSilentFail(splitMerge.MergeTarget) == null))
             {
-                mergeTarget = "";
+                splitMerge.MergeTarget = "";
             }
             if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(selectedGiverType) == null)
             {
                 selectedGiverType = fallback;
             }
-            splitDraft.RemoveAll(g => !GiverBelongsTo(g, splitOrigin));
-            mergeDraft.RemoveAll(g => !GiverBelongsTo(g, mergeOrigin));
+            splitMerge.SplitDraft.RemoveAll(g => !GiverBelongsTo(g, splitMerge.SplitOrigin));
+            splitMerge.MergeDraft.RemoveAll(g => !GiverBelongsTo(g, splitMerge.MergeOrigin));
         }
     }
 }

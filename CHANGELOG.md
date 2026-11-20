@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.257] - 2026-11-19
+
+### Refactor — SplitMergePanel state
+- Added `SplitMergePanel`, owning split/merge drafts, scrolls, drag state and split metadata.
+- Removed the corresponding state fields from `OrderedWorkMod`.
+- Preserved drawing and host callbacks for a later extraction.
+- Split/Merge save actions remain guarded by `SafeSplitMergeAction`.
+
 ## [0.3.0-alpha.256] - 2026-11-19
 
 ### Fixed — Split/Merge without restart

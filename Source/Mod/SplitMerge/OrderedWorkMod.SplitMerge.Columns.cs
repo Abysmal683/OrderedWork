@@ -61,15 +61,15 @@ namespace OrderedWork
                 Rect row = new Rect(area.x + 3f, y, contentWidth - 6f, SplitMergeRowHeight - 2f);
                 UiZebra.Draw(row, i);
                 bool inDraft = originSide && draftNames.Contains(name);
-                bool dragged = smDragSide != 0
-                    && smDragMergeMode == mergeMode
-                    && smDragGiver == name
-                    && smDragSide == (originSide ? 1 : 2);
+                bool dragged = splitMerge.DragSide != 0
+                    && splitMerge.DragMergeMode == mergeMode
+                    && splitMerge.DragGiver == name
+                    && splitMerge.DragSide == (originSide ? 1 : 2);
                 bool dropTarget = IsValidDropHover(originSide, mergeMode, row);
 
                 DrawSplitMergeRow(row, name, inDraft, dragged, dropTarget, inDraft ? draftMarker : null);
 
-                if (!dragged && smDragSide == 0)
+                if (!dragged && splitMerge.DragSide == 0)
                 {
                     TooltipHandler.TipRegion(row, GiverTooltip(DefDatabase<WorkGiverDef>.GetNamedSilentFail(name)));
                 }
@@ -78,11 +78,11 @@ namespace OrderedWork
                     && current.button == 0
                     && row.Contains(current.mousePosition))
                 {
-                    smDragSide = originSide ? 1 : 2;
-                    smDragMergeMode = mergeMode;
-                    smDragGiver = name;
-                    smDragStartY = current.mousePosition.y;
-                    smDragMoved = false;
+                    splitMerge.DragSide = originSide ? 1 : 2;
+                    splitMerge.DragMergeMode = mergeMode;
+                    splitMerge.DragGiver = name;
+                    splitMerge.DragStartY = current.mousePosition.y;
+                    splitMerge.DragMoved = false;
                     current.Use();
                 }
             }
@@ -133,13 +133,13 @@ namespace OrderedWork
                 Rect row = new Rect(area.x + 3f, y, contentWidth - 6f, SplitMergeRowHeight - 2f);
                 UiZebra.Draw(row, i);
                 bool dragged = !isFixed
-                    && smDragSide == 2
-                    && smDragMergeMode
-                    && smDragGiver == name;
+                    && splitMerge.DragSide == 2
+                    && splitMerge.DragMergeMode
+                    && splitMerge.DragGiver == name;
                 bool dropTarget = !isFixed
-                    && smDragSide != 0
-                    && smDragMergeMode
-                    && smDragMoved
+                    && splitMerge.DragSide != 0
+                    && splitMerge.DragMergeMode
+                    && splitMerge.DragMoved
                     && row.Contains(current.mousePosition);
 
                 if (isFixed)
@@ -152,7 +152,7 @@ namespace OrderedWork
                     DrawSplitMergeRow(row, position + ". " + name, false, dragged, dropTarget, null);
                 }
 
-                if (!dragged && smDragSide == 0)
+                if (!dragged && splitMerge.DragSide == 0)
                 {
                     TooltipHandler.TipRegion(row, GiverTooltip(DefDatabase<WorkGiverDef>.GetNamedSilentFail(name)));
                 }
@@ -162,18 +162,18 @@ namespace OrderedWork
                     && current.button == 0
                     && row.Contains(current.mousePosition))
                 {
-                    smDragSide = 2;
-                    smDragMergeMode = true;
-                    smDragGiver = name;
-                    smDragStartY = current.mousePosition.y;
-                    smDragMoved = false;
+                    splitMerge.DragSide = 2;
+                    splitMerge.DragMergeMode = true;
+                    splitMerge.DragGiver = name;
+                    splitMerge.DragStartY = current.mousePosition.y;
+                    splitMerge.DragMoved = false;
                     current.Use();
                 }
             }
 
             // Work out where a dragged merge row would be inserted, including the empty area of
             // the column. A drop above all incoming rows inserts at 0; below them appends.
-            if ((smDragSide == 1 || smDragSide == 2) && smDragMergeMode && smDragMoved && Mouse.IsOver(area))
+            if ((splitMerge.DragSide == 1 || splitMerge.DragSide == 2) && splitMerge.DragMergeMode && splitMerge.DragMoved && Mouse.IsOver(area))
             {
                 int hovered = -1;
                 for (int j = 0; j < incomingCount; j++)
@@ -188,12 +188,12 @@ namespace OrderedWork
                 }
                 if (hovered >= 0)
                 {
-                    smMergeDropIndex = hovered;
+                    splitMerge.MergeDropIndex = hovered;
                 }
                 else
                 {
                     float incomingTop = area.y + fixedCount * SplitMergeRowHeight - scroll;
-                    smMergeDropIndex = current.mousePosition.y < incomingTop ? 0 : incomingCount;
+                    splitMerge.MergeDropIndex = current.mousePosition.y < incomingTop ? 0 : incomingCount;
                 }
             }
 
@@ -234,9 +234,9 @@ namespace OrderedWork
         {
             if (maxScroll <= 0f)
             {
-                if (smScrollDragColumn == columnId)
+                if (splitMerge.ScrollDragColumn == columnId)
                 {
-                    smScrollDragColumn = 0;
+                    splitMerge.ScrollDragColumn = 0;
                 }
                 return;
             }
@@ -244,18 +244,18 @@ namespace OrderedWork
             Event current = Event.current;
             if (current.type == EventType.MouseDown && current.button == 0 && track.Contains(current.mousePosition))
             {
-                smScrollDragColumn = columnId;
+                splitMerge.ScrollDragColumn = columnId;
                 UpdateColumnScrollFromMouse(track, visibleHeight, maxScroll, current.mousePosition.y, ref scroll);
                 current.Use();
             }
-            else if (smScrollDragColumn == columnId && current.type == EventType.MouseDrag)
+            else if (splitMerge.ScrollDragColumn == columnId && current.type == EventType.MouseDrag)
             {
                 UpdateColumnScrollFromMouse(track, visibleHeight, maxScroll, current.mousePosition.y, ref scroll);
                 current.Use();
             }
-            else if (smScrollDragColumn == columnId && current.type == EventType.MouseUp)
+            else if (splitMerge.ScrollDragColumn == columnId && current.type == EventType.MouseUp)
             {
-                smScrollDragColumn = 0;
+                splitMerge.ScrollDragColumn = 0;
                 current.Use();
             }
         }
@@ -290,7 +290,7 @@ namespace OrderedWork
             float travel = track.height - thumbHeight;
             float t = Mathf.Clamp01(scroll / maxScroll);
             Rect thumb = new Rect(track.x + 1f, track.y + travel * t, track.width - 2f, thumbHeight);
-            bool active = smScrollDragColumn == columnId;
+            bool active = splitMerge.ScrollDragColumn == columnId;
             Color color = active || Mouse.IsOver(thumb)
                 ? new Color(0.72f, 0.80f, 0.92f, 1f)
                 : new Color(0.48f, 0.53f, 0.60f, 0.95f);

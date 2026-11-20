@@ -41,38 +41,11 @@ namespace OrderedWork
 
         // Tab selection is intentionally UI-only; it is not scribed to settings.
         private int settingsTab = TabRules;
-        private int settingsEditorMode = EditorSplit;
+        private readonly SplitMergePanel splitMerge = new SplitMergePanel();
 
         // Order mode origin. Kept as UI-only state; the saved order itself lives in settings.
         private string selectedGiverType = "";
 
-        // Split/Merge drafts are UI-only and never scribed.
-        private string splitOrigin = "";
-        private string splitName = "";
-        private string splitDescription = "";
-        private List<string> splitDraft = new List<string>();
-        private float splitOriginScroll;
-        private float splitDraftScroll;
-
-        private string mergeOrigin = "";
-        private string mergeTarget = "";
-        private List<string> mergeDraft = new List<string>();
-        private float mergeOriginScroll;
-        private float mergeTargetScroll;
-
-        // 0 = nothing, 1 = from the origin column, 2 = from the destination column.
-        private int smDragSide;
-        private bool smDragMergeMode;
-        private string smDragGiver;
-        private float smDragStartY;
-        private bool smDragMoved;
-        private Rect smOriginArea;
-        private Rect smDestArea;
-
-        // Per-column scrollbar drag owner (0 = none, 1 = origin column, 2 = destination).
-        private int smScrollDragColumn;
-        // Merge destination reorder preview: insertion index into mergeDraft, -1 = none.
-        private int smMergeDropIndex = -1;
 
         private int dragKind;
         private int dragIndex = -1;
@@ -81,9 +54,6 @@ namespace OrderedWork
         private bool confirmResetAll;
         private string activeProfileName = "default";
 
-        private bool splitDirty;
-
-        private bool mergeDirty;
         private bool profileNameInitialized;
         private string profileStatus = "";
         private readonly ProfilesPanel profilesPanel = new ProfilesPanel();
@@ -205,17 +175,7 @@ namespace OrderedWork
             Settings.workControlHeight = 0f;
             selectedGiverType = WorkConfigStore.GetOrderedVisibleWorkTypes(
                 WorkConfigStore.LoadEditingProfile(activeProfileName)).FirstOrDefault()?.defName ?? "";
-            splitOrigin = "";
-            splitName = "";
-            splitDescription = "";
-            splitDraft.Clear();
-            splitOriginScroll = 0f;
-            splitDraftScroll = 0f;
-            mergeOrigin = "";
-            mergeTarget = "";
-            mergeDraft.Clear();
-            mergeOriginScroll = 0f;
-            mergeTargetScroll = 0f;
+            splitMerge.ResetDrafts();
             ResetEditorUiState();
             dragKind = 0;
             dragIndex = -1;

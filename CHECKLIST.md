@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.256)
+# Ordered Work — Current Checklist (0.3.0-alpha.257)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -94,6 +94,13 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] User is told to save and restart when apply fails.
 - [x] Build 0/0 and tests pass.
 - [ ] SplitMergePanel component extraction remains pending.
+## SplitMergePanel state (alpha.257)
+
+- [x] Split/merge drafts, scrolls, drag state and metadata moved to `SplitMergePanel`.
+- [x] Old state fields removed from `OrderedWorkMod`.
+- [x] Split/Merge save actions guarded by `SafeSplitMergeAction`.
+- [ ] Move SplitMerge drawing/callbacks into the panel.
+- [ ] Runtime panel check.
 ## Config panel components (alpha.255)
 
 - [x] `WorkOrderRulesPanel` owns its draft and baseline.

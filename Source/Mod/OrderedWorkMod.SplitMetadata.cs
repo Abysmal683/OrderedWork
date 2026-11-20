@@ -8,15 +8,11 @@ namespace OrderedWork
 {
     public partial class OrderedWorkMod : Mod
     {
-        private string splitMetaDefName = "";
-        private string splitMetaLabel = "";
-        private string splitMetaDescription = "";
-
-        private void ResetSplitMetadataState()
+                private void ResetSplitMetadataState()
         {
-            splitMetaDefName = "";
-            splitMetaLabel = "";
-            splitMetaDescription = "";
+            splitMerge.MetaDefName = "";
+            splitMerge.MetaLabel = "";
+            splitMerge.MetaDescription = "";
         }
 
         private void DrawSplitMetadata(Listing_Standard list)
@@ -29,11 +25,11 @@ namespace OrderedWork
                 return;
             }
 
-            if (splitMetaDefName != selectedGiverType)
+            if (splitMerge.MetaDefName != selectedGiverType)
             {
-                splitMetaDefName = selectedGiverType;
-                splitMetaLabel = split.Label ?? "";
-                splitMetaDescription = split.Description ?? "";
+                splitMerge.MetaDefName = selectedGiverType;
+                splitMerge.MetaLabel = split.Label ?? "";
+                splitMerge.MetaDescription = split.Description ?? "";
             }
 
             list.Gap(10f);
@@ -41,23 +37,23 @@ namespace OrderedWork
             list.Label(string.Format(ConfigText("OrderedWork.Config.SplitMeta.DefName", "defName: {0}"), selectedGiverType));
             Rect labelRow = list.GetRect(26f);
             Widgets.Label(new Rect(labelRow.x, labelRow.y, 110f, 24f), ConfigText("OrderedWork.Config.SplitMeta.Label", "Label"));
-            splitMetaLabel = Widgets.TextField(
-                new Rect(labelRow.x + 114f, labelRow.y, labelRow.width - 114f, 24f), splitMetaLabel ?? "");
+            splitMerge.MetaLabel = Widgets.TextField(
+                new Rect(labelRow.x + 114f, labelRow.y, labelRow.width - 114f, 24f), splitMerge.MetaLabel ?? "");
             Rect descRow = list.GetRect(26f);
             Widgets.Label(new Rect(descRow.x, descRow.y, 110f, 24f), ConfigText("OrderedWork.Config.SplitMeta.Description", "Description"));
-            splitMetaDescription = Widgets.TextField(
-                new Rect(descRow.x + 114f, descRow.y, descRow.width - 114f, 24f), splitMetaDescription ?? "");
+            splitMerge.MetaDescription = Widgets.TextField(
+                new Rect(descRow.x + 114f, descRow.y, descRow.width - 114f, 24f), splitMerge.MetaDescription ?? "");
 
-            bool changed = splitMetaLabel != (split.Label ?? "")
-                || splitMetaDescription != (split.Description ?? "");
+            bool changed = splitMerge.MetaLabel != (split.Label ?? "")
+                || splitMerge.MetaDescription != (split.Description ?? "");
             if (UiButtonBar.Button(list.GetRect(26f), ConfigText("OrderedWork.Config.SplitMeta.Save", "Save split metadata"), changed))
             {
                 WorkConfigProfile editing = LoadEditingProfile();
                 if (editing != null && editing.WorkTypes.TryGetValue(selectedGiverType, out WorkTypeConfig target)
                     && target != null)
                 {
-                    target.Label = splitMetaLabel.Trim();
-                    target.Description = splitMetaDescription.Trim();
+                    target.Label = splitMerge.MetaLabel.Trim();
+                    target.Description = splitMerge.MetaDescription.Trim();
                     WorkConfigStore.SaveProfile(editing, true);
                     WorkConfigStore.SavePending(editing);
                     OrderedWorkStartup.ApplyProfileNow(editing, Settings, this);

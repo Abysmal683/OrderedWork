@@ -23,18 +23,18 @@ namespace OrderedWork
             list.Gap(28f);
 
             Rect modeRect = list.GetRect(28f);
-            UiTabBar.Draw(modeRect, new[] { ConfigText("OrderedWork.Config.SplitMerge.SplitTab", "Split"), ConfigText("OrderedWork.Config.SplitMerge.MergeTab", "Merge"), ConfigText("OrderedWork.Config.SplitMerge.OrderTab", "Order") }, settingsEditorMode,
+            UiTabBar.Draw(modeRect, new[] { ConfigText("OrderedWork.Config.SplitMerge.SplitTab", "Split"), ConfigText("OrderedWork.Config.SplitMerge.MergeTab", "Merge"), ConfigText("OrderedWork.Config.SplitMerge.OrderTab", "Order") }, splitMerge.EditorMode,
                 delegate(int index)
                 {
-                    if (settingsEditorMode == index) return;
-                    settingsEditorMode = index;
+                    if (splitMerge.EditorMode == index) return;
+                    splitMerge.EditorMode = index;
                     ResetEditorUiState();
                     ResetGiverOrderDraft();
                 });
             list.Label(ConfigText("OrderedWork.Config.SplitMerge.Tip", "Tip: Ctrl+wheel or drag a column scrollbar to scroll that column; a plain wheel scrolls the settings."));
             list.Gap(4f);
 
-            switch (settingsEditorMode)
+            switch (splitMerge.EditorMode)
             {
                 case EditorMerge:
                     DrawMergeEditor(list);
@@ -53,47 +53,47 @@ namespace OrderedWork
             EnsureSplitMergeDefaults();
 
             Rect originRect = list.GetRect(28f);
-            DrawWorkTypeSelector(originRect, ConfigText("OrderedWork.Config.SplitMerge.OriginWorkType", "Origin work type: "), splitOrigin, ConfigText("OrderedWork.Config.SplitMerge.SelectOrigin", "Select origin work type"), delegate(string defName)
+            DrawWorkTypeSelector(originRect, ConfigText("OrderedWork.Config.SplitMerge.OriginWorkType", "Origin work type: "), splitMerge.SplitOrigin, ConfigText("OrderedWork.Config.SplitMerge.SelectOrigin", "Select origin work type"), delegate(string defName)
             {
-                splitOrigin = defName;
-                splitDraft.Clear();
-                splitOriginScroll = 0f;
-                splitDraftScroll = 0f;
+                splitMerge.SplitOrigin = defName;
+                splitMerge.SplitDraft.Clear();
+                splitMerge.SplitOriginScroll = 0f;
+                splitMerge.SplitDraftScroll = 0f;
             });
 
             Rect nameRow = list.GetRect(26f);
             Widgets.Label(new Rect(nameRow.x, nameRow.y, 110f, 24f), ConfigText("OrderedWork.Config.SplitMerge.NewName", "New name"));
-            splitName = Widgets.TextField(new Rect(nameRow.x + 114f, nameRow.y, Mathf.Max(60f, nameRow.width - 114f), 24f), splitName ?? "");
+            splitMerge.SplitName = Widgets.TextField(new Rect(nameRow.x + 114f, nameRow.y, Mathf.Max(60f, nameRow.width - 114f), 24f), splitMerge.SplitName ?? "");
             Rect descRow = list.GetRect(26f);
             Widgets.Label(new Rect(descRow.x, descRow.y, 110f, 24f), ConfigText("OrderedWork.Config.SplitMerge.Description", "Description"));
-            splitDescription = Widgets.TextField(new Rect(descRow.x + 114f, descRow.y, Mathf.Max(60f, descRow.width - 114f), 24f), splitDescription ?? "");
-            if (!string.IsNullOrWhiteSpace(splitName))
+            splitMerge.SplitDescription = Widgets.TextField(new Rect(descRow.x + 114f, descRow.y, Mathf.Max(60f, descRow.width - 114f), 24f), splitMerge.SplitDescription ?? "");
+            if (!string.IsNullOrWhiteSpace(splitMerge.SplitName))
             {
-                list.Label(string.Format(ConfigText("OrderedWork.Config.SplitMerge.DefName", "defName: {0}"), BuildSplitDefName(splitName)));
+                list.Label(string.Format(ConfigText("OrderedWork.Config.SplitMerge.DefName", "defName: {0}"), BuildSplitDefName(splitMerge.SplitName)));
             }
 
             list.Gap(4f);
-            List<WorkGiverDef> originGivers = GiversForWorkType(splitOrigin);
+            List<WorkGiverDef> originGivers = GiversForWorkType(splitMerge.SplitOrigin);
             List<string> originNames = originGivers.Select(g => g.defName).ToList();
-            HashSet<string> draftSet = new HashSet<string>(splitDraft);
+            HashSet<string> draftSet = new HashSet<string>(splitMerge.SplitDraft);
 
             Rect headerRect = list.GetRect(20f);
             float columnWidth = (headerRect.width - 12f) * 0.5f;
             Widgets.Label(new Rect(headerRect.x, headerRect.y, columnWidth, 20f),
                 string.Format(ConfigText("OrderedWork.Config.SplitMerge.OriginGivers", "Origin givers ({0})"), originNames.Count));
             Widgets.Label(new Rect(headerRect.x + columnWidth + 12f, headerRect.y, columnWidth, 20f),
-                string.Format(ConfigText("OrderedWork.Config.SplitMerge.SplitDest", "Split destination ({0})"), splitDraft.Count));
+                string.Format(ConfigText("OrderedWork.Config.SplitMerge.SplitDest", "Split destination ({0})"), splitMerge.SplitDraft.Count));
 
             Rect columnsRect = list.GetRect(SplitMergeColumnHeight);
             Rect left = new Rect(columnsRect.x, columnsRect.y, columnWidth, SplitMergeColumnHeight);
             Rect right = new Rect(columnsRect.x + columnWidth + 12f, columnsRect.y, columnWidth, SplitMergeColumnHeight);
             Widgets.DrawBoxSolid(left, UiColors.ColumnBackground);
             Widgets.DrawBoxSolid(right, UiColors.ColumnBackground);
-            smOriginArea = left;
-            smDestArea = right;
+            splitMerge.OriginArea = left;
+            splitMerge.DestArea = right;
 
-            DrawGiverColumn(left, originNames, draftSet, true, false, ref splitOriginScroll, ConfigText("OrderedWork.Config.SplitMerge.InSplit", "(in split)"), 1);
-            DrawGiverColumn(right, splitDraft, draftSet, false, false, ref splitDraftScroll, null, 2);
+            DrawGiverColumn(left, originNames, draftSet, true, false, ref splitMerge.SplitOriginScroll, ConfigText("OrderedWork.Config.SplitMerge.InSplit", "(in split)"), 1);
+            DrawGiverColumn(right, splitMerge.SplitDraft, draftSet, false, false, ref splitMerge.SplitDraftScroll, null, 2);
 
             string warning = SplitValidationWarning();
             DrawSplitMergeActions(list, ConfigText("OrderedWork.Config.SplitMerge.Add", "Add split"), warning,
@@ -103,12 +103,12 @@ namespace OrderedWork
                 },
                 delegate
                 {
-                    splitName = "";
-                    splitDescription = "";
-                    splitDraft.Clear();
-                    splitDraftScroll = 0f;
-                    splitDirty = false;
-                }, splitDirty);
+                    splitMerge.SplitName = "";
+                    splitMerge.SplitDescription = "";
+                    splitMerge.SplitDraft.Clear();
+                    splitMerge.SplitDraftScroll = 0f;
+                    splitMerge.SplitDirty = false;
+                }, splitMerge.SplitDirty);
 
             HandleSplitMergeDrag();
         }
@@ -131,53 +131,53 @@ namespace OrderedWork
             Rect selectorRect = list.GetRect(28f);
             float selectorHalf = (selectorRect.width - 8f) * 0.5f;
             DrawWorkTypeSelector(new Rect(selectorRect.x, selectorRect.y, selectorHalf, 28f),
-                ConfigText("OrderedWork.Config.SplitMerge.Origin", "Origin: "), mergeOrigin, ConfigText("OrderedWork.Config.SplitMerge.SelectOrigin", "Select origin work type"), delegate(string defName)
+                ConfigText("OrderedWork.Config.SplitMerge.Origin", "Origin: "), splitMerge.MergeOrigin, ConfigText("OrderedWork.Config.SplitMerge.SelectOrigin", "Select origin work type"), delegate(string defName)
                 {
-                    mergeOrigin = defName;
-                    mergeDraft.Clear();
-                    mergeOriginScroll = 0f;
-                    mergeTargetScroll = 0f;
-                    if (mergeTarget == mergeOrigin)
+                    splitMerge.MergeOrigin = defName;
+                    splitMerge.MergeDraft.Clear();
+                    splitMerge.MergeOriginScroll = 0f;
+                    splitMerge.MergeTargetScroll = 0f;
+                    if (splitMerge.MergeTarget == splitMerge.MergeOrigin)
                     {
-                        mergeTarget = "";
+                        splitMerge.MergeTarget = "";
                     }
                 });
             DrawWorkTypeSelector(new Rect(selectorRect.x + selectorHalf + 8f, selectorRect.y, selectorHalf, 28f),
-                ConfigText("OrderedWork.Config.SplitMerge.Target", "Target: "), mergeTarget, ConfigText("OrderedWork.Config.SplitMerge.SelectTarget", "Select merge target"), delegate(string defName)
+                ConfigText("OrderedWork.Config.SplitMerge.Target", "Target: "), splitMerge.MergeTarget, ConfigText("OrderedWork.Config.SplitMerge.SelectTarget", "Select merge target"), delegate(string defName)
                 {
-                    mergeTarget = defName;
-                    smMergeDropIndex = -1;
+                    splitMerge.MergeTarget = defName;
+                    splitMerge.MergeDropIndex = -1;
                 },
-                mergeOrigin);
+                splitMerge.MergeOrigin);
 
             list.Gap(4f);
-            List<WorkGiverDef> originGivers = GiversForWorkType(mergeOrigin);
+            List<WorkGiverDef> originGivers = GiversForWorkType(splitMerge.MergeOrigin);
             List<string> originNames = originGivers.Select(g => g.defName).ToList();
-            HashSet<string> draftSet = new HashSet<string>(mergeDraft);
-            List<string> existingTarget = GiversForWorkType(mergeTarget).Select(g => g.defName).ToList();
+            HashSet<string> draftSet = new HashSet<string>(splitMerge.MergeDraft);
+            List<string> existingTarget = GiversForWorkType(splitMerge.MergeTarget).Select(g => g.defName).ToList();
 
             Rect headerRect = list.GetRect(20f);
             float columnWidth = (headerRect.width - 12f) * 0.5f;
             Widgets.Label(new Rect(headerRect.x, headerRect.y, columnWidth, 20f),
                 string.Format(ConfigText("OrderedWork.Config.SplitMerge.OriginGivers", "Origin givers ({0})"), originNames.Count));
             Widgets.Label(new Rect(headerRect.x + columnWidth + 12f, headerRect.y, columnWidth, 20f),
-                string.Format(ConfigText("OrderedWork.Config.SplitMerge.MergeDest", "Destination ({0} fixed + {1} incoming)"), existingTarget.Count, mergeDraft.Count));
+                string.Format(ConfigText("OrderedWork.Config.SplitMerge.MergeDest", "Destination ({0} fixed + {1} incoming)"), existingTarget.Count, splitMerge.MergeDraft.Count));
 
             Rect columnsRect = list.GetRect(SplitMergeColumnHeight);
             Rect left = new Rect(columnsRect.x, columnsRect.y, columnWidth, SplitMergeColumnHeight);
             Rect right = new Rect(columnsRect.x + columnWidth + 12f, columnsRect.y, columnWidth, SplitMergeColumnHeight);
             Widgets.DrawBoxSolid(left, UiColors.ColumnBackground);
             Widgets.DrawBoxSolid(right, UiColors.ColumnBackground);
-            smOriginArea = left;
-            smDestArea = right;
-            smMergeDropIndex = -1;
+            splitMerge.OriginArea = left;
+            splitMerge.DestArea = right;
+            splitMerge.MergeDropIndex = -1;
 
-            DrawGiverColumn(left, originNames, draftSet, true, true, ref mergeOriginScroll, ConfigText("OrderedWork.Config.SplitMerge.InMerge", "(in merge)"), 1);
-            DrawMergeDestinationColumn(right, existingTarget, mergeDraft, ref mergeTargetScroll);
+            DrawGiverColumn(left, originNames, draftSet, true, true, ref splitMerge.MergeOriginScroll, ConfigText("OrderedWork.Config.SplitMerge.InMerge", "(in merge)"), 1);
+            DrawMergeDestinationColumn(right, existingTarget, splitMerge.MergeDraft, ref splitMerge.MergeTargetScroll);
 
-            if (smDragSide == 2 && smDragMergeMode && smDragMoved && smMergeDropIndex >= 0)
+            if (splitMerge.DragSide == 2 && splitMerge.DragMergeMode && splitMerge.DragMoved && splitMerge.MergeDropIndex >= 0)
             {
-                list.Label(string.Format(ConfigText("OrderedWork.Config.SplitMerge.Drop", "Drop \"{0}\" at destination position {1}."), smDragGiver, existingTarget.Count + smMergeDropIndex + 1));
+                list.Label(string.Format(ConfigText("OrderedWork.Config.SplitMerge.Drop", "Drop \"{0}\" at destination position {1}."), splitMerge.DragGiver, existingTarget.Count + splitMerge.MergeDropIndex + 1));
             }
 
             Rect actionsRect = list.GetRect(30f);
@@ -190,17 +190,17 @@ namespace OrderedWork
             string allWarning = MergeValidationWarning(true);
             if (UiButtonBar.Button(selectedRect, ConfigText("OrderedWork.Config.SplitMerge.MergeSelected", "Merge selected"), string.IsNullOrEmpty(selectedWarning)))
             {
-                SafeSplitMergeAction(delegate { SaveMerge(mergeDraft); });
+                SafeSplitMergeAction(delegate { SaveMerge(splitMerge.MergeDraft); });
             }
             if (UiButtonBar.Button(allRect, ConfigText("OrderedWork.Config.SplitMerge.MergeAll", "Merge all"), string.IsNullOrEmpty(allWarning)))
             {
                 SafeSplitMergeAction(delegate { SaveMerge(originNames); });
             }
-            if (UiButtonBar.Button(cancelRect, ConfigText("OrderedWork.Config.SplitMerge.CancelDraft", "Cancel draft"), mergeDirty))
+            if (UiButtonBar.Button(cancelRect, ConfigText("OrderedWork.Config.SplitMerge.CancelDraft", "Cancel draft"), splitMerge.MergeDirty))
             {
-                mergeDraft.Clear();
-                mergeTargetScroll = 0f;
-                mergeDirty = false;
+                splitMerge.MergeDraft.Clear();
+                splitMerge.MergeTargetScroll = 0f;
+                splitMerge.MergeDirty = false;
             }
             if (!string.IsNullOrEmpty(selectedWarning))
             {
