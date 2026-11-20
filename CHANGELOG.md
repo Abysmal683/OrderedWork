@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.277] - 2026-11-19
+
+### Fixed — Work tab columns getter
+- `PawnTable.Columns` rebuilds its list from the table def on every call; the previous prefix was overwritten by that rebuild.
+- Reorder the returned list in a `PawnTable.get_Columns` postfix, which is the list the Work tab actually draws.
+- Hidden WorkTypes remain in the config order but are applied with `visible=false` and the fixed priority overlay.
+
 ## [0.3.0-alpha.276] - 2026-11-19
 
 ### Added — Hidden WorkType overlay

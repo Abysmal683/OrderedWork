@@ -3,11 +3,11 @@
   <name>Ordered Work (Core)</name>
   <author>nightmare123487</author>
   <packageId>nightmare123487.OrderedWork</packageId>
-  <modVersion>0.3.0-alpha.276</modVersion>
+  <modVersion>0.3.0-alpha.277</modVersion>
   <supportedVersions>
     <li>1.7</li>
   </supportedVersions>
-  <description>Ordered Work (0.3.0-alpha.276). Profile-backed WorkType and WorkGiver ordering, a Split/Merge/Order editor with Action word metadata and two-step Revert/Delete, per-pawn Work Control, schedule presets, hourly focus and zone policy. Changes are written to profile JSON; restart remains the safe boundary for generated definitions. Do not use in a main save; back up your save first.</description>
+  <description>Ordered Work (0.3.0-alpha.277). Profile-backed WorkType and WorkGiver ordering, a Split/Merge/Order editor with Action word metadata and two-step Revert/Delete, per-pawn Work Control, schedule presets, hourly focus and zone policy. Changes are written to profile JSON; restart remains the safe boundary for generated definitions. Do not use in a main save; back up your save first.</description>
   <loadAfter>
     <li>brrainz.harmony</li>
     <li>Ludeon.RimWorld</li>

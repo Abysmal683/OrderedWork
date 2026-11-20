@@ -32,19 +32,19 @@ namespace OrderedWork.Patches
 }
 namespace OrderedWork.Patches
 {
-    [HarmonyPatch(typeof(PawnTable), nameof(PawnTable.PawnTableOnGUI))]
-    internal static class Patch_PawnTable_WorkColumnsOnGUI
+    [HarmonyPatch(typeof(PawnTable), "get_Columns")]
+    internal static class Patch_PawnTable_WorkColumnsGetter
     {
-        private static void Prefix(PawnTable __instance)
+        private static void Postfix(PawnTable __instance, ref System.Collections.Generic.List<PawnColumnDef> __result)
         {
-            if (__instance == null)
+            if (__instance == null || __result == null)
             {
                 return;
             }
             PawnTableDef definition = Traverse.Create(__instance).Field("def").GetValue<PawnTableDef>();
             if (definition == PawnTableDefOf.Work)
             {
-                OrderedWorkStartup.ReorderWorkTableColumns(__instance.Columns);
+                OrderedWorkStartup.ReorderWorkTableColumns(__result);
             }
         }
     }
