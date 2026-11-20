@@ -17,19 +17,18 @@ namespace OrderedWork
 {
     public partial class OrderedWorkMod : Mod
     {
-        private Vector2 passionWeightScroll;
         private readonly WorkOrderRulesPanel workOrderRulesPanel = new WorkOrderRulesPanel();
         private readonly OrderEditorPanel orderEditorPanel = new OrderEditorPanel();
-        private readonly HashSet<string> collapsedSections = new HashSet<string>();
+        private readonly HashSet<string> expandedSections = new HashSet<string>();
 
         internal bool DrawCollapsibleSection(Listing_Standard list, string key, string title)
         {
-            bool expanded = !collapsedSections.Contains(key);
+            bool expanded = expandedSections.Contains(key);
             bool next = UiCollapsibleSection.Header(list, title, expanded);
             if (next != expanded)
             {
-                if (next) collapsedSections.Remove(key);
-                else collapsedSections.Add(key);
+                if (next) expandedSections.Add(key);
+                else expandedSections.Remove(key);
             }
             return next;
         }

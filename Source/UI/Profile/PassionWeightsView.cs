@@ -8,15 +8,14 @@ using Verse;
 namespace OrderedWork.UI
 {
     /// <summary>
-    /// Renders the global passion-weight table. The viewport is clipped manually and
-    /// the scrollbar is drag-only, so it never owns the settings wheel event.
+    /// Renders the full global passion-weight table. The settings tab owns scrolling;
+    /// this view has no internal row cap or scrollbar.
     /// </summary>
     internal static class PassionWeightsView
     {
-        private const int VisiblePassionRows = 10;
         private const float PassionRowHeight = 26f;
 
-        public static void Draw(Listing_Standard list, OrderedWorkSettings settings, ref Vector2 scroll, bool drawHeader = true)
+        public static void Draw(Listing_Standard list, OrderedWorkSettings settings, bool drawHeader = true)
         {
             if (drawHeader)
             {
@@ -24,32 +23,11 @@ namespace OrderedWork.UI
             }
             PassionWeightPolicy.EnsureDefaults(settings);
             List<PassionSource.PassionInfo> registered = PassionSource.Registered;
-            float viewHeight = Mathf.Min(registered.Count, VisiblePassionRows) * PassionRowHeight;
-            Rect outRect = list.GetRect(viewHeight);
-            float barWidth = WorkGridScrollView.Thickness;
-            Rect viewport = new Rect(outRect.x, outRect.y, outRect.width - barWidth - 2f, outRect.height);
-            Rect content = new Rect(0f, 0f, viewport.width, registered.Count * PassionRowHeight);
-            Rect track = new Rect(viewport.xMax + 2f, outRect.y, barWidth, outRect.height);
-            float maxScroll = Mathf.Max(0f, content.height - viewport.height);
-            scroll.y = Mathf.Clamp(scroll.y, 0f, maxScroll);
-            OrderedWorkMod.HandleCtrlWheel(viewport, maxScroll, ref scroll.y, PassionRowHeight);
-            WorkGridScrollView.HandleVertical(track, viewport, content, ref scroll, typeof(PassionWeightsView));
-
-            GUI.BeginGroup(viewport);
-            string pendingTooltip = null;
-            Vector2 pendingMouse = default(Vector2);
+            Rect area = list.GetRect(registered.Count * PassionRowHeight);
             for (int i = 0; i < registered.Count; i++)
             {
-                DrawRow(viewport, scroll.y, i, registered[i], settings,
-                    ref pendingTooltip, ref pendingMouse);
+                DrawRow(area, i, registered[i], settings);
             }
-            GUI.EndGroup();
-            if (!string.IsNullOrEmpty(pendingTooltip))
-            {
-                Rect tipRect = new Rect(pendingMouse.x - 1f, pendingMouse.y - 1f, 2f, 2f);
-                TooltipHandler.TipRegion(tipRect, pendingTooltip);
-            }
-            WorkGridScrollView.DrawVertical(track, viewport, content, ref scroll);
 
             bool canReset = PassionWeightPolicy.HasChangesFromDefaults(settings);
             if (UiButtonBar.Button(list.GetRect(28f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.PassionWeights.Reset", "Reset recommendation weights"), canReset,
@@ -63,13 +41,10 @@ namespace OrderedWork.UI
         }
 
         private static void DrawRow(
-            Rect viewport,
-            float scroll,
+            Rect area,
             int index,
             PassionSource.PassionInfo info,
-            OrderedWorkSettings settings,
-            ref string pendingTooltip,
-            ref Vector2 pendingMouse)
+            OrderedWorkSettings settings)
         {
             PassionWeightEntry entry = PassionWeightPolicy.Find(settings, info.Passion);
             if (entry == null)
@@ -77,8 +52,7 @@ namespace OrderedWork.UI
                 return;
             }
 
-            Rect row = new Rect(0f, index * PassionRowHeight - scroll, viewport.width, 24f);
-            Rect screenRow = new Rect(viewport.x, viewport.y + row.y, viewport.width, 24f);
+            Rect row = new Rect(area.x, area.y + index * PassionRowHeight, area.width, 24f);
             UiZebra.Draw(row, index);
             WorkTypePaletteView.PassionVisual visual = WorkTypePaletteView.ResolvePassionVisual(info.Passion);
             if (visual.Texture != null)
@@ -101,16 +75,7 @@ namespace OrderedWork.UI
             }
             if (!string.IsNullOrEmpty(description))
             {
-                Vector2 mouse = Event.current.mousePosition;
-                bool screenHit = screenRow.Contains(mouse);
-                bool localHit = row.Contains(mouse);
-                if (screenHit || localHit)
-                {
-                    pendingTooltip = description;
-                    pendingMouse = screenHit
-                        ? mouse
-                        : new Vector2(viewport.x + mouse.x, viewport.y + mouse.y);
-                }
+                TooltipHandler.TipRegion(row, description);
             }
 
             float fieldWidth = Mathf.Max(54f, (row.width - 170f - 24f) / 3f);

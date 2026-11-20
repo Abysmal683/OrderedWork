@@ -34,6 +34,7 @@ Start with the need, not the file list.
 | Why hourly focus is an overlay | [schedule-focus.md](explanation/schedule-focus.md) |
 | Split/merge editor rationale | [split-merge.md](explanation/split-merge.md) |
 | Project health and refactor priorities | [project-health-audit.md](explanation/project-health-audit.md) |
+| Hidden and always-active WorkTypes | [worktype-visibility.md](explanation/worktype-visibility.md) |
 
 ## Archive
 

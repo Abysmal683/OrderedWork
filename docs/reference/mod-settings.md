@@ -6,6 +6,7 @@
 - The editor has `Split` / `Merge` / `Order` modes. Split and Merge use two columns with the left column always **Origin**; the right header is `Split destination` or `Destination`.
 - Split and Merge action buttons expose tooltips. `Add split`, `Merge selected`, `Merge all` and `Cancel draft` explain their effect on hover.
 - Candidate lists and the Order editor columns show at most **10 rows**. Use the scrollbar or `Ctrl+wheel` over the list/column; a plain wheel scrolls the outer settings.
+- Collapsible Rules sections start collapsed. Passion weight rows render in full; the outer settings scroll handles the full table, with no internal passion cap or scrollbar.
 - Merge destination = existing target Givers marked `(fixed)` at the top, then incoming origin Givers, which are draggable and reorderable.
 - Each Giver column has a 6 px scrollbar with a draggable thumb and a hint tooltip.
 - Drafts are UI-only and are not persisted. Saved profile entries are applied by the profile pipeline and are safe across restart.

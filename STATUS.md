@@ -1,10 +1,11 @@
 # Ordered Work — Current Status
 
-Version: `0.3.0-alpha.271` (runtime checkpoint). Build 0/0; tests pass.
+Version: `0.3.0-alpha.272` (runtime checkpoint). Build 0/0; tests pass.
 
-## Latest checkpoint (.271)
+## Latest checkpoint (.272)
 
 - Profiles append visible live WorkTypes and missing Givers on load; Hospitality `Diplomat` can be selected in Order, Split and Merge.
+- The vanilla Work tab now uses the active profile order; passion weights render in full and Rules sections start collapsed.
 - Hidden mod WorkTypes are not added and stale visible flags are cleared during reconciliation.
 - Split delete and Merge revert restore origin visibility when Givers return.
 - Passion tooltips resolve local-group and screen-space mouse coordinates before registering at the pointer.

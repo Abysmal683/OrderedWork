@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.271)
+# Ordered Work — Current Checklist (0.3.0-alpha.272)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -161,6 +161,14 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Paint, erase, load, save and apply preserve their behavior.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of paint, erase, load, save and apply.
+## Work tab order and passion layout (alpha.272)
+
+- [x] Vanilla Work tab uses active profile order via Harmony.
+- [x] Passion weights render all rows without internal cap or scrollbar.
+- [x] Rules sections default collapsed and remember expanded state.
+- [x] Hidden/always-active WorkType design note saved.
+- [ ] Runtime check of Work tab order after restart.
+- [ ] Runtime check of full passion table scrolling in the outer settings.
 ## Profile reconciliation and mod WorkTypes (alpha.271)
 
 - [x] Missing visible live WorkTypes and Givers are appended to the profile on load.

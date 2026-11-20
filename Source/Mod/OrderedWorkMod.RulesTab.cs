@@ -121,7 +121,7 @@ namespace OrderedWork
             if (DrawCollapsibleSection(list, "recommendation-weights",
                 ConfigText("OrderedWork.Config.Rules.WeightsSection", "Recommendation passion weights")))
             {
-                PassionWeightsView.Draw(list, Settings, ref passionWeightScroll, false);
+                PassionWeightsView.Draw(list, Settings, false);
             }
 
             if (DrawCollapsibleSection(list, "split-merge-order",

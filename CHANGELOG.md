@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.272] - 2026-11-19
+
+### Fixed — Work tab order and passion layout
+- The vanilla Work tab now uses the active profile order through a Harmony postfix on `WorkTypeDefsUtility.WorkTypeDefsInPriorityOrder`, so newly added WorkTypes follow the configured order instead of only appearing at the end.
+- Passion weights no longer have an internal 10-row cap or scrollbar; all rows render in the outer settings scroll.
+- Rules sections now start collapsed and remember their expanded state during the session.
+- Added the hidden/always-active WorkType design note; behavior remains opt-in and unimplemented until runtime semantics are confirmed.
+
 ## [0.3.0-alpha.271] - 2026-11-19
 
 ### Fixed — Mod-added WorkTypes and profile reconciliation
