@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -117,7 +116,7 @@ namespace OrderedWork.Config
             foreach (WorkTypeDef workType in DefDatabase<WorkTypeDef>.AllDefsListForReading
                 .Where(value => value != null))
             {
-                WorkTypeConfig config;
+                WorkTypeConfig? config;
                 if (!profile.WorkTypes.TryGetValue(workType.defName, out config) || config == null)
                 {
                     if (!workType.visible)

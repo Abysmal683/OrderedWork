@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.292)
+# Ordered Work — Current Checklist (0.3.0-alpha.293)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -161,6 +161,12 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Paint, erase, load, save and apply preserve their behavior.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of paint, erase, load, save and apply.
+## Nullable first batch (alpha.293)
+
+- [x] Migrated five Config files off `#nullable disable`.
+- [x] Main project nullable enabled; remaining files staged.
+- [ ] Migrate the next service/UI batch.
+- [ ] Remove the remaining opt-outs and enable nullable warnings as errors.
 ## Nullable staged rollout (alpha.292)
 
 - [x] Main project `Nullable` enabled; legacy files opt out.

@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +12,7 @@ namespace OrderedWork.Config
     /// </summary>
     public static class WorkConfigDiff
     {
-        public static bool IsModified(WorkTypeConfig current, WorkTypeConfig reference)
+        public static bool IsModified(WorkTypeConfig? current, WorkTypeConfig? reference)
         {
             if (current == null)
             {
@@ -71,7 +70,7 @@ namespace OrderedWork.Config
             }
             foreach (KeyValuePair<string, WorkTypeConfig> entry in current.WorkTypes)
             {
-                WorkTypeConfig referenceType = null;
+                WorkTypeConfig? referenceType = null;
                 if (reference != null && reference.WorkTypes != null)
                 {
                     reference.WorkTypes.TryGetValue(entry.Key, out referenceType);

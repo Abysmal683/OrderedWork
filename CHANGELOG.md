@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.293] - 2026-11-19
+
+### Changed — Nullable first migration batch
+- Migrated `WorkConfigModels`, `WorkConfigReconciler`, `WorkConfigProfileService`, `WorkConfigStore` and `WorkConfigDiff` off `#nullable disable`.
+- Main project remains enabled; remaining legacy files stay opted out until their warning groups are fixed.
+- Build and tests remain warning-free.
+
 ## [0.3.0-alpha.292] - 2026-11-19
 
 ### Changed — Nullable rollout

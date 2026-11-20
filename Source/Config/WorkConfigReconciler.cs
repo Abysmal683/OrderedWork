@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,9 +21,9 @@ namespace OrderedWork.Config
             string mod,
             out WorkTypeConfig split)
         {
-            split = null;
+            split = null!;
             if (profile == null || string.IsNullOrEmpty(originName) || string.IsNullOrEmpty(newDefName)
-                || !profile.WorkTypes.TryGetValue(originName, out WorkTypeConfig origin)
+                || !profile.WorkTypes.TryGetValue(originName, out WorkTypeConfig? origin)
                 || origin == null)
             {
                 return false;
@@ -88,9 +87,9 @@ namespace OrderedWork.Config
         public static bool RevertMerge(WorkConfigProfile profile, WorkConfigProfile reference, string defName)
         {
             if (profile == null || reference == null || string.IsNullOrEmpty(defName)
-                || !profile.WorkTypes.TryGetValue(defName, out WorkTypeConfig current)
+                || !profile.WorkTypes.TryGetValue(defName, out WorkTypeConfig? current)
                 || current == null || current.Givers == null
-                || !reference.WorkTypes.TryGetValue(defName, out WorkTypeConfig baseline)
+                || !reference.WorkTypes.TryGetValue(defName, out WorkTypeConfig? baseline)
                 || baseline == null || baseline.Givers == null)
             {
                 return false;
@@ -114,8 +113,8 @@ namespace OrderedWork.Config
                     continue;
                 }
                 ownerEntry.Value.Givers.RemoveAll(g => g != null && g.DefName == missing.DefName);
-                WorkTypeConfig ownerReference;
-                if (reference.WorkTypes.TryGetValue(ownerEntry.Key, out ownerReference))
+                WorkTypeConfig? ownerReference;
+                if (reference.WorkTypes.TryGetValue(ownerEntry.Key, out ownerReference) && ownerReference != null)
                 {
                     RestoreGiverOrder(ownerEntry.Value, ownerReference);
                 }
@@ -127,7 +126,7 @@ namespace OrderedWork.Config
                     .FirstOrDefault(pair => pair.Value != null && pair.Value.Givers != null
                         && pair.Value.Givers.Any(g => g != null && g.DefName == extra.DefName));
                 if (string.IsNullOrEmpty(ownerEntry.Key) || ownerEntry.Key == defName
-                    || !profile.WorkTypes.TryGetValue(ownerEntry.Key, out WorkTypeConfig owner)
+                    || !profile.WorkTypes.TryGetValue(ownerEntry.Key, out WorkTypeConfig? owner)
                     || owner == null)
                 {
                     continue;
@@ -162,9 +161,9 @@ namespace OrderedWork.Config
         public static bool RevertOrder(WorkConfigProfile profile, WorkConfigProfile reference, string defName)
         {
             if (profile == null || reference == null || string.IsNullOrEmpty(defName)
-                || !profile.WorkTypes.TryGetValue(defName, out WorkTypeConfig current)
+                || !profile.WorkTypes.TryGetValue(defName, out WorkTypeConfig? current)
                 || current == null
-                || !reference.WorkTypes.TryGetValue(defName, out WorkTypeConfig baseline)
+                || !reference.WorkTypes.TryGetValue(defName, out WorkTypeConfig? baseline)
                 || baseline == null || baseline.Givers == null)
             {
                 return false;
@@ -178,7 +177,7 @@ namespace OrderedWork.Config
                 .Where(g => g != null)
                 .Select((g, index) =>
                 {
-                    GiverConfig existing;
+                    GiverConfig? existing;
                     if (byName.TryGetValue(g.DefName, out existing))
                     {
                         existing.Order = index;

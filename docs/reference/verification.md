@@ -33,7 +33,7 @@ Equivalent MSBuild properties are `RimWorldDir` and `HarmonyDir`.
 | Project | Nullable | Analyzers |
 |---|---|---|
 | `OrderedWork.Core` | enabled | enabled; warning-free |
-| `OrderedWork` main | enabled, legacy files opt out with `#nullable disable` | not enabled |
+| `OrderedWork` main | enabled; first Config batch migrated, remaining legacy files opt out | not enabled |
 | Tests | disabled | not enabled |
 
 Nullable in the main RimWorld-facing project remains a later incremental task because it needs a separate warning pass over UI/Def code.

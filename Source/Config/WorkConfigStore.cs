@@ -1,4 +1,3 @@
-#nullable disable
 using System.Collections.Generic;
 using RimWorld;
 using Verse;
@@ -12,11 +11,11 @@ namespace OrderedWork.Config
     public static class WorkConfigStore
     {
         public const int CurrentSchemaVersion = 3;
-        private static WorkConfigLoadResult cachedActive;
-        private static WorkConfigProfile cachedEditing;
-        private static string cachedEditingName;
+        private static WorkConfigLoadResult? cachedActive;
+        private static WorkConfigProfile? cachedEditing;
+        private static string? cachedEditingName;
         private static bool cacheValid;
-        private static string cachedSelectedProfile;
+        private static string? cachedSelectedProfile;
         private static bool selectedProfileCached;
 
         public static string RootDirectory
@@ -57,7 +56,7 @@ namespace OrderedWork.Config
                 cachedActive = WorkConfigResolver.LoadActiveWithFallback(LoadSelectedProfileName());
                 cacheValid = true;
             }
-            return cachedActive;
+            return cachedActive!;
         }
 
         public static WorkConfigProfile LoadEditingProfile(string selected)
@@ -69,7 +68,7 @@ namespace OrderedWork.Config
             cachedEditing = WorkConfigResolver.LoadEditingProfile(selected);
             cachedEditingName = selected;
             cacheValid = true;
-            return cachedEditing;
+            return cachedEditing!;
         }
 
         public static void InvalidateCache()
@@ -147,7 +146,7 @@ namespace OrderedWork.Config
                 cachedSelectedProfile = WorkConfigResolver.LoadSelectedProfileName();
                 selectedProfileCached = true;
             }
-            return cachedSelectedProfile;
+            return cachedSelectedProfile!;
         }
 
         public static void SaveSelectedProfileName(string profile)
