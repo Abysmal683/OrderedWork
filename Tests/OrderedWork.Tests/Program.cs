@@ -37,6 +37,7 @@ namespace OrderedWork.Tests
             Run("AtomicJsonRecordStore roundtrips and backs up", TestAtomicStoreRoundtrip);
             Run("AtomicJsonRecordStore rejects unsupported schema", TestAtomicStoreSchema);
             Run("Profile normalize drops null, empty and duplicate givers", TestProfileNormalize);
+            Run("Profile create split moves selected givers", TestProfileCreateSplit);
             Run("Profile reconcile restores merge ownership", TestProfileRevertMerge);
             Run("Profile reconcile restores order sequence", TestProfileRevertOrder);
 
@@ -179,6 +180,24 @@ namespace OrderedWork.Tests
             Assert(profile.WorkTypes["A"].Givers[0].DefName == "G", "normalized giver name");
         }
 
+        private static void TestProfileCreateSplit()
+        {
+            WorkConfigProfile profile = new WorkConfigProfile();
+            profile.WorkTypes["Origin"] = new WorkTypeConfig
+            {
+                Givers = new List<GiverConfig>
+                {
+                    new GiverConfig { DefName = "G", Order = 0 },
+                    new GiverConfig { DefName = "H", Order = 1 }
+                }
+            };
+            WorkTypeConfig split;
+            Assert(WorkConfigReconciler.CreateSplit(profile, "Origin", "OrderedWork_New", new[] { "G" },
+                "New", "new", "", "test", out split), "split reports mutation");
+            Assert(split != null && split.Base == "Origin", "split base");
+            AssertSequence(new[] { "G" }, split.Givers.Select(g => g.DefName).ToList());
+            AssertSequence(new[] { "H" }, profile.WorkTypes["Origin"].Givers.Select(g => g.DefName).ToList());
+        }
         private static void TestProfileRevertMerge()
         {
             WorkConfigProfile reference = new WorkConfigProfile();

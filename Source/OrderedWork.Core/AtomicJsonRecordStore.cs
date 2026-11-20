@@ -80,7 +80,7 @@ namespace OrderedWork.Core
                 Directory.CreateDirectory(directory);
                 foreach (string path in Directory.GetFiles(directory, "*.json"))
                 {
-                    T value = TryLoad(path);
+                    T? value = TryLoad(path);
                     if (value != null)
                     {
                         result.Add(value);
@@ -97,7 +97,7 @@ namespace OrderedWork.Core
             return ordered.ToList();
         }
 
-        public T TryLoadById(string value)
+        public T? TryLoadById(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
@@ -106,9 +106,9 @@ namespace OrderedWork.Core
             return TryLoad(PathFor(value));
         }
 
-        public T TryLoad(string path)
+        public T? TryLoad(string path)
         {
-            T value = TryLoadFile(path);
+            T? value = TryLoadFile(path);
             if (value != null)
             {
                 return value;
@@ -135,7 +135,7 @@ namespace OrderedWork.Core
             return null;
         }
 
-        private T TryLoadFile(string path)
+        private T? TryLoadFile(string path)
         {
             try
             {
@@ -143,7 +143,7 @@ namespace OrderedWork.Core
                 {
                     return null;
                 }
-                T value = JsonSerializer.Deserialize<T>(File.ReadAllText(path), JsonOptions);
+                T? value = JsonSerializer.Deserialize<T>(File.ReadAllText(path), JsonOptions);
                 if (value == null
                     || schemaVersion(value) < minimumSchema
                     || schemaVersion(value) > maximumSchema)

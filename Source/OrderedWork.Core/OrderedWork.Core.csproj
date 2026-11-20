@@ -3,7 +3,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>OrderedWork.Core</AssemblyName>
     <RootNamespace>OrderedWork.Core</RootNamespace>
-    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisLevel>latest-recommended</AnalysisLevel>

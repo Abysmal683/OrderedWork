@@ -10,6 +10,80 @@ namespace OrderedWork.Config
     /// </summary>
     public static class WorkConfigReconciler
     {
+        public static bool CreateSplit(
+            WorkConfigProfile profile,
+            string originName,
+            string newDefName,
+            IEnumerable<string> givers,
+            string label,
+            string actionWord,
+            string description,
+            string mod,
+            out WorkTypeConfig split)
+        {
+            split = null;
+            if (profile == null || string.IsNullOrEmpty(originName) || string.IsNullOrEmpty(newDefName)
+                || !profile.WorkTypes.TryGetValue(originName, out WorkTypeConfig origin)
+                || origin == null)
+            {
+                return false;
+            }
+
+            List<string> incoming = (givers ?? Enumerable.Empty<string>())
+                .Where(name => !string.IsNullOrEmpty(name))
+                .Distinct(StringComparer.Ordinal)
+                .ToList();
+            if (incoming.Count == 0)
+            {
+                return false;
+            }
+
+            foreach (string giverName in incoming)
+            {
+                foreach (WorkTypeConfig workType in profile.WorkTypes.Values)
+                {
+                    if (workType == null || workType.Givers == null)
+                    {
+                        continue;
+                    }
+                    workType.Givers.RemoveAll(g => g != null && g.DefName == giverName);
+                    for (int i = 0; i < workType.Givers.Count; i++)
+                    {
+                        workType.Givers[i].Order = i;
+                    }
+                }
+            }
+
+            split = new WorkTypeConfig
+            {
+                Vanilla = false,
+                Base = originName,
+                Label = label ?? "",
+                ActionWord = actionWord ?? "",
+                Description = description ?? "",
+                Visible = true,
+                Order = profile.WorkTypes.Count == 0
+                    ? 0
+                    : profile.WorkTypes.Values.Where(w => w != null).Select(w => w.Order).DefaultIfEmpty(0).Max() + 1,
+                Mod = mod,
+                Givers = incoming.Select((name, index) => new GiverConfig
+                {
+                    DefName = name,
+                    Order = index,
+                    Mod = mod
+                }).ToList()
+            };
+            profile.WorkTypes[newDefName] = split;
+            if (!origin.Vanilla && (origin.Givers == null || origin.Givers.Count == 0))
+            {
+                profile.WorkTypes.Remove(originName);
+            }
+            else if (origin.Vanilla && (origin.Givers == null || origin.Givers.Count == 0))
+            {
+                origin.Visible = false;
+            }
+            return true;
+        }
         public static bool RevertMerge(WorkConfigProfile profile, WorkConfigProfile reference, string defName)
         {
             if (profile == null || reference == null || string.IsNullOrEmpty(defName)

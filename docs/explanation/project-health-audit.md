@@ -5,7 +5,7 @@ This is a working audit, not a user guide. It records the structural findings th
 ## Snapshot
 
 - 121 C# source files, about 660 KB.
-- 1 test file plus profile samples, about 13 KB, 26 cases.
+- 1 test file plus profile samples, about 13 KB, 27 cases.
 - Build: 0 errors, 0 warnings.
 - Language parity: 206 keys in English, Spanish and Spanish Latin, with no missing keys or duplicates.
 - Checklist: 48 open items; many are roadmap, but runtime coverage remains behind implementation.
@@ -58,7 +58,7 @@ Profiles are built from visible WorkTypes. A mod that adds or reveals a WorkType
 - `SplitMergePanel` split into persistence, candidate and column partials.
 - Pure `WorkConfigReconciler` tests added for merge revert, order revert and normalization.
 - Build paths are overridable through `RimWorldDir` and `HarmonyDir`; Core analyzers are enabled.
-- Still open: broader split creation tests, nullable warnings and a portable CI job.
+- Still open: a portable CI job and a runtime regression pass.
 
 ## Priority
 

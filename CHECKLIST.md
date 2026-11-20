@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.284)
+# Ordered Work — Current Checklist (0.3.0-alpha.285)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -161,14 +161,20 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Paint, erase, load, save and apply preserve their behavior.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of paint, erase, load, save and apply.
+## Project health P0 completion (alpha.285)
+
+- [x] Split creation test via `WorkConfigReconciler`.
+- [x] Full Split/Merge/Lists/Candidates/Columns/Persistence partial split.
+- [x] Nullable + analyzers enabled in Core.
+- [ ] Runtime regression pass after the refactor.
 ## Project health P0 (alpha.284)
 
 - [x] Centralize `SaveProfile` + `SavePending` + `ApplyProfileNow` in `CommitProfile`.
 - [x] Remove dead profile methods from `OrderedWorkMod.Order.cs`.
 - [x] Split `SplitMergePanel` into partial files.
-- [x] Add `WorkConfigReconciler` tests for merge revert, order revert and profile normalization.
+- [x] Add `WorkConfigReconciler` tests for split creation, merge revert, order revert and profile normalization.
 - [x] Overridable `RimWorldDir`/`HarmonyDir`; analyzers enabled on Core.
-- [ ] Decide whether to enable nullable warnings incrementally in Core.
+- [x] Enable nullable and analyzers in Core with a warning-free Core build.
 ## Work tab performance cleanup (alpha.283)
 
 - [x] Remove per-frame `PawnTable.get_Columns`/`PawnTableOnGUI` reorder hooks.

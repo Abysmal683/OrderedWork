@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.285] - 2026-11-19
+
+### Changed — Project health P0 completion
+- Extracted pure split creation into `WorkConfigReconciler.CreateSplit` and added a profile-level split test.
+- Splitting `SplitMergePanel` now covers `Split`, `Merge`, `Lists`, `Candidates`, `Columns` and `Persistence` partials.
+- Enabled nullable reference types and analyzers in `OrderedWork.Core`; the Core build is warning-free.
+- Added profile tests for normalization, split creation, merge revert and order revert.
+
 ## [0.3.0-alpha.284] - 2026-11-19
 
 ### Changed — Project health P0

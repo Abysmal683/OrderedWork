@@ -38,7 +38,7 @@ namespace OrderedWork.Core
         public static List<string> BuildEffectiveOrder(
             IReadOnlyList<string> baseOrder,
             IReadOnlyList<string> focus,
-            Func<string, bool> isAvailable = null)
+            Func<string, bool>? isAvailable = null)
         {
             List<string> effective = new List<string>();
             HashSet<string> baseIds = new HashSet<string>(StringComparer.Ordinal);
