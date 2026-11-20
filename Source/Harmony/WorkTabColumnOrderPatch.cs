@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using HarmonyLib;
 using RimWorld;
 using Verse;
@@ -5,15 +6,27 @@ using Verse;
 namespace OrderedWork.Patches
 {
     /// <summary>
-    /// Reapplies the profile WorkType column order at the point the Work tab draws.
-    /// PawnColumnDefGenerator owns the original list; the profile owns the final order.
+    /// PawnTable copies the column list when it recaches. Reapply the profile order to
+    /// that copy, not only to PawnTableDefOf.Work.columns.
     /// </summary>
-    [HarmonyPatch(typeof(MainTabWindow_Work), nameof(MainTabWindow_Work.DoWindowContents))]
-    internal static class Patch_WorkTab_ColumnOrder
+    [HarmonyPatch(typeof(PawnTable), "RecacheColumns")]
+    internal static class Patch_PawnTable_WorkColumns
     {
-        private static void Prefix()
+        private static void Postfix(PawnTable __instance)
         {
-            OrderedWorkStartup.RefreshWorkTabColumnOrder();
+            if (__instance == null)
+            {
+                return;
+            }
+            PawnTableDef definition = Traverse.Create(__instance).Field("def").GetValue<PawnTableDef>();
+            if (definition != PawnTableDefOf.Work)
+            {
+                return;
+            }
+            List<PawnColumnDef> columns = Traverse.Create(__instance)
+                .Field("columns")
+                .GetValue<List<PawnColumnDef>>();
+            OrderedWorkStartup.ReorderWorkTableColumns(columns);
         }
     }
 }

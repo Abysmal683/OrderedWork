@@ -7,6 +7,7 @@ This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed — Work tab column order at draw time
 - Reapply the profile column order in a `MainTabWindow_Work.DoWindowContents` prefix, not only when the profile is applied.
+- Reorder the private `PawnTable.columns` copy in a `PawnTable.RecacheColumns` postfix; this is the list the Work tab actually draws from.
 - This covers the case where `PawnTableDefOf.Work.columns` was generated before the profile was loaded.
 
 ## [0.3.0-alpha.273] - 2026-11-19

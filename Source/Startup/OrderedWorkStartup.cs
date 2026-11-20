@@ -140,9 +140,24 @@ namespace OrderedWork
             }
         }
 
+        internal static void ReorderWorkTableColumns(List<PawnColumnDef> columns)
+        {
+            WorkConfigProfile profile = WorkConfigStore.LoadCachedActive()?.Profile;
+            ReorderColumns(columns, profile);
+        }
+
         private static void ReorderWorkTabColumns(WorkConfigProfile profile)
         {
-            if (profile == null || PawnTableDefOf.Work == null || PawnTableDefOf.Work.columns == null)
+            if (PawnTableDefOf.Work == null)
+            {
+                return;
+            }
+            ReorderColumns(PawnTableDefOf.Work.columns, profile);
+        }
+
+        private static void ReorderColumns(List<PawnColumnDef> columns, WorkConfigProfile profile)
+        {
+            if (profile == null || columns == null)
             {
                 return;
             }
@@ -160,9 +175,9 @@ namespace OrderedWork
 
             List<int> slots = new List<int>();
             List<PawnColumnDef> workColumns = new List<PawnColumnDef>();
-            for (int i = 0; i < PawnTableDefOf.Work.columns.Count; i++)
+            for (int i = 0; i < columns.Count; i++)
             {
-                PawnColumnDef column = PawnTableDefOf.Work.columns[i];
+                PawnColumnDef column = columns[i];
                 if (column != null && column.workType != null)
                 {
                     slots.Add(i);
@@ -187,7 +202,7 @@ namespace OrderedWork
             });
             for (int i = 0; i < slots.Count; i++)
             {
-                PawnTableDefOf.Work.columns[slots[i]] = workColumns[i];
+                columns[slots[i]] = workColumns[i];
             }
 
             Type controller = AccessTools.TypeByName("WorkTab.Controller");
@@ -197,7 +212,7 @@ namespace OrderedWork
                     BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
                 if (allColumns != null)
                 {
-                    allColumns.SetValue(null, new List<PawnColumnDef>(PawnTableDefOf.Work.columns));
+                    allColumns.SetValue(null, new List<PawnColumnDef>(columns));
                 }
             }
         }
