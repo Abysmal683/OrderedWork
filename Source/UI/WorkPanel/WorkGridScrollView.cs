@@ -1,4 +1,3 @@
-#nullable disable
 using UnityEngine;
 using Verse;
 
@@ -17,9 +16,9 @@ namespace OrderedWork.UI
         private const float MinThumb = 24f;
 
         private static bool draggingVertical;
-        private static object verticalOwner;
+        private static object? verticalOwner;
         private static bool draggingHorizontal;
-        private static object horizontalOwner;
+        private static object? horizontalOwner;
         private static float dragStartMouseY;
         private static float dragStartScrollY;
         private static float dragStartMouseX;
@@ -83,7 +82,7 @@ namespace OrderedWork.UI
         }
 
         /// <summary>Consumes vertical-bar input before the scroll view/content is drawn.</summary>
-        internal static void HandleVertical(Rect track, Rect viewport, Rect content, ref Vector2 scroll, object owner = null)
+        internal static void HandleVertical(Rect track, Rect viewport, Rect content, ref Vector2 scroll, object? owner = null)
         {
             float max = Mathf.Max(0f, content.height - viewport.height);
             if (max <= 0f || track.height <= 0f)
@@ -151,7 +150,7 @@ namespace OrderedWork.UI
         }
 
         /// <summary>Consumes horizontal-bar input before the scroll view/content is drawn.</summary>
-        internal static void HandleHorizontal(Rect track, Rect viewport, Rect content, ref Vector2 scroll, object owner)
+        internal static void HandleHorizontal(Rect track, Rect viewport, Rect content, ref Vector2 scroll, object? owner)
         {
             float max = Mathf.Max(0f, content.width - viewport.width);
             if (max <= 0f || track.width <= 0f)
