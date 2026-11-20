@@ -35,6 +35,19 @@ namespace OrderedWork.Patches
     [HarmonyPatch(typeof(PawnTable), "get_Columns")]
     internal static class Patch_PawnTable_WorkColumnsGetter
     {
+        private static void Prefix(PawnTable __instance)
+        {
+            if (__instance == null)
+            {
+                return;
+            }
+            PawnTableDef definition = Traverse.Create(__instance).Field("def").GetValue<PawnTableDef>();
+            if (definition == PawnTableDefOf.Work)
+            {
+                OrderedWorkStartup.RefreshWorkTabColumnOrder();
+            }
+        }
+
         private static void Postfix(PawnTable __instance, ref System.Collections.Generic.List<PawnColumnDef> __result)
         {
             if (__instance == null || __result == null)

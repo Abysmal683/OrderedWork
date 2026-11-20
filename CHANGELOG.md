@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.279] - 2026-11-19
+
+### Fixed — Work tab order before the getter source
+- Added a prefix to `PawnTable.get_Columns` that reorders `PawnTableDefOf.Work.columns` before the getter copies and filters it.
+- Kept the postfix and `PawnTableOnGUI` prefix as fallback paths.
+- This matches the load-time pattern used by XML-driven work-tab reorganizers such as Some More Jobs.
+
 ## [0.3.0-alpha.278] - 2026-11-19
 
 ### Added — Restore WorkType order

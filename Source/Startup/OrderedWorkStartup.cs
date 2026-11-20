@@ -128,6 +128,7 @@ namespace OrderedWork
                 }
             }
             RebuildCaches();
+            ReorderWorkTabColumns(profile);
             OrderedWork.Services.WorkOrderService.InvalidateAvailableWorkTypes();
         }
 

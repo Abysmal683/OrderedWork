@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.278)
+# Ordered Work — Current Checklist (0.3.0-alpha.279)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -161,6 +161,11 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Paint, erase, load, save and apply preserve their behavior.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of paint, erase, load, save and apply.
+## Work tab getter source (alpha.279)
+
+- [x] Reorder `PawnTableDefOf.Work.columns` in a `get_Columns` prefix.
+- [x] Keep postfix and `PawnTableOnGUI` fallbacks.
+- [ ] Runtime check with the vanilla Work tab, WorkTab and Compact Work Tab.
 ## Restore order and Work tab prefix (alpha.278)
 
 - [x] `Restore reference order` beside Apply/Cancel.
