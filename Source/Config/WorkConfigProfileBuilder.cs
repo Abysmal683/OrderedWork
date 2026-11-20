@@ -52,7 +52,8 @@ namespace OrderedWork.Config
                     Label = workType.labelShort,
                     ActionWord = workType.gerundLabel,
                     Description = workType.description,
-                    Visible = workType.visible,
+                    Visible = existingProfile != null && existingProfile.WorkTypes.TryGetValue(workType.defName, out WorkTypeConfig existing) ? existing.Visible : workType.visible,
+                    Hidden = existingProfile != null && existingProfile.WorkTypes.TryGetValue(workType.defName, out WorkTypeConfig existingHidden) && existingHidden.Hidden,
                     Order = order++,
                     Mod = workType.modContentPack != null ? workType.modContentPack.PackageId : "unknown"
                 };

@@ -92,7 +92,11 @@ namespace OrderedWork
                 {
                     def.description = wt.Description;
                 }
-                def.visible = wt.Visible;
+                def.visible = wt.Visible && !wt.Hidden;
+                if (wt.Hidden)
+                {
+                    def.alwaysStartActive = true;
+                }
                 def.naturalPriority = 10000 - workOrder * 10;
 
                 int giverOrder = 0;

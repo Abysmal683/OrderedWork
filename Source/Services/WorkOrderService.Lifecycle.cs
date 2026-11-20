@@ -240,7 +240,7 @@ namespace OrderedWork.Services
             return pawn != null && !pawn.Dead && !pawn.Destroyed && pawn.IsFreeColonist;
         }
 
-        private static Pawn GetOwningPawn(Pawn_WorkSettings settings)
+        internal static Pawn GetOwningPawn(Pawn_WorkSettings settings)
         {
             if (!workSettingsPawnFieldResolved)
             {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using OrderedWork.Config;
+using OrderedWork.UI;
 using OrderedWork.UI.Layout;
 using RimWorld;
 using UnityEngine;
@@ -51,12 +52,28 @@ namespace OrderedWork
                 }
                 Rect row = list.GetRect(24f);
                 UiZebra.Draw(row, i);
-                host.DrawReorderRow(row, i + 1 + ". " + type.labelShort, 1, i, OrderedWorkMod.WorkTypeTooltip(type.defName));
+                string rowLabel = i + 1 + ". " + type.labelShort;
+                if (profile.WorkTypes.TryGetValue(type.defName, out WorkTypeConfig rowConfig) && rowConfig != null && rowConfig.Hidden)
+                {
+                    rowLabel += " [" + OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.HiddenSuffix", "hidden") + "]";
+                }
+                host.DrawReorderRow(row, rowLabel, 1, i, OrderedWorkMod.WorkTypeTooltip(type.defName));
                 bool changed = i >= baseline.Count || draft[i] != baseline[i];
                 if (changed)
                 {
                     Widgets.Label(new Rect(row.xMax - 86f, row.y, 60f, 20f),
                         OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.Changed", "Changed"));
+                }
+                if (Mouse.IsOver(row) && Event.current.type == EventType.MouseDown && Event.current.button == 1
+                    && profile.WorkTypes.TryGetValue(type.defName, out WorkTypeConfig hiddenConfig)
+                    && hiddenConfig != null && hiddenConfig.Hidden)
+                {
+                    hiddenConfig.Hidden = false;
+                    WorkConfigStore.SaveProfile(profile, true);
+                    WorkConfigStore.SavePending(profile);
+                    OrderedWorkStartup.ApplyProfileNow(profile, OrderedWorkMod.Settings, host);
+                    initialized = false;
+                    Event.current.Use();
                 }
                 rows.Add(row);
             }
@@ -83,6 +100,53 @@ namespace OrderedWork
                 draft.Clear();
                 draft.AddRange(baseline);
             }
+
+            Rect addHidden = list.GetRect(24f);
+            if (Widgets.ButtonText(addHidden,
+                OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.AddHidden", "Add hidden WorkType")))
+            {
+                List<WorkTypeDef> candidates = DefDatabase<WorkTypeDef>.AllDefsListForReading
+                    .Where(type => type != null)
+                    .Where(type => !profile.WorkTypes.TryGetValue(type.defName, out WorkTypeConfig existing)
+                        || existing == null || !existing.Hidden)
+                    .OrderBy(type => type.labelShort)
+                    .ToList();
+                if (candidates.Count > 0)
+                {
+                    Find.WindowStack.Add(new WorkTypeDropdownWindow(
+                        OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.AddHidden", "Add hidden WorkType"),
+                        candidates,
+                        null,
+                        delegate(WorkTypeDef type)
+                        {
+                            if (type == null)
+                            {
+                                return;
+                            }
+                            if (!profile.WorkTypes.TryGetValue(type.defName, out WorkTypeConfig existing) || existing == null)
+                            {
+                                existing = new WorkTypeConfig
+                                {
+                                    Vanilla = true,
+                                    Label = type.labelShort,
+                                    ActionWord = type.gerundLabel,
+                                    Description = type.description,
+                                    Visible = true,
+                                    Order = profile.WorkTypes.Count
+                                };
+                                profile.WorkTypes[type.defName] = existing;
+                            }
+                            existing.Hidden = true;
+                            existing.Visible = true;
+                            WorkConfigStore.SaveProfile(profile, true);
+                            WorkConfigStore.SavePending(profile);
+                            OrderedWorkStartup.ApplyProfileNow(profile, OrderedWorkMod.Settings, host);
+                            initialized = false;
+                        }));
+                }
+            }
+            TooltipHandler.TipRegion(addHidden,
+                OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.AddHiddenTip", "Mark a WorkType hidden but active. Right-click its order row to remove the hidden mark."));
         }
 
         private void Move(int from, int to)

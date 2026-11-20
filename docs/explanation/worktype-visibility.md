@@ -1,10 +1,10 @@
 # Hidden and always-active WorkTypes
 
-Status: design proposal. Not implemented yet.
+Status: implemented as a hidden priority overlay. Runtime verification pending.
 
 ## Current model
 
-`WorkTypeConfig.Visible` currently means "show this WorkType in the ordered UI". A split or merge can set an origin to `Visible=false` when it becomes empty. The profile is reconciled with live visible WorkTypes; hidden live WorkTypes are not added and are not forced visible.
+`WorkTypeConfig.Visible` means "show this WorkType in the ordered UI". `WorkTypeConfig.Hidden` means "keep this WorkType available but remove it from the game UI". A split or merge can set an origin to `Visible=false` when it becomes empty. Hidden profile entries remain in the config order, can be split/merged/ordered, and are excluded from Work tab and Work Control.
 
 `WorkTypeDef.visible` is a UI flag. It is not the same as "this WorkType has no Givers", and it should not be used as a delete signal.
 
@@ -42,8 +42,10 @@ Keep the concepts separate:
 ## Decisions recorded
 
 - The hidden layer is applied after the normal policy layers: vanilla, Work Control, hourly work and permanent work. It is the highest hard layer.
+- Hidden entries keep their config order and can still be split, merged and reordered in Config mod.
 - Hidden WorkTypes are not shown in Work tab or Work Control; they are not deleted.
 - Their fixed priority is managed only in Mod Settings and requires a restart.
+- The hidden fixed layer is implemented as a `Pawn_WorkSettings.GetPriority` overlay and a WorkGiver cache reorder; visible priorities keep their numbers.
 - Visible WorkTypes keep their own visible order; the hidden layer sits above it.
 
 ## Verified API behavior

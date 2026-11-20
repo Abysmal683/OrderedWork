@@ -206,4 +206,6 @@
   <OrderedWork.Config.SplitMerge.MergeSelectedTip>Move the selected origin Givers into the target.</OrderedWork.Config.SplitMerge.MergeSelectedTip>
   <OrderedWork.Config.SplitMerge.MergeAllTip>Move every origin Giver into the target.</OrderedWork.Config.SplitMerge.MergeAllTip>
   <OrderedWork.Config.SplitMerge.CancelDraftTip>Clear the unsaved draft only.</OrderedWork.Config.SplitMerge.CancelDraftTip>  <OrderedWork.Config.SplitMerge.OrderNoReference>no reference order</OrderedWork.Config.SplitMerge.OrderNoReference>
-</LanguageData>
+  <OrderedWork.Config.Rules.HiddenSuffix>hidden</OrderedWork.Config.Rules.HiddenSuffix>
+  <OrderedWork.Config.Rules.AddHidden>Add hidden WorkType</OrderedWork.Config.Rules.AddHidden>
+  <OrderedWork.Config.Rules.AddHiddenTip>Mark a WorkType hidden but active. Right-click its order row to remove the hidden mark.</OrderedWork.Config.Rules.AddHiddenTip></LanguageData>

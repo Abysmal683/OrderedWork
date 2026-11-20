@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.276] - 2026-11-19
+
+### Added — Hidden WorkType overlay
+- Added the `Hidden` profile flag. Hidden entries keep their config order, remain available to Split/Merge/Order, and are removed from Work tab and Work Control.
+- Added the Config-only `Add hidden WorkType` action and right-click removal from the order row.
+- Added a `Pawn_WorkSettings.GetPriority` overlay plus WorkGiver cache reordering for the fixed hidden layer.
+- Incapable pawns are skipped; `Notify_DisabledWorkTypesChanged` refreshes the cache when capability changes.
+- Work tab columns are reordered in the `PawnTable.PawnTableOnGUI` prefix as well as the column-copy path.
+
 ## [0.3.0-alpha.275] - 2026-11-19
 
 ### Fixed — Work tab column copy

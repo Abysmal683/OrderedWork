@@ -15,7 +15,7 @@ namespace OrderedWork.Config
         public static List<WorkTypeDef> GetOrderedVisibleWorkTypes(WorkConfigProfile profile)
         {
             List<WorkTypeDef> all = DefDatabase<WorkTypeDef>.AllDefsListForReading
-                .Where(w => w != null && w.visible)
+                .Where(w => w != null)
                 .ToList();
             if (profile == null)
             {
@@ -33,7 +33,7 @@ namespace OrderedWork.Config
                     ordered.Add(def);
                 }
             }
-            foreach (WorkTypeDef def in all.OrderByDescending(w => w.naturalPriority))
+            foreach (WorkTypeDef def in all.Where(w => w.visible).OrderByDescending(w => w.naturalPriority))
             {
                 if (added.Add(def.defName))
                 {
@@ -95,7 +95,7 @@ namespace OrderedWork.Config
                     {
                         config.ActionWord = workType.gerundLabel;
                     }
-                    if (config.Vanilla && !workType.visible && config.Visible)
+                    if (config.Vanilla && !config.Hidden && !workType.visible && config.Visible)
                     {
                         config.Visible = false;
                     }

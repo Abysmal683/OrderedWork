@@ -25,6 +25,7 @@ namespace OrderedWork.Config
         public string ActionWord { get; set; }
         public string Description { get; set; }
         public bool Visible { get; set; } = true;
+        public bool Hidden { get; set; }
         public int Order { get; set; }
         public string Mod { get; set; }
         public List<GiverConfig> Givers { get; set; } = new List<GiverConfig>();

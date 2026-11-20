@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.275)
+# Ordered Work — Current Checklist (0.3.0-alpha.276)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -161,6 +161,14 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Paint, erase, load, save and apply preserve their behavior.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of paint, erase, load, save and apply.
+## Hidden WorkTypes (alpha.276)
+
+- [x] `Hidden` flag and Config-only add/right-click removal.
+- [x] Hidden entries remain in config order and Split/Merge/Order.
+- [x] Fixed priority overlay and hidden-first WorkGiver cache.
+- [x] Skip incapable pawns; refresh on `Notify_DisabledWorkTypesChanged`.
+- [ ] Runtime check with a hidden native WorkType.
+- [ ] Runtime check with a hidden mod WorkType and a pawn gaining/losing incapability.
 ## Work tab private columns (alpha.275)
 
 - [x] Patch `PawnTable.RecacheColumns` to reorder the private `columns` copy.
