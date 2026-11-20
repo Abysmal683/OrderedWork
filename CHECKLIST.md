@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.281)
+# Ordered Work — Current Checklist (0.3.0-alpha.282)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -161,6 +161,12 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Paint, erase, load, save and apply preserve their behavior.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of paint, erase, load, save and apply.
+## Harmony binding and hidden reload (alpha.282)
+
+- [x] Correct `GetPriority` patch binding to parameter `w`.
+- [x] Revalidate hidden values on `LoadedGame` and `StartedNewGame`.
+- [ ] Runtime check of manual priorities above 4 after restart.
+- [ ] Runtime check that an old save aligns hidden values on entry.
 ## Work tab getter source (alpha.279)
 
 - [x] Reorder `PawnTableDefOf.Work.columns` in a `get_Columns` prefix.

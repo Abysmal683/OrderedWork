@@ -23,6 +23,39 @@ namespace OrderedWork.Data
             ActiveWorkService.Reset();
         }
 
+        public override void LoadedGame()
+        {
+            base.LoadedGame();
+            RevalidateHiddenLayer();
+        }
+
+        public override void StartedNewGame()
+        {
+            base.StartedNewGame();
+            RevalidateHiddenLayer();
+        }
+
+        private static void RevalidateHiddenLayer()
+        {
+            HiddenWorkTypeService.Invalidate();
+            WorkOrderService.InvalidateAvailableWorkTypes();
+            if (Find.Maps == null)
+            {
+                return;
+            }
+            foreach (Map map in Find.Maps)
+            {
+                if (map == null || map.mapPawns == null)
+                {
+                    continue;
+                }
+                foreach (Pawn pawn in map.mapPawns.FreeColonists)
+                {
+                    HiddenWorkTypeService.RefreshPawn(pawn);
+                }
+            }
+        }
+
         public override void ExposeData()
         {
             Scribe_Collections.Look(ref entries, "entries", LookMode.Deep);

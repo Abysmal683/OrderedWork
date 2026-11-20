@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.282] - 2026-11-19
+
+### Fixed — Harmony GetPriority binding
+- `Pawn_WorkSettings.GetPriority` names its parameter `w`, not `workType`. The hidden postfix used the wrong parameter name, so `Harmony.PatchAll` failed and every Ordered Work patch after it was skipped, including the 0..N manual priority drawer and hidden layer.
+- Corrected the postfix binding to `w`; this restores manual priorities above 4 and the hidden overlay.
+
+### Changed — Hidden revalidation on game load
+- `LoadedGame` and `StartedNewGame` now invalidate the hidden layer and refresh WorkGiver caches for free colonists.
+- Old saves align their hidden values when they enter the game again.
+
 ## [0.3.0-alpha.281] - 2026-11-19
 
 ### Changed — Hidden WorkType workflow

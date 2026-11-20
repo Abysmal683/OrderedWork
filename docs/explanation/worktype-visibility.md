@@ -18,7 +18,7 @@ Status: implemented in `0.3.0-alpha.278`; runtime verification pending.
 - Right-click any row in the WorkType order list to toggle its hidden mark; the row shows `[hidden]`.
 - The Rules tab includes a short hint explaining that hidden WorkTypes stay active but disappear from Work tab and Work Control.
 - Reordering the row reorders the hidden layer as well.
-- Applying a hidden change requires a restart for the safe boundary.
+- Applying a hidden change requires a restart for the safe boundary. `LoadedGame` and `StartedNewGame` revalidate the hidden layer and refresh WorkGiver caches so old saves align on entry.
 
 ## Application layer
 

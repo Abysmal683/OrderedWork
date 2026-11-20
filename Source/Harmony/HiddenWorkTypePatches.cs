@@ -9,15 +9,15 @@ namespace OrderedWork.Patches
     [HarmonyPatch(typeof(Pawn_WorkSettings), nameof(Pawn_WorkSettings.GetPriority))]
     internal static class Patch_WorkSettings_GetPriority_Hidden
     {
-        private static void Postfix(Pawn_WorkSettings __instance, WorkTypeDef workType, ref int __result)
+        private static void Postfix(Pawn_WorkSettings __instance, WorkTypeDef w, ref int __result)
         {
             int rank;
-            if (!HiddenWorkTypeService.TryGetRank(workType, out rank))
+            if (!HiddenWorkTypeService.TryGetRank(w, out rank))
             {
                 return;
             }
             Pawn pawn = WorkOrderService.GetOwningPawn(__instance);
-            __result = pawn != null && WorkOrderService.IsIncapable(pawn, workType) ? 0 : rank;
+            __result = pawn != null && WorkOrderService.IsIncapable(pawn, w) ? 0 : rank;
         }
     }
 
