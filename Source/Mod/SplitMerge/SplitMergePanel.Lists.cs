@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +46,7 @@ namespace OrderedWork
 
         private void DrawExistingSplits(Listing_Standard list)
         {
-            WorkConfigProfile profile = host.LoadEditingProfile();
+            WorkConfigProfile? profile = host.LoadEditingProfile();
             if (profile == null)
             {
                 return;
