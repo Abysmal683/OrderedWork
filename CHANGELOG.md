@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.335] - 2026-11-19
+
+### Added — Multi-select clothing picker
+- `Dialog_ThingDefPicker` now supports checkbox multi-select.
+- Existing rule candidates open preselected.
+- `Add selected` appends all selected defs in one pass.
+- Build warning-free; 39 tests pass.
+
 ## [0.3.0-alpha.334] - 2026-11-19
 
 ### Added — Clothing editor grid and visual metadata

@@ -1,7 +1,14 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.334)
+# Ordered Work — Current Checklist (0.3.0-alpha.335)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
+## Clothing multi-select (alpha.335)
+
+- [x] Checkbox multi-select picker.
+- [x] Existing candidates preselected.
+- [x] Add selected in one pass.
+- [ ] Drag/drop and layer painting.
+- [ ] Per-pawn overrides and equip jobs.
 ## Clothing visual editor (alpha.334)
 
 - [x] Editor slot grid.

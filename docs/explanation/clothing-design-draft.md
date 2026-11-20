@@ -1091,3 +1091,10 @@ Implemented:
 - `ClothingInfoService` exposes label, defName, body layers, body parts and description.
 - Picker and grid show icons plus essential tooltips.
 - No multi-select, drag-and-drop, layer painting or equip jobs yet.
+## 34. Multi-select candidate picker
+
+- `Dialog_ThingDefPicker` supports checkbox multi-select.
+- Initial candidates are preselected.
+- `Add selected` appends all selected defs to the rule.
+- Picker remains searchable and keeps icons/tooltips.
+- No drag/drop or layer painting yet.

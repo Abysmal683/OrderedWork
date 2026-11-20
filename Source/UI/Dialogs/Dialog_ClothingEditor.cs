@@ -263,9 +263,9 @@ namespace OrderedWork.UI
             candidateText = Widgets.TextField(new Rect(candidates.x + 114f, candidates.y, 430f, 24f), candidateText ?? "");
             if (Widgets.ButtonText(new Rect(candidates.x + 550f, candidates.y, 90f, 24f), "Pick..."))
             {
-                Find.WindowStack.Add(new Dialog_ThingDefPicker(rule.Target, delegate(string defName)
+                Find.WindowStack.Add(new Dialog_ThingDefPicker(rule.Target, rule.Candidates, delegate(IReadOnlyList<string> defNames)
                 {
-                    AddCandidate(defName);
+                    AddCandidates(defNames);
                     rule.Candidates = ParseCandidates(candidateText);
                 }));
             }
@@ -435,16 +435,18 @@ namespace OrderedWork.UI
             };
         }
 
-        private void AddCandidate(string? defName)
+        private void AddCandidates(IReadOnlyList<string>? defNames)
         {
-            if (string.IsNullOrWhiteSpace(defName))
-            {
-                return;
-            }
             List<string> values = ParseCandidates(candidateText);
-            if (!values.Contains(defName, StringComparer.Ordinal))
+            if (defNames != null)
             {
-                values.Add(defName);
+                foreach (string defName in defNames)
+                {
+                    if (!string.IsNullOrWhiteSpace(defName) && !values.Contains(defName, StringComparer.Ordinal))
+                    {
+                        values.Add(defName);
+                    }
+                }
             }
             candidateText = string.Join(", ", values);
         }
