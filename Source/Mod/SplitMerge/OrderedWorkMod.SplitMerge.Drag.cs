@@ -17,7 +17,7 @@ namespace OrderedWork
 {
     public partial class OrderedWorkMod : Mod
     {
-        private bool IsValidDropHover(bool originSide, bool mergeMode, Rect row)
+        internal bool IsValidDropHover(bool originSide, bool mergeMode, Rect row)
         {
             if (splitMerge.DragSide == 0 || splitMerge.DragMergeMode != mergeMode || !splitMerge.DragMoved)
             {
@@ -27,7 +27,7 @@ namespace OrderedWork
             return wantsOrigin == originSide && row.Contains(Event.current.mousePosition);
         }
 
-        private void DrawSplitMergeActions(Listing_Standard list, string actionLabel, string warning, Action onSave, Action onCancel, bool canCancel)
+        internal void DrawSplitMergeActions(Listing_Standard list, string actionLabel, string warning, Action onSave, Action onCancel, bool canCancel)
         {
             Rect actionsRect = list.GetRect(30f);
             float buttonWidth = Mathf.Min(150f, (actionsRect.width - 12f) / 3f);
@@ -48,7 +48,7 @@ namespace OrderedWork
             }
         }
 
-        private static void DrawInlineWarning(Listing_Standard list, string warning)
+        internal static void DrawInlineWarning(Listing_Standard list, string warning)
         {
             Color previous = GUI.color;
             GUI.color = new Color(1f, 0.74f, 0.40f, 1f);
@@ -56,7 +56,7 @@ namespace OrderedWork
             GUI.color = previous;
         }
 
-        private string SplitValidationWarning()
+        internal string SplitValidationWarning()
         {
             if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(splitMerge.SplitOrigin) == null)
             {
@@ -85,7 +85,7 @@ namespace OrderedWork
             return null;
         }
 
-        private string MergeValidationWarning(bool all)
+        internal string MergeValidationWarning(bool all)
         {
             if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(splitMerge.MergeOrigin) == null)
             {
@@ -130,7 +130,7 @@ namespace OrderedWork
             return null;
         }
 
-        private void HandleSplitMergeDrag()
+        internal void HandleSplitMergeDrag()
         {
             if (splitMerge.DragSide == 0)
             {
@@ -224,7 +224,7 @@ namespace OrderedWork
             }
         }
 
-        private void EnsureSplitMergeDefaults()
+        internal void EnsureSplitMergeDefaults()
         {
             string fallback = WorkConfigStore.GetOrderedVisibleWorkTypes(LoadEditingProfile())
                 .FirstOrDefault()?.defName ?? "";

@@ -16,84 +16,11 @@ using System.Text;
 namespace OrderedWork
 {
     public partial class OrderedWorkMod : Mod
-    {        private void DrawGiverColumn(
-            Rect area,
-            List<string> names,
-            HashSet<string> draftNames,
-            bool originSide,
-            bool mergeMode,
-            ref float scroll,
-            string draftMarker,
-            int columnId)
-        {
-            Widgets.DrawBoxSolid(area, UiColors.ColumnBackground);
-
-            bool hasRows = names != null && names.Count > 0;
-            float maxScroll = hasRows
-                ? Mathf.Max(0f, names.Count * SplitMergeRowHeight - area.height)
-                : 0f;
-            float contentWidth = area.width - (maxScroll > 0f ? SplitMergeScrollbarWidth + 2f : 0f);
-            Rect track = new Rect(area.xMax - SplitMergeScrollbarWidth, area.y, SplitMergeScrollbarWidth, area.height);
-
-            HandleColumnWheel(area, track, maxScroll, ref scroll);
-            HandleColumnScrollbarInput(columnId, track, area.height, maxScroll, ref scroll);
-            ClampColumnScroll(maxScroll, ref scroll);
-
-            if (!hasRows)
-            {
-                Widgets.Label(
-                    new Rect(area.x + 6f, area.y + 4f, contentWidth - 12f, area.height - 8f),
-                    originSide ? ConfigText("OrderedWork.Config.SplitMerge.NoGivers", "No givers on this work type.") : ConfigText("OrderedWork.Config.SplitMerge.DragOrigin", "Drag origin givers here."));
-                DrawColumnScrollbar(track, area.height, maxScroll, scroll, columnId);
-                return;
-            }
-
-            Event current = Event.current;
-            for (int i = 0; i < names.Count; i++)
-            {
-                float y = area.y + i * SplitMergeRowHeight - scroll;
-                if (y + SplitMergeRowHeight <= area.y || y >= area.yMax)
-                {
-                    continue;
-                }
-
-                string name = names[i];
-                Rect row = new Rect(area.x + 3f, y, contentWidth - 6f, SplitMergeRowHeight - 2f);
-                UiZebra.Draw(row, i);
-                bool inDraft = originSide && draftNames.Contains(name);
-                bool dragged = splitMerge.DragSide != 0
-                    && splitMerge.DragMergeMode == mergeMode
-                    && splitMerge.DragGiver == name
-                    && splitMerge.DragSide == (originSide ? 1 : 2);
-                bool dropTarget = IsValidDropHover(originSide, mergeMode, row);
-
-                DrawSplitMergeRow(row, name, inDraft, dragged, dropTarget, inDraft ? draftMarker : null);
-
-                if (!dragged && splitMerge.DragSide == 0)
-                {
-                    TooltipHandler.TipRegion(row, GiverTooltip(DefDatabase<WorkGiverDef>.GetNamedSilentFail(name)));
-                }
-
-                if (current.type == EventType.MouseDown
-                    && current.button == 0
-                    && row.Contains(current.mousePosition))
-                {
-                    splitMerge.DragSide = originSide ? 1 : 2;
-                    splitMerge.DragMergeMode = mergeMode;
-                    splitMerge.DragGiver = name;
-                    splitMerge.DragStartY = current.mousePosition.y;
-                    splitMerge.DragMoved = false;
-                    current.Use();
-                }
-            }
-
-            DrawColumnScrollbar(track, area.height, maxScroll, scroll, columnId);
-        }
-
+    {
         // Merge destination column: existing target givers are drawn first and are fixed; the
         // incoming origin givers follow and can be dragged/reordered. Their resulting order is
         // saved in WorkTypeConfig.Givers and applied from the profile on restart.
-        private void DrawMergeDestinationColumn(Rect area, List<string> existingNames, List<string> incomingNames, ref float scroll)
+        internal void DrawMergeDestinationColumn(Rect area, List<string> existingNames, List<string> incomingNames, ref float scroll)
         {
             Widgets.DrawBoxSolid(area, UiColors.ColumnBackground);
 
@@ -200,7 +127,7 @@ namespace OrderedWork
             DrawColumnScrollbar(track, area.height, maxScroll, scroll, 2);
         }
 
-        private static void HandleColumnWheel(Rect area, Rect track, float maxScroll, ref float scroll)
+        internal static void HandleColumnWheel(Rect area, Rect track, float maxScroll, ref float scroll)
         {
             if (maxScroll <= 0f)
             {
@@ -230,7 +157,7 @@ namespace OrderedWork
             current.Use();
         }
 
-        private void HandleColumnScrollbarInput(int columnId, Rect track, float visibleHeight, float maxScroll, ref float scroll)
+        internal void HandleColumnScrollbarInput(int columnId, Rect track, float visibleHeight, float maxScroll, ref float scroll)
         {
             if (maxScroll <= 0f)
             {
@@ -269,7 +196,7 @@ namespace OrderedWork
             scroll = Mathf.Clamp01(t) * maxScroll;
         }
 
-        private static void ClampColumnScroll(float maxScroll, ref float scroll)
+        internal static void ClampColumnScroll(float maxScroll, ref float scroll)
         {
             // Keep scroll on whole rows so no row is ever drawn half-clipped.
             scroll = Mathf.Clamp(scroll, 0f, maxScroll);
@@ -277,7 +204,7 @@ namespace OrderedWork
             scroll = Mathf.Clamp(scroll, 0f, maxScroll);
         }
 
-        private void DrawColumnScrollbar(Rect track, float visibleHeight, float maxScroll, float scroll, int columnId)
+        internal void DrawColumnScrollbar(Rect track, float visibleHeight, float maxScroll, float scroll, int columnId)
         {
             if (maxScroll <= 0f)
             {
@@ -298,7 +225,7 @@ namespace OrderedWork
             TooltipHandler.TipRegion(track, ConfigText("OrderedWork.Config.SplitMerge.ScrollbarTip", "Scrollbar: drag it, or Ctrl+wheel over this column. A plain wheel scrolls the settings."));
         }
 
-        private void DrawSplitMergeRow(Rect row, string giverName, bool inDraft, bool dragged, bool dropTarget, string draftMarker, bool showHandle = true)
+        internal void DrawSplitMergeRow(Rect row, string giverName, bool inDraft, bool dragged, bool dropTarget, string draftMarker, bool showHandle = true)
         {
             if (dragged)
             {

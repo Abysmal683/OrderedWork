@@ -15,7 +15,7 @@ using System.Text;
 namespace OrderedWork
 {
     public partial class OrderedWorkMod : Mod
-    {        private void DrawWorkTypeSelector(Rect rect, string prefix, string selectedDefName, string title, Action<string> onSelect, string excludeDefName = null)
+    {        internal void DrawWorkTypeSelector(Rect rect, string prefix, string selectedDefName, string title, Action<string> onSelect, string excludeDefName = null)
         {
             WorkTypeDef selected = DefDatabase<WorkTypeDef>.GetNamedSilentFail(selectedDefName);
             string label = selected != null ? WorkTypePaletteView.DisplayName(selected) : ConfigText("OrderedWork.Config.SplitMerge.SelectMarker", "(select)");
@@ -42,7 +42,7 @@ namespace OrderedWork
                 }));
         }
 
-        private void SaveSplit()
+        internal void SaveSplit()
         {
             if (!string.IsNullOrEmpty(SplitValidationWarning()))
             {
@@ -110,7 +110,7 @@ namespace OrderedWork
             splitMerge.SplitDirty = false;
         }
 
-        private void SaveMerge(List<string> givers)
+        internal void SaveMerge(List<string> givers)
         {
             if (givers == null || givers.Count == 0)
             {
@@ -195,7 +195,7 @@ namespace OrderedWork
             splitMerge.MergeDirty = false;
         }
 
-        private string BuildSplitDefName(string label)
+        internal string BuildSplitDefName(string label)
         {
             string baseName = Sanitize(label ?? "");
             if (string.IsNullOrEmpty(baseName))
@@ -225,7 +225,7 @@ namespace OrderedWork
             return giver != null && giver.workType != null && giver.workType.defName == workTypeDefName;
         }
 
-        private static List<WorkGiverDef> GiversForWorkType(string workTypeDefName)
+        internal static List<WorkGiverDef> GiversForWorkType(string workTypeDefName)
         {
             if (string.IsNullOrEmpty(workTypeDefName))
             {

@@ -71,7 +71,7 @@ namespace OrderedWork
             return text;
         }
 
-        private static string GiverTooltip(WorkGiverDef giver)
+        internal static string GiverTooltip(WorkGiverDef giver)
         {
             if (giver == null)
             {

@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.259] - 2026-11-19
+
+### Refactor — move SplitMerge drawing
+- Moved `DrawSplitEditor`, `DrawMergeEditor` and `DrawGiverColumn` into `SplitMergePanel`.
+- The panel now owns the split/merge editor bodies while the host supplies shared helpers and callbacks.
+- Removed the old host drawing methods.
+
 ## [0.3.0-alpha.258] - 2026-11-19
 
 ### Refactor — move SplitMerge top-level editor
