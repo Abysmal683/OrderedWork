@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,9 +15,9 @@ using System.Text;
 namespace OrderedWork
 {
     public partial class OrderedWorkMod : Mod
-    {        internal void DrawWorkTypeSelector(Rect rect, string prefix, string selectedDefName, string title, Action<string> onSelect, string excludeDefName = null)
+    {        internal void DrawWorkTypeSelector(Rect rect, string prefix, string? selectedDefName, string title, Action<string> onSelect, string? excludeDefName = null)
         {
-            WorkTypeDef selected = DefDatabase<WorkTypeDef>.GetNamedSilentFail(selectedDefName);
+            WorkTypeDef? selected = DefDatabase<WorkTypeDef>.GetNamedSilentFail(selectedDefName);
             string label = selected != null ? WorkTypePaletteView.DisplayName(selected) : ConfigText("OrderedWork.Config.SplitMerge.SelectMarker", "(select)");
             if (!Widgets.ButtonText(rect, prefix + label + "  ▼"))
             {
@@ -51,7 +50,7 @@ namespace OrderedWork
                 baseName = "Split";
             }
 
-            WorkConfigProfile currentProfile = LoadEditingProfile();
+            WorkConfigProfile? currentProfile = LoadEditingProfile();
             int suffix = (currentProfile != null ? currentProfile.WorkTypes.Count : 0) + 1;
             string defName = "OrderedWork_" + baseName + "_" + suffix;
             while ((currentProfile != null && currentProfile.WorkTypes.ContainsKey(defName))

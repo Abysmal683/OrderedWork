@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,9 +17,9 @@ namespace OrderedWork
 {
     public partial class OrderedWorkMod : Mod
     {
-        internal WorkConfigProfile LoadEditingProfile()
+        internal WorkConfigProfile? LoadEditingProfile()
         {
-            WorkConfigProfile pending = WorkConfigStore.LoadPending(activeProfileName);
+            WorkConfigProfile? pending = WorkConfigStore.LoadPending(activeProfileName);
             if (pending != null)
             {
                 return pending;

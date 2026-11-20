@@ -2,7 +2,7 @@
 
 > Historical design notebook. Current contracts live in `docs/reference/`; use this file for rationale and rejected paths.
 
-Historical design notebook. Current contracts are in `docs/reference/`. The implementation snapshot is `0.3.0-alpha.319`; Zones and Schedule have implemented slices, while clothing application and assigned-workbench priority remain pending.
+Historical design notebook. Current contracts are in `docs/reference/`. The implementation snapshot is `0.3.0-alpha.320`; Zones and Schedule have implemented slices, while clothing application and assigned-workbench priority remain pending.
 
 ## Goal
 
