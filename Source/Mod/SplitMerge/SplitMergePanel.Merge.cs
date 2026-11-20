@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,11 +23,11 @@ namespace OrderedWork
                 return;
             }
 
-            WorkConfigProfile profile = host.LoadEditingProfile();
+            WorkConfigProfile? profile = host.LoadEditingProfile();
             if (profile == null
-                || !profile.WorkTypes.TryGetValue(MergeOrigin, out WorkTypeConfig origin)
+                || !profile.WorkTypes.TryGetValue(MergeOrigin, out WorkTypeConfig? origin)
                 || origin == null
-                || !profile.WorkTypes.TryGetValue(MergeTarget, out WorkTypeConfig target)
+                || !profile.WorkTypes.TryGetValue(MergeTarget, out WorkTypeConfig? target)
                 || target == null)
             {
                 return;
@@ -63,7 +62,7 @@ namespace OrderedWork
                 {
                     DefName = giverName,
                     Order = target.Givers.Count,
-                    Mod = DefDatabase<WorkGiverDef>.GetNamedSilentFail(giverName)?.modContentPack?.PackageId
+                    Mod = DefDatabase<WorkGiverDef>.GetNamedSilentFail(giverName)?.modContentPack?.PackageId ?? ""
                 });
             }
             target.Givers = targetOrder.Select((name, index) =>
@@ -159,8 +158,8 @@ namespace OrderedWork
             Rect allRect = new Rect(selectedRect.xMax + 6f, actionsRect.y, buttonWidth, 28f);
             Rect cancelRect = new Rect(allRect.xMax + 6f, actionsRect.y, buttonWidth, 28f);
 
-            string selectedWarning = MergeValidationWarning(false);
-            string allWarning = MergeValidationWarning(true);
+            string? selectedWarning = MergeValidationWarning(false);
+            string? allWarning = MergeValidationWarning(true);
             if (UiButtonBar.Button(selectedRect, OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.MergeSelected", "Merge selected"), string.IsNullOrEmpty(selectedWarning), OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.MergeSelectedTip", "Move the selected origin Givers into the target.")))
             {
                 host.SafeSplitMergeAction(delegate { SaveMerge(MergeDraft); });
@@ -190,7 +189,7 @@ namespace OrderedWork
         }
 
 
-        internal string MergeValidationWarning(bool all)
+        internal string? MergeValidationWarning(bool all)
         {
             if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(MergeOrigin) == null)
             {

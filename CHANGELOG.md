@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.327] - 2026-11-19
+
+### Changed — Nullable SplitMerge merge tab
+- Migrated `SplitMergePanel.Merge`.
+- Build warning-free; 2 files still opt out.
+- Tests remain at 28 cases.
+
 ## [0.3.0-alpha.326] - 2026-11-19
 
 ### Changed — Nullable SplitMerge split tab
