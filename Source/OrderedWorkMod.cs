@@ -80,12 +80,9 @@ namespace OrderedWork
         private bool dragMoved;
         private bool confirmResetAll;
         private string activeProfileName = "default";
-        private List<string> giverOrderDraft = new List<string>();
-        private List<string> giverOrderInitial = new List<string>();
-        private string giverOrderDraftType = "";
-        private bool giverOrderDraftInitialized;
+
         private bool splitDirty;
-        private bool giverOrderDirty;
+
         private bool mergeDirty;
         private bool profileNameInitialized;
         private string profileStatus = "";

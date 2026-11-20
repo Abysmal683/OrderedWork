@@ -13,3 +13,7 @@
 ## Profile panel component
 
 `ProfilesPanel` owns the local profile name and initialization state. It receives the active profile, shared status, and persist callback from the settings host so profile selection and pending writes remain coordinated with the other tabs.
+
+## Component ownership
+
+`ProfilesPanel`, `WorkOrderRulesPanel` and `OrderEditorPanel` own their local draft state. `OrderedWorkMod` remains the settings host and supplies shared profile selection, status and drag helpers. `SplitMerge` is the remaining large state block to extract.

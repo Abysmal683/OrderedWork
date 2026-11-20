@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.254)
+# Ordered Work — Current Checklist (0.3.0-alpha.255)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -87,6 +87,14 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Dialog closes without opening another panel.
 - [x] Build 0/0 and tests pass.
 - [ ] Confirm with BakTest runtime.
+## Config panel components (alpha.255)
+
+- [x] `WorkOrderRulesPanel` owns its draft and baseline.
+- [x] `OrderEditorPanel` owns its giver-order draft.
+- [x] Existing drag helpers remain shared temporarily.
+- [x] Build 0/0 and tests pass.
+- [ ] `SplitMergePanel` extraction.
+- [ ] Runtime panel checks.
 ## Active work indicator (alpha.254)
 
 - [x] Current WorkType service with a 5-tick cache.

@@ -27,10 +27,7 @@ namespace OrderedWork
             WorkConfigStore.SaveProfile(profile, true);
             WorkConfigStore.SavePending(profile);
             OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
-            giverOrderDraftInitialized = false;
-            giverOrderDraft.Clear();
-            giverOrderInitial.Clear();
-            giverOrderDraftType = "";
+            ResetGiverOrderDraft();
         }
 
 

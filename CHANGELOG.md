@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.255] - 2026-11-19
+
+### Refactor — config panel components
+- Added `WorkOrderRulesPanel`, owning the work-order draft, baseline and pin rendering.
+- Added `OrderEditorPanel`, owning the giver-order draft and initial state.
+- Removed those fields from `OrderedWorkMod`; drag helpers remain shared temporarily.
+- `SplitMergePanel` remains the next extraction.
+
 ## [0.3.0-alpha.254] - 2026-11-19
 
 ### Added — active work indicator

@@ -16,7 +16,7 @@ namespace OrderedWork
 {
     public partial class OrderedWorkMod : Mod
     {
-        private void DrawReorderRow(Rect row, string label, int kind, int index, string tooltip)
+        internal void DrawReorderRow(Rect row, string label, int kind, int index, string tooltip)
         {
             bool dragging = dragKind == kind;
             bool dragged = dragging && dragIndex == index;
@@ -48,7 +48,7 @@ namespace OrderedWork
         {
             return OrderedWork.Localization.OrderedWorkText.T(key, fallback);
         }
-        private static string WorkTypeTooltip(string defName)
+        internal static string WorkTypeTooltip(string defName)
         {
             WorkTypeDef wt = DefDatabase<WorkTypeDef>.GetNamedSilentFail(defName);
             if (wt == null)
@@ -85,7 +85,7 @@ namespace OrderedWork
             return text;
         }
 
-        private void HandleReorderDrag(int kind, List<Rect> rows, Action<int, int> move)
+        internal void HandleReorderDrag(int kind, List<Rect> rows, Action<int, int> move)
         {
             Event current = Event.current;
             if (current.type == EventType.MouseDown && current.button == 0)
@@ -137,32 +137,6 @@ namespace OrderedWork
             }
         }
 
-        private void MoveWorkOrderDraft(int from, int to)
-        {
-            if (from < 0 || from >= workOrderDraft.Count || to < 0 || to >= workOrderDraft.Count || from == to) return;
-            string item = workOrderDraft[from];
-            workOrderDraft.RemoveAt(from);
-            workOrderDraft.Insert(to, item);
-        }
-
-        private void ApplyWorkOrderDraft()
-        {
-            WorkConfigProfile profile = WorkConfigStore.LoadEditingProfile(activeProfileName);
-            if (profile == null) return;
-            for (int i = 0; i < workOrderDraft.Count; i++)
-            {
-                if (profile.WorkTypes.TryGetValue(workOrderDraft[i], out WorkTypeConfig config) && config != null)
-                {
-                    config.Order = i;
-                }
-            }
-            WorkConfigStore.SaveProfile(profile, true);
-            WorkConfigStore.SavePending(profile);
-            OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
-            workOrderBaseline.Clear();
-            workOrderBaseline.AddRange(workOrderDraft);
-            Messages.Message(ConfigText("OrderedWork.Config.Helpers.OrderApplied", "Work type order applied."), MessageTypeDefOf.TaskCompletion, false);
-        }
         private void MoveWorkTypeProfile(List<WorkTypeDef> ordered, int from, int to)
         {
             if (ordered == null || from < 0 || from >= ordered.Count || to < 0 || to >= ordered.Count || from == to)

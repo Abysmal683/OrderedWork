@@ -18,12 +18,11 @@ namespace OrderedWork
     public partial class OrderedWorkMod : Mod
     {
         private Vector2 passionWeightScroll;
-        private readonly List<string> workOrderDraft = new List<string>();
-        private readonly List<string> workOrderBaseline = new List<string>();
-        private bool workOrderDraftInitialized;
+        private readonly WorkOrderRulesPanel workOrderRulesPanel = new WorkOrderRulesPanel();
+        private readonly OrderEditorPanel orderEditorPanel = new OrderEditorPanel();
         private readonly HashSet<string> collapsedSections = new HashSet<string>();
 
-        private bool DrawCollapsibleSection(Listing_Standard list, string key, string title)
+        internal bool DrawCollapsibleSection(Listing_Standard list, string key, string title)
         {
             bool expanded = !collapsedSections.Contains(key);
             bool next = UiCollapsibleSection.Header(list, title, expanded);
