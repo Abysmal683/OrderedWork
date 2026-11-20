@@ -3,6 +3,12 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.275] - 2026-11-19
+
+### Fixed — Work tab column copy
+- Added a `PawnTable.RecacheColumns` postfix so the private `PawnTable.columns` copy is reordered, not only `PawnTableDefOf.Work.columns`.
+- Documented the verified incapacity, priority and cache-refresh behavior for the hidden WorkType layer.
+
 ## [0.3.0-alpha.274] - 2026-11-19
 
 ### Fixed — Work tab column order at draw time

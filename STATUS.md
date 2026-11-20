@@ -1,11 +1,12 @@
 # Ordered Work — Current Status
 
-Version: `0.3.0-alpha.274` (runtime checkpoint). Build 0/0; tests pass.
+Version: `0.3.0-alpha.275` (runtime checkpoint). Build 0/0; tests pass.
 
 ## Latest checkpoint (.273)
 
 - Profiles append visible live WorkTypes and missing Givers on load; Hospitality `Diplomat` can be selected in Order, Split and Merge.
-- The vanilla Work tab reorders `PawnTableDefOf.Work.columns` from the active profile and reapplies the order before each Work tab draw; the earlier utility postfix was removed.
+- The vanilla Work tab reorders `PawnTableDefOf.Work.columns`, the `PawnTable.columns` copy, and reapplies before draw; the earlier utility postfix was removed.
+- Hidden layer API verified: skip incapable pawns, hook `Notify_DisabledWorkTypesChanged`, then dirty and recache WorkGivers.
 - Passion weights render in full and Rules sections start collapsed.
 - Hidden mod WorkTypes are not added and stale visible flags are cleared during reconciliation.
 - Split delete and Merge revert restore origin visibility when Givers return.

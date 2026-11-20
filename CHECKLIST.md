@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.274)
+# Ordered Work — Current Checklist (0.3.0-alpha.275)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -161,6 +161,12 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Paint, erase, load, save and apply preserve their behavior.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of paint, erase, load, save and apply.
+## Work tab private columns (alpha.275)
+
+- [x] Patch `PawnTable.RecacheColumns` to reorder the private `columns` copy.
+- [x] Document verified `SetPriority`/`GetPriority`, disabled-type and `workGiversDirty` behavior.
+- [ ] Runtime check with Work tab opened before profile apply.
+- [ ] Runtime check with Compact Work Tab enabled.
 ## Work tab draw-time order (alpha.274)
 
 - [x] Reapply `PawnTableDefOf.Work.columns` order in the Work tab draw prefix.

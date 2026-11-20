@@ -46,6 +46,15 @@ Keep the concepts separate:
 - Their fixed priority is managed only in Mod Settings and requires a restart.
 - Visible WorkTypes keep their own visible order; the hidden layer sits above it.
 
+## Verified API behavior
+
+- `Pawn_WorkSettings.SetPriority` rejects a disabled WorkType: it logs `Tried to change priority on disabled worktype` and returns without writing.
+- `Pawn_WorkSettings.GetPriority` returns the stored priority; `WorkTypeIsDisabled`/`GetDisabledWorkTypes` decide capability. Hiding through `WorkTypeDef.visible` is not the same as disabling a WorkType.
+- `Pawn_WorkSettings.Notify_DisabledWorkTypesChanged` disables the newly disabled types. A hidden layer must hook this so a pawn who becomes incapable drops the hidden priority, and a pawn who recovers gets it back.
+- `workGiversDirty` plus `CacheWorkGiversInOrder()` refreshes the cached WorkGiver lists; `Notify_UseWorkPrioritiesChanged()` alone is not the cache refresh.
+- The hidden fixed layer can be implemented as a separate `GetPriority` overlay: return the configured hidden rank only when the pawn is capable and the WorkType is configured hidden. This avoids shifting visible priorities and keeps the player's visible order intact.
+- A disabled WorkType must remain skipped; forcing a priority on an incapable pawn is not valid and will not produce work.
+
 ## Open decisions
 
 1. Should hidden active WorkTypes appear in Work Control, or only in a dedicated "Hidden work types" section?
