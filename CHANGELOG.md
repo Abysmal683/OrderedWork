@@ -3,6 +3,12 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.252] - 2026-11-19
+
+### Fixed — bounded lane cache
+- WorkControl lane cache now refreshes at most every 60 ticks even when the order revision is unchanged, so capability changes are picked up.
+- Documented the cache invalidation and refresh behavior.
+
 ## [0.3.0-alpha.251] - 2026-11-19
 
 ### Performance — frame-time caches

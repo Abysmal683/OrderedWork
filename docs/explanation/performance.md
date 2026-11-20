@@ -12,7 +12,7 @@ Why: profile JSON reads were happening inside `DoWindowContents` through `GetGlo
 
 ### Lane cache
 
-`WorkControlRows.BuildLane` caches the ordered `WorkTypeDef` list per pawn by `PawnWorkOrder.orderVersion`. `SetOrder` increments that runtime-only revision.
+`WorkControlRows.BuildLane` caches the ordered `WorkTypeDef` list per pawn by `PawnWorkOrder.orderVersion`. `SetOrder` increments that runtime-only revision. The cache also refreshes at most every 60 ticks so injury, gene or capacity changes are picked up without rebuilding every frame.
 
 Why: Work Control and tooltips rebuild lanes per row per frame. The cache is bypassed when no stored entry exists, so recommendation-only pawns are not held stale.
 

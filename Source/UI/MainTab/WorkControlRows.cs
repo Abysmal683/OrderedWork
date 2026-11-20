@@ -27,6 +27,7 @@ namespace OrderedWork.UI
         private sealed class LaneCache
         {
             public int Version;
+            public int Tick;
             public LaneData Data;
         }
 
@@ -44,9 +45,11 @@ namespace OrderedWork.UI
             OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
             PawnWorkOrder entry = component != null ? component.GetEntry(pawn) : null;
             int version = entry != null ? entry.orderVersion : -1;
+            int tick = Find.TickManager != null ? Find.TickManager.TicksGame : 0;
             LaneCache cached;
             if (entry != null && laneCache.TryGetValue(pawn, out cached)
-                && cached.Version == version && cached.Data != null)
+                && cached.Version == version && cached.Data != null
+                && tick - cached.Tick < 60)
             {
                 return cached.Data;
             }
@@ -63,7 +66,7 @@ namespace OrderedWork.UI
             }
             if (entry != null)
             {
-                laneCache[pawn] = new LaneCache { Version = version, Data = lane };
+                laneCache[pawn] = new LaneCache { Version = version, Tick = tick, Data = lane };
             }
             return lane;
         }

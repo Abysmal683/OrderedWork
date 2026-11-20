@@ -6,7 +6,7 @@ Goal: remove per-frame profile IO and lane rebuilding.
 
 - [x] Cached active profile and selected profile name with invalidation.
 - [x] WorkGiverOrderService uses the cached active profile.
-- [x] WorkControlRows lane cache keyed by PawnWorkOrder.orderVersion.
+- [x] WorkControlRows lane cache keyed by PawnWorkOrder.orderVersion, refreshed at most every 60 ticks for capability changes.
 - [x] SetOrder increments the runtime order revision.
 - [x] Documented frame vs tick boundaries.
 
