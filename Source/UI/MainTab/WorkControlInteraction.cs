@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,14 +14,14 @@ namespace OrderedWork.UI
     internal sealed class WorkControlInteraction
     {
         internal bool Dragging;
-        internal Pawn DragPawn;
+        internal Pawn? DragPawn;
         internal int DragSourceIndex = -1;
         internal int DragTargetIndex = -1;
         internal int DragCount;
 
         internal bool DraggingPalette;
-        internal WorkTypeDef PaletteWorkType;
-        internal Pawn PaletteHoverPawn;
+        internal WorkTypeDef? PaletteWorkType;
+        internal Pawn? PaletteHoverPawn;
         internal int PaletteDropIndex;
 
         internal bool IsAnyDragging
@@ -105,7 +104,7 @@ namespace OrderedWork.UI
             }
 
             int from = DragSourceIndex;
-            Pawn pawn = DragPawn;
+            Pawn? pawn = DragPawn;
 
             Dragging = false;
             DragPawn = null;
@@ -163,7 +162,7 @@ namespace OrderedWork.UI
                     continue;
                 }
 
-                SkillRecord bestSkill = WorkTypePaletteView.SafeBestSkill(pawn, workType, out _);
+                SkillRecord? bestSkill = WorkTypePaletteView.SafeBestSkill(pawn, workType, out _);
                 string levelText = bestSkill != null ? bestSkill.Level.ToString() : "-";
                 string label = WorkTypePaletteView.DisplayName(workType) + " [" + levelText + "]";
 

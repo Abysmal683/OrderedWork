@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +16,7 @@ namespace OrderedWork.UI
     /// </summary>
     internal static class WorkControlRows
     {
-        internal static Action<Pawn, WorkTypeDef, StringBuilder> PawnSpecificOverrideHook { get; set; }
+        internal static Action<Pawn, WorkTypeDef, StringBuilder>? PawnSpecificOverrideHook { get; set; }
 
         internal sealed class LaneData
         {
@@ -29,11 +28,11 @@ namespace OrderedWork.UI
         {
             public int Version;
             public int Tick;
-            public LaneData Data;
+            public LaneData? Data;
         }
 
         private static readonly Dictionary<Pawn, LaneCache> laneCache = new Dictionary<Pawn, LaneCache>();
-        private static Game cachedGame;
+        private static Game? cachedGame;
 
         internal static LaneData BuildLane(Pawn pawn)
         {
@@ -44,10 +43,10 @@ namespace OrderedWork.UI
             }
 
             OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
-            PawnWorkOrder entry = component != null ? component.GetEntry(pawn) : null;
+            PawnWorkOrder? entry = component != null ? component.GetEntry(pawn) : null;
             int version = entry != null ? entry.orderVersion : -1;
             int tick = Find.TickManager != null ? Find.TickManager.TicksGame : 0;
-            LaneCache cached;
+            LaneCache? cached;
             if (entry != null && laneCache.TryGetValue(pawn, out cached)
                 && cached.Version == version && cached.Data != null
                 && tick - cached.Tick < 60)
@@ -58,7 +57,7 @@ namespace OrderedWork.UI
             LaneData lane = new LaneData();
             foreach (string id in WorkOrderService.GetOrder(pawn))
             {
-                WorkTypeDef workType = DefDatabase<WorkTypeDef>.GetNamedSilentFail(id);
+                WorkTypeDef? workType = DefDatabase<WorkTypeDef>.GetNamedSilentFail(id);
                 if (workType != null)
                 {
                     lane.types.Add(workType);
@@ -115,7 +114,7 @@ namespace OrderedWork.UI
                     float infoWidth = leftWidth >= 170f ? 46f : 0f;
                     float textX = portraitRect.xMax + 3f;
                     float textWidth = Mathf.Max(16f, leftWidth - textX - infoWidth - WorkControlMetrics.ColumnGutter - 2f);
-                    string title = pawn.story != null ? pawn.story.Title : null;
+                    string? title = pawn.story != null ? pawn.story.Title : null;
 
                     TextAnchor previous = Text.Anchor;
                     Text.Anchor = TextAnchor.MiddleLeft;
@@ -300,7 +299,7 @@ namespace OrderedWork.UI
             Rect bodyRect = new Rect(cardRect.x, cardRect.y, cardRect.width - 20f, cardRect.height);
 
             Passion passion;
-            SkillRecord bestSkill = WorkTypePaletteView.SafeBestSkill(pawn, workType, out passion);
+            SkillRecord? bestSkill = WorkTypePaletteView.SafeBestSkill(pawn, workType, out passion);
             int level = bestSkill != null ? bestSkill.Level : -1;
 
             float x = cardRect.x + 4f;
@@ -404,7 +403,7 @@ namespace OrderedWork.UI
             }
 
             Passion passion;
-            SkillRecord bestSkill = WorkTypePaletteView.SafeBestSkill(pawn, workType, out passion);
+            SkillRecord? bestSkill = WorkTypePaletteView.SafeBestSkill(pawn, workType, out passion);
             builder.AppendLine();
             builder.AppendLine(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Skill", "Skill: ") + (bestSkill != null ? bestSkill.def.label : "—"));
             builder.AppendLine(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Passion", "Passion: ") + WorkTypePaletteView.PassionText(bestSkill != null ? passion : Passion.None));

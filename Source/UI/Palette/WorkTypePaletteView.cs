@@ -98,7 +98,7 @@ namespace OrderedWork.UI
             Rect rect,
             ref Vector2 scroll,
             List<WorkTypeDef> types,
-            WorkTypeDef draggingType,
+            WorkTypeDef? draggingType,
             bool showScrollbar,
             bool suppressTooltips,
             Action<WorkTypeDef> beginDrag)
@@ -187,7 +187,7 @@ namespace OrderedWork.UI
             }
         }
 
-        internal static void DrawDragCard(Vector2 mouse, WorkTypeDef type, Pawn hoveredPawn, bool incapable)
+        internal static void DrawDragCard(Vector2 mouse, WorkTypeDef type, Pawn? hoveredPawn, bool incapable)
         {
             if (type == null)
             {

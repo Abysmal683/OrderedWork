@@ -1,4 +1,3 @@
-#nullable disable
 namespace OrderedWork.UI
 {
     internal static class WorkControlMetrics
