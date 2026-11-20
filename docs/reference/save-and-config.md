@@ -102,6 +102,7 @@ Immutable-ish snapshot of the original vanilla/modded state used by reset and di
       "actionWord": "patient care",
       "description": null,
       "visible": true,
+      "hidden": false,
       "order": 1,
       "mod": "Ludeon.RimWorld",
       "givers": [
@@ -115,6 +116,7 @@ Immutable-ish snapshot of the original vanilla/modded state used by reset and di
       "actionWord": "emergency care",
       "description": "Prioriza emergencias",
       "visible": true,
+      "hidden": false,
       "order": 24,
       "mod": "nightmare123487.OrderedWork",
       "givers": [
@@ -129,6 +131,7 @@ Rules:
 
 - `workTypes` is a map keyed by `defName`; no split/merge history lists.
 - `actionWord` maps to the WorkType `gerundLabel`; a blank value falls back to the display name. `label` and `description` are also UI metadata.
+- `hidden` keeps the WorkType active under the fixed hidden layer while removing it from Work tab and Work Control. It remains in the config order and in Split/Merge/Order.
 - A giver appears exactly once in the whole profile.
 - `order` is the final display order; gaps are normalized on load.
 - `originals` are not embedded per profile; `reference.json` is separate.

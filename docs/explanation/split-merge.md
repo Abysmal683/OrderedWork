@@ -43,7 +43,7 @@ Status: implemented in Mod Settings. The `Rules` tab holds the WorkType order an
 
 ## Persistence and safety
 
-- On load, visible live WorkTypes and missing Givers are appended to the profile so a mod-added WorkType can be selected in Split, Merge and Order. Hidden WorkTypes are not added and are not forced visible.
+- On load, visible live WorkTypes and missing Givers are appended to the profile so a mod-added WorkType can be selected in Split, Merge and Order. Hidden WorkTypes are not added automatically and are not forced visible. A WorkType marked `Hidden` remains in the config order and can still be split, merged or reordered; it is omitted only from the in-game Work tab and Work Control.
 - Saved actions write the active profile and its pending file.
 - `ApplyProfileNow` applies the same pipeline used at startup so the settings UI receives immediate feedback where possible. A restart remains the safe boundary because generated WorkType definitions and DefDatabase mutations cannot be cleanly rolled back.
 - Split, Merge and Order never write to pawns and never delete a WorkType or WorkGiver.

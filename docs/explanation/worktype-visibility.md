@@ -1,66 +1,60 @@
 # Hidden and always-active WorkTypes
 
-Status: implemented as a hidden priority overlay. Runtime verification pending.
+Status: implemented in `0.3.0-alpha.277`; runtime verification pending.
 
-## Current model
+## Model
 
-`WorkTypeConfig.Visible` means "show this WorkType in the ordered UI". `WorkTypeConfig.Hidden` means "keep this WorkType available but remove it from the game UI". A split or merge can set an origin to `Visible=false` when it becomes empty. Hidden profile entries remain in the config order, can be split/merged/ordered, and are excluded from Work tab and Work Control.
+| Field | Meaning |
+|---|---|
+| `WorkTypeConfig.Visible` | Show the WorkType in the normal UI. |
+| `WorkTypeConfig.Hidden` | Keep the WorkType active but remove it from Work tab and Work Control. |
+| `WorkTypeConfig.Order` | The same config order used by the WorkType list and the hidden layer. |
+| `WorkTypeDef.visible` | Runtime UI flag; it is not a delete signal and not the same as "no Givers". |
 
-`WorkTypeDef.visible` is a UI flag. It is not the same as "this WorkType has no Givers", and it should not be used as a delete signal.
+`Hidden` entries keep their profile entry, Givers and order. They remain selectable in Split, Merge and Order in Config mod. They do not appear in the in-game Work tab or Work Control. There is no in-game "hidden" section.
 
-## Proposed model
+## Config workflow
 
-Keep the concepts separate:
+- `Add hidden WorkType` in the Rules tab opens the WorkType picker and marks the selected WorkType hidden.
+- Right-click its row in the WorkType order list to remove the hidden mark.
+- Reordering the row reorders the hidden layer as well.
+- Applying a hidden change requires a restart for the safe boundary.
 
-| Concept | Meaning | Storage |
-|---|---|---|
-| `Visible` | Show in Work tab and Work Control | `WorkTypeConfig.Visible` |
-| `AlwaysActive` | Keep priorities enabled even when hidden | new `WorkTypeConfig.AlwaysActive` |
-| `HasGivers` | Derived from the Giver list | no extra field |
+## Application layer
 
-### 1. Hide without disabling
+The hidden layer is applied after the normal layers:
 
-- Hiding sets `Visible=false`; it does not remove the WorkType or its Givers.
-- The WorkType remains in the profile and keeps its order.
-- It must remain selectable in Split/Merge so it can be recovered.
+1. vanilla priorities;
+2. Work Control;
+3. hourly work;
+4. permanent work;
+5. hidden fixed layer.
 
-### 2. Hidden and always active
+The hidden layer is implemented at priority lookup:
 
-- `AlwaysActive=true` sets the live `WorkTypeDef.alwaysStartActive` flag.
-- It must be explicit and only valid for a hidden WorkType.
-- The exact pawn-priority behavior must be verified in runtime; do not claim "always active" until it is tested.
-- Work Control should either keep a hidden active lane available or expose a "hidden active" section; do not silently create work the user cannot inspect.
+- `Pawn_WorkSettings.GetPriority` returns the hidden rank (1..n, based on config order) for a capable pawn.
+- Visible priorities keep their normal numbers; the hidden layer does not renumber the player's visible order.
+- Hidden WorkGivers are prepended to the cached WorkGiver order so a numeric tie cannot place visible work first.
+- `WorkTypeDef.alwaysStartActive` is set for hidden entries.
 
-### 3. Use WorkTypes hidden by other mods
+## Incapability
 
-- Allow an explicit opt-in to show a hidden live WorkType.
-- Reuse its tags, skills and giver ownership; never clone the WorkGiverDef.
-- Show a warning that the source mod may hide it for gameplay reasons.
-- Do not auto-reveal hidden WorkTypes during reconciliation.
-- If the source mod stops providing the WorkType, keep the profile entry but report it; do not delete user data silently.
+- A pawn incapable of the WorkType is skipped: the overlay returns 0 and no hidden work is produced.
+- `Pawn_WorkSettings.Notify_DisabledWorkTypesChanged` is hooked after the vanilla disable pass. The hook refreshes the work cache so a newly incapable pawn drops the hidden work and a recovered pawn gets it back.
+- `workGiversDirty`/`WorkGiversInOrder` caching must be refreshed; the overlay alone does not invalidate the cached list.
+- Forcing a disabled WorkType is not valid: `Pawn_WorkSettings.SetPriority` rejects it and writes nothing.
 
-## Decisions recorded
+## API constraints
 
-- The hidden layer is applied after the normal policy layers: vanilla, Work Control, hourly work and permanent work. It is the highest hard layer.
-- Hidden entries keep their config order and can still be split, merged and reordered in Config mod.
-- Hidden WorkTypes are not shown in Work tab or Work Control; they are not deleted.
-- Their fixed priority is managed only in Mod Settings and requires a restart.
-- The hidden fixed layer is implemented as a `Pawn_WorkSettings.GetPriority` overlay and a WorkGiver cache reorder; visible priorities keep their numbers.
-- Visible WorkTypes keep their own visible order; the hidden layer sits above it.
+- `Pawn_WorkSettings.SetPriority` rejects disabled WorkTypes and logs `Tried to change priority on disabled worktype`.
+- `Pawn_WorkSettings.GetPriority` is the correct overlay point.
+- `Pawn_WorkSettings.Notify_DisabledWorkTypesChanged` calls `Disable`, which writes priority 0 through `SetPriority`.
+- `Pawn_WorkSettings.CacheWorkGiversInOrder` rebuilds the cached WorkGiver lists; it must be refreshed after capability changes.
+- `WorkTypeDef.visible` only controls UI visibility; hidden does not mean deleted or disabled.
 
-## Verified API behavior
+## Known limits
 
-- `Pawn_WorkSettings.SetPriority` rejects a disabled WorkType: it logs `Tried to change priority on disabled worktype` and returns without writing.
-- `Pawn_WorkSettings.GetPriority` returns the stored priority; `WorkTypeIsDisabled`/`GetDisabledWorkTypes` decide capability. Hiding through `WorkTypeDef.visible` is not the same as disabling a WorkType.
-- `Pawn_WorkSettings.Notify_DisabledWorkTypesChanged` disables the newly disabled types. A hidden layer must hook this so a pawn who becomes incapable drops the hidden priority, and a pawn who recovers gets it back.
-- `workGiversDirty` plus `CacheWorkGiversInOrder()` refreshes the cached WorkGiver lists; `Notify_UseWorkPrioritiesChanged()` alone is not the cache refresh.
-- The hidden fixed layer can be implemented as a separate `GetPriority` overlay: return the configured hidden rank only when the pawn is capable and the WorkType is configured hidden. This avoids shifting visible priorities and keeps the player's visible order intact.
-- A disabled WorkType must remain skipped; forcing a priority on an incapable pawn is not valid and will not produce work.
-
-## Open decisions
-
-1. Should hidden active WorkTypes appear in Work Control, or only in a dedicated "Hidden work types" section?
-2. Does "always active" mean only for new colonies, or for every pawn whenever the profile is applied?
-3. Should an unhidden mod WorkType keep the mod's conditions exactly, or allow Ordered Work to override only visibility and order?
-
-These require runtime verification before implementation.
+- Hidden WorkTypes are intentionally not shown in Work Control; the Config order list is the only editor.
+- A hidden WorkType with no Givers remains configured but produces no work.
+- A source mod that adds a WorkType already hidden is not auto-added by reconciliation. Adding it through Config, then removing the hidden mark, is the deliberate opt-in path.
+- Runtime verification is still required for capability changes and for Work tab/Compact Work Tab compatibility.
