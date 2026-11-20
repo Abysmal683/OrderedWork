@@ -15,7 +15,7 @@ namespace OrderedWork.UI
             statTooltips.Tick();
             Widgets.Label(new Rect(rect.x, rect.y, rect.width, 20f), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Stats.Specialized", "Specialized stats"));
             Rect body = new Rect(rect.x, rect.y + 24f, rect.width, Mathf.Max(0f, rect.height - 24f));
-            WorkTypeDef selected = SelectedWorkType();
+            WorkTypeDef? selected = SelectedWorkType();
             List<StatDef> selectedStats = selected != null ? StatIndex.GetFor(selected) : new List<StatDef>();
             int contentRows = selectedStats.Count + (selected != null && BestSkillDef(selected) != null ? 1 : 0);
             UiScrollPane.Draw(body, ref scroll, Mathf.Max(body.height, contentRows * 20f + 4f), this, delegate(Rect view)

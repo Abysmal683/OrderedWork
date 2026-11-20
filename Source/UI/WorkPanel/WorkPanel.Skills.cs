@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,9 +57,13 @@ namespace OrderedWork.UI
             {
                 return candidates;
             }
-            foreach (SkillDef skill in DefDatabase<SkillDef>.AllDefsListForReading)
+            foreach (SkillDef? skill in DefDatabase<SkillDef>.AllDefsListForReading)
             {
-                SkillRecord record = skill != null ? pawn.skills.GetSkill(skill) : null;
+                if (skill == null)
+                {
+                    continue;
+                }
+                SkillRecord? record = pawn.skills.GetSkill(skill);
                 if (record == null)
                 {
                     continue;
@@ -86,7 +89,7 @@ namespace OrderedWork.UI
             {
                 foreach (VseExpertiseAdapter.Row row in VseExpertiseAdapter.GetRows(pawn))
                 {
-                    SkillRecord parent = row.ParentSkill != null && pawn.skills != null
+                    SkillRecord? parent = row.ParentSkill != null && pawn.skills != null
                         ? pawn.skills.GetSkill(row.ParentSkill)
                         : null;
                     candidates.Add(new SkillRow
@@ -128,7 +131,7 @@ namespace OrderedWork.UI
 
         private int SkillScore(SkillRow row)
         {
-            PassionWeightEntry entry = PassionWeightPolicy.Find(OrderedWorkMod.Settings, row.Passion);
+            PassionWeightEntry? entry = PassionWeightPolicy.Find(OrderedWorkMod.Settings, row.Passion);
             bool prioritizeLowSkill = OrderedWorkMod.Settings == null
                 || OrderedWorkMod.Settings.prioritizeLowSkillPassion;
             return RecommendationScorePolicy.Score(
@@ -169,7 +172,7 @@ namespace OrderedWork.UI
 
         private string SkillTooltip(SkillRow row)
         {
-            string cached;
+            string? cached;
             if (skillTooltipCache.TryGetValue(row.Label, out cached))
             {
                 return cached;
@@ -196,7 +199,7 @@ namespace OrderedWork.UI
                 + (row.XpRequired > 0.01f
                     ? "\n" + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Skills.Xp", "XP: ") + row.XpCurrent.ToString("0") + " / " + row.XpRequired.ToString("0")
                     : "\n" + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Skills.XpMax", "XP: max / uncapped"));
-            PassionWeightEntry weight = PassionWeightPolicy.Find(OrderedWorkMod.Settings, row.Passion);
+            PassionWeightEntry? weight = PassionWeightPolicy.Find(OrderedWorkMod.Settings, row.Passion);
             if (weight != null)
             {
                 result += "\n" + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Skills.RecommendationWeight", "Recommendation weight:")
@@ -225,7 +228,7 @@ namespace OrderedWork.UI
                 {
                     continue;
                 }
-                SkillRecord record = pawn.skills != null ? pawn.skills.GetSkill(skill) : null;
+                SkillRecord? record = pawn.skills != null ? pawn.skills.GetSkill(skill) : null;
                 result.Add(new SkillRow
                 {
                     Label = skill.label,
@@ -236,16 +239,16 @@ namespace OrderedWork.UI
             return result;
         }
 
-        private SkillRecord BestSkill(WorkTypeDef workType)
+        private SkillRecord? BestSkill(WorkTypeDef? workType)
         {
-            SkillRecord best = null;
+            SkillRecord? best = null;
             if (workType == null || workType.relevantSkills == null || pawn.skills == null)
             {
                 return null;
             }
             foreach (SkillDef skill in workType.relevantSkills)
             {
-                SkillRecord record = skill != null ? pawn.skills.GetSkill(skill) : null;
+                SkillRecord? record = skill != null ? pawn.skills.GetSkill(skill) : null;
                 if (record != null && (best == null || record.Level > best.Level
                     || (record.Level == best.Level && PassionRank(record.passion) > PassionRank(best.passion))))
                 {
@@ -255,9 +258,9 @@ namespace OrderedWork.UI
             return best;
         }
 
-        private SkillDef BestSkillDef(WorkTypeDef workType)
+        private SkillDef? BestSkillDef(WorkTypeDef? workType)
         {
-            SkillDef best = null;
+            SkillDef? best = null;
             int bestLevel = -1;
             if (workType == null || workType.relevantSkills == null || pawn.skills == null)
             {
@@ -265,7 +268,7 @@ namespace OrderedWork.UI
             }
             foreach (SkillDef skill in workType.relevantSkills)
             {
-                SkillRecord record = skill != null ? pawn.skills.GetSkill(skill) : null;
+                SkillRecord? record = skill != null ? pawn.skills.GetSkill(skill) : null;
                 if (record != null && record.Level > bestLevel)
                 {
                     best = skill;
@@ -275,7 +278,7 @@ namespace OrderedWork.UI
             return best;
         }
 
-        private WorkTypeDef SelectedWorkType()
+        private WorkTypeDef? SelectedWorkType()
         {
             return string.IsNullOrEmpty(selectedWorkType)
                 ? null
