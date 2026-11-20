@@ -3,6 +3,17 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.266] - 2026-11-19
+
+### Fixed — Split/Merge/Order UI consolidation
+- Blocked disabling `Allow empty origin` while any WorkType has no Givers.
+- Merge candidate list excludes split WorkTypes.
+- Moved result lists below warnings/actions in all three tabs.
+- Removed redundant Revert Split/Merge/Order buttons; Cancel remains.
+- Removed the old Order reference-reset block.
+- Added an Order warning line.
+- Fixed the hardcoded Delete fallback in the Spanish split list.
+
 ## [0.3.0-alpha.265] - 2026-11-19
 
 ### Added — Order candidate list

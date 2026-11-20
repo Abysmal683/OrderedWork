@@ -15,6 +15,34 @@ namespace OrderedWork
 {
     public partial class OrderedWorkMod : Mod
     {
+        private void DrawAllowEmptyOriginToggle(Listing_Standard list)
+        {
+            bool enabled = Settings.allowEmptyOrigin;
+            bool previous = enabled;
+            list.CheckboxLabeled(
+                ConfigText("OrderedWork.Config.Rules.AllowEmpty", "Allow empty origin (Rules-wide)"),
+                ref enabled,
+                ConfigText("OrderedWork.Config.Rules.AllowEmptyTip", "Applies to both Split and Merge. Vanilla origins hide; splits delete. Disable to require at least one giver left in the origin."));
+            if (enabled == previous)
+            {
+                return;
+            }
+            if (!enabled)
+            {
+                WorkConfigProfile profile = WorkConfigStore.LoadEditingProfile(activeProfileName);
+                int empty = profile == null ? 0 : profile.WorkTypes.Values.Count(w => w != null
+                    && (w.Givers == null || w.Givers.Count == 0));
+                if (empty > 0)
+                {
+                    Messages.Message(string.Format(
+                        ConfigText("OrderedWork.Config.Rules.AllowEmptyBlocked",
+                            "Cannot disable empty-origin support: {0} WorkTypes have no Givers. Restore them first."),
+                        empty), MessageTypeDefOf.RejectInput, false);
+                    return;
+                }
+            }
+            Settings.allowEmptyOrigin = enabled;
+        }
         private void DrawRulesTab(Listing_Standard list)
         {
             EnsureSplitMergeDefaults();
@@ -99,10 +127,7 @@ namespace OrderedWork
             if (DrawCollapsibleSection(list, "split-merge-order",
                 ConfigText("OrderedWork.Config.Rules.SplitMergeSection", "Split / Merge / Order")))
             {
-                list.CheckboxLabeled(
-                    ConfigText("OrderedWork.Config.Rules.AllowEmpty", "Allow empty origin (Rules-wide)"),
-                    ref Settings.allowEmptyOrigin,
-                    ConfigText("OrderedWork.Config.Rules.AllowEmptyTip", "Applies to both Split and Merge. Vanilla origins hide; splits delete. Disable to require at least one giver left in the origin."));
+                DrawAllowEmptyOriginToggle(list);
                 splitMerge.Draw(list, this);
             }
 

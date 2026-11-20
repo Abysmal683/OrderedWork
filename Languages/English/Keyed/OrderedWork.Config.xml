@@ -190,4 +190,8 @@
   <OrderedWork.Config.SplitMerge.Select>Select</OrderedWork.Config.SplitMerge.Select>
   <OrderedWork.Config.SplitMerge.RevertMerge>Revert Merge</OrderedWork.Config.SplitMerge.RevertMerge>  <OrderedWork.Config.SplitMerge.OrderNone>No WorkTypes with out-of-order Givers.</OrderedWork.Config.SplitMerge.OrderNone>
   <OrderedWork.Config.SplitMerge.OrderCandidates>WorkTypes with out-of-order Givers</OrderedWork.Config.SplitMerge.OrderCandidates>
-  <OrderedWork.Config.SplitMerge.RevertOrder>Revert Order</OrderedWork.Config.SplitMerge.RevertOrder></LanguageData>
+  <OrderedWork.Config.SplitMerge.RevertOrder>Revert Order</OrderedWork.Config.SplitMerge.RevertOrder>  <OrderedWork.Config.Common.Delete>Delete</OrderedWork.Config.Common.Delete>
+  <OrderedWork.Config.Order.NoSelectionWarning>Select a WorkType with out-of-order Givers.</OrderedWork.Config.Order.NoSelectionWarning>
+  <OrderedWork.Config.Order.ReorderWarning>Apply reorders only the Givers already present.</OrderedWork.Config.Order.ReorderWarning>  <OrderedWork.Config.Rules.AllowEmptyBlocked>Cannot disable empty-origin support: {0} WorkTypes have no Givers. Restore them first.</OrderedWork.Config.Rules.AllowEmptyBlocked>
+  <OrderedWork.Config.SplitMerge.GiversSuffix>Givers</OrderedWork.Config.SplitMerge.GiversSuffix>
+</LanguageData>

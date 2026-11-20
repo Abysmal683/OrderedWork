@@ -83,6 +83,7 @@ namespace OrderedWork
                     break;
                 case EditorOrder:
                     host.DrawOrderEditor(list);
+                    DrawOrderCandidates(list);
                     break;
                 default:
                     DrawSplitEditor(list);
@@ -302,11 +303,6 @@ namespace OrderedWork
                 DrawSplitMetadataEditor(list);
             }
 
-            if (UiButtonBar.Button(list.GetRect(26f),
-                OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.RevertSplit", "Revert Split"), true))
-            {
-                RevertSplitDraft();
-            }
         }
 
         private void DrawSplitMetadataEditor(Listing_Standard list)
@@ -406,8 +402,6 @@ namespace OrderedWork
         internal void DrawSplitEditor(Listing_Standard list)
         {
             host.EnsureSplitMergeDefaults();
-            DrawExistingSplits(list);
-            list.Gap(8f);
 
             Rect originRect = list.GetRect(28f);
             host.DrawWorkTypeSelector(originRect, OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.OriginWorkType", "Origin work type: "), SplitOrigin, OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.SelectOrigin", "Select origin work type"), delegate(string defName)
@@ -468,6 +462,8 @@ namespace OrderedWork
                 }, SplitDirty);
 
             host.HandleSplitMergeDrag();
+            list.Gap(8f);
+            DrawExistingSplits(list);
         }
 
 
@@ -522,7 +518,7 @@ namespace OrderedWork
                 Rect row = list.GetRect(24f);
                 UiZebra.Draw(row, i);
                 string label = (current.Label ?? DefDatabase<WorkTypeDef>.GetNamedSilentFail(pair.Key)?.labelShort ?? pair.Key)
-                    + " · " + currentOrder.Count + " givers";
+                    + " · " + currentOrder.Count + " " + OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.GiversSuffix", "Givers");
                 Widgets.LabelEllipses(new Rect(row.x + 4f, row.y, row.width - 92f, 22f), label);
                 if (Widgets.ButtonText(new Rect(row.xMax - 84f, row.y, 80f, 22f),
                     OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.Select", "Select")))
@@ -532,12 +528,6 @@ namespace OrderedWork
                 }
             }
 
-            if (UiButtonBar.Button(list.GetRect(26f),
-                OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.RevertOrder", "Revert Order"), true))
-            {
-                host.SelectedGiverType = "";
-                host.ResetGiverOrderDraft();
-            }
         }
         private void DrawMergeCandidates(Listing_Standard list)
         {
@@ -552,7 +542,7 @@ namespace OrderedWork
             foreach (KeyValuePair<string, WorkTypeConfig> pair in profile.WorkTypes)
             {
                 WorkTypeConfig current = pair.Value;
-                if (current == null || current.Givers == null)
+                if (current == null || current.Givers == null || !string.IsNullOrEmpty(current.Base))
                 {
                     continue;
                 }
@@ -614,23 +604,10 @@ namespace OrderedWork
                 }
             }
 
-            if (UiButtonBar.Button(list.GetRect(26f),
-                OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.RevertMerge", "Revert Merge"), true))
-            {
-                MergeOrigin = "";
-                MergeTarget = "";
-                MergeDraft.Clear();
-                MergeOriginScroll = 0f;
-                MergeTargetScroll = 0f;
-                MergeDropIndex = -1;
-                MergeDirty = false;
-            }
         }
         internal void DrawMergeEditor(Listing_Standard list)
         {
             host.EnsureSplitMergeDefaults();
-            DrawExistingSplits(list);
-            list.Gap(8f);
 
             Rect selectorRect = list.GetRect(28f);
             float selectorHalf = (selectorRect.width - 8f) * 0.5f;
@@ -716,6 +693,8 @@ namespace OrderedWork
             }
 
             host.HandleSplitMergeDrag();
+            list.Gap(8f);
+            DrawMergeCandidates(list);
         }
 
         internal string SplitValidationWarning()

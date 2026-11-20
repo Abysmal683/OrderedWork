@@ -190,4 +190,8 @@
   <OrderedWork.Config.SplitMerge.Select>Seleccionar</OrderedWork.Config.SplitMerge.Select>
   <OrderedWork.Config.SplitMerge.RevertMerge>Revertir fusión</OrderedWork.Config.SplitMerge.RevertMerge>  <OrderedWork.Config.SplitMerge.OrderNone>No hay tipos de trabajo con WorkGivers desordenados.</OrderedWork.Config.SplitMerge.OrderNone>
   <OrderedWork.Config.SplitMerge.OrderCandidates>Tipos de trabajo con WorkGivers desordenados</OrderedWork.Config.SplitMerge.OrderCandidates>
-  <OrderedWork.Config.SplitMerge.RevertOrder>Revertir orden</OrderedWork.Config.SplitMerge.RevertOrder></LanguageData>
+  <OrderedWork.Config.SplitMerge.RevertOrder>Revertir orden</OrderedWork.Config.SplitMerge.RevertOrder>  <OrderedWork.Config.Common.Delete>Eliminar</OrderedWork.Config.Common.Delete>
+  <OrderedWork.Config.Order.NoSelectionWarning>Selecciona un tipo de trabajo con WorkGivers desordenados.</OrderedWork.Config.Order.NoSelectionWarning>
+  <OrderedWork.Config.Order.ReorderWarning>Aplicar solo reordena los WorkGivers existentes.</OrderedWork.Config.Order.ReorderWarning>  <OrderedWork.Config.Rules.AllowEmptyBlocked>No se puede desactivar el origen vacío: {0} tipos de trabajo no tienen WorkGivers. Restáuralos primero.</OrderedWork.Config.Rules.AllowEmptyBlocked>
+  <OrderedWork.Config.SplitMerge.GiversSuffix>WorkGivers</OrderedWork.Config.SplitMerge.GiversSuffix>
+</LanguageData>

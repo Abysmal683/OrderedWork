@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.265)
+# Ordered Work — Current Checklist (0.3.0-alpha.266)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -161,6 +161,16 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Paint, erase, load, save and apply preserve their behavior.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of paint, erase, load, save and apply.
+## UI consolidation (alpha.266)
+
+- [x] Block disabling `Allow empty origin` when any WorkType has no Givers.
+- [x] Merge excludes split WorkTypes from its candidate list.
+- [x] Split/Merge/Order results moved below warnings/actions.
+- [x] Removed Revert Split/Merge/Order buttons; Cancel remains.
+- [x] Removed Order's old reference-reset block.
+- [x] Added Order warning text.
+- [x] Fixed Spanish split delete fallback text.
+- [ ] Runtime check of the three tabs.
 ## Order candidates (alpha.265)
 
 - [x] Order tab lists WorkTypes whose Giver order differs from `reference.json`.
