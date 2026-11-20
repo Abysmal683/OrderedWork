@@ -167,7 +167,7 @@ namespace OrderedWork.UI
             Widgets.Label(rows.Next(), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Presets.DeleteConfirm", "Delete '") + pendingDelete.Name + "'?");
             Rect buttons = rows.Next(26f);
             Rect[] cells = UiFlex.Columns(buttons, 6f, 1f, 1f);
-            if (UiButtonBar.Button(cells[0], OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.ConfirmDelete", "Confirm delete")))
+            if (UiButtonBar.Button(cells[0], OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.ConfirmDelete", "Confirm delete"), true, null, UiColors.ConfirmDanger))
             {
                 WorkPresetStore.Delete(pendingDelete.Name);
                 pendingDelete = null;

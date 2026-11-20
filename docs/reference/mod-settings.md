@@ -19,6 +19,6 @@
 
 ## Component ownership
 
-The WorkType order row has `Apply work order`, `Cancel work order` and `Restore reference order`; restore uses `reference.json` and does not touch pawn priorities.
+The WorkType order row has `Apply work order`, `Cancel work order` and `Restore reference order`. Restore uses a two-step confirmation, is disabled when the current order already matches `reference.json`, and does not touch pawn priorities. Confirmation buttons use the shared red danger tint.
 
 `ProfilesPanel`, `WorkOrderRulesPanel`, `OrderEditorPanel` and `SplitMergePanel` own their local draft state. `SplitMergePanel` owns the split/merge editor state, metadata, candidate list state and persistence actions; the host provides profile selection and shared status callbacks.

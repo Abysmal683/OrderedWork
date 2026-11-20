@@ -3,6 +3,12 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.286] - 2026-11-19
+
+### Added — Restore confirmation and danger tint
+- `Restore reference order` now requires a second click, is disabled when the draft already matches the reference order, and uses the red confirmation tint.
+- Applied the red confirmation tint to the split delete, merge/order revert, General reset, and preset delete confirmations.
+
 ## [0.3.0-alpha.285] - 2026-11-19
 
 ### Changed — Project health P0 completion

@@ -209,4 +209,6 @@
   <OrderedWork.Config.Rules.HiddenSuffix>hidden</OrderedWork.Config.Rules.HiddenSuffix>  <OrderedWork.Config.Rules.RestoreWorkOrder>Restore reference order</OrderedWork.Config.Rules.RestoreWorkOrder>
   <OrderedWork.Config.Rules.RestoreWorkOrderTip>Restore WorkType order from reference.json.</OrderedWork.Config.Rules.RestoreWorkOrderTip>
   <OrderedWork.Config.Rules.OrderRestored>Work type order restored from reference.</OrderedWork.Config.Rules.OrderRestored>  <OrderedWork.Config.Rules.HiddenHint>Right-click a WorkType row to mark it hidden or visible. Hidden WorkTypes stay active but are invisible in Work tab and Work Control.</OrderedWork.Config.Rules.HiddenHint>
-</LanguageData>
+  <OrderedWork.Config.Rules.ConfirmRestoreWorkOrder>Confirm restore</OrderedWork.Config.Rules.ConfirmRestoreWorkOrder>
+  <OrderedWork.Config.Rules.ConfirmRestoreWorkOrderTip>Click again to restore the order from reference.json.</OrderedWork.Config.Rules.ConfirmRestoreWorkOrderTip>
+  <OrderedWork.Config.Rules.RestoreWorkOrderNoChanges>The current order already matches reference.json.</OrderedWork.Config.Rules.RestoreWorkOrderNoChanges></LanguageData>

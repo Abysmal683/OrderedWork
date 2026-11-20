@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.285)
+# Ordered Work — Current Checklist (0.3.0-alpha.286)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -161,6 +161,12 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Paint, erase, load, save and apply preserve their behavior.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of paint, erase, load, save and apply.
+## Restore confirmation and tint (alpha.286)
+
+- [x] Restore order requires two clicks and is disabled when already reference-aligned.
+- [x] Red confirmation tint on split delete, merge/order revert, restore, reset and preset deletes.
+- [ ] Runtime visual check of restore disabled/pending states.
+- [ ] Runtime visual check of all red confirmation buttons.
 ## Project health P0 completion (alpha.285)
 
 - [x] Split creation test via `WorkConfigReconciler`.

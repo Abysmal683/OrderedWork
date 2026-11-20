@@ -18,6 +18,7 @@ namespace OrderedWork
         private readonly List<string> draft = new List<string>();
         private readonly List<string> baseline = new List<string>();
         private bool initialized;
+        private bool restorePending;
         private string cachedProfile;
 
         internal void Draw(Listing_Standard list, OrderedWorkMod host, string activeProfile)
@@ -28,6 +29,13 @@ namespace OrderedWork
                 initialized = false;
             }
             WorkConfigProfile profile = WorkConfigStore.LoadEditingProfile(activeProfile);
+            WorkConfigProfile reference = WorkConfigStore.LoadReference();
+            List<string> referenceOrder = BuildReferenceOrder(profile, reference, draft);
+            bool canRestore = reference != null && referenceOrder.Count > 0 && !draft.SequenceEqual(referenceOrder);
+            if (!canRestore && restorePending)
+            {
+                restorePending = false;
+            }
             List<WorkTypeDef> orderedTypes = WorkConfigStore.GetOrderedVisibleWorkTypes(profile);
             if (!initialized)
             {
@@ -88,6 +96,7 @@ namespace OrderedWork
                     : OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.ApplyWorkOrderNoChanges", "No work order changes to apply.")))
             {
                 Apply(host, activeProfile);
+                restorePending = false;
             }
             if (UiButtonBar.Button(cells[1],
                 OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.CancelWorkOrder", "Cancel work order"), changedOrder,
@@ -97,12 +106,29 @@ namespace OrderedWork
             {
                 draft.Clear();
                 draft.AddRange(baseline);
+                restorePending = false;
             }
             if (UiButtonBar.Button(cells[2],
-                OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.RestoreWorkOrder", "Restore reference order"), true,
-                OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.RestoreWorkOrderTip", "Restore WorkType order from reference.json.")))
+                restorePending
+                    ? OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.ConfirmRestoreWorkOrder", "Confirm restore")
+                    : OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.RestoreWorkOrder", "Restore reference order"),
+                canRestore,
+                canRestore
+                    ? (restorePending
+                        ? OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.ConfirmRestoreWorkOrderTip", "Click again to restore the order from reference.json.")
+                        : OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.RestoreWorkOrderTip", "Restore WorkType order from reference.json."))
+                    : OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.RestoreWorkOrderNoChanges", "The current order already matches reference.json."),
+                restorePending ? UiColors.ConfirmDanger : (Color?)null))
             {
-                RestoreReference(host, activeProfile);
+                if (restorePending)
+                {
+                    RestoreReference(host, activeProfile);
+                    restorePending = false;
+                }
+                else
+                {
+                    restorePending = true;
+                }
             }
 
             list.Gap(4f);
@@ -120,18 +146,7 @@ namespace OrderedWork
                 return;
             }
 
-            List<string> restored = reference.WorkTypes
-                .Where(entry => entry.Value != null && profile.WorkTypes.ContainsKey(entry.Key))
-                .OrderBy(entry => entry.Value.Order)
-                .Select(entry => entry.Key)
-                .ToList();
-            foreach (string defName in draft)
-            {
-                if (!restored.Contains(defName))
-                {
-                    restored.Add(defName);
-                }
-            }
+            List<string> restored = BuildReferenceOrder(profile, reference, draft);
             for (int i = 0; i < restored.Count; i++)
             {
                 if (profile.WorkTypes.TryGetValue(restored[i], out WorkTypeConfig config) && config != null)
@@ -147,6 +162,26 @@ namespace OrderedWork
             baseline.AddRange(restored);
             Messages.Message(OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.OrderRestored",
                 "Work type order restored from reference."), MessageTypeDefOf.TaskCompletion, false);
+        }
+
+        private static List<string> BuildReferenceOrder(WorkConfigProfile profile, WorkConfigProfile reference, List<string> current)
+        {
+            List<string> result = new List<string>();
+            if (profile != null && reference != null)
+            {
+                result.AddRange(reference.WorkTypes
+                    .Where(entry => entry.Value != null && profile.WorkTypes.ContainsKey(entry.Key))
+                    .OrderBy(entry => entry.Value.Order)
+                    .Select(entry => entry.Key));
+            }
+            foreach (string defName in current ?? new List<string>())
+            {
+                if (!result.Contains(defName) && profile != null && profile.WorkTypes.ContainsKey(defName))
+                {
+                    result.Add(defName);
+                }
+            }
+            return result;
         }
 
         private void Move(int from, int to)
