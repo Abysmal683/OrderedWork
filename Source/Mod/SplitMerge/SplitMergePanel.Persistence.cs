@@ -1,4 +1,3 @@
-#nullable disable
 using OrderedWork.Config;
 using RimWorld;
 using Verse;
@@ -9,9 +8,9 @@ namespace OrderedWork
     {
         private void RevertMerge(string defName)
         {
-            WorkConfigProfile profile = host.LoadEditingProfile();
-            WorkConfigProfile reference = WorkConfigStore.LoadReference();
-            if (!WorkConfigReconciler.RevertMerge(profile, reference, defName))
+            WorkConfigProfile? profile = host.LoadEditingProfile();
+            WorkConfigProfile? reference = WorkConfigStore.LoadReference();
+            if (profile == null || reference == null || !WorkConfigReconciler.RevertMerge(profile, reference, defName))
             {
                 return;
             }
@@ -23,9 +22,9 @@ namespace OrderedWork
 
         private void RevertOrder(string defName)
         {
-            WorkConfigProfile profile = host.LoadEditingProfile();
-            WorkConfigProfile reference = WorkConfigStore.LoadReference();
-            if (!WorkConfigReconciler.RevertOrder(profile, reference, defName))
+            WorkConfigProfile? profile = host.LoadEditingProfile();
+            WorkConfigProfile? reference = WorkConfigStore.LoadReference();
+            if (profile == null || reference == null || !WorkConfigReconciler.RevertOrder(profile, reference, defName))
             {
                 return;
             }
