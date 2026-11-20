@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,13 +39,13 @@ namespace OrderedWork
             {
                 active = WorkConfigStore.LoadActiveWithFallback(activeProfile);
             }
-            WorkConfigProfile reference = WorkConfigStore.LoadReference();
+            WorkConfigProfile? reference = WorkConfigStore.LoadReference();
             if (active == null || active.Profile == null || string.IsNullOrEmpty(selected))
             {
                 list.Label(OrderedWorkMod.ConfigText("OrderedWork.Config.Order.SelectPrompt", "Choose a WorkType below to compare its giver order."));
                 return;
             }
-            WorkTypeConfig current;
+            WorkTypeConfig? current;
             if (!active.Profile.WorkTypes.TryGetValue(selected, out current) || current == null)
             {
                 list.Label(OrderedWorkMod.ConfigText("OrderedWork.Config.Order.NotInProfile", "Selected WorkType is not in the active profile."));
@@ -153,7 +152,7 @@ namespace OrderedWork
         private void Apply(OrderedWorkMod host, WorkConfigProfile profile, string selected, Action<string> setStatus)
         {
             if (profile == null || string.IsNullOrEmpty(selected)
-                || !profile.WorkTypes.TryGetValue(selected, out WorkTypeConfig current)
+                || !profile.WorkTypes.TryGetValue(selected, out WorkTypeConfig? current)
                 || current == null)
             {
                 return;

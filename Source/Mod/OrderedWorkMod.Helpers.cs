@@ -16,7 +16,7 @@ namespace OrderedWork
 {
     public partial class OrderedWorkMod : Mod
     {
-        internal void DrawReorderRow(Rect row, string label, int kind, int index, string tooltip)
+        internal void DrawReorderRow(Rect row, string label, int kind, int index, string? tooltip)
         {
             bool dragging = dragKind == kind;
             bool dragged = dragging && dragIndex == index;

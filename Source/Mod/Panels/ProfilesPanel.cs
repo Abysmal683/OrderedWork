@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -37,7 +36,8 @@ namespace OrderedWork
                 Directory.CreateDirectory(WorkConfigStore.ProfilesDirectory);
                 profiles = Directory.GetFiles(WorkConfigStore.ProfilesDirectory, "*.json")
                     .Select(Path.GetFileNameWithoutExtension)
-                    .Where(n => !n.EndsWith(".pending", StringComparison.Ordinal))
+                    .Where(n => !string.IsNullOrEmpty(n) && !n.EndsWith(".pending", StringComparison.Ordinal))
+                    .Select(n => n!)
                     .Distinct()
                     .OrderBy(n => n, StringComparer.Ordinal)
                     .ToList();

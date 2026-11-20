@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.319] - 2026-11-19
+
+### Changed — Nullable Mod panels
+- Migrated `ProfilesPanel`, `OrderEditorPanel` and `WorkOrderRulesPanel`.
+- Build warning-free; 13 SplitMerge/localization files still opt out.
+- Tests remain at 28 cases.
+
 ## [0.3.0-alpha.318] - 2026-11-19
 
 ### Changed — Nullable Mod root

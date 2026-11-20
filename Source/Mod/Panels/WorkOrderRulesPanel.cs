@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +19,7 @@ namespace OrderedWork
         private readonly List<string> baseline = new List<string>();
         private bool initialized;
         private bool restorePending;
-        private string cachedProfile;
+        private string? cachedProfile;
 
         internal void Draw(Listing_Standard list, OrderedWorkMod host, string activeProfile)
         {
@@ -29,8 +28,8 @@ namespace OrderedWork
                 cachedProfile = activeProfile;
                 initialized = false;
             }
-            WorkConfigProfile profile = WorkConfigStore.LoadEditingProfile(activeProfile);
-            WorkConfigProfile reference = WorkConfigStore.LoadReference();
+            WorkConfigProfile? profile = WorkConfigStore.LoadEditingProfile(activeProfile);
+            WorkConfigProfile? reference = WorkConfigStore.LoadReference();
             List<string> referenceOrder = BuildReferenceOrder(profile, reference, draft);
             bool canRestore = reference != null && referenceOrder.Count > 0 && !draft.SequenceEqual(referenceOrder);
             if (!canRestore && restorePending)
@@ -61,7 +60,7 @@ namespace OrderedWork
                 Rect row = list.GetRect(24f);
                 UiZebra.Draw(row, i);
                 string rowLabel = i + 1 + ". " + type.labelShort;
-                if (profile.WorkTypes.TryGetValue(type.defName, out WorkTypeConfig rowConfig) && rowConfig != null && rowConfig.Hidden)
+                if (profile.WorkTypes.TryGetValue(type.defName, out WorkTypeConfig? rowConfig) && rowConfig != null && rowConfig.Hidden)
                 {
                     rowLabel += " [" + OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.HiddenSuffix", "hidden") + "]";
                 }
@@ -73,7 +72,7 @@ namespace OrderedWork
                         OrderedWorkMod.ConfigText("OrderedWork.Config.Rules.Changed", "Changed"));
                 }
                 if (Mouse.IsOver(row) && Event.current.type == EventType.MouseDown && Event.current.button == 1
-                    && profile.WorkTypes.TryGetValue(type.defName, out WorkTypeConfig hiddenConfig)
+                    && profile.WorkTypes.TryGetValue(type.defName, out WorkTypeConfig? hiddenConfig)
                     && hiddenConfig != null)
                 {
                     hiddenConfig.Hidden = !hiddenConfig.Hidden;
@@ -140,8 +139,8 @@ namespace OrderedWork
 
         private void RestoreReference(OrderedWorkMod host, string activeProfile)
         {
-            WorkConfigProfile profile = WorkConfigStore.LoadEditingProfile(activeProfile);
-            WorkConfigProfile reference = WorkConfigStore.LoadReference();
+            WorkConfigProfile? profile = WorkConfigStore.LoadEditingProfile(activeProfile);
+            WorkConfigProfile? reference = WorkConfigStore.LoadReference();
             if (profile == null || reference == null)
             {
                 return;
@@ -150,7 +149,7 @@ namespace OrderedWork
             List<string> restored = BuildReferenceOrder(profile, reference, draft);
             for (int i = 0; i < restored.Count; i++)
             {
-                if (profile.WorkTypes.TryGetValue(restored[i], out WorkTypeConfig config) && config != null)
+                if (profile.WorkTypes.TryGetValue(restored[i], out WorkTypeConfig? config) && config != null)
                 {
                     config.Order = i;
                 }
@@ -165,7 +164,7 @@ namespace OrderedWork
                 "Work type order restored from reference."), MessageTypeDefOf.TaskCompletion, false);
         }
 
-        private static List<string> BuildReferenceOrder(WorkConfigProfile profile, WorkConfigProfile reference, List<string> current)
+        private static List<string> BuildReferenceOrder(WorkConfigProfile profile, WorkConfigProfile? reference, List<string>? current)
         {
             List<string> result = new List<string>();
             if (profile != null && reference != null)
@@ -203,14 +202,14 @@ namespace OrderedWork
                 cachedProfile = activeProfile;
                 initialized = false;
             }
-            WorkConfigProfile profile = WorkConfigStore.LoadEditingProfile(activeProfile);
+            WorkConfigProfile? profile = WorkConfigStore.LoadEditingProfile(activeProfile);
             if (profile == null)
             {
                 return;
             }
             for (int i = 0; i < draft.Count; i++)
             {
-                if (profile.WorkTypes.TryGetValue(draft[i], out WorkTypeConfig config) && config != null)
+                if (profile.WorkTypes.TryGetValue(draft[i], out WorkTypeConfig? config) && config != null)
                 {
                     config.Order = i;
                 }
