@@ -1,14 +1,14 @@
 # Ordered Work — Current Status
 
-Version: `0.3.0-alpha.282` (runtime checkpoint). Build 0/0; tests pass.
+Version: `0.3.0-alpha.283` (runtime checkpoint). Build 0/0; tests pass.
 
-## Latest checkpoint (.282)
+## Latest checkpoint (.283)
 
 - Profiles append visible live WorkTypes and missing Givers on load; Hospitality `Diplomat` can be selected in Order, Split and Merge.
 - The Work tab reorders the list returned by `PawnTable.get_Columns`, which rebuilds from the table def on every call.
 - Hidden layer implemented: right-click toggle, fixed GetPriority overlay, hidden-first WorkGiver cache, incapable-pawn skip and game-load revalidation.
 - The `GetPriority` patch parameter was corrected to `w`; this restores all Harmony patches, manual priorities above 4 and the hidden layer.
-- Work tab order is applied at `PawnColumnDefGenerator` generation time from profile `naturalPriority`, with `PawnTable.get_Columns` and `PawnTableOnGUI` fallbacks. Runtime confirmed by the user.
+- Work tab order is applied once at `PawnColumnDefGenerator` generation time; per-frame `PawnTable.get_Columns`/`PawnTableOnGUI` hooks were removed to restore FPS.
 - WorkType order has `Restore reference order` beside Apply/Cancel; right-click toggles hidden with a visible hint.
 - Passion weights render in full and Rules sections start collapsed.
 - Hidden mod WorkTypes are not added and stale visible flags are cleared during reconciliation.

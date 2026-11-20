@@ -41,10 +41,10 @@ With **Verbose diagnostics in Player.log** enabled, startup emits one line:
 ```
 
 Use it when testing with VSE/Alpha Skills enabled, disabled or removed. Without verbose diagnostics, only failures emit warnings.
-## Limitations (0.3.0-alpha.282)
+## Limitations (0.3.0-alpha.283)
 - Profiles and basic schedule presets exist; Details has Overview, schedule, zone, override and read-only clothing status sections. Clothing application, equipment, bulk zone and multi-pawn are not implemented yet.
 - Hidden WorkTypes are Config-only: they are excluded from Work tab and Work Control and run through a fixed priority overlay. Incapable pawns skip them.
-- The Work tab column order is applied at `PawnColumnDefGenerator` generation time from the profile `naturalPriority`, with `PawnTable.get_Columns` and `PawnTableOnGUI` fallbacks. Alternate Work-tab replacements still need runtime compatibility verification.
+- The Work tab column order is applied once at `PawnColumnDefGenerator` generation time from the profile `naturalPriority`; the previous per-frame `PawnTable.get_Columns`/`PawnTableOnGUI` hooks were removed. Alternate Work-tab replacements still need runtime compatibility verification.
 - Pawn order follows the colonist bar; if the bar is unavailable or returns no visible free colonists, the map's `FreeColonists` order is used. Dead pawns are filtered out.
 - Scrollbars are custom and 12 px thick; when auto-hidden they still reserve their gutters. The horizontal bar is above the matrix; the vertical is in the right gutter; they use separate drag state and show flags.
 - The 3-row palette balances rows with `ceil(count/3)` and slides horizontally; chips are ellipsized rather than wrapped.

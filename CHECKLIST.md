@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.282)
+# Ordered Work — Current Checklist (0.3.0-alpha.283)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -161,6 +161,12 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Paint, erase, load, save and apply preserve their behavior.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of paint, erase, load, save and apply.
+## Work tab performance cleanup (alpha.283)
+
+- [x] Remove per-frame `PawnTable.get_Columns`/`PawnTableOnGUI` reorder hooks.
+- [x] Apply load-time order once in `PawnColumnDefGenerator`.
+- [ ] Runtime FPS check while the Work tab is open.
+- [ ] Runtime check that column order still matches after profile changes and restart.
 ## Harmony binding and hidden reload (alpha.282)
 
 - [x] Correct `GetPriority` patch binding to parameter `w`.

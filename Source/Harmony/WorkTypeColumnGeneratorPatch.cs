@@ -11,9 +11,20 @@ namespace OrderedWork.Patches
     [HarmonyPatch(typeof(PawnColumnDefGenerator), nameof(PawnColumnDefGenerator.ImpliedPawnColumnDefs))]
     internal static class Patch_PawnColumnDefGenerator_Order
     {
+        private static bool applied;
+
         private static void Prefix()
         {
+            if (applied)
+            {
+                return;
+            }
             WorkConfigProfile profile = WorkConfigStore.LoadCachedActive()?.Profile;
+            if (profile == null)
+            {
+                return;
+            }
+            applied = true;
             OrderedWorkStartup.ApplyWorkTypeNaturalPriority(profile);
         }
     }

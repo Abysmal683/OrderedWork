@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.283] - 2026-11-19
+
+### Fixed — Work tab per-frame ordering overhead
+- Removed the per-frame `PawnTable.get_Columns` and `PawnTableOnGUI` reorder hooks.
+- Work tab order is now applied once at `PawnColumnDefGenerator` generation time; the normal profile apply path still reorders newly added split columns once.
+- This removes the repeated profile/column work that was running during Work tab rendering and causing the FPS regression.
+
 ## [0.3.0-alpha.282] - 2026-11-19
 
 ### Fixed — Harmony GetPriority binding

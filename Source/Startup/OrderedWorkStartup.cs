@@ -157,21 +157,6 @@ namespace OrderedWork
             }
         }
 
-        internal static void RefreshWorkTabColumnOrder()
-        {
-            WorkConfigProfile profile = WorkConfigStore.LoadCachedActive()?.Profile;
-            if (profile != null)
-            {
-                ReorderWorkTabColumns(profile);
-            }
-        }
-
-        internal static void ReorderWorkTableColumns(List<PawnColumnDef> columns)
-        {
-            WorkConfigProfile profile = WorkConfigStore.LoadCachedActive()?.Profile;
-            ReorderColumns(columns, profile);
-        }
-
         private static void ReorderWorkTabColumns(WorkConfigProfile profile)
         {
             if (PawnTableDefOf.Work == null)
