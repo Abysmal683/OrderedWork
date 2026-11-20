@@ -1,4 +1,3 @@
-#nullable disable
 using System.Collections.Generic;
 using RimWorld;
 using UnityEngine;

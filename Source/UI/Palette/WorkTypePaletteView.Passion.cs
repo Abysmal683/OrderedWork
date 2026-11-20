@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using OrderedWork.Services;
@@ -9,9 +8,9 @@ using Verse;
 namespace OrderedWork.UI
 {
     internal static partial class WorkTypePaletteView
-    {        internal static string PassionText(Passion passion)
+    {        internal static string? PassionText(Passion passion)
         {
-            string vseLabel = PassionSource.VseLabelOf(passion);
+            string? vseLabel = PassionSource.VseLabelOf(passion);
             if (!string.IsNullOrEmpty(vseLabel))
             {
                 return vseLabel;
@@ -91,7 +90,7 @@ namespace OrderedWork.UI
 
         private static PassionVisual ComputePassionVisual(Passion passion)
         {
-            Texture2D colored = PassionSource.IconOf(passion);
+            Texture2D? colored = PassionSource.IconOf(passion);
             if (colored != null)
             {
                 PassionVisual result = new PassionVisual();
@@ -100,7 +99,7 @@ namespace OrderedWork.UI
                 return result;
             }
 
-            Texture2D workBox = PassionSource.WorkBoxIconOf(passion);
+            Texture2D? workBox = PassionSource.WorkBoxIconOf(passion);
             if (workBox != null)
             {
                 PassionVisual result = new PassionVisual();
@@ -110,7 +109,7 @@ namespace OrderedWork.UI
             }
 
             // Vanilla colored textures first, then the vanilla gray work-box icons.
-            Texture2D vanillaColored = VanillaColoredTexture(passion);
+            Texture2D? vanillaColored = VanillaColoredTexture(passion);
             if (vanillaColored != null)
             {
                 PassionVisual result = new PassionVisual();
@@ -119,7 +118,7 @@ namespace OrderedWork.UI
                 return result;
             }
 
-            Texture2D vanillaGray = VanillaGrayTexture(passion);
+            Texture2D? vanillaGray = VanillaGrayTexture(passion);
             if (vanillaGray != null)
             {
                 PassionVisual result = new PassionVisual();
@@ -131,7 +130,7 @@ namespace OrderedWork.UI
             return default(PassionVisual);
         }
 
-        private static Texture2D VanillaColoredTexture(Passion passion)
+        private static Texture2D? VanillaColoredTexture(Passion passion)
         {
             ResolveVanillaTextures();
             if (passion == Passion.Major)
@@ -145,7 +144,7 @@ namespace OrderedWork.UI
             return null;
         }
 
-        private static Texture2D VanillaGrayTexture(Passion passion)
+        private static Texture2D? VanillaGrayTexture(Passion passion)
         {
             if (passion == Passion.Major)
             {
@@ -179,7 +178,7 @@ namespace OrderedWork.UI
 
         private static Color TintForPassionColor(Passion passion)
         {
-            string colorName = PassionSource.ColorNameOf(passion);
+            string? colorName = PassionSource.ColorNameOf(passion);
             switch (colorName)
             {
                 case "Minor":
@@ -240,8 +239,8 @@ namespace OrderedWork.UI
         }
 
         private static bool vanillaTexturesResolved;
-        private static Texture2D vanillaMinorColored;
-        private static Texture2D vanillaMajorColored;
+        private static Texture2D? vanillaMinorColored;
+        private static Texture2D? vanillaMajorColored;
 
         private static readonly Dictionary<int, PassionVisual> passionVisualCache = new Dictionary<int, PassionVisual>();
         private static readonly Dictionary<int, int> colorRankCache = new Dictionary<int, int>();

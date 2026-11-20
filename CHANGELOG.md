@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.304] - 2026-11-19
+
+### Changed — Nullable UI first pass
+- Migrated UI Layout and Shared (14 files), UI Profile and Palette (7 files), and the first five UI Dialogs.
+- Build remains warning-free; 54 files still opt out.
+- Tests remain at 28 cases.
+
 ## [0.3.0-alpha.303] - 2026-11-19
 
 ### Changed — Nullable Harmony/Game/Startup batch

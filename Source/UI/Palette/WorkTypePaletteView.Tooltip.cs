@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,7 +70,7 @@ namespace OrderedWork.UI
         /// Best relevant SkillRecord without calling Pawn_SkillTracker.GetSkill for a missing
         /// skill (that call logs a fallback warning). Returns null when no record is present.
         /// </summary>
-        internal static SkillRecord SafeBestSkill(Pawn pawn, WorkTypeDef workType, out Passion passion)
+        internal static SkillRecord? SafeBestSkill(Pawn? pawn, WorkTypeDef? workType, out Passion passion)
         {
             passion = Passion.None;
             if (pawn == null || pawn.Dead || pawn.skills == null || pawn.skills.skills == null
@@ -80,7 +79,7 @@ namespace OrderedWork.UI
                 return null;
             }
 
-            SkillRecord best = null;
+            SkillRecord? best = null;
             foreach (SkillDef skill in workType.relevantSkills)
             {
                 if (skill == null)
@@ -88,7 +87,7 @@ namespace OrderedWork.UI
                     continue;
                 }
 
-                SkillRecord record = null;
+                SkillRecord? record = null;
                 List<SkillRecord> records = pawn.skills.skills;
                 for (int i = 0; i < records.Count; i++)
                 {

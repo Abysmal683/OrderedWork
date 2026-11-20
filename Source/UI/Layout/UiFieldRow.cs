@@ -1,4 +1,3 @@
-#nullable disable
 using UnityEngine;
 using Verse;
 
@@ -7,7 +6,7 @@ namespace OrderedWork.UI.Layout
     /// <summary>Label + text field row with a consistent label width.</summary>
     public static class UiFieldRow
     {
-        public static string Text(Rect row, string label, string value, float labelWidth = 110f, string tooltip = null)
+        public static string Text(Rect row, string label, string value, float labelWidth = 110f, string? tooltip = null)
         {
             if (!string.IsNullOrEmpty(tooltip))
             {

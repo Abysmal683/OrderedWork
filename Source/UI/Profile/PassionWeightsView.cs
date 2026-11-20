@@ -1,4 +1,3 @@
-#nullable disable
 using System.Collections.Generic;
 using OrderedWork.Services;
 using OrderedWork.UI.Layout;
@@ -47,7 +46,7 @@ namespace OrderedWork.UI
             PassionSource.PassionInfo info,
             OrderedWorkSettings settings)
         {
-            PassionWeightEntry entry = PassionWeightPolicy.Find(settings, info.Passion);
+            PassionWeightEntry? entry = PassionWeightPolicy.Find(settings, info.Passion);
             if (entry == null)
             {
                 return;
@@ -65,7 +64,7 @@ namespace OrderedWork.UI
             }
 
             Widgets.Label(new Rect(row.x + 20f, row.y, 140f, 24f), info.Label);
-            string description = PassionSource.DescriptionOf(info.Passion);
+            string? description = PassionSource.DescriptionOf(info.Passion);
             float learnRate = PassionSource.LearnRateOf(info.Passion);
             if (learnRate > 0f)
             {

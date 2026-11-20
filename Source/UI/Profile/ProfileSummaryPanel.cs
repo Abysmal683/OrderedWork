@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using OrderedWork.Services;
@@ -40,8 +39,8 @@ namespace OrderedWork.UI
                         UiZebra.Draw(row, i);
                         Widgets.LabelEllipses(new Rect(row.x + 4f, row.y + 1f, row.width - 82f, 18f),
                             (i + 1) + ". " + (workType != null ? workType.labelShort : order[i]));
-                        SkillDef skill = BestSkill(pawn, workType);
-                        SkillRecord record = skill != null && pawn.skills != null ? pawn.skills.GetSkill(skill) : null;
+                        SkillDef? skill = BestSkill(pawn, workType);
+                        SkillRecord? record = skill != null && pawn.skills != null ? pawn.skills.GetSkill(skill) : null;
                         WorkTypePaletteView.DrawPassionIcon(new Rect(row.xMax - 66f, row.y + 2f, 14f, 14f),
                             record != null ? record.passion : Passion.None);
                         Widgets.Label(new Rect(row.xMax - 46f, row.y + 1f, 26f, 18f),
@@ -91,17 +90,17 @@ namespace OrderedWork.UI
             }
         }
 
-        private static SkillDef BestSkill(Pawn pawn, WorkTypeDef workType)
+        private static SkillDef? BestSkill(Pawn? pawn, WorkTypeDef? workType)
         {
             if (pawn == null || pawn.skills == null || workType == null || workType.relevantSkills == null)
             {
                 return null;
             }
-            SkillDef best = null;
+            SkillDef? best = null;
             int bestLevel = -1;
             foreach (SkillDef skill in workType.relevantSkills)
             {
-                SkillRecord record = skill != null ? pawn.skills.GetSkill(skill) : null;
+                SkillRecord? record = skill != null && pawn.skills != null ? pawn.skills.GetSkill(skill) : null;
                 if (record != null && record.Level > bestLevel)
                 {
                     best = skill;
@@ -111,7 +110,7 @@ namespace OrderedWork.UI
             return best;
         }
 
-        private static Color AssignmentColor(TimeAssignmentDef def)
+        private static Color AssignmentColor(TimeAssignmentDef? def)
         {
             if (def == null) return new Color(0.18f, 0.18f, 0.20f, 1f);
             Color color = def.color;

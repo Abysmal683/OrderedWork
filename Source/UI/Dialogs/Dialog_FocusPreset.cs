@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,13 +20,13 @@ namespace OrderedWork.UI
         private readonly Func<WorkFocusPreset, bool> onLoad;
         private List<WorkFocusPreset> presets;
         private string presetName = "";
-        private WorkFocusPreset pendingDelete;
-        private WorkFocusPreset pendingLoad;
+        private WorkFocusPreset? pendingDelete;
+        private WorkFocusPreset? pendingLoad;
         private bool closeAfterSave;
         private Vector2 scroll;
 
         public Dialog_FocusPreset(bool loadMode, Func<WorkFocusPreset> capture,
-            Func<WorkFocusPreset, bool> onLoad, string initialName = null)
+            Func<WorkFocusPreset, bool> onLoad, string? initialName = null)
         {
             this.loadMode = loadMode;
             this.capture = capture;
@@ -106,7 +105,7 @@ namespace OrderedWork.UI
 
             if (pendingLoad != null)
             {
-                WorkFocusPreset toLoad = pendingLoad;
+                WorkFocusPreset toLoad = pendingLoad!;
                 pendingLoad = null;
                 onLoad?.Invoke(toLoad);
                 Close();
@@ -147,7 +146,7 @@ namespace OrderedWork.UI
             {
                 return;
             }
-            WorkFocusPreset existing = presets != null
+            WorkFocusPreset? existing = presets != null
                 ? presets.FirstOrDefault(p => p != null && string.Equals(p.Name, name.Trim(), StringComparison.OrdinalIgnoreCase))
                 : null;
             preset.Id = existing != null ? existing.Id : Guid.NewGuid().ToString("N");
@@ -166,12 +165,12 @@ namespace OrderedWork.UI
             Rect footer = new Rect(0f, inRect.yMax - 60f, inRect.width, 60f);
             Widgets.DrawBoxSolid(footer, new Color(0.12f, 0.12f, 0.14f, 1f));
             UiRows rows = new UiRows(UiInset.All(footer, 6f), 18f, 4f);
-            Widgets.Label(rows.Next(), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Presets.DeleteConfirm", "Delete '") + pendingDelete.Name + "'?");
+            Widgets.Label(rows.Next(), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Presets.DeleteConfirm", "Delete '") + pendingDelete!.Name + "'?");
             Rect buttons = rows.Next(26f);
             Rect[] cells = UiFlex.Columns(buttons, 6f, 1f, 1f);
             if (UiButtonBar.Button(cells[0], OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.ConfirmDelete", "Confirm delete"), true, null, UiColors.ConfirmDanger))
             {
-                if (OrderedWorkMod.SafeUiAction(delegate { WorkFocusPresetStore.Delete(pendingDelete.Id); }, "Delete focus preset"))
+                if (OrderedWorkMod.SafeUiAction(delegate { WorkFocusPresetStore.Delete(pendingDelete!.Id); }, "Delete focus preset"))
                 {
                     pendingDelete = null;
                     presets = WorkFocusPresetStore.LoadAll();

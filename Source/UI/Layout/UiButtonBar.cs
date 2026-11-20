@@ -1,4 +1,3 @@
-#nullable disable
 using UnityEngine;
 using Verse;
 
@@ -11,7 +10,7 @@ namespace OrderedWork.UI.Layout
     /// </summary>
     public static class UiButtonBar
     {
-        public static bool Button(Rect rect, string label, bool enabled = true, string tooltip = null,
+        public static bool Button(Rect rect, string label, bool enabled = true, string? tooltip = null,
             Color? tint = null)
         {
             if (!string.IsNullOrEmpty(tooltip))

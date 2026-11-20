@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,7 +51,7 @@ namespace OrderedWork.UI
                 && type.defName.StartsWith("OWDebugPalette_", StringComparison.Ordinal);
         }
 
-        private static List<WorkTypeDef> debugPaletteTypes;
+        private static List<WorkTypeDef> debugPaletteTypes = new List<WorkTypeDef>();
         private static int debugPaletteTypeCount;
 
         internal static List<WorkTypeDef> BuildDebugPaletteTypes(int count)
@@ -207,7 +206,7 @@ namespace OrderedWork.UI
             if (hoveredPawn != null && !incapable)
             {
                 Passion passion;
-                SkillRecord bestSkill = SafeBestSkill(hoveredPawn, type, out passion);
+                SkillRecord? bestSkill = SafeBestSkill(hoveredPawn, type, out passion);
                 int level = bestSkill != null ? bestSkill.Level : -1;
                 if (level >= 0)
                 {

@@ -1,4 +1,3 @@
-#nullable disable
 using System.Collections.Generic;
 using System.Linq;
 using OrderedWork.Data;
@@ -13,7 +12,7 @@ namespace OrderedWork.UI
     {
         private void DrawClothingTab(Rect content)
         {
-            PawnWorkOrder entry = OrderedWorkGameComponent.GetOrCreate()?.GetEntry(pawn);
+            PawnWorkOrder? entry = OrderedWorkGameComponent.GetOrCreate()?.GetEntry(pawn);
             List<Apparel> worn = pawn.apparel?.WornApparel?.Where(a => a != null).ToList() ?? new List<Apparel>();
             float height = 360f + (worn.Count * 22f) + ((entry != null ? entry.clothingOverrides.Count : 0) * 22f);
             Rect view = new Rect(0f, 0f,
@@ -24,7 +23,7 @@ namespace OrderedWork.UI
             try
             {
                 UiRows rows = new UiRows(view, 20f, 4f);
-                ApparelPolicy policy = pawn.outfits?.CurrentApparelPolicy;
+                ApparelPolicy? policy = pawn.outfits?.CurrentApparelPolicy;
                 string policyLabel = policy != null
                     ? (string.IsNullOrEmpty(policy.RenamableLabel) ? policy.BaseLabel : policy.RenamableLabel)
                     : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Clothing.None", "None");
