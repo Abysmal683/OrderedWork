@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.IO;
 using System.Text.Json;
@@ -18,7 +17,7 @@ namespace OrderedWork.Config
             PropertyNameCaseInsensitive = true
         };
 
-        public static WorkConfigProfile TryLoad(string path)
+        public static WorkConfigProfile? TryLoad(string path)
         {
             try
             {
@@ -26,7 +25,7 @@ namespace OrderedWork.Config
                 {
                     return null;
                 }
-                WorkConfigProfile profile = JsonSerializer.Deserialize<WorkConfigProfile>(
+                WorkConfigProfile? profile = JsonSerializer.Deserialize<WorkConfigProfile>(
                     File.ReadAllText(path), JsonOptions);
                 if (profile == null || profile.SchemaVersion != WorkConfigStore.CurrentSchemaVersion)
                 {
@@ -70,7 +69,7 @@ namespace OrderedWork.Config
             return WriteAtomic(path, profile);
         }
 
-        public static WorkConfigProfile LoadReference()
+        public static WorkConfigProfile? LoadReference()
         {
             return TryLoad(WorkConfigPaths.ReferencePath);
         }
@@ -89,7 +88,11 @@ namespace OrderedWork.Config
         {
             try
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                string? directory = Path.GetDirectoryName(path);
+                if (!string.IsNullOrEmpty(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
                 string temp = path + ".tmp";
                 File.WriteAllText(temp, JsonSerializer.Serialize(profile, JsonOptions));
                 if (File.Exists(path))

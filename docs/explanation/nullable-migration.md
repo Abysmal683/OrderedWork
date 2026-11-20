@@ -33,7 +33,7 @@ Most of these are not new bugs. They are legacy fields, Unity/RimWorld APIs with
 - `OrderedWork` main: project property is `enable`, but the existing files use `#nullable disable` while they are migrated. New files should omit that directive and be nullable-safe.
 - Tests: unchanged.
 
-This is a staged rollout: it stops the 876-warning avalanche while allowing new code and refactored files to opt in immediately. Migrated batches: five Config files, plus all eighteen Services files, including `HiddenWorkTypeService`, `PassionWeightPolicy`, `WorkOrderService.Apply` and `WorkOrderService.Lifecycle`. Five Config files are migrated; 11 Config files and 103 total legacy files still opt out.
+This is a staged rollout: it stops the 876-warning avalanche while allowing new code and refactored files to opt in immediately. Migrated batches: five Config files, plus all eighteen Services files, including `HiddenWorkTypeService`, `PassionWeightPolicy`, `WorkOrderService.Apply` and `WorkOrderService.Lifecycle`. Nine Config files are migrated; 7 Config files and 99 total legacy files still opt out.
 
 ## How to migrate a file
 

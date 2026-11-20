@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,7 +18,7 @@ namespace OrderedWork.Config
             WorkConfigSerializer.EnsureReference();
 
             string profile = WorkConfigPaths.SanitizeProfile(requested);
-            WorkConfigProfile loaded = WorkConfigSerializer.TryLoad(WorkConfigPaths.ProfilePath(profile));
+            WorkConfigProfile? loaded = WorkConfigSerializer.TryLoad(WorkConfigPaths.ProfilePath(profile));
             if (loaded != null)
             {
                 WorkConfigProfileService.ReconcileWithLive(loaded);
@@ -56,19 +55,19 @@ namespace OrderedWork.Config
             };
         }
 
-        public static WorkConfigProfile LoadEditingProfile(string selected)
+        public static WorkConfigProfile? LoadEditingProfile(string selected)
         {
-            WorkConfigProfile pending = LoadPending(selected);
+            WorkConfigProfile? pending = LoadPending(selected);
             if (pending != null)
             {
                 WorkConfigProfileService.ReconcileWithLive(pending);
                 return pending;
             }
             WorkConfigLoadResult active = LoadActiveWithFallback(selected);
-            return active != null ? active.Profile : null;
+            return active?.Profile;
         }
 
-        public static WorkConfigProfile LoadPending(string profile)
+        public static WorkConfigProfile? LoadPending(string profile)
         {
             return WorkConfigSerializer.TryLoad(WorkConfigPaths.PendingPath(profile));
         }
@@ -80,7 +79,7 @@ namespace OrderedWork.Config
             {
                 return false;
             }
-            WorkConfigProfile loaded = WorkConfigSerializer.TryLoad(pending);
+            WorkConfigProfile? loaded = WorkConfigSerializer.TryLoad(pending);
             if (loaded == null)
             {
                 Log.Warning("[Ordered Work] Pending profile failed validation; keeping active profile.");

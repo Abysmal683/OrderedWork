@@ -81,7 +81,7 @@ namespace OrderedWork.Config
             selectedProfileCached = false;
         }
 
-        public static WorkConfigProfile LoadPending(string profile)
+        public static WorkConfigProfile? LoadPending(string profile)
         {
             return WorkConfigResolver.LoadPending(profile);
         }
@@ -98,7 +98,7 @@ namespace OrderedWork.Config
             return WorkConfigProfileService.GetOrderedVisibleWorkTypes(profile);
         }
 
-        public static WorkConfigProfile TryLoad(string path)
+        public static WorkConfigProfile? TryLoad(string path)
         {
             return WorkConfigSerializer.TryLoad(path);
         }
@@ -117,7 +117,7 @@ namespace OrderedWork.Config
             return result;
         }
 
-        public static WorkConfigProfile LoadReference()
+        public static WorkConfigProfile? LoadReference()
         {
             return WorkConfigSerializer.LoadReference();
         }

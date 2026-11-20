@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.301] - 2026-11-19
+
+### Changed — Nullable Config batch
+- Migrated `OrderedWorkLogCategory`, `WorkConfigPaths`, `WorkConfigResolver` and `WorkConfigSerializer` off `#nullable disable`.
+- All Services and 9/16 Config files are migrated; 99 legacy files still opt out.
+- Build warning-free; tests remain at 28 cases.
+
 ## [0.3.0-alpha.300] - 2026-11-19
 
 ### Documentation — Nullable status correction
