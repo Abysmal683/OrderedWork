@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.317)
+# Ordered Work — Current Checklist (0.3.0-alpha.318)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 

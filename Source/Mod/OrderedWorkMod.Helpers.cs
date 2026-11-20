@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -184,7 +183,7 @@ namespace OrderedWork
             }
             for (int i = 0; i < ordered.Count; i++)
             {
-                if (profile.WorkTypes.TryGetValue(ordered[i].defName, out WorkTypeConfig config) && config != null)
+                if (profile.WorkTypes.TryGetValue(ordered[i].defName, out WorkTypeConfig? config) && config != null)
                 {
                     config.Order = i;
                 }
@@ -271,7 +270,7 @@ namespace OrderedWork
                 Dictionary<string, int> ranks = DenseRank.BuildRanks(order, available);
                 int max = Math.Max(4, order.Count);
 
-                FieldInfo prioritiesField = typeof(Pawn_WorkSettings).GetField(
+                FieldInfo? prioritiesField = typeof(Pawn_WorkSettings).GetField(
                     "priorities",
                     BindingFlags.Instance | BindingFlags.NonPublic);
                 bool loggedDirectMode = false;
@@ -285,7 +284,7 @@ namespace OrderedWork
                         continue;
                     }
 
-                    DefMap<WorkTypeDef, int> priorities = prioritiesField != null
+                    DefMap<WorkTypeDef, int>? priorities = prioritiesField != null
                         ? prioritiesField.GetValue(ws) as DefMap<WorkTypeDef, int>
                         : null;
 

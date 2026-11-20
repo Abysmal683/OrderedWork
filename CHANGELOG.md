@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.318] - 2026-11-19
+
+### Changed — Nullable Mod root
+- Migrated all root `OrderedWorkMod` partials.
+- Build warning-free; 16 files still opt out (Mod panels, SplitMerge, localization, root).
+- Tests remain at 28 cases.
+
 ## [0.3.0-alpha.317] - 2026-11-19
 
 ### Changed — Nullable MainTab completion
