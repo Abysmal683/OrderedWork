@@ -131,6 +131,15 @@ namespace OrderedWork
 
 
 
+        internal static void RefreshWorkTabColumnOrder()
+        {
+            WorkConfigProfile profile = WorkConfigStore.LoadCachedActive()?.Profile;
+            if (profile != null)
+            {
+                ReorderWorkTabColumns(profile);
+            }
+        }
+
         private static void ReorderWorkTabColumns(WorkConfigProfile profile)
         {
             if (profile == null || PawnTableDefOf.Work == null || PawnTableDefOf.Work.columns == null)

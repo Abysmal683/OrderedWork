@@ -39,6 +39,13 @@ Keep the concepts separate:
 - Do not auto-reveal hidden WorkTypes during reconciliation.
 - If the source mod stops providing the WorkType, keep the profile entry but report it; do not delete user data silently.
 
+## Decisions recorded
+
+- The hidden layer is applied after the normal policy layers: vanilla, Work Control, hourly work and permanent work. It is the highest hard layer.
+- Hidden WorkTypes are not shown in Work tab or Work Control; they are not deleted.
+- Their fixed priority is managed only in Mod Settings and requires a restart.
+- Visible WorkTypes keep their own visible order; the hidden layer sits above it.
+
 ## Open decisions
 
 1. Should hidden active WorkTypes appear in Work Control, or only in a dedicated "Hidden work types" section?
