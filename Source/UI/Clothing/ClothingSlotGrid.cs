@@ -23,7 +23,7 @@ namespace OrderedWork.UI.Clothing
             return rows * (CellHeight + Gap);
         }
 
-        public static void Draw(Rect rect, IReadOnlyList<ClothingSlot> slots, ClothingResolution resolution, Action<ClothingSlot>? onSelect = null, ClothingSlot? selectedSlot = null)
+        public static void Draw(Rect rect, IReadOnlyList<ClothingSlot> slots, ClothingResolution resolution, Action<ClothingSlot>? onSelect = null, Action<ClothingSlot>? onRemove = null, ClothingSlot? selectedSlot = null)
         {
             if (slots == null || slots.Count == 0)
             {
@@ -70,6 +70,15 @@ namespace OrderedWork.UI.Clothing
                 if (selection != null)
                 {
                     TooltipHandler.TipRegion(cell, ClothingInfoService.TooltipOf(selection.DefName));
+                }
+                if (onRemove != null
+                    && Event.current.type == EventType.MouseDown
+                    && Event.current.button == 1
+                    && Mouse.IsOver(cell))
+                {
+                    onRemove(slot);
+                    Event.current.Use();
+                    continue;
                 }
                 if (onSelect != null && Widgets.ButtonInvisible(cell))
                 {

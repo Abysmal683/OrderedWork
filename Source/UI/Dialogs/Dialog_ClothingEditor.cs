@@ -140,7 +140,7 @@ namespace OrderedWork.UI
                 ClothingRule selectedRuleData = preset.Rules[selectedRule];
                 selectedSlot = new ClothingSlot(selectedRuleData.Slot, selectedRuleData.BodyLayer ?? "", selectedRuleData.Target);
             }
-            ClothingSlotGrid.Draw(gridRect, context.KnownSlots, resolution, SelectOrCreateRule, selectedSlot);
+            ClothingSlotGrid.Draw(gridRect, context.KnownSlots, resolution, SelectOrCreateRule, RemoveRuleAtSlot, selectedSlot);
         }
 
         private void DrawRuleList(Rect inRect)
@@ -216,6 +216,25 @@ namespace OrderedWork.UI
                 index = preset.Rules.Count - 1;
             }
             selectedRule = index;
+            SyncCandidateText();
+        }
+
+        private void RemoveRuleAtSlot(ClothingSlot slot)
+        {
+            if (preset?.Rules == null)
+            {
+                return;
+            }
+            int index = preset.Rules.FindIndex(rule => rule != null
+                && rule.Target == slot.Target
+                && rule.Slot == slot.Slot
+                && (rule.BodyLayer ?? "") == (slot.BodyLayer ?? ""));
+            if (index < 0)
+            {
+                return;
+            }
+            preset.Rules.RemoveAt(index);
+            selectedRule = preset.Rules.Count == 0 ? -1 : Mathf.Min(index, preset.Rules.Count - 1);
             SyncCandidateText();
         }
 

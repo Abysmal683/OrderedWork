@@ -11,7 +11,8 @@ using Verse;
 namespace OrderedWork.UI
 {
     /// <summary>
-    /// Searchable multi-select ThingDef picker for clothing rules.
+    /// Searchable touch-card picker for clothing candidates. Cards are toggled,
+    /// not rendered as action buttons.
     /// </summary>
     public sealed class Dialog_ThingDefPicker : Window
     {
@@ -45,7 +46,7 @@ namespace OrderedWork.UI
             Rebuild();
         }
 
-        public override Vector2 InitialSize => new Vector2(620f, 600f);
+        public override Vector2 InitialSize => new Vector2(700f, 620f);
 
         public override void DoWindowContents(Rect inRect)
         {
@@ -62,52 +63,11 @@ namespace OrderedWork.UI
             }
 
             Rect listRect = new Rect(0f, 66f, inRect.width, inRect.height - 112f);
-            UiScrollPane.Draw(listRect, ref scroll, Mathf.Max(listRect.height, cached.Count * 28f + 4f), this, delegate(Rect view)
+            UiScrollPane.Draw(listRect, ref scroll, Mathf.Max(listRect.height, cached.Count * 52f + 4f), this, delegate(Rect view)
             {
                 for (int i = 0; i < cached.Count; i++)
                 {
-                    ThingDef def = cached[i];
-                    Rect row = new Rect(0f, i * 28f, view.width, 25f);
-                    UiZebra.Draw(row, i);
-                    bool isSelected = selected.Contains(def.defName);
-                    if (isSelected)
-                    {
-                        Widgets.DrawBoxSolid(row, new Color(0.18f, 0.36f, 0.24f, 0.45f));
-                    }
-                    bool checkbox = isSelected;
-                    Widgets.Checkbox(new Vector2(row.x + 3f, row.y + 3f), ref checkbox, 19f);
-                    if (checkbox != isSelected)
-                    {
-                        if (checkbox)
-                        {
-                            selected.Add(def.defName);
-                        }
-                        else
-                        {
-                            selected.Remove(def.defName);
-                        }
-                    }
-
-                    Texture2D? icon = ClothingIconResolver.IconOf(def.defName);
-                    if (icon != null)
-                    {
-                        GUI.DrawTexture(new Rect(row.x + 28f, row.y + 3f, 19f, 19f), icon);
-                    }
-                    string label = def.LabelCap + " · " + def.defName;
-                    Widgets.LabelEllipses(new Rect(row.x + (icon != null ? 52f : 30f), row.y, row.width - (icon != null ? 58f : 36f), 24f), label);
-                    if (Widgets.ButtonInvisible(new Rect(row.x + 26f, row.y, row.width - 26f, 24f)))
-                    {
-                        bool now = !selected.Contains(def.defName);
-                        if (now)
-                        {
-                            selected.Add(def.defName);
-                        }
-                        else
-                        {
-                            selected.Remove(def.defName);
-                        }
-                    }
-                    TooltipHandler.TipRegion(row, ClothingInfoService.TooltipOf(def.defName));
+                    DrawCard(view, i, cached[i]);
                 }
             });
 
@@ -115,9 +75,42 @@ namespace OrderedWork.UI
             Widgets.Label(new Rect(0f, footer.y + 4f, 180f, 22f), "Selected: " + selected.Count);
             if (Widgets.ButtonText(new Rect(inRect.width - 188f, footer.y, 180f, 28f), "Add selected", true, true, selected.Count > 0))
             {
-                List<string> picked = selected.OrderBy(value => value, StringComparer.Ordinal).ToList();
-                onPick?.Invoke(picked);
+                onPick?.Invoke(selected.OrderBy(value => value, StringComparer.Ordinal).ToList());
                 Close();
+            }
+        }
+
+        private void DrawCard(Rect view, int index, ThingDef def)
+        {
+            Rect card = new Rect(0f, index * 52f, view.width, 48f);
+            bool isSelected = selected.Contains(def.defName);
+            Widgets.DrawBoxSolid(card, isSelected
+                ? new Color(0.16f, 0.34f, 0.22f, 0.95f)
+                : new Color(0.13f, 0.14f, 0.17f, 0.95f));
+            Widgets.DrawBox(card, isSelected ? 2 : 1);
+            Texture2D? icon = ClothingIconResolver.IconOf(def.defName);
+            if (icon != null)
+            {
+                GUI.DrawTexture(new Rect(card.x + 8f, card.y + 9f, 28f, 28f), icon);
+            }
+            string label = def.LabelCap + " · " + def.defName;
+            Widgets.LabelEllipses(new Rect(card.x + (icon != null ? 44f : 8f), card.y + 6f, card.width - (icon != null ? 52f : 16f), 20f), label);
+            ClothingInfo? info = ClothingInfoService.Find(def.defName);
+            string subline = info == null
+                ? "Pick to add"
+                : "Layers: " + (string.IsNullOrEmpty(info.Layers) ? "-" : info.Layers)
+                    + " · Body: " + (string.IsNullOrEmpty(info.BodyParts) ? "-" : info.BodyParts);
+            Widgets.LabelEllipses(new Rect(card.x + (icon != null ? 44f : 8f), card.y + 25f, card.width - (icon != null ? 52f : 16f), 18f), subline);
+            if (Widgets.ButtonInvisible(card))
+            {
+                if (isSelected)
+                {
+                    selected.Remove(def.defName);
+                }
+                else
+                {
+                    selected.Add(def.defName);
+                }
             }
         }
 

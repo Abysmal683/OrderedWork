@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.336] - 2026-11-19
+
+### Changed — Touch card clothing picker
+- Replaced candidate button rows with information cards (icon, name, layers, body parts).
+- Tapping cards toggles multi-selection; `Add selected` applies them.
+- Right-clicking a clothing grid cell removes the matching rule.
+- Removed drag/drop as the intended interaction.
+- Build warning-free; 39 tests pass.
+
 ## [0.3.0-alpha.335] - 2026-11-19
 
 ### Added — Multi-select clothing picker

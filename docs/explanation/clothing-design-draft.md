@@ -1098,3 +1098,11 @@ Implemented:
 - `Add selected` appends all selected defs to the rule.
 - Picker remains searchable and keeps icons/tooltips.
 - No drag/drop or layer painting yet.
+## 35. Touch cards and grid removal
+
+- Candidate rows are now information cards, not button rows.
+- Tapping a card toggles its selection; `Add selected` applies the set.
+- Cards show icon, label/defName, layers and body parts.
+- Right-clicking a grid cell removes the matching rule.
+- Drag/drop is intentionally not used.
+- Multi-select remains card-toggle based.
