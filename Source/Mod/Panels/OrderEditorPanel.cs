@@ -167,9 +167,7 @@ namespace OrderedWork
                 }
             }
             current.Givers = current.Givers.OrderBy(g => g.Order).ToList();
-            WorkConfigStore.SaveProfile(profile, true);
-            WorkConfigStore.SavePending(profile);
-            OrderedWorkStartup.ApplyProfileNow(profile, OrderedWorkMod.Settings, host);
+            host.CommitProfile(profile);
             setStatus(string.Format(OrderedWorkMod.ConfigText("OrderedWork.Config.GiverOrder.Applied",
                 "Giver order for {0} applied."), selected));
             Messages.Message(string.Format(OrderedWorkMod.ConfigText("OrderedWork.Config.GiverOrder.Saved",

@@ -69,9 +69,7 @@ namespace OrderedWork
                 {
                     hiddenConfig.Hidden = !hiddenConfig.Hidden;
                     hiddenConfig.Visible = true;
-                    WorkConfigStore.SaveProfile(profile, true);
-                    WorkConfigStore.SavePending(profile);
-                    OrderedWorkStartup.ApplyProfileNow(profile, OrderedWorkMod.Settings, host);
+                    host.CommitProfile(profile);
                     initialized = false;
                     Event.current.Use();
                 }
@@ -142,9 +140,7 @@ namespace OrderedWork
                 }
             }
 
-            WorkConfigStore.SaveProfile(profile, true);
-            WorkConfigStore.SavePending(profile);
-            OrderedWorkStartup.ApplyProfileNow(profile, OrderedWorkMod.Settings, host);
+            host.CommitProfile(profile);
             draft.Clear();
             draft.AddRange(restored);
             baseline.Clear();
@@ -183,9 +179,7 @@ namespace OrderedWork
                     config.Order = i;
                 }
             }
-            WorkConfigStore.SaveProfile(profile, true);
-            WorkConfigStore.SavePending(profile);
-            OrderedWorkStartup.ApplyProfileNow(profile, OrderedWorkMod.Settings, host);
+            host.CommitProfile(profile);
             baseline.Clear();
             baseline.AddRange(draft);
             Messages.Message(OrderedWorkMod.ConfigText("OrderedWork.Config.Helpers.OrderApplied", "Work type order applied."), MessageTypeDefOf.TaskCompletion, false);

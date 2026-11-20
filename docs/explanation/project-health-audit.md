@@ -5,7 +5,7 @@ This is a working audit, not a user guide. It records the structural findings th
 ## Snapshot
 
 - 121 C# source files, about 660 KB.
-- 1 test file, about 13 KB, 23 cases.
+- 1 test file plus profile samples, about 13 KB, 26 cases.
 - Build: 0 errors, 0 warnings.
 - Language parity: 206 keys in English, Spanish and Spanish Latin, with no missing keys or duplicates.
 - Checklist: 48 open items; many are roadmap, but runtime coverage remains behind implementation.
@@ -50,6 +50,15 @@ The 23 tests cover Core policies, but not profile normalization/reconciliation, 
 ### 6. Visibility reconciliation
 
 Profiles are built from visible WorkTypes. A mod that adds or reveals a WorkType after profile creation can leave the profile incomplete. The current fix appends missing visible WorkTypes/Givers on load and preserves a live hidden state for existing vanilla types. Hidden WorkTypes are not added.
+
+## P0 status (`0.3.0-alpha.284`)
+
+- Profile commit centralized in `OrderedWorkMod.CommitProfile`.
+- Dead profile methods removed from `OrderedWorkMod.Order.cs`.
+- `SplitMergePanel` split into persistence, candidate and column partials.
+- Pure `WorkConfigReconciler` tests added for merge revert, order revert and normalization.
+- Build paths are overridable through `RimWorldDir` and `HarmonyDir`; Core analyzers are enabled.
+- Still open: broader split creation tests, nullable warnings and a portable CI job.
 
 ## Priority
 

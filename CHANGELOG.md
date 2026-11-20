@@ -3,6 +3,16 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.284] - 2026-11-19
+
+### Changed — Project health P0
+- Added `OrderedWorkMod.CommitProfile` and routed the split/merge/order/metadata actions through the single save-pending-apply pipeline.
+- Removed dead profile methods from `OrderedWorkMod.Order.cs`; only `PersistLivePending` remains.
+- Split `SplitMergePanel` into partial files for persistence, candidates and columns.
+- Added pure `WorkConfigReconciler` and tests for merge ownership revert, order revert and profile normalization.
+- Added project-reference profile tests while keeping the existing Core suite.
+- Made RimWorld/Harmony build paths overridable via `RimWorldDir`/`HarmonyDir`; enabled analyzers on `OrderedWork.Core`.
+
 ## [0.3.0-alpha.283] - 2026-11-19
 
 ### Fixed — Work tab per-frame ordering overhead

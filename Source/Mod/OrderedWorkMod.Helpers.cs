@@ -172,6 +172,15 @@ namespace OrderedWork
                     config.Order = i;
                 }
             }
+            CommitProfile(profile);
+        }
+
+        internal void CommitProfile(WorkConfigProfile profile)
+        {
+            if (profile == null)
+            {
+                return;
+            }
             WorkConfigStore.SaveProfile(profile, true);
             WorkConfigStore.SavePending(profile);
             OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);

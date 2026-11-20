@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using OrderedWork.Core;
+using OrderedWork.Config;
 
 namespace OrderedWork.Tests
 {
@@ -35,6 +36,9 @@ namespace OrderedWork.Tests
             Run("HourFocusStack leaves base order unchanged", TestFocusBaseUnchanged);
             Run("AtomicJsonRecordStore roundtrips and backs up", TestAtomicStoreRoundtrip);
             Run("AtomicJsonRecordStore rejects unsupported schema", TestAtomicStoreSchema);
+            Run("Profile normalize drops null, empty and duplicate givers", TestProfileNormalize);
+            Run("Profile reconcile restores merge ownership", TestProfileRevertMerge);
+            Run("Profile reconcile restores order sequence", TestProfileRevertOrder);
 
             Console.WriteLine(failures == 0 ? "All tests passed." : failures + " test(s) failed.");
             return failures == 0 ? 0 : 1;
@@ -157,7 +161,70 @@ namespace OrderedWork.Tests
             AssertEqual(20, RecommendationScorePolicy.Score(10, false, -3, 0, 0, true));
         }
 
-        private sealed class AtomicTestRecord
+        private static void TestProfileNormalize()
+        {
+            WorkConfigProfile profile = new WorkConfigProfile();
+            profile.WorkTypes["A"] = new WorkTypeConfig
+            {
+                Givers = new List<GiverConfig>
+                {
+                    null,
+                    new GiverConfig { DefName = "G", Order = 2 },
+                    new GiverConfig { DefName = "G", Order = 0 },
+                    new GiverConfig { DefName = "" }
+                }
+            };
+            WorkConfigProfileService.Normalize(profile);
+            AssertEqual(1, profile.WorkTypes["A"].Givers.Count);
+            Assert(profile.WorkTypes["A"].Givers[0].DefName == "G", "normalized giver name");
+        }
+
+        private static void TestProfileRevertMerge()
+        {
+            WorkConfigProfile reference = new WorkConfigProfile();
+            reference.WorkTypes["Target"] = new WorkTypeConfig { Givers = new List<GiverConfig> { new GiverConfig { DefName = "G", Order = 0 } } };
+            reference.WorkTypes["Origin"] = new WorkTypeConfig { Givers = new List<GiverConfig> { new GiverConfig { DefName = "H", Order = 0 } } };
+
+            WorkConfigProfile profile = new WorkConfigProfile();
+            profile.WorkTypes["Target"] = new WorkTypeConfig
+            {
+                Givers = new List<GiverConfig>
+                {
+                    new GiverConfig { DefName = "G", Order = 0 },
+                    new GiverConfig { DefName = "H", Order = 1 }
+                }
+            };
+            profile.WorkTypes["Origin"] = new WorkTypeConfig { Givers = new List<GiverConfig>() };
+
+            Assert(WorkConfigReconciler.RevertMerge(profile, reference, "Target"), "merge revert reports mutation");
+            AssertSequence(new[] { "G" }, profile.WorkTypes["Target"].Givers.Select(g => g.DefName).ToList());
+            AssertSequence(new[] { "H" }, profile.WorkTypes["Origin"].Givers.Select(g => g.DefName).ToList());
+        }
+
+        private static void TestProfileRevertOrder()
+        {
+            WorkConfigProfile reference = new WorkConfigProfile();
+            reference.WorkTypes["A"] = new WorkTypeConfig
+            {
+                Givers = new List<GiverConfig>
+                {
+                    new GiverConfig { DefName = "Second", Order = 0 },
+                    new GiverConfig { DefName = "First", Order = 1 }
+                }
+            };
+            WorkConfigProfile profile = new WorkConfigProfile();
+            profile.WorkTypes["A"] = new WorkTypeConfig
+            {
+                Givers = new List<GiverConfig>
+                {
+                    new GiverConfig { DefName = "First", Order = 0 },
+                    new GiverConfig { DefName = "Second", Order = 1 }
+                }
+            };
+
+            Assert(WorkConfigReconciler.RevertOrder(profile, reference, "A"), "order revert reports mutation");
+            AssertSequence(new[] { "Second", "First" }, profile.WorkTypes["A"].Givers.Select(g => g.DefName).ToList());
+        }        private sealed class AtomicTestRecord
         {
             public int SchemaVersion { get; set; } = 1;
             public string Id { get; set; } = "";

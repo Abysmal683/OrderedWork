@@ -9,5 +9,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Source\OrderedWork.Core\OrderedWork.Core.csproj" />
+    <ProjectReference Include="..\..\Source\OrderedWork.csproj" />
   </ItemGroup>
 </Project>
