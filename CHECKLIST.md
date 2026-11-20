@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.287)
+# Ordered Work — Current Checklist (0.3.0-alpha.288)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -161,6 +161,12 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Paint, erase, load, save and apply preserve their behavior.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of paint, erase, load, save and apply.
+## UI hardening (alpha.288)
+
+- [x] Remove the static texture asset warning from WorkTypePaletteView.
+- [x] Add save/apply try/catch to CommitProfile with user-facing failure messages.
+- [x] Guard work-column order generation against exceptions.
+- [ ] Runtime confirmation that Player.log no longer reports the WorkTypePaletteView warning.
 ## Debt cleanup (alpha.287)
 
 - [x] Removed WorkGiver order spike and its persisted field/UI.

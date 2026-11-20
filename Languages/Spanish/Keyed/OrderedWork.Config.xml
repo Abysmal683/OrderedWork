@@ -27,7 +27,6 @@
   <OrderedWork.Config.General.CancelReset>Cancelar reinicio</OrderedWork.Config.General.CancelReset>
   <OrderedWork.Config.General.CancelResetTip>Cancela el reinicio pendiente.</OrderedWork.Config.General.CancelResetTip>
   <OrderedWork.Config.General.BackupWarning>Nunca se elimina un tipo de trabajo ni un WorkGiver. Haz una copia de seguridad antes de aplicar.</OrderedWork.Config.General.BackupWarning>
-
   <OrderedWork.Config.Rules.Section>Reglas</OrderedWork.Config.Rules.Section>
   <OrderedWork.Config.Rules.RestartNotice>Ordered Work (Core): los cambios se aplican al reiniciar.</OrderedWork.Config.Rules.RestartNotice>
   <OrderedWork.Config.Rules.SplitNotice>La división copia etiquetas de trabajo, habilidades, etapas de vida y disponibilidad mecánica.</OrderedWork.Config.Rules.SplitNotice>
@@ -53,7 +52,6 @@
   <OrderedWork.Config.Rules.AllowEmptyTip>Se aplica a Dividir y Fusionar. Los orígenes vanilla se ocultan; las divisiones se eliminan. Desactívalo para exigir al menos un WorkGiver en el origen.</OrderedWork.Config.Rules.AllowEmptyTip>
   <OrderedWork.Config.Rules.NoDelete>Nunca se elimina un tipo de trabajo ni un WorkGiver. Haz una copia de seguridad antes de aplicar.</OrderedWork.Config.Rules.NoDelete>
   <OrderedWork.Config.Rules.RestartApply>Los cambios de Dividir/Fusionar se aplican tras reiniciar.</OrderedWork.Config.Rules.RestartApply>
-
   <OrderedWork.Config.Profiles.Info>Perfiles JSON globales (los cambios pendientes se aplican al reiniciar):</OrderedWork.Config.Profiles.Info>
   <OrderedWork.Config.Profiles.ListError>No se pudieron listar los perfiles: {0}</OrderedWork.Config.Profiles.ListError>
   <OrderedWork.Config.Profiles.Active>Perfil activo: {0}  ▼</OrderedWork.Config.Profiles.Active>
@@ -66,7 +64,6 @@
   <OrderedWork.Config.Profiles.WrotePending>Se escribió {0}.pending.json. Se aplicará al próximo arranque.</OrderedWork.Config.Profiles.WrotePending>
   <OrderedWork.Config.Profiles.FailedPending>No se pudo escribir el perfil pendiente.</OrderedWork.Config.Profiles.FailedPending>
   <OrderedWork.Config.Profiles.Reference>Referencia: {0}</OrderedWork.Config.Profiles.Reference>
-
   <OrderedWork.Config.Order.SelectPrompt>Elige un tipo de trabajo para comparar el orden de sus WorkGivers.</OrderedWork.Config.Order.SelectPrompt>
   <OrderedWork.Config.Order.NotInProfile>El tipo de trabajo seleccionado no está en el perfil activo.</OrderedWork.Config.Order.NotInProfile>
   <OrderedWork.Config.Order.Header>Orden de WorkGivers — {0}: origen = referencia, destino = borrador.</OrderedWork.Config.Order.Header>
@@ -89,20 +86,17 @@
   <OrderedWork.Config.Order.SplitDeleted>División eliminada: {0}</OrderedWork.Config.Order.SplitDeleted>
   <OrderedWork.Config.Order.Restored>Restaurado: {0}</OrderedWork.Config.Order.Restored>
   <OrderedWork.Config.Order.ResetPending>El reinicio se escribe en pendiente; no modifica definiciones activas hasta reiniciar.</OrderedWork.Config.Order.ResetPending>
-
   <OrderedWork.Config.GiverOrder.Applied>Orden de WorkGivers de {0} aplicado.</OrderedWork.Config.GiverOrder.Applied>
   <OrderedWork.Config.GiverOrder.Saved>Orden de WorkGivers guardado para {0}.</OrderedWork.Config.GiverOrder.Saved>
   <OrderedWork.Config.Helpers.WorkGivers>WorkGivers:</OrderedWork.Config.Helpers.WorkGivers>
   <OrderedWork.Config.Helpers.WorkType>Tipo de trabajo: </OrderedWork.Config.Helpers.WorkType>
   <OrderedWork.Config.Helpers.OrderApplied>Orden de tipos de trabajo aplicado.</OrderedWork.Config.Helpers.OrderApplied>
-
   <OrderedWork.Config.SplitMeta.Info>Metadatos de la división (el defName es estable):</OrderedWork.Config.SplitMeta.Info>
   <OrderedWork.Config.SplitMeta.DefName>defName: {0}</OrderedWork.Config.SplitMeta.DefName>
   <OrderedWork.Config.SplitMeta.Label>Etiqueta</OrderedWork.Config.SplitMeta.Label>
   <OrderedWork.Config.SplitMeta.Description>Descripción</OrderedWork.Config.SplitMeta.Description>
   <OrderedWork.Config.SplitMeta.Save>Guardar metadatos de la división</OrderedWork.Config.SplitMeta.Save>
   <OrderedWork.Config.SplitMeta.Saved>Metadatos de la división guardados para {0}.</OrderedWork.Config.SplitMeta.Saved>
-
   <OrderedWork.Config.SplitMerge.Info>Editor Dividir / Fusionar / Ordenar. Los borradores son temporales; las entradas guardadas se aplican al reiniciar.</OrderedWork.Config.SplitMerge.Info>
   <OrderedWork.Config.SplitMerge.Tip>Consejo: usa Ctrl+rueda o arrastra la barra de una columna para desplazarla; la rueda normal desplaza los ajustes.</OrderedWork.Config.SplitMerge.Tip>
   <OrderedWork.Config.SplitMerge.SplitTab>Dividir</OrderedWork.Config.SplitMerge.SplitTab>
@@ -149,7 +143,6 @@
   <OrderedWork.Config.SplitMerge.SelectMarker>(seleccionar)</OrderedWork.Config.SplitMerge.SelectMarker>
   <OrderedWork.Config.SplitMerge.SplitSaved>División guardada: {0} (reinicia para aplicar).</OrderedWork.Config.SplitMerge.SplitSaved>
   <OrderedWork.Config.SplitMerge.MergeSaved>Fusión guardada para {0} (reinicia para aplicar).</OrderedWork.Config.SplitMerge.MergeSaved>
-
   <OrderedWork.Config.RulesUI.RulesTab>Reglas</OrderedWork.Config.RulesUI.RulesTab>
   <OrderedWork.Config.RulesUI.GeneralTab>General</OrderedWork.Config.RulesUI.GeneralTab>
   <OrderedWork.Config.WorkTab.ViewDraw>Vista: Dibujo</OrderedWork.Config.WorkTab.ViewDraw>
@@ -158,13 +151,15 @@
   <OrderedWork.Config.Reset.ConfigReset>Configuración de Ordered Work reiniciada.</OrderedWork.Config.Reset.ConfigReset>
   <OrderedWork.Config.General.Unknown>desconocido</OrderedWork.Config.General.Unknown>
   <OrderedWork.Config.Profiles.Saved>Guardado {0}.json</OrderedWork.Config.Profiles.Saved>
-  <OrderedWork.Config.Profiles.FailedSave>No se pudo guardar {0}.json</OrderedWork.Config.Profiles.FailedSave>  <OrderedWork.Config.General.LogCategories>Categorías de log (Player.log):</OrderedWork.Config.General.LogCategories>
+  <OrderedWork.Config.Profiles.FailedSave>No se pudo guardar {0}.json</OrderedWork.Config.Profiles.FailedSave>
+  <OrderedWork.Config.General.LogCategories>Categorías de log (Player.log):</OrderedWork.Config.General.LogCategories>
   <OrderedWork.Config.General.LogWorkControl>Work Control</OrderedWork.Config.General.LogWorkControl>
   <OrderedWork.Config.General.LogSchedule>Horario / foco</OrderedWork.Config.General.LogSchedule>
   <OrderedWork.Config.General.LogStores>Stores</OrderedWork.Config.General.LogStores>
   <OrderedWork.Config.General.LogPassion>Pasión / VSE</OrderedWork.Config.General.LogPassion>
   <OrderedWork.Config.General.LogConfig>Config mod</OrderedWork.Config.General.LogConfig>
-  <OrderedWork.Config.General.LogHarmony>Harmony</OrderedWork.Config.General.LogHarmony>  <OrderedWork.Config.SplitMerge.ApplyFailed>No se pudo aplicar Dividir/Fusionar. Guarda la partida, reinicia RimWorld e inténtalo de nuevo.</OrderedWork.Config.SplitMerge.ApplyFailed>
+  <OrderedWork.Config.General.LogHarmony>Harmony</OrderedWork.Config.General.LogHarmony>
+  <OrderedWork.Config.SplitMerge.ApplyFailed>No se pudo aplicar Dividir/Fusionar. Guarda la partida, reinicia RimWorld e inténtalo de nuevo.</OrderedWork.Config.SplitMerge.ApplyFailed>
   <OrderedWork.Config.SplitMerge.NoSplits>Aún no hay divisiones creadas.</OrderedWork.Config.SplitMerge.NoSplits>
   <OrderedWork.Config.SplitMerge.Splits>Divisiones existentes</OrderedWork.Config.SplitMerge.Splits>
   <OrderedWork.Config.SplitMerge.Edit>Editar</OrderedWork.Config.SplitMerge.Edit>
@@ -174,16 +169,20 @@
   <OrderedWork.Config.SplitMerge.SaveMetadata>Guardar metadatos</OrderedWork.Config.SplitMerge.SaveMetadata>
   <OrderedWork.Config.SplitMerge.MetadataSaved>Metadatos de la división guardados: {0}</OrderedWork.Config.SplitMerge.MetadataSaved>
   <OrderedWork.Config.SplitMerge.BaseMissing>No se puede eliminar esta división: falta su tipo de trabajo base.</OrderedWork.Config.SplitMerge.BaseMissing>
-  <OrderedWork.Config.SplitMerge.Deleted>División eliminada y WorkGivers devueltos: {0}</OrderedWork.Config.SplitMerge.Deleted>  <OrderedWork.Config.SplitMerge.MergeNone>No hay tipos de trabajo con diferencias de WorkGivers.</OrderedWork.Config.SplitMerge.MergeNone>
+  <OrderedWork.Config.SplitMerge.Deleted>División eliminada y WorkGivers devueltos: {0}</OrderedWork.Config.SplitMerge.Deleted>
+  <OrderedWork.Config.SplitMerge.MergeNone>No hay tipos de trabajo con diferencias de WorkGivers.</OrderedWork.Config.SplitMerge.MergeNone>
   <OrderedWork.Config.SplitMerge.MergeCandidates>Conciliación de WorkGivers contra la referencia vanilla</OrderedWork.Config.SplitMerge.MergeCandidates>
   <OrderedWork.Config.SplitMerge.MergeMissing>faltan: {0}</OrderedWork.Config.SplitMerge.MergeMissing>
   <OrderedWork.Config.SplitMerge.MergeExtra>sobran: {0}</OrderedWork.Config.SplitMerge.MergeExtra>
   <OrderedWork.Config.SplitMerge.Select>Seleccionar</OrderedWork.Config.SplitMerge.Select>
-  <OrderedWork.Config.SplitMerge.RevertMerge>Revertir fusión</OrderedWork.Config.SplitMerge.RevertMerge>  <OrderedWork.Config.SplitMerge.OrderNone>No hay tipos de trabajo con WorkGivers desordenados.</OrderedWork.Config.SplitMerge.OrderNone>
+  <OrderedWork.Config.SplitMerge.RevertMerge>Revertir fusión</OrderedWork.Config.SplitMerge.RevertMerge>
+  <OrderedWork.Config.SplitMerge.OrderNone>No hay tipos de trabajo con WorkGivers desordenados.</OrderedWork.Config.SplitMerge.OrderNone>
   <OrderedWork.Config.SplitMerge.OrderCandidates>Tipos de trabajo con WorkGivers desordenados</OrderedWork.Config.SplitMerge.OrderCandidates>
-  <OrderedWork.Config.SplitMerge.RevertOrder>Revertir orden</OrderedWork.Config.SplitMerge.RevertOrder>  <OrderedWork.Config.Common.Delete>Eliminar</OrderedWork.Config.Common.Delete>
+  <OrderedWork.Config.SplitMerge.RevertOrder>Revertir orden</OrderedWork.Config.SplitMerge.RevertOrder>
+  <OrderedWork.Config.Common.Delete>Eliminar</OrderedWork.Config.Common.Delete>
   <OrderedWork.Config.Order.NoSelectionWarning>Selecciona un tipo de trabajo con WorkGivers desordenados.</OrderedWork.Config.Order.NoSelectionWarning>
-  <OrderedWork.Config.Order.ReorderWarning>Aplicar solo reordena los WorkGivers existentes.</OrderedWork.Config.Order.ReorderWarning>  <OrderedWork.Config.Rules.AllowEmptyBlocked>No se puede desactivar el origen vacío: {0} tipos de trabajo no tienen WorkGivers. Restáuralos primero.</OrderedWork.Config.Rules.AllowEmptyBlocked>
+  <OrderedWork.Config.Order.ReorderWarning>Aplicar solo reordena los WorkGivers existentes.</OrderedWork.Config.Order.ReorderWarning>
+  <OrderedWork.Config.Rules.AllowEmptyBlocked>No se puede desactivar el origen vacío: {0} tipos de trabajo no tienen WorkGivers. Restáuralos primero.</OrderedWork.Config.Rules.AllowEmptyBlocked>
   <OrderedWork.Config.SplitMerge.GiversSuffix>WorkGivers</OrderedWork.Config.SplitMerge.GiversSuffix>
   <OrderedWork.Config.SplitMerge.ActionWord>Palabra de acción</OrderedWork.Config.SplitMerge.ActionWord>
   <OrderedWork.Config.SplitMerge.ActionWordTip>Verbo que se muestra en contextos de acción para este tipo de trabajo, por ejemplo Transportar. Si se deja vacío, usa el nombre.</OrderedWork.Config.SplitMerge.ActionWordTip>
@@ -193,13 +192,19 @@
   <OrderedWork.Config.SplitMerge.ConfirmRevert>Confirmar</OrderedWork.Config.SplitMerge.ConfirmRevert>
   <OrderedWork.Config.SplitMerge.MergeReverted>Fusión revertida para {0}.</OrderedWork.Config.SplitMerge.MergeReverted>
   <OrderedWork.Config.SplitMerge.OrderReverted>Orden de Givers restaurado para {0}.</OrderedWork.Config.SplitMerge.OrderReverted>
-  <OrderedWork.Config.SplitMeta.ActionWord>Palabra de acción</OrderedWork.Config.SplitMeta.ActionWord>  <OrderedWork.Config.SplitMerge.AddTip>Crea un nuevo tipo de trabajo con los Givers de origen seleccionados.</OrderedWork.Config.SplitMerge.AddTip>
+  <OrderedWork.Config.SplitMeta.ActionWord>Palabra de acción</OrderedWork.Config.SplitMeta.ActionWord>
+  <OrderedWork.Config.SplitMerge.AddTip>Crea un nuevo tipo de trabajo con los Givers de origen seleccionados.</OrderedWork.Config.SplitMerge.AddTip>
   <OrderedWork.Config.SplitMerge.MergeSelectedTip>Mueve los Givers de origen seleccionados al destino.</OrderedWork.Config.SplitMerge.MergeSelectedTip>
   <OrderedWork.Config.SplitMerge.MergeAllTip>Mueve todos los Givers de origen al destino.</OrderedWork.Config.SplitMerge.MergeAllTip>
-  <OrderedWork.Config.SplitMerge.CancelDraftTip>Borra solo el borrador no guardado.</OrderedWork.Config.SplitMerge.CancelDraftTip>  <OrderedWork.Config.SplitMerge.OrderNoReference>sin orden de referencia</OrderedWork.Config.SplitMerge.OrderNoReference>
-  <OrderedWork.Config.Rules.HiddenSuffix>oculto</OrderedWork.Config.Rules.HiddenSuffix>  <OrderedWork.Config.Rules.RestoreWorkOrder>Restaurar orden de referencia</OrderedWork.Config.Rules.RestoreWorkOrder>
+  <OrderedWork.Config.SplitMerge.CancelDraftTip>Borra solo el borrador no guardado.</OrderedWork.Config.SplitMerge.CancelDraftTip>
+  <OrderedWork.Config.SplitMerge.OrderNoReference>sin orden de referencia</OrderedWork.Config.SplitMerge.OrderNoReference>
+  <OrderedWork.Config.Rules.HiddenSuffix>oculto</OrderedWork.Config.Rules.HiddenSuffix>
+  <OrderedWork.Config.Rules.RestoreWorkOrder>Restaurar orden de referencia</OrderedWork.Config.Rules.RestoreWorkOrder>
   <OrderedWork.Config.Rules.RestoreWorkOrderTip>Restaura el orden de WorkTypes desde reference.json.</OrderedWork.Config.Rules.RestoreWorkOrderTip>
-  <OrderedWork.Config.Rules.OrderRestored>Orden de WorkTypes restaurado desde la referencia.</OrderedWork.Config.Rules.OrderRestored>  <OrderedWork.Config.Rules.HiddenHint>Clic derecho en una fila de WorkType para ocultarlo o mostrarlo. Los WorkTypes ocultos siguen activos pero son invisibles en Work tab y Work Control.</OrderedWork.Config.Rules.HiddenHint>
+  <OrderedWork.Config.Rules.OrderRestored>Orden de WorkTypes restaurado desde la referencia.</OrderedWork.Config.Rules.OrderRestored>
+  <OrderedWork.Config.Rules.HiddenHint>Clic derecho en una fila de WorkType para ocultarlo o mostrarlo. Los WorkTypes ocultos siguen activos pero son invisibles en Work tab y Work Control.</OrderedWork.Config.Rules.HiddenHint>
   <OrderedWork.Config.Rules.ConfirmRestoreWorkOrder>Confirmar restauración</OrderedWork.Config.Rules.ConfirmRestoreWorkOrder>
   <OrderedWork.Config.Rules.ConfirmRestoreWorkOrderTip>Haz clic de nuevo para restaurar el orden desde reference.json.</OrderedWork.Config.Rules.ConfirmRestoreWorkOrderTip>
-  <OrderedWork.Config.Rules.RestoreWorkOrderNoChanges>El orden actual ya coincide con reference.json.</OrderedWork.Config.Rules.RestoreWorkOrderNoChanges></LanguageData>
+  <OrderedWork.Config.Rules.RestoreWorkOrderNoChanges>El orden actual ya coincide con reference.json.</OrderedWork.Config.Rules.RestoreWorkOrderNoChanges>
+  <OrderedWork.Config.Common.ProfileSaveFailed>No se pudo guardar el perfil. El estado actual de la partida no cambió.</OrderedWork.Config.Common.ProfileSaveFailed>
+  <OrderedWork.Config.Common.ProfileApplyFailed>No se aplicó el perfil. Revisa Player.log y reinicia RimWorld.</OrderedWork.Config.Common.ProfileApplyFailed></LanguageData>

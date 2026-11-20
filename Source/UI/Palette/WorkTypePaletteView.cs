@@ -16,6 +16,7 @@ namespace OrderedWork.UI
     /// VSE/Alpha Skills integration is read-only reflection over their public PassionDef
     /// contract; no third-party source or assets are copied or redistributed. See CREDITS.md.
     /// </summary>
+    [StaticConstructorOnStartup]
     internal static partial class WorkTypePaletteView
     {
         internal const float ChipWidth = 110f;

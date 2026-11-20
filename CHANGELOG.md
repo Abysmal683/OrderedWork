@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.288] - 2026-11-19
+
+### Fixed — UI hardening
+- Added `StaticConstructorOnStartup` to `WorkTypePaletteView` so its static texture fields load on the main thread and no longer emit the non-lethal asset warning.
+- `CommitProfile` now catches save/apply failures and reports a rejection message instead of throwing through the settings UI.
+- `PawnColumnDefGenerator` order application now catches and logs failures instead of aborting def generation.
+- Added localized profile save/apply failure messages.
+
 ## [0.3.0-alpha.287] - 2026-11-19
 
 ### Changed — Debt cleanup

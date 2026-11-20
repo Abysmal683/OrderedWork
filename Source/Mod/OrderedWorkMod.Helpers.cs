@@ -181,9 +181,29 @@ namespace OrderedWork
             {
                 return;
             }
-            WorkConfigStore.SaveProfile(profile, true);
-            WorkConfigStore.SavePending(profile);
-            OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
+            try
+            {
+                if (!WorkConfigStore.SaveProfile(profile, true))
+                {
+                    Log.Error("[Ordered Work] Could not save the active profile; apply skipped.");
+                    Messages.Message(ConfigText("OrderedWork.Config.Common.ProfileSaveFailed",
+                        "The profile could not be saved. Your current game state was not changed."),
+                        MessageTypeDefOf.RejectInput, false);
+                    return;
+                }
+                if (!WorkConfigStore.SavePending(profile))
+                {
+                    Log.Warning("[Ordered Work] Active profile saved, but pending state failed.");
+                }
+                OrderedWorkStartup.ApplyProfileNow(profile, Settings, this);
+            }
+            catch (Exception exception)
+            {
+                Log.Error("[Ordered Work] CommitProfile failed: " + exception);
+                Messages.Message(ConfigText("OrderedWork.Config.Common.ProfileApplyFailed",
+                    "The profile was not applied. Check Player.log and restart RimWorld."),
+                    MessageTypeDefOf.RejectInput, false);
+            }
         }
 
         public static void DebugLog(string message, OrderedWorkLogCategory category = OrderedWorkLogCategory.Config)

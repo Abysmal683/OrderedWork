@@ -1,6 +1,7 @@
 using HarmonyLib;
 using OrderedWork.Config;
 using RimWorld;
+using Verse;
 
 namespace OrderedWork.Patches
 {
@@ -19,13 +20,20 @@ namespace OrderedWork.Patches
             {
                 return;
             }
-            WorkConfigProfile profile = WorkConfigStore.LoadCachedActive()?.Profile;
-            if (profile == null)
+            try
             {
-                return;
+                WorkConfigProfile profile = WorkConfigStore.LoadCachedActive()?.Profile;
+                if (profile == null)
+                {
+                    return;
+                }
+                applied = true;
+                OrderedWorkStartup.ApplyWorkTypeNaturalPriority(profile);
             }
-            applied = true;
-            OrderedWorkStartup.ApplyWorkTypeNaturalPriority(profile);
+            catch (System.Exception exception)
+            {
+                Log.WarningOnce("[Ordered Work] Could not apply work-column order: " + exception.Message, 817233);
+            }
         }
     }
 }

@@ -27,7 +27,6 @@
   <OrderedWork.Config.General.CancelReset>Cancel reset</OrderedWork.Config.General.CancelReset>
   <OrderedWork.Config.General.CancelResetTip>Cancel the pending configuration reset.</OrderedWork.Config.General.CancelResetTip>
   <OrderedWork.Config.General.BackupWarning>No work type or giver is ever deleted. Back up your save before applying.</OrderedWork.Config.General.BackupWarning>
-
   <OrderedWork.Config.Rules.Section>Rules</OrderedWork.Config.Rules.Section>
   <OrderedWork.Config.Rules.RestartNotice>Ordered Work (Core) - changes apply on restart.</OrderedWork.Config.Rules.RestartNotice>
   <OrderedWork.Config.Rules.SplitNotice>Split copies work tags, skills, life stages and mech availability.</OrderedWork.Config.Rules.SplitNotice>
@@ -53,7 +52,6 @@
   <OrderedWork.Config.Rules.AllowEmptyTip>Applies to both Split and Merge. Vanilla origins hide; splits delete. Disable to require at least one giver left in the origin.</OrderedWork.Config.Rules.AllowEmptyTip>
   <OrderedWork.Config.Rules.NoDelete>No work type or giver is ever deleted. Back up your save before applying.</OrderedWork.Config.Rules.NoDelete>
   <OrderedWork.Config.Rules.RestartApply>Split/Merge changes take effect after a restart.</OrderedWork.Config.Rules.RestartApply>
-
   <OrderedWork.Config.Profiles.Info>Global JSON profiles (pending edits apply on restart):</OrderedWork.Config.Profiles.Info>
   <OrderedWork.Config.Profiles.ListError>Could not list profiles: {0}</OrderedWork.Config.Profiles.ListError>
   <OrderedWork.Config.Profiles.Active>Active profile: {0}  ▼</OrderedWork.Config.Profiles.Active>
@@ -66,7 +64,6 @@
   <OrderedWork.Config.Profiles.WrotePending>Wrote {0}.pending.json. Apply on next startup.</OrderedWork.Config.Profiles.WrotePending>
   <OrderedWork.Config.Profiles.FailedPending>Failed to write pending profile.</OrderedWork.Config.Profiles.FailedPending>
   <OrderedWork.Config.Profiles.Reference>Reference: {0}</OrderedWork.Config.Profiles.Reference>
-
   <OrderedWork.Config.Order.SelectPrompt>Choose a WorkType below to compare its giver order.</OrderedWork.Config.Order.SelectPrompt>
   <OrderedWork.Config.Order.NotInProfile>Selected WorkType is not in the active profile.</OrderedWork.Config.Order.NotInProfile>
   <OrderedWork.Config.Order.Header>Giver order — {0}: origin = reference, destination = draft.</OrderedWork.Config.Order.Header>
@@ -89,20 +86,17 @@
   <OrderedWork.Config.Order.SplitDeleted>Split deleted: {0}</OrderedWork.Config.Order.SplitDeleted>
   <OrderedWork.Config.Order.Restored>Restored: {0}</OrderedWork.Config.Order.Restored>
   <OrderedWork.Config.Order.ResetPending>Reset writes to pending; it does not mutate live defs until restart.</OrderedWork.Config.Order.ResetPending>
-
   <OrderedWork.Config.GiverOrder.Applied>Giver order for {0} applied.</OrderedWork.Config.GiverOrder.Applied>
   <OrderedWork.Config.GiverOrder.Saved>Giver order saved for {0}.</OrderedWork.Config.GiverOrder.Saved>
   <OrderedWork.Config.Helpers.WorkGivers>WorkGivers:</OrderedWork.Config.Helpers.WorkGivers>
   <OrderedWork.Config.Helpers.WorkType>Work type: </OrderedWork.Config.Helpers.WorkType>
   <OrderedWork.Config.Helpers.OrderApplied>Work type order applied.</OrderedWork.Config.Helpers.OrderApplied>
-
   <OrderedWork.Config.SplitMeta.Info>Split metadata (defName is stable):</OrderedWork.Config.SplitMeta.Info>
   <OrderedWork.Config.SplitMeta.DefName>defName: {0}</OrderedWork.Config.SplitMeta.DefName>
   <OrderedWork.Config.SplitMeta.Label>Label</OrderedWork.Config.SplitMeta.Label>
   <OrderedWork.Config.SplitMeta.Description>Description</OrderedWork.Config.SplitMeta.Description>
   <OrderedWork.Config.SplitMeta.Save>Save split metadata</OrderedWork.Config.SplitMeta.Save>
   <OrderedWork.Config.SplitMeta.Saved>Split metadata saved for {0}.</OrderedWork.Config.SplitMeta.Saved>
-
   <OrderedWork.Config.SplitMerge.Info>Split / Merge / Order editor. Drafts are temporary; saved entries apply on restart.</OrderedWork.Config.SplitMerge.Info>
   <OrderedWork.Config.SplitMerge.Tip>Tip: Ctrl+wheel or drag a column scrollbar to scroll that column; a plain wheel scrolls the settings.</OrderedWork.Config.SplitMerge.Tip>
   <OrderedWork.Config.SplitMerge.SplitTab>Split</OrderedWork.Config.SplitMerge.SplitTab>
@@ -149,7 +143,6 @@
   <OrderedWork.Config.SplitMerge.SelectMarker>(select)</OrderedWork.Config.SplitMerge.SelectMarker>
   <OrderedWork.Config.SplitMerge.SplitSaved>Split saved: {0} (restart to apply).</OrderedWork.Config.SplitMerge.SplitSaved>
   <OrderedWork.Config.SplitMerge.MergeSaved>Merge saved for {0} (restart to apply).</OrderedWork.Config.SplitMerge.MergeSaved>
-
   <OrderedWork.Config.RulesUI.RulesTab>Rules</OrderedWork.Config.RulesUI.RulesTab>
   <OrderedWork.Config.RulesUI.GeneralTab>General</OrderedWork.Config.RulesUI.GeneralTab>
   <OrderedWork.Config.WorkTab.ViewDraw>View: Draw</OrderedWork.Config.WorkTab.ViewDraw>
@@ -158,13 +151,15 @@
   <OrderedWork.Config.Reset.ConfigReset>Ordered Work config reset.</OrderedWork.Config.Reset.ConfigReset>
   <OrderedWork.Config.General.Unknown>unknown</OrderedWork.Config.General.Unknown>
   <OrderedWork.Config.Profiles.Saved>Saved {0}.json</OrderedWork.Config.Profiles.Saved>
-  <OrderedWork.Config.Profiles.FailedSave>Failed to save {0}.json</OrderedWork.Config.Profiles.FailedSave>  <OrderedWork.Config.General.LogCategories>Log categories (Player.log):</OrderedWork.Config.General.LogCategories>
+  <OrderedWork.Config.Profiles.FailedSave>Failed to save {0}.json</OrderedWork.Config.Profiles.FailedSave>
+  <OrderedWork.Config.General.LogCategories>Log categories (Player.log):</OrderedWork.Config.General.LogCategories>
   <OrderedWork.Config.General.LogWorkControl>Work Control</OrderedWork.Config.General.LogWorkControl>
   <OrderedWork.Config.General.LogSchedule>Schedule / focus</OrderedWork.Config.General.LogSchedule>
   <OrderedWork.Config.General.LogStores>Stores</OrderedWork.Config.General.LogStores>
   <OrderedWork.Config.General.LogPassion>Passion / VSE</OrderedWork.Config.General.LogPassion>
   <OrderedWork.Config.General.LogConfig>Config mod</OrderedWork.Config.General.LogConfig>
-  <OrderedWork.Config.General.LogHarmony>Harmony</OrderedWork.Config.General.LogHarmony>  <OrderedWork.Config.SplitMerge.ApplyFailed>Split/Merge could not be applied. Save your game, restart RimWorld and try again.</OrderedWork.Config.SplitMerge.ApplyFailed>
+  <OrderedWork.Config.General.LogHarmony>Harmony</OrderedWork.Config.General.LogHarmony>
+  <OrderedWork.Config.SplitMerge.ApplyFailed>Split/Merge could not be applied. Save your game, restart RimWorld and try again.</OrderedWork.Config.SplitMerge.ApplyFailed>
   <OrderedWork.Config.SplitMerge.NoSplits>No splits created yet.</OrderedWork.Config.SplitMerge.NoSplits>
   <OrderedWork.Config.SplitMerge.Splits>Existing splits</OrderedWork.Config.SplitMerge.Splits>
   <OrderedWork.Config.SplitMerge.Edit>Edit</OrderedWork.Config.SplitMerge.Edit>
@@ -174,16 +169,20 @@
   <OrderedWork.Config.SplitMerge.SaveMetadata>Save metadata</OrderedWork.Config.SplitMerge.SaveMetadata>
   <OrderedWork.Config.SplitMerge.MetadataSaved>Split metadata saved: {0}</OrderedWork.Config.SplitMerge.MetadataSaved>
   <OrderedWork.Config.SplitMerge.BaseMissing>Cannot delete this split: its base WorkType is missing.</OrderedWork.Config.SplitMerge.BaseMissing>
-  <OrderedWork.Config.SplitMerge.Deleted>Split deleted and Givers returned: {0}</OrderedWork.Config.SplitMerge.Deleted>  <OrderedWork.Config.SplitMerge.MergeNone>No WorkTypes with giver differences.</OrderedWork.Config.SplitMerge.MergeNone>
+  <OrderedWork.Config.SplitMerge.Deleted>Split deleted and Givers returned: {0}</OrderedWork.Config.SplitMerge.Deleted>
+  <OrderedWork.Config.SplitMerge.MergeNone>No WorkTypes with giver differences.</OrderedWork.Config.SplitMerge.MergeNone>
   <OrderedWork.Config.SplitMerge.MergeCandidates>Giver reconciliation against the vanilla reference</OrderedWork.Config.SplitMerge.MergeCandidates>
   <OrderedWork.Config.SplitMerge.MergeMissing>missing: {0}</OrderedWork.Config.SplitMerge.MergeMissing>
   <OrderedWork.Config.SplitMerge.MergeExtra>extra: {0}</OrderedWork.Config.SplitMerge.MergeExtra>
   <OrderedWork.Config.SplitMerge.Select>Select</OrderedWork.Config.SplitMerge.Select>
-  <OrderedWork.Config.SplitMerge.RevertMerge>Revert Merge</OrderedWork.Config.SplitMerge.RevertMerge>  <OrderedWork.Config.SplitMerge.OrderNone>No WorkTypes with out-of-order Givers.</OrderedWork.Config.SplitMerge.OrderNone>
+  <OrderedWork.Config.SplitMerge.RevertMerge>Revert Merge</OrderedWork.Config.SplitMerge.RevertMerge>
+  <OrderedWork.Config.SplitMerge.OrderNone>No WorkTypes with out-of-order Givers.</OrderedWork.Config.SplitMerge.OrderNone>
   <OrderedWork.Config.SplitMerge.OrderCandidates>WorkTypes with out-of-order Givers</OrderedWork.Config.SplitMerge.OrderCandidates>
-  <OrderedWork.Config.SplitMerge.RevertOrder>Revert Order</OrderedWork.Config.SplitMerge.RevertOrder>  <OrderedWork.Config.Common.Delete>Delete</OrderedWork.Config.Common.Delete>
+  <OrderedWork.Config.SplitMerge.RevertOrder>Revert Order</OrderedWork.Config.SplitMerge.RevertOrder>
+  <OrderedWork.Config.Common.Delete>Delete</OrderedWork.Config.Common.Delete>
   <OrderedWork.Config.Order.NoSelectionWarning>Select a WorkType with out-of-order Givers.</OrderedWork.Config.Order.NoSelectionWarning>
-  <OrderedWork.Config.Order.ReorderWarning>Apply reorders only the Givers already present.</OrderedWork.Config.Order.ReorderWarning>  <OrderedWork.Config.Rules.AllowEmptyBlocked>Cannot disable empty-origin support: {0} WorkTypes have no Givers. Restore them first.</OrderedWork.Config.Rules.AllowEmptyBlocked>
+  <OrderedWork.Config.Order.ReorderWarning>Apply reorders only the Givers already present.</OrderedWork.Config.Order.ReorderWarning>
+  <OrderedWork.Config.Rules.AllowEmptyBlocked>Cannot disable empty-origin support: {0} WorkTypes have no Givers. Restore them first.</OrderedWork.Config.Rules.AllowEmptyBlocked>
   <OrderedWork.Config.SplitMerge.GiversSuffix>Givers</OrderedWork.Config.SplitMerge.GiversSuffix>
   <OrderedWork.Config.SplitMerge.ActionWord>Action word</OrderedWork.Config.SplitMerge.ActionWord>
   <OrderedWork.Config.SplitMerge.ActionWordTip>Verb shown in action contexts for this WorkType, for example Hauling. Defaults to the name.</OrderedWork.Config.SplitMerge.ActionWordTip>
@@ -193,13 +192,19 @@
   <OrderedWork.Config.SplitMerge.ConfirmRevert>Confirm</OrderedWork.Config.SplitMerge.ConfirmRevert>
   <OrderedWork.Config.SplitMerge.MergeReverted>Merge reverted for {0}.</OrderedWork.Config.SplitMerge.MergeReverted>
   <OrderedWork.Config.SplitMerge.OrderReverted>Giver order restored for {0}.</OrderedWork.Config.SplitMerge.OrderReverted>
-  <OrderedWork.Config.SplitMeta.ActionWord>Action word</OrderedWork.Config.SplitMeta.ActionWord>  <OrderedWork.Config.SplitMerge.AddTip>Create a new WorkType from the selected origin Givers.</OrderedWork.Config.SplitMerge.AddTip>
+  <OrderedWork.Config.SplitMeta.ActionWord>Action word</OrderedWork.Config.SplitMeta.ActionWord>
+  <OrderedWork.Config.SplitMerge.AddTip>Create a new WorkType from the selected origin Givers.</OrderedWork.Config.SplitMerge.AddTip>
   <OrderedWork.Config.SplitMerge.MergeSelectedTip>Move the selected origin Givers into the target.</OrderedWork.Config.SplitMerge.MergeSelectedTip>
   <OrderedWork.Config.SplitMerge.MergeAllTip>Move every origin Giver into the target.</OrderedWork.Config.SplitMerge.MergeAllTip>
-  <OrderedWork.Config.SplitMerge.CancelDraftTip>Clear the unsaved draft only.</OrderedWork.Config.SplitMerge.CancelDraftTip>  <OrderedWork.Config.SplitMerge.OrderNoReference>no reference order</OrderedWork.Config.SplitMerge.OrderNoReference>
-  <OrderedWork.Config.Rules.HiddenSuffix>hidden</OrderedWork.Config.Rules.HiddenSuffix>  <OrderedWork.Config.Rules.RestoreWorkOrder>Restore reference order</OrderedWork.Config.Rules.RestoreWorkOrder>
+  <OrderedWork.Config.SplitMerge.CancelDraftTip>Clear the unsaved draft only.</OrderedWork.Config.SplitMerge.CancelDraftTip>
+  <OrderedWork.Config.SplitMerge.OrderNoReference>no reference order</OrderedWork.Config.SplitMerge.OrderNoReference>
+  <OrderedWork.Config.Rules.HiddenSuffix>hidden</OrderedWork.Config.Rules.HiddenSuffix>
+  <OrderedWork.Config.Rules.RestoreWorkOrder>Restore reference order</OrderedWork.Config.Rules.RestoreWorkOrder>
   <OrderedWork.Config.Rules.RestoreWorkOrderTip>Restore WorkType order from reference.json.</OrderedWork.Config.Rules.RestoreWorkOrderTip>
-  <OrderedWork.Config.Rules.OrderRestored>Work type order restored from reference.</OrderedWork.Config.Rules.OrderRestored>  <OrderedWork.Config.Rules.HiddenHint>Right-click a WorkType row to mark it hidden or visible. Hidden WorkTypes stay active but are invisible in Work tab and Work Control.</OrderedWork.Config.Rules.HiddenHint>
+  <OrderedWork.Config.Rules.OrderRestored>Work type order restored from reference.</OrderedWork.Config.Rules.OrderRestored>
+  <OrderedWork.Config.Rules.HiddenHint>Right-click a WorkType row to mark it hidden or visible. Hidden WorkTypes stay active but are invisible in Work tab and Work Control.</OrderedWork.Config.Rules.HiddenHint>
   <OrderedWork.Config.Rules.ConfirmRestoreWorkOrder>Confirm restore</OrderedWork.Config.Rules.ConfirmRestoreWorkOrder>
   <OrderedWork.Config.Rules.ConfirmRestoreWorkOrderTip>Click again to restore the order from reference.json.</OrderedWork.Config.Rules.ConfirmRestoreWorkOrderTip>
-  <OrderedWork.Config.Rules.RestoreWorkOrderNoChanges>The current order already matches reference.json.</OrderedWork.Config.Rules.RestoreWorkOrderNoChanges></LanguageData>
+  <OrderedWork.Config.Rules.RestoreWorkOrderNoChanges>The current order already matches reference.json.</OrderedWork.Config.Rules.RestoreWorkOrderNoChanges>
+  <OrderedWork.Config.Common.ProfileSaveFailed>The profile could not be saved. Your current game state was not changed.</OrderedWork.Config.Common.ProfileSaveFailed>
+  <OrderedWork.Config.Common.ProfileApplyFailed>The profile was not applied. Check Player.log and restart RimWorld.</OrderedWork.Config.Common.ProfileApplyFailed></LanguageData>
