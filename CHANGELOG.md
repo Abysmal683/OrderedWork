@@ -3,6 +3,15 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.330] - 2026-11-19
+
+### Added — Clothing Phase 1.5
+- Added `ClothingPresetStore` JSON persistence under `Config/OrderedWork/ClothingPresets`.
+- Added the read-only `ClothingContextBuilder`: ApparelPolicy permits apparel, equippable defs supply tools, and body-part/layer defs supply known slots.
+- Added null-safe preset/rule/candidate normalization.
+- Added 2 normalize tests; suite is now 39 tests.
+- No UI, jobs or equipment application yet.
+
 ## [0.3.0-alpha.329] - 2026-11-19
 
 ### Added — Clothing stack Phase 1

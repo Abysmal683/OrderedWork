@@ -1,6 +1,6 @@
 # Clothing policy — design draft
 
-Status: draft; no implementation yet.
+Status: Phase 1.5 implemented; UI/application/jobs pending.
 
 This file collects the current clothing data, implemented UI, prior design decisions, constraints, and open questions so the next pass starts from a single source.
 
@@ -904,3 +904,25 @@ Add an `OutfitDefinition` only if:
 - import/export needs stable outfit references.
 
 Until then, one preset with ordered rules is sufficient and much simpler.
+## 28. Phase 1.5 status
+
+Implemented:
+
+- `ClothingPresetStore` JSON persistence.
+- `ClothingContextBuilder` read-only adapter:
+  - ApparelPolicy permits apparel.
+  - `ThingDef.HasComp(typeof(CompEquippable))` supplies tool candidates.
+  - Apparel body-part/layer catalog supplies known slots.
+  - Tool rule slots are added to the catalog.
+- Null-safe normalization for presets/rules/candidates.
+- 39 tests total.
+
+Not implemented:
+
+- UI;
+- job/equip/return;
+- provider execution;
+- emergency;
+- Simple Sidearms;
+- medicine/security;
+- retained inventory.

@@ -50,6 +50,8 @@ namespace OrderedWork.Tests
             Run("Clothing tool selection is separate", TestClothingTool);
             Run("Clothing leaves unmatched known slots free", TestClothingFreeSlots);
             Run("Clothing resolver tolerates null inputs", TestClothingNullInputs);
+            Run("Clothing preset normalize cleans rules and candidates", TestClothingPresetNormalize);
+            Run("Clothing preset normalize restores schema and id", TestClothingPresetIdentity);
 
             Console.WriteLine(failures == 0 ? "All tests passed." : failures + " test(s) failed.");
             return failures == 0 ? 0 : 1;
@@ -522,6 +524,39 @@ namespace OrderedWork.Tests
             ClothingResolution result = ClothingResolver.Resolve(null, null);
             Assert(result.Selections.Count == 0, "null preset selections");
             Assert(result.Conflicts.Count == 0, "null preset conflicts");
+        }
+        private static void TestClothingPresetNormalize()
+        {
+            ClothingPreset preset = new ClothingPreset
+            {
+                Rules = new List<ClothingRule>
+                {
+                    null,
+                    new ClothingRule
+                    {
+                        Slot = " Torso ",
+                        BodyLayer = " Shell ",
+                        Group = " ",
+                        Candidates = new List<string> { "Coat", " Coat ", "", null }
+                    }
+                }
+            };
+            preset.Normalize();
+            Assert(preset.Rules != null && preset.Rules.Count == 1, "normalized rule count");
+            Assert(preset.Rules[0].Slot == "Torso", "normalized slot");
+            Assert(preset.Rules[0].BodyLayer == "Shell", "normalized layer");
+            Assert(preset.Rules[0].Group == null, "normalized empty group");
+            AssertSequence(new[] { "Coat" }, preset.Rules[0].Candidates);
+        }
+
+        private static void TestClothingPresetIdentity()
+        {
+            ClothingPreset preset = new ClothingPreset { Id = "", Name = "", SchemaVersion = 0, Rules = null };
+            preset.Normalize();
+            Assert(!string.IsNullOrEmpty(preset.Id), "generated id");
+            Assert(preset.Name == "new clothing", "default name");
+            AssertEqual(ClothingPreset.CurrentSchemaVersion, preset.SchemaVersion);
+            Assert(preset.Rules != null && preset.Rules.Count == 0, "empty rule list");
         }
         private static void AssertSequence(IEnumerable<string> expected, IEnumerable<string> actual)
         {

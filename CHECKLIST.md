@@ -1,7 +1,14 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.329)
+# Ordered Work — Current Checklist (0.3.0-alpha.330)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
+## Clothing Phase 1.5 (alpha.330)
+
+- [x] JSON preset store.
+- [x] Read-only policy/def/slot adapter.
+- [x] Null-safe normalization.
+- [x] 39 tests pass.
+- [ ] UI, jobs, equip/return, emergency, integrations.
 ## Clothing stack Phase 1 (alpha.329)
 
 - [x] Pure clothing models in Core.

@@ -21,10 +21,42 @@ namespace OrderedWork.Core
 
     public sealed class ClothingPreset
     {
-        public string Id { get; set; } = "";
-        public string Name { get; set; } = "";
-        public int SchemaVersion { get; set; } = 1;
+        public const int CurrentSchemaVersion = 1;
+        public string Id { get; set; } = Guid.NewGuid().ToString("N");
+        public string Name { get; set; } = "new clothing";
+        public string ModifiedUtc { get; set; } = "";
+        public int SchemaVersion { get; set; } = CurrentSchemaVersion;
         public List<ClothingRule>? Rules { get; set; } = new List<ClothingRule>();
+
+        public void Normalize()
+        {
+            if (SchemaVersion <= 0)
+            {
+                SchemaVersion = CurrentSchemaVersion;
+            }
+            if (string.IsNullOrWhiteSpace(Id))
+            {
+                Id = Guid.NewGuid().ToString("N");
+            }
+            if (string.IsNullOrWhiteSpace(Name))
+            {
+                Name = "new clothing";
+            }
+            Rules = (Rules ?? new List<ClothingRule>())
+                .Where(rule => rule != null)
+                .ToList();
+            foreach (ClothingRule rule in Rules)
+            {
+                rule.Slot = (rule.Slot ?? "").Trim();
+                rule.BodyLayer = string.IsNullOrWhiteSpace(rule.BodyLayer) ? null : rule.BodyLayer.Trim();
+                rule.Group = string.IsNullOrWhiteSpace(rule.Group) ? null : rule.Group.Trim();
+                rule.Candidates = (rule.Candidates ?? new List<string>())
+                    .Where(candidate => !string.IsNullOrWhiteSpace(candidate))
+                    .Select(candidate => candidate.Trim())
+                    .Distinct(StringComparer.Ordinal)
+                    .ToList();
+            }
+        }
     }
 
     public sealed class ClothingRule

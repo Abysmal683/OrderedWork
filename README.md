@@ -2,7 +2,7 @@
 
 Ordered Work is a RimWorld 1.7 work-management mod: it orders WorkTypes and WorkGivers, supports split/merge editing, and adds per-pawn Work Control, schedule presets, hourly focus and zone policy. It does not delete WorkTypes or WorkGivers.
 
-> Current build: **0.3.0-alpha.329**. Test in a throwaway colony; do not use it in a main save.
+> Current build: **0.3.0-alpha.330**. Test in a throwaway colony; do not use it in a main save.
 
 ## Start here
 
@@ -31,7 +31,7 @@ Full documentation map: [docs/README.md](docs/README.md).
 pwsh scripts/verify.ps1
 ```
 
-The script builds, runs the 37 profile/Core tests and checks EN/ES/ES-LatAm key parity. Build paths can be overridden with `RimWorldDir` and `HarmonyDir`; see [verification.md](docs/reference/verification.md).
+The script builds, runs the 39 profile/Core tests and checks EN/ES/ES-LatAm key parity. Build paths can be overridden with `RimWorldDir` and `HarmonyDir`; see [verification.md](docs/reference/verification.md).
 
 Install both `OrderedWork.dll` and `OrderedWork.Core.dll` from `Assemblies`.
 
