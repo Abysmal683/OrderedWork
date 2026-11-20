@@ -3,6 +3,11 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.300] - 2026-11-19
+
+### Documentation — Nullable status correction
+- Clarified that all Services are migrated, but only 5/16 Config files are migrated; 103 total files still opt out.
+
 ## [0.3.0-alpha.299] - 2026-11-19
 
 ### Changed — Services nullable completion
