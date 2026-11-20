@@ -8,11 +8,11 @@ using Verse;
 namespace OrderedWork.Patches
 {
     /// <summary>
-    /// Debug-only postfixes: reorder the vanilla WorkGiver list for the selected
-    /// pawn without changing any WorkGiverDef or the global def order.
+    /// Per-pawn WorkGiver order postfixes. Reorder the runtime list without changing
+    /// any WorkGiverDef or the global def order.
     /// </summary>
     [HarmonyPatch(typeof(Pawn_WorkSettings))]
-    internal static class WorkGiverOrderSpikePatch
+    internal static class WorkGiverOrderPatch
     {
         private static readonly AccessTools.FieldRef<Pawn_WorkSettings, Pawn> PawnField =
             AccessTools.FieldRefAccess<Pawn_WorkSettings, Pawn>("pawn");
@@ -37,8 +37,7 @@ namespace OrderedWork.Patches
             {
                 Pawn pawn = PawnField(instance);
                 List<WorkGiver> reordered;
-                if (WorkGiverOrderSpike.TryReorder(pawn, result, emergency, out reordered)
-                    || WorkGiverOrderService.TryReorder(pawn, result, out reordered))
+                if (WorkGiverOrderService.TryReorder(pawn, result, out reordered))
                 {
                     result = reordered;
                 }

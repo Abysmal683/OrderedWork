@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.286)
+# Ordered Work — Current Checklist (0.3.0-alpha.287)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -161,6 +161,13 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Paint, erase, load, save and apply preserve their behavior.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of paint, erase, load, save and apply.
+## Debt cleanup (alpha.287)
+
+- [x] Removed WorkGiver order spike and its persisted field/UI.
+- [x] Added `scripts/verify.ps1` for build + tests + language parity.
+- [x] Updated policy, Work Control and feature docs.
+- [ ] Runtime regression pass after `.287`.
+- [ ] Add a real CI workflow when the repository host is available.
 ## Restore confirmation and tint (alpha.286)
 
 - [x] Restore order requires two clicks and is disabled when already reference-aligned.

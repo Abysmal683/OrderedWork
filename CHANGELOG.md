@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.287] - 2026-11-19
+
+### Changed — Debt cleanup
+- Removed the `WorkGiverOrderSpike` debug service, its settings field, UI and localization keys; the real per-pawn `WorkGiverOrderService` remains.
+- Added `scripts/verify.ps1`: build, tests and EN/ES/ES-LatAm key-parity checks.
+- Updated policy, Work Control and feature docs for implemented per-pawn WorkGiver order and pending clothing/bench integration.
+
 ## [0.3.0-alpha.286] - 2026-11-19
 
 ### Added — Restore confirmation and danger tint

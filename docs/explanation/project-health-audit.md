@@ -58,7 +58,7 @@ Profiles are built from visible WorkTypes. A mod that adds or reveals a WorkType
 - `SplitMergePanel` split into persistence, candidate and column partials.
 - Pure `WorkConfigReconciler` tests added for merge revert, order revert and normalization.
 - Build paths are overridable through `RimWorldDir` and `HarmonyDir`; Core analyzers are enabled.
-- Still open: a portable CI job and a runtime regression pass.
+- Added `scripts/verify.ps1` for build, tests and language-key parity; the spike was removed. Still open: an actual CI job and a runtime regression pass.
 
 ## Priority
 

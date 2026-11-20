@@ -13,15 +13,6 @@
   <OrderedWork.Config.General.DiagnosticsSection>Diagnóstico</OrderedWork.Config.General.DiagnosticsSection>
   <OrderedWork.Config.General.PaletteStress>Prueba de estrés de la paleta (debug)</OrderedWork.Config.General.PaletteStress>
   <OrderedWork.Config.General.PaletteStressTip>Añade 60 tipos de trabajo visuales para probar el foco de la paleta.</OrderedWork.Config.General.PaletteStressTip>
-  <OrderedWork.Config.General.SpikeInfo>Prueba de orden de WorkGivers: reordena los WorkGivers de acarreo de un solo peón seleccionado. No cambia definiciones.</OrderedWork.Config.General.SpikeInfo>
-  <OrderedWork.Config.General.SpikeToggle>Activar prueba de orden de WorkGivers (debug)</OrderedWork.Config.General.SpikeToggle>
-  <OrderedWork.Config.General.SpikeToggleTip>Cuando está activo, el parche de prueba puede reordenar la lista runtime de WorkGivers del peón seleccionado.</OrderedWork.Config.General.SpikeToggleTip>
-  <OrderedWork.Config.General.SpikeApply>Aplicar prueba de WorkGivers al peón seleccionado</OrderedWork.Config.General.SpikeApply>
-  <OrderedWork.Config.General.SpikeApplyTip>Selecciona exactamente un peón, invierte sus WorkGivers de acarreo y registra el resultado.</OrderedWork.Config.General.SpikeApplyTip>
-  <OrderedWork.Config.General.SpikeLog>Registrar orden actual de WorkGivers</OrderedWork.Config.General.SpikeLog>
-  <OrderedWork.Config.General.SpikeLogTip>Registra el orden normal y de emergencia actual del peón seleccionado.</OrderedWork.Config.General.SpikeLogTip>
-  <OrderedWork.Config.General.SpikeClear>Limpiar prueba de WorkGivers</OrderedWork.Config.General.SpikeClear>
-  <OrderedWork.Config.General.SpikeClearTip>Elimina el orden de prueba del peón seleccionado.</OrderedWork.Config.General.SpikeClearTip>
   <OrderedWork.Config.General.DenseInfo>Prueba técnica: escribe rango denso 1..N en los colonos libres y registra el resultado.</OrderedWork.Config.General.DenseInfo>
   <OrderedWork.Config.General.LoadColony>Carga una colonia para ejecutar la prueba de rango denso.</OrderedWork.Config.General.LoadColony>
   <OrderedWork.Config.General.DenseButton>Probar rango denso en colonos (log)</OrderedWork.Config.General.DenseButton>

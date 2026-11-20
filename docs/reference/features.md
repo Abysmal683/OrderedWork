@@ -41,7 +41,7 @@ With **Verbose diagnostics in Player.log** enabled, startup emits one line:
 ```
 
 Use it when testing with VSE/Alpha Skills enabled, disabled or removed. Without verbose diagnostics, only failures emit warnings.
-## Limitations (0.3.0-alpha.286)
+## Limitations (0.3.0-alpha.287)
 - Profiles and basic schedule presets exist; Details has Overview, schedule, zone, override and read-only clothing status sections. Clothing application, equipment, bulk zone and multi-pawn are not implemented yet.
 - Hidden WorkTypes are Config-only: they are excluded from Work tab and Work Control and run through a fixed priority overlay. Incapable pawns skip them.
 - The Work tab column order is applied once at `PawnColumnDefGenerator` generation time from the profile `naturalPriority`; the previous per-frame `PawnTable.get_Columns`/`PawnTableOnGUI` hooks were removed. Alternate Work-tab replacements still need runtime compatibility verification.
@@ -50,12 +50,12 @@ Use it when testing with VSE/Alpha Skills enabled, disabled or removed. Without 
 - The 3-row palette balances rows with `ceil(count/3)` and slides horizontally; chips are ellipsized rather than wrapped.
 - The Work combo keeps 10 WorkType rows plus `Any` visible with a thin dropdown scrollbar, excludes the currently selected WorkType, and opens centered. The Work filter is stored by defName and its scope is UI-only (not persisted).
 - The drag placeholder is drawn on the hovered row. With 2+ selected rows, the whole group updates only when the drop is inside the selection; otherwise only the hovered row updates. Shift-drag marquee row selection is not implemented.
-- Per-pawn/per-giver overrides are only a hook (`PawnSpecificOverrideHook`); no overrides are implemented yet. The color registry stores user overrides but has no picker yet.
+- Per-pawn WorkGiver order overrides are implemented through `WorkGiverOrderService`; the color registry still has no picker. Clothing application and assigned-workbench priority remain pending.
 - Selection is `Find.Selector`-driven; row selection is via the pawn name/portrait column, while lane cards remain editing controls.
 - Passion icons depend on the installed mods: VSE/Alpha Skills is discovered by soft reflection (no compile-time dependency), and without it the resolver falls back to vanilla textures. If neither the colored nor the gray texture is available for a custom passion, no icon is drawn.
 - The vanilla **View: Draw** button is an overlay at the top-right of the vanilla Work tab and may cover part of the last column header (usually the remaining-space filler).
 - **Auto recommend new colony** and **Auto-hide scrollbars** are global Mod Settings toggles. The old per-save `viewMode` field is kept only for save compatibility and is ignored.
-- `Dialog_WorkControlDetails` is read-only and basic: name/title, top 8 skills, and the current WorkType order.
+- `Dialog_WorkControlDetails` has Work, Overview, Schedule, Zone, Overrides and read-only Clothing tabs. Clothing application is not implemented.
 - The >4 cell applies only in manual mode (`useWorkPriorities`) and only to capable free colonists; simple mode and incapable/non-free-colonist pawns stay vanilla.
 - If another mod also prefixes `WidgetsWork.DrawWorkBoxFor`, Harmony ordering may let that mod win, leaving the cell vanilla; the rest of the mod keeps working.
 - The dynamic max falls back to 99 when the count fails; the fallback is logged.

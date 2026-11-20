@@ -81,37 +81,6 @@ namespace OrderedWork
                 DrawLogCategory(list, "OrderedWork.Config.General.LogConfig", "Config mod", OrderedWorkLogCategory.Config);
                 DrawLogCategory(list, "OrderedWork.Config.General.LogHarmony", "Harmony", OrderedWorkLogCategory.Harmony);
                 list.Gap(4f);
-                list.Label(ConfigText("OrderedWork.Config.General.SpikeInfo", "WorkGiver order spike: reorders Hauling WorkGivers for one selected pawn only. No defs are changed."));
-                list.CheckboxLabeled(
-                    ConfigText("OrderedWork.Config.General.SpikeToggle", "Enable WorkGiver order spike (debug)"),
-                    ref Settings.workGiverOrderSpike,
-                    ConfigText("OrderedWork.Config.General.SpikeToggleTip", "When enabled, the spike patch is allowed to reorder the selected pawn's runtime WorkGiver list."));
-                if (UiButtonBar.Button(list.GetRect(28f),
-                    ConfigText("OrderedWork.Config.General.SpikeApply", "Apply WorkGiver spike to selected pawn"), true,
-                    ConfigText("OrderedWork.Config.General.SpikeApplyTip", "Select exactly one pawn, then reverse that pawn's Hauling WorkGivers and log the result.")))
-                {
-                    WorkGiverOrderSpike.ApplyToSelectedPawn();
-                }
-                if (UiButtonBar.Button(list.GetRect(28f),
-                    ConfigText("OrderedWork.Config.General.SpikeLog", "Log current WorkGiver order"), true,
-                    ConfigText("OrderedWork.Config.General.SpikeLogTip", "Log the selected pawn's current normal and emergency WorkGiver order.")))
-                {
-                    Pawn selected = Find.Selector != null ? Find.Selector.SingleSelectedThing as Pawn : null;
-                    if (selected != null)
-                    {
-                        WorkGiverOrderSpike.LogCurrentOrder(selected);
-                    }
-                    else
-                    {
-                        Log.Warning("[OrderedWork][Spike] Select exactly one pawn before logging the order.");
-                    }
-                }
-                if (UiButtonBar.Button(list.GetRect(28f),
-                    ConfigText("OrderedWork.Config.General.SpikeClear", "Clear WorkGiver spike"), true,
-                    ConfigText("OrderedWork.Config.General.SpikeClearTip", "Remove the spike order from the selected pawn.")))
-                {
-                    WorkGiverOrderSpike.ClearSelectedPawn();
-                }
                 list.Label(ConfigText("OrderedWork.Config.General.DenseInfo", "Technical spike: writes dense rank 1..N to free colonists and logs the result."));
                 if (Find.CurrentMap == null)
                 {

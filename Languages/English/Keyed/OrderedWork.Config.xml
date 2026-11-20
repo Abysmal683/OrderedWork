@@ -13,15 +13,6 @@
   <OrderedWork.Config.General.DiagnosticsSection>Diagnostics</OrderedWork.Config.General.DiagnosticsSection>
   <OrderedWork.Config.General.PaletteStress>Palette stress test (debug)</OrderedWork.Config.General.PaletteStress>
   <OrderedWork.Config.General.PaletteStressTip>Adds 60 visual-only WorkTypes to test the palette focus.</OrderedWork.Config.General.PaletteStressTip>
-  <OrderedWork.Config.General.SpikeInfo>WorkGiver order spike: reorders Hauling WorkGivers for one selected pawn only. No defs are changed.</OrderedWork.Config.General.SpikeInfo>
-  <OrderedWork.Config.General.SpikeToggle>Enable WorkGiver order spike (debug)</OrderedWork.Config.General.SpikeToggle>
-  <OrderedWork.Config.General.SpikeToggleTip>When enabled, the spike patch is allowed to reorder the selected pawn's runtime WorkGiver list.</OrderedWork.Config.General.SpikeToggleTip>
-  <OrderedWork.Config.General.SpikeApply>Apply WorkGiver spike to selected pawn</OrderedWork.Config.General.SpikeApply>
-  <OrderedWork.Config.General.SpikeApplyTip>Select exactly one pawn, then reverse that pawn's Hauling WorkGivers and log the result.</OrderedWork.Config.General.SpikeApplyTip>
-  <OrderedWork.Config.General.SpikeLog>Log current WorkGiver order</OrderedWork.Config.General.SpikeLog>
-  <OrderedWork.Config.General.SpikeLogTip>Log the selected pawn's current normal and emergency WorkGiver order.</OrderedWork.Config.General.SpikeLogTip>
-  <OrderedWork.Config.General.SpikeClear>Clear WorkGiver spike</OrderedWork.Config.General.SpikeClear>
-  <OrderedWork.Config.General.SpikeClearTip>Remove the spike order from the selected pawn.</OrderedWork.Config.General.SpikeClearTip>
   <OrderedWork.Config.General.DenseInfo>Technical spike: writes dense rank 1..N to free colonists and logs the result.</OrderedWork.Config.General.DenseInfo>
   <OrderedWork.Config.General.LoadColony>Load a colony to run the dense-rank test.</OrderedWork.Config.General.LoadColony>
   <OrderedWork.Config.General.DenseButton>Test dense rank on colonists (log)</OrderedWork.Config.General.DenseButton>

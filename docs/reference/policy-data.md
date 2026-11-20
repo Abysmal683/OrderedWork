@@ -1,6 +1,6 @@
 # Ordered Work — Policy Data Design
 
-Status: storage foundation and basic Schedule view implemented in `0.3.0-alpha.98`; zone, clothing and apply-on-load are not implemented.
+Status: work/schedule/zone/clothing storage foundations are implemented as described below. Clothing application, equipment, bulk zone and automatic policy application remain pending.
 
 This document defines the logical data model for per-pawn policy:
 work order, schedule, zone and the later clothing layer. It is a relational

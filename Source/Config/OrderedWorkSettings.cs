@@ -13,9 +13,7 @@ namespace OrderedWork
         public float workControlHeight;
         public bool prioritizeLowSkillPassion = true;
         public bool verboseLogging;
-        public int logCategories;
-        public bool workGiverOrderSpike;
-        public bool skillFilterLevel = true;
+        public int logCategories;public bool skillFilterLevel = true;
         public bool skillFilterPassion = true;
         public bool skillFilterExpertise;
         public bool skillFilterMods = true;
@@ -34,9 +32,7 @@ namespace OrderedWork
             Scribe_Values.Look(ref workControlHeight, "workControlHeight", 0f);
             Scribe_Values.Look(ref prioritizeLowSkillPassion, "prioritizeLowSkillPassion", true);
             Scribe_Values.Look(ref verboseLogging, "verboseLogging", false);
-            Scribe_Values.Look(ref logCategories, "logCategories", 0);
-            Scribe_Values.Look(ref workGiverOrderSpike, "workGiverOrderSpike", false);
-            Scribe_Values.Look(ref skillFilterLevel, "skillFilterLevel", true);
+            Scribe_Values.Look(ref logCategories, "logCategories", 0);Scribe_Values.Look(ref skillFilterLevel, "skillFilterLevel", true);
             Scribe_Values.Look(ref skillFilterPassion, "skillFilterPassion", true);
             Scribe_Values.Look(ref skillFilterExpertise, "skillFilterExpertise", false);
             Scribe_Values.Look(ref skillFilterMods, "skillFilterMods", true);
