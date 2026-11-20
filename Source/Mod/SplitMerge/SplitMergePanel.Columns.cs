@@ -126,7 +126,7 @@ namespace OrderedWork
             bool originSide,
             bool mergeMode,
             ref float scroll,
-            string draftMarker,
+            string? draftMarker,
             int columnId)
         {
             Widgets.DrawBoxSolid(area, UiColors.ColumnBackground);

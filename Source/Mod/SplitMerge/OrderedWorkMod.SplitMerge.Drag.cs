@@ -27,7 +27,7 @@ namespace OrderedWork
             return wantsOrigin == originSide && row.Contains(Event.current.mousePosition);
         }
 
-        internal void DrawSplitMergeActions(Listing_Standard list, string actionLabel, string warning, Action onSave, Action onCancel, bool canCancel, string? actionTooltip = null)
+        internal void DrawSplitMergeActions(Listing_Standard list, string actionLabel, string? warning, Action onSave, Action onCancel, bool canCancel, string? actionTooltip = null)
         {
             Rect actionsRect = list.GetRect(30f);
             float buttonWidth = Mathf.Min(150f, (actionsRect.width - 12f) / 3f);

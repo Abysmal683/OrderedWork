@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,11 +20,11 @@ namespace OrderedWork
             }
 
             string newDefName = host.BuildSplitDefName(SplitName);
-            WorkConfigProfile profile = host.LoadEditingProfile();
+            WorkConfigProfile? profile = host.LoadEditingProfile();
             string mod = host.Content != null && host.Content.ModMetaData != null
                 ? host.Content.PackageId
                 : "nightmare123487.OrderedWork";
-            if (!WorkConfigReconciler.CreateSplit(profile, SplitOrigin, newDefName, SplitDraft,
+            if (profile == null || !WorkConfigReconciler.CreateSplit(profile, SplitOrigin, newDefName, SplitDraft,
                 SplitName.Trim(), SplitActionWord.Trim(), SplitDescription.Trim(), mod, out _))
             {
                 return;
@@ -69,9 +68,9 @@ namespace OrderedWork
 
         private void SaveSplitMetadata()
         {
-            WorkConfigProfile profile = host.LoadEditingProfile();
+            WorkConfigProfile? profile = host.LoadEditingProfile();
             if (profile == null || string.IsNullOrEmpty(MetaDefName)
-                || !profile.WorkTypes.TryGetValue(MetaDefName, out WorkTypeConfig split)
+                || !profile.WorkTypes.TryGetValue(MetaDefName, out WorkTypeConfig? split)
                 || split == null || split.Vanilla || string.IsNullOrEmpty(split.Base))
             {
                 return;
@@ -87,14 +86,14 @@ namespace OrderedWork
 
         private void DeleteSplit(string defName)
         {
-            WorkConfigProfile profile = host.LoadEditingProfile();
+            WorkConfigProfile? profile = host.LoadEditingProfile();
             if (profile == null || string.IsNullOrEmpty(defName)
-                || !profile.WorkTypes.TryGetValue(defName, out WorkTypeConfig split)
+                || !profile.WorkTypes.TryGetValue(defName, out WorkTypeConfig? split)
                 || split == null || split.Vanilla || string.IsNullOrEmpty(split.Base))
             {
                 return;
             }
-            if (!profile.WorkTypes.TryGetValue(split.Base, out WorkTypeConfig origin) || origin == null)
+            if (!profile.WorkTypes.TryGetValue(split.Base, out WorkTypeConfig? origin) || origin == null)
             {
                 Messages.Message(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.BaseMissing",
                     "Cannot delete this split: its base WorkType is missing."), MessageTypeDefOf.RejectInput, false);
@@ -193,7 +192,7 @@ namespace OrderedWork
             DrawGiverColumn(left, originNames, draftSet, true, false, ref SplitOriginScroll, OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.InSplit", "(in split)"), 1);
             DrawGiverColumn(right, SplitDraft, draftSet, false, false, ref SplitDraftScroll, null, 2);
 
-            string warning = SplitValidationWarning();
+            string? warning = SplitValidationWarning();
             host.DrawSplitMergeActions(list, OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.Add", "Add split"), warning,
                 delegate
                 {
@@ -216,7 +215,7 @@ namespace OrderedWork
 
 
 
-        internal string SplitValidationWarning()
+        internal string? SplitValidationWarning()
         {
             if (DefDatabase<WorkTypeDef>.GetNamedSilentFail(SplitOrigin) == null)
             {
