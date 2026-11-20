@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,7 +86,7 @@ namespace OrderedWork.Services
 
             try
             {
-                Pawn pawn = GetOwningPawn(settings);
+                Pawn? pawn = GetOwningPawn(settings);
                 if (!IsManagedFreeColonist(pawn))
                 {
                     return;
@@ -236,12 +235,12 @@ namespace OrderedWork.Services
             }
         }
 
-        private static bool IsManagedFreeColonist(Pawn pawn)
+        private static bool IsManagedFreeColonist(Pawn? pawn)
         {
             return pawn != null && !pawn.Dead && !pawn.Destroyed && pawn.IsFreeColonist;
         }
 
-        internal static Pawn GetOwningPawn(Pawn_WorkSettings settings)
+        internal static Pawn? GetOwningPawn(Pawn_WorkSettings? settings)
         {
             if (!workSettingsPawnFieldResolved)
             {

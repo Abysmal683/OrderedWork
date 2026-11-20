@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,8 +14,8 @@ namespace OrderedWork.Services
     /// </summary>
     internal static class HiddenWorkTypeService
     {
-        private static Dictionary<string, int> ranks;
-        private static HashSet<string> names;
+        private static Dictionary<string, int>? ranks;
+        private static HashSet<string>? names;
 
         public static void Invalidate()
         {
@@ -24,13 +23,13 @@ namespace OrderedWork.Services
             names = null;
         }
 
-        public static bool IsHidden(WorkTypeDef workType)
+        public static bool IsHidden(WorkTypeDef? workType)
         {
             Ensure();
             return workType != null && names != null && names.Contains(workType.defName);
         }
 
-        public static bool TryGetRank(WorkTypeDef workType, out int rank)
+        public static bool TryGetRank(WorkTypeDef? workType, out int rank)
         {
             Ensure();
             if (workType != null && ranks != null && ranks.TryGetValue(workType.defName, out rank))
@@ -63,7 +62,7 @@ namespace OrderedWork.Services
             {
                 return;
             }
-            WorkConfigProfile profile = WorkConfigStore.LoadCachedActive()?.Profile;
+            WorkConfigProfile? profile = WorkConfigStore.LoadCachedActive()?.Profile;
             ranks = new Dictionary<string, int>(StringComparer.Ordinal);
             names = new HashSet<string>(StringComparer.Ordinal);
             if (profile == null)

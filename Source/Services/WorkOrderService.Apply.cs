@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,12 +16,12 @@ namespace OrderedWork.Services
             {
                 return false;
             }
-            Pawn pawn = GetOwningPawn(settings);
+            Pawn? pawn = GetOwningPawn(settings);
             if (pawn != null && IsIncapable(pawn, workType))
             {
                 return false;
             }
-            DefMap<WorkTypeDef, int> map = GetPrioritiesMap(settings);
+            DefMap<WorkTypeDef, int>? map = GetPrioritiesMap(settings);
             if (map == null)
             {
                 return false;
@@ -31,7 +30,7 @@ namespace OrderedWork.Services
             return true;
         }
 
-        private static List<string> Normalize(Pawn pawn, List<string> order)
+        private static List<string> Normalize(Pawn? pawn, List<string> order)
         {
             HashSet<string> valid = new HashSet<string>(
                 GetAvailableWorkTypes().Select(w => w.defName),
@@ -49,9 +48,9 @@ namespace OrderedWork.Services
             return DenseRank.NormalizeOrder(filtered, filtered);
         }
 
-        private static List<string> ReadVanillaOrder(Pawn pawn)
+        private static List<string> ReadVanillaOrder(Pawn? pawn)
         {
-            Pawn_WorkSettings settings = pawn?.workSettings;
+            Pawn_WorkSettings? settings = pawn?.workSettings;
             if (settings == null)
             {
                 return new List<string>();
@@ -67,9 +66,9 @@ namespace OrderedWork.Services
                 .ToList();
         }
 
-        private static bool HasNonDefaultPriorities(Pawn pawn)
+        private static bool HasNonDefaultPriorities(Pawn? pawn)
         {
-            Pawn_WorkSettings settings = pawn?.workSettings;
+            Pawn_WorkSettings? settings = pawn?.workSettings;
             if (settings == null)
             {
                 return false;
@@ -86,7 +85,7 @@ namespace OrderedWork.Services
             return false;
         }
 
-        private static DefMap<WorkTypeDef, int> GetPrioritiesMap(Pawn_WorkSettings settings)
+        private static DefMap<WorkTypeDef, int>? GetPrioritiesMap(Pawn_WorkSettings? settings)
         {
             if (!prioritiesFieldResolved)
             {
@@ -137,7 +136,7 @@ namespace OrderedWork.Services
                     }
 
                     Dictionary<string, int> ranks = DenseRank.BuildRanks(capableOrder, capableOrder);
-                    DefMap<WorkTypeDef, int> priorities = GetPrioritiesMap(settings);
+                    DefMap<WorkTypeDef, int>? priorities = GetPrioritiesMap(settings);
 
                     foreach (WorkTypeDef workType in GetAvailableWorkTypes())
                     {

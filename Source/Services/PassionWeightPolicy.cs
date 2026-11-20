@@ -1,4 +1,3 @@
-#nullable disable
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
@@ -15,7 +14,7 @@ namespace OrderedWork.Services
     {
         private const int DefaultsVersion = 3;
 
-        public static void EnsureDefaults(OrderedWorkSettings settings)
+        public static void EnsureDefaults(OrderedWorkSettings? settings)
         {
             if (settings == null)
             {
@@ -82,7 +81,7 @@ namespace OrderedWork.Services
             settings.passionDefaultsVersion = DefaultsVersion;
         }
 
-        public static PassionWeightEntry Find(OrderedWorkSettings settings, Passion passion)
+        public static PassionWeightEntry? Find(OrderedWorkSettings? settings, Passion passion)
         {
             if (settings == null)
             {

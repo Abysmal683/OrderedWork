@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.299] - 2026-11-19
+
+### Changed — Services nullable completion
+- Migrated `HiddenWorkTypeService`, `PassionWeightPolicy`, `WorkOrderService.Apply` and `WorkOrderService.Lifecycle` off `#nullable disable`.
+- All current Services files are nullable-enabled; build remains warning-free.
+- 103 legacy files still opt out.
+- Tests remain at 28 cases.
+
 ## [0.3.0-alpha.298] - 2026-11-19
 
 ### Changed — Nullable Services completion

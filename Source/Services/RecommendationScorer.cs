@@ -19,7 +19,7 @@ namespace OrderedWork.Services
             }
 
             bool prioritizeLowSkill = settings == null || settings.prioritizeLowSkillPassion;
-            PassionWeightEntry entry = PassionWeightPolicy.Find(settings, passion);
+            PassionWeightEntry? entry = PassionWeightPolicy.Find(settings, passion);
             bool hasPassion = passion != Passion.None && entry != null;
             return RecommendationScorePolicy.Score(
                 level,

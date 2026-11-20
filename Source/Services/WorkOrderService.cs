@@ -266,7 +266,7 @@ namespace OrderedWork.Services
         /// True when the pawn cannot perform the WorkType at all (trait/backstory/health).
         /// Uses WorkTypeIsDisabled when callable, otherwise the disabled type list.
         /// </summary>
-        public static bool IsIncapable(Pawn pawn, WorkTypeDef workType)
+        public static bool IsIncapable(Pawn? pawn, WorkTypeDef? workType)
         {
             if (pawn == null || workType == null)
             {
