@@ -147,7 +147,7 @@ namespace OrderedWork
             TooltipHandler.TipRegion(track, ConfigText("OrderedWork.Config.SplitMerge.ScrollbarTip", "Scrollbar: drag it, or Ctrl+wheel over this column. A plain wheel scrolls the settings."));
         }
 
-        internal void DrawSplitMergeRow(Rect row, string giverName, bool inDraft, bool dragged, bool dropTarget, string draftMarker, bool showHandle = true)
+        internal void DrawSplitMergeRow(Rect row, string giverName, bool inDraft, bool dragged, bool dropTarget, string? draftMarker, bool showHandle = true)
         {
             if (dragged)
             {

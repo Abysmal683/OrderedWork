@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +12,7 @@ namespace OrderedWork
 {
     internal sealed partial class SplitMergePanel
     {
-        internal void DrawMergeDestinationColumn(Rect area, List<string> existingNames, List<string> incomingNames, ref float scroll)
+        internal void DrawMergeDestinationColumn(Rect area, List<string>? existingNames, List<string>? incomingNames, ref float scroll)
         {
             Widgets.DrawBoxSolid(area, UiColors.ColumnBackground);
 
@@ -49,7 +48,7 @@ namespace OrderedWork
                 }
 
                 bool isFixed = i < fixedCount;
-                string name = isFixed ? existingNames[i] : incomingNames[i - fixedCount];
+                string name = (isFixed ? existingNames![i] : incomingNames![i - fixedCount]) ?? "";
                 Rect row = new Rect(area.x + 3f, y, contentWidth - 6f, SplitMergeRowHeight - 2f);
                 UiZebra.Draw(row, i);
                 bool dragged = !isFixed
@@ -134,7 +133,7 @@ namespace OrderedWork
 
             bool hasRows = names != null && names.Count > 0;
             float maxScroll = hasRows
-                ? Mathf.Max(0f, names.Count * SplitMergeRowHeight - area.height)
+                ? Mathf.Max(0f, names!.Count * SplitMergeRowHeight - area.height)
                 : 0f;
             float contentWidth = area.width - (maxScroll > 0f ? SplitMergeScrollbarWidth + 2f : 0f);
             Rect track = new Rect(area.xMax - SplitMergeScrollbarWidth, area.y, SplitMergeScrollbarWidth, area.height);
@@ -153,7 +152,7 @@ namespace OrderedWork
             }
 
             Event current = Event.current;
-            for (int i = 0; i < names.Count; i++)
+            for (int i = 0; i < names!.Count; i++)
             {
                 float y = area.y + i * SplitMergeRowHeight - scroll;
                 if (y + SplitMergeRowHeight <= area.y || y >= area.yMax)

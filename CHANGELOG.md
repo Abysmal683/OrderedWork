@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.325] - 2026-11-19
+
+### Changed — Nullable SplitMerge columns
+- Migrated `SplitMergePanel.Columns`.
+- Build warning-free; 4 files still opt out.
+- Tests remain at 28 cases.
+
 ## [0.3.0-alpha.324] - 2026-11-19
 
 ### Changed — Nullable SplitMerge candidates
