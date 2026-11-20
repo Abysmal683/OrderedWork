@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.295] - 2026-11-19
+
+### Changed — Nullable third batch
+- Migrated `PassionRegistry`, `VseExpertiseAdapter` and `WorkOrderService` off `#nullable disable`.
+- Build remains warning-free; 115 legacy files still opt out.
+- Tests remain at 28 cases.
+
 ## [0.3.0-alpha.294] - 2026-11-19
 
 ### Changed — Nullable second batch

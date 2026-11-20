@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.294)
+# Ordered Work — Current Checklist (0.3.0-alpha.295)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -161,6 +161,12 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Paint, erase, load, save and apply preserve their behavior.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of paint, erase, load, save and apply.
+## Nullable third batch (alpha.295)
+
+- [x] Migrated `PassionRegistry`, `VseExpertiseAdapter`, `WorkOrderService`.
+- [x] Build warning-free; 115 legacy files remain opted out.
+- [ ] Migrate remaining Services (`WorkGiverOrderService`, utilities, adapters).
+- [ ] Migrate UI in small reviewable groups.
 ## Nullable second batch (alpha.294)
 
 - [x] Migrated `ActiveWorkService`, `PassionMetadata`, `ScheduleAdapter`.

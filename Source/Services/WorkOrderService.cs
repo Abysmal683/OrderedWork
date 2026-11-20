@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,13 +21,13 @@ namespace OrderedWork.Services
 
         private static readonly string[] DefaultRecommendationPins = { "Patient", "PatientBedRest", "Firefighter" };
 
-        private static List<WorkTypeDef> cachedAvailable;
+        private static List<WorkTypeDef>? cachedAvailable;
         private static readonly Dictionary<Pawn, int> manualMaxCache = new Dictionary<Pawn, int>();
         private static int manualMaxCacheTick = int.MinValue;
         private static int manualMaxForAll = -1;
-        private static FieldInfo cachedPrioritiesField;
+        private static FieldInfo? cachedPrioritiesField;
         private static bool prioritiesFieldResolved;
-        private static FieldInfo cachedWorkSettingsPawnField;
+        private static FieldInfo? cachedWorkSettingsPawnField;
         private static bool workSettingsPawnFieldResolved;
 
         /// <summary>True while our own Apply is writing, so the vanilla hook ignores it.</summary>
@@ -64,7 +63,7 @@ namespace OrderedWork.Services
         /// Cached per pawn per game tick, because the Work tab asks once per cell per frame.
         /// Pass a pawn to scope the count to its capable types; pass null for all visible.
         /// </summary>
-        public static int GetManualMaxPriority(Pawn pawn = null)
+        public static int GetManualMaxPriority(Pawn? pawn = null)
         {
             int tick = CurrentTick;
             if (tick != manualMaxCacheTick)
@@ -94,7 +93,7 @@ namespace OrderedWork.Services
             return max;
         }
 
-        private static int ComputeManualMaxPriority(Pawn pawn)
+        private static int ComputeManualMaxPriority(Pawn? pawn)
         {
             try
             {
@@ -191,7 +190,7 @@ namespace OrderedWork.Services
             }
 
             OrderedWorkGameComponent component = OrderedWorkGameComponent.GetOrCreate();
-            PawnWorkOrder entry = component?.GetEntry(pawn);
+            PawnWorkOrder? entry = component?.GetEntry(pawn);
             if (entry != null)
             {
                 return Normalize(pawn, entry.order);

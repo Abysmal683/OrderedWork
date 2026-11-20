@@ -11,10 +11,10 @@ namespace OrderedWork.Services
     {
         public static string DefNameOf(Passion passion)
         {
-            object def = PassionRegistry.GetVseDef(passion);
+            object? def = PassionRegistry.GetVseDef(passion);
             if (def != null)
             {
-                string name = PassionRegistry.GetMember<string>(def, "defName");
+                string? name = PassionRegistry.GetMember<string>(def, "defName");
                 if (!string.IsNullOrEmpty(name))
                 {
                     return name;
@@ -38,14 +38,14 @@ namespace OrderedWork.Services
         /// <summary>Returns the VSE label only when the optional mod is present.</summary>
         public static string? VseLabelOf(Passion passion)
         {
-            object def = PassionRegistry.GetVseDef(passion);
+            object? def = PassionRegistry.GetVseDef(passion);
             if (def == null)
             {
                 return null;
             }
             try
             {
-                string label = PassionRegistry.GetStringMember(def, "LabelCap");
+                string? label = PassionRegistry.GetStringMember(def, "LabelCap");
                 if (string.IsNullOrEmpty(label))
                 {
                     label = PassionRegistry.GetStringMember(def, "label");
@@ -60,12 +60,12 @@ namespace OrderedWork.Services
 
         public static string? DescriptionOf(Passion passion)
         {
-            object def = PassionRegistry.GetVseDef(passion);
+            object? def = PassionRegistry.GetVseDef(passion);
             if (def == null)
             {
                 return null;
             }
-            string description = PassionRegistry.GetStringMember(def, "description");
+            string? description = PassionRegistry.GetStringMember(def, "description");
             if (string.IsNullOrEmpty(description))
             {
                 description = PassionRegistry.GetStringMember(def, "Description");
@@ -75,12 +75,12 @@ namespace OrderedWork.Services
 
         public static bool IsBadOf(Passion passion)
         {
-            object def = PassionRegistry.GetVseDef(passion);
+            object? def = PassionRegistry.GetVseDef(passion);
             if (def == null)
             {
                 return false;
             }
-            object value = PassionRegistry.GetMember<object>(def, "isBad");
+            object? value = PassionRegistry.GetMember<object>(def, "isBad");
             if (value == null)
             {
                 return false;
@@ -97,12 +97,12 @@ namespace OrderedWork.Services
 
         public static float LearnRateOf(Passion passion)
         {
-            object def = PassionRegistry.GetVseDef(passion);
+            object? def = PassionRegistry.GetVseDef(passion);
             if (def == null)
             {
                 return 0f;
             }
-            object value = PassionRegistry.GetMember<object>(def, "learnRateFactor");
+            object? value = PassionRegistry.GetMember<object>(def, "learnRateFactor");
             if (value == null)
             {
                 return 0f;
@@ -120,14 +120,14 @@ namespace OrderedWork.Services
         /// <summary>Optional VSE passion colour enum name. Returns null without VSE.</summary>
         public static string? ColorNameOf(Passion passion)
         {
-            object def = PassionRegistry.GetVseDef(passion);
+            object? def = PassionRegistry.GetVseDef(passion);
             if (def == null)
             {
                 return null;
             }
             try
             {
-                object value = PassionRegistry.GetMember<object>(def, "color");
+                object? value = PassionRegistry.GetMember<object>(def, "color");
                 return value != null ? value.ToString() : null;
             }
             catch (Exception)

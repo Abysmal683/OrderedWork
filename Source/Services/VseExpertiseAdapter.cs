@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,10 +17,10 @@ namespace OrderedWork.Services
     {
         public sealed class Row
         {
-            public string Label;
-            public string Description;
-            public string SkillLabel;
-            public SkillDef ParentSkill;
+            public string Label = "";
+            public string Description = "";
+            public string SkillLabel = "";
+            public SkillDef? ParentSkill;
             public int Level;
             public float XpCurrent;
             public float XpRequired;
@@ -30,10 +29,10 @@ namespace OrderedWork.Services
         private static bool resolved;
         private static bool loggedUnavailable;
         private static int nextRetryTicks;
-        private static Type trackersType;
-        private static Type uiType;
-        private static MethodInfo expertiseOfPawn;
-        private static MethodInfo doExpertisePanel;
+        private static Type? trackersType;
+        private static Type? uiType;
+        private static MethodInfo? expertiseOfPawn;
+        private static MethodInfo? doExpertisePanel;
 
         public static bool IsAvailable
         {
@@ -54,14 +53,14 @@ namespace OrderedWork.Services
             }
             try
             {
-                object tracker = expertiseOfPawn.Invoke(null, new object[] { pawn });
+                object? tracker = expertiseOfPawn.Invoke(null, new object[] { pawn });
                 if (tracker == null)
                 {
                     return result;
                 }
-                PropertyInfo all = tracker.GetType().GetProperty("AllExpertise",
+                PropertyInfo? all = tracker.GetType().GetProperty("AllExpertise",
                     BindingFlags.Public | BindingFlags.Instance);
-                IEnumerable records = all != null ? all.GetValue(tracker) as IEnumerable : null;
+                IEnumerable? records = all != null ? all.GetValue(tracker) as IEnumerable : null;
                 if (records == null)
                 {
                     return result;
@@ -72,22 +71,22 @@ namespace OrderedWork.Services
                     {
                         continue;
                     }
-                    FieldInfo defField = record.GetType().GetField("def",
+                    FieldInfo? defField = record.GetType().GetField("def",
                         BindingFlags.Public | BindingFlags.Instance);
-                    object def = defField != null ? defField.GetValue(record) : null;
-                    Def expertiseDef = def as Def;
-                    if (expertiseDef == null)
+                    object? def = defField != null ? defField.GetValue(record) : null;
+                    Def? expertiseDef = def as Def;
+                    if (expertiseDef == null || def == null)
                     {
                         continue;
                     }
-                    FieldInfo skillField = def.GetType().GetField("skill",
+                    FieldInfo? skillField = def.GetType().GetField("skill",
                         BindingFlags.Public | BindingFlags.Instance);
-                    SkillDef skill = skillField != null ? skillField.GetValue(def) as SkillDef : null;
-                    PropertyInfo levelProperty = record.GetType().GetProperty("Level",
+                    SkillDef? skill = skillField != null ? skillField.GetValue(def) as SkillDef : null;
+                    PropertyInfo? levelProperty = record.GetType().GetProperty("Level",
                         BindingFlags.Public | BindingFlags.Instance);
-                    FieldInfo xpField = record.GetType().GetField("XpSinceLastLevel",
+                    FieldInfo? xpField = record.GetType().GetField("XpSinceLastLevel",
                         BindingFlags.Public | BindingFlags.Instance);
-                    FieldInfo requiredField = record.GetType().GetField("XpRequiredForLevelUp",
+                    FieldInfo? requiredField = record.GetType().GetField("XpRequiredForLevelUp",
                         BindingFlags.Public | BindingFlags.Instance);
                     result.Add(new Row
                     {
@@ -152,9 +151,9 @@ namespace OrderedWork.Services
                 null, new[] { typeof(Rect), typeof(Pawn) }, null);
         }
 
-        private static Type FindType(string fullName)
+        private static Type? FindType(string fullName)
         {
-            Type known = AccessTools.TypeByName(fullName);
+            Type? known = AccessTools.TypeByName(fullName);
             if (known != null)
             {
                 return known;
@@ -163,7 +162,7 @@ namespace OrderedWork.Services
             {
                 try
                 {
-                    Type type = assembly.GetType(fullName, false);
+                    Type? type = assembly.GetType(fullName, false);
                     if (type != null)
                     {
                         return type;

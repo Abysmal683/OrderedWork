@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,20 +15,20 @@ namespace OrderedWork.Services
     public static class PassionRegistry
     {
         private static bool initialized;
-        private static List<PassionSource.PassionInfo> registered;
+        private static List<PassionSource.PassionInfo>? registered;
         private static bool vseApiResolved;
-        private static MethodInfo passionToDefMethod;
+        private static MethodInfo? passionToDefMethod;
 
         public static List<PassionSource.PassionInfo> Registered
         {
             get
             {
                 EnsureInitialized();
-                return registered;
+                return registered!;
             }
         }
 
-        internal static object GetVseDef(Passion passion)
+        internal static object? GetVseDef(Passion passion)
         {
             ResolveVseApi();
             if (passionToDefMethod == null)
@@ -46,29 +45,29 @@ namespace OrderedWork.Services
             }
         }
 
-        internal static T GetMember<T>(object instance, string name)
+        internal static T? GetMember<T>(object? instance, string name)
         {
             if (instance == null)
             {
                 return default;
             }
             Type type = instance.GetType();
-            PropertyInfo property = type.GetProperty(name, BindingFlags.Public | BindingFlags.Instance);
+            PropertyInfo? property = type.GetProperty(name, BindingFlags.Public | BindingFlags.Instance);
             if (property != null)
             {
-                return (T)property.GetValue(instance, null);
+                return (T?)property.GetValue(instance, null);
             }
-            FieldInfo field = type.GetField(name, BindingFlags.Public | BindingFlags.Instance);
-            return field != null ? (T)field.GetValue(instance) : default;
+            FieldInfo? field = type.GetField(name, BindingFlags.Public | BindingFlags.Instance);
+            return field != null ? (T?)field.GetValue(instance) : default;
         }
 
-        internal static string GetStringMember(object instance, string name)
+        internal static string? GetStringMember(object? instance, string name)
         {
             if (instance == null)
             {
                 return null;
             }
-            object value = GetMember<object>(instance, name);
+            object? value = GetMember<object>(instance, name);
             if (value is string text)
             {
                 return text;
@@ -88,12 +87,12 @@ namespace OrderedWork.Services
             }
             initialized = true;
             registered = new List<PassionSource.PassionInfo>();
-            Type managerType = FindType("VSE.Passions.PassionManager");
+            Type? managerType = FindType("VSE.Passions.PassionManager");
             if (managerType != null)
             {
                 try
                 {
-                    PropertyInfo all = managerType.GetProperty("AllPassions", BindingFlags.Public | BindingFlags.Static);
+                    PropertyInfo? all = managerType.GetProperty("AllPassions", BindingFlags.Public | BindingFlags.Static);
                     if (all != null && all.GetValue(null, null) is IEnumerable values)
                     {
                         foreach (object value in values)
@@ -113,9 +112,21 @@ namespace OrderedWork.Services
             AddPassionsFromDefDatabase();
             if (registered.Count == 0)
             {
-                registered.Add(new PassionSource.PassionInfo { Passion = Passion.None, DefName = "None", Label = "None" });
-                registered.Add(new PassionSource.PassionInfo { Passion = Passion.Minor, DefName = "Minor", Label = "Minor" });
-                registered.Add(new PassionSource.PassionInfo { Passion = Passion.Major, DefName = "Major", Label = "Major" });
+                if (registered == null)
+            {
+                return;
+            }
+            registered.Add(new PassionSource.PassionInfo { Passion = Passion.None, DefName = "None", Label = "None" });
+                if (registered == null)
+            {
+                return;
+            }
+            registered.Add(new PassionSource.PassionInfo { Passion = Passion.Minor, DefName = "Minor", Label = "Minor" });
+                if (registered == null)
+            {
+                return;
+            }
+            registered.Add(new PassionSource.PassionInfo { Passion = Passion.Major, DefName = "Major", Label = "Major" });
             }
             OrderedWorkMod.DebugLog("[Passion] VSE manager=" + (managerType != null)
                 + " registered=" + registered.Count
@@ -130,7 +141,7 @@ namespace OrderedWork.Services
             {
                 return;
             }
-            string label = null;
+            string? label = null;
             try
             {
                 label = PassionMetadata.LabelOf(passion);
@@ -143,6 +154,10 @@ namespace OrderedWork.Services
             {
                 label = defName;
             }
+            if (registered == null)
+            {
+                return;
+            }
             registered.Add(new PassionSource.PassionInfo
             {
                 Passion = passion,
@@ -153,7 +168,7 @@ namespace OrderedWork.Services
 
         private static void AddPassionsFromDefDatabase()
         {
-            Type defType = FindType("VSE.Passions.PassionDef");
+            Type? defType = FindType("VSE.Passions.PassionDef");
             if (defType == null)
             {
                 return;
@@ -161,7 +176,7 @@ namespace OrderedWork.Services
             try
             {
                 Type databaseType = typeof(DefDatabase<>).MakeGenericType(defType);
-                PropertyInfo allDefs = databaseType.GetProperty(
+                PropertyInfo? allDefs = databaseType.GetProperty(
                     "AllDefsListForReading",
                     BindingFlags.Public | BindingFlags.Static);
                 if (allDefs == null || !(allDefs.GetValue(null, null) is IEnumerable defs))
@@ -193,13 +208,13 @@ namespace OrderedWork.Services
             string[] names = { "index", "Index", "passionIndex", "PassionIndex" };
             foreach (string name in names)
             {
-                FieldInfo field = defType.GetField(name, BindingFlags.Public | BindingFlags.Instance);
+                FieldInfo? field = defType.GetField(name, BindingFlags.Public | BindingFlags.Instance);
                 if (field != null)
                 {
                     index = Convert.ToInt32(field.GetValue(def));
                     return true;
                 }
-                PropertyInfo property = defType.GetProperty(name, BindingFlags.Public | BindingFlags.Instance);
+                PropertyInfo? property = defType.GetProperty(name, BindingFlags.Public | BindingFlags.Instance);
                 if (property != null)
                 {
                     index = Convert.ToInt32(property.GetValue(def, null));
@@ -216,7 +231,7 @@ namespace OrderedWork.Services
                 return;
             }
             vseApiResolved = true;
-            Type managerType = FindType("VSE.Passions.PassionManager");
+            Type? managerType = FindType("VSE.Passions.PassionManager");
             if (managerType == null)
             {
                 return;
@@ -232,9 +247,9 @@ namespace OrderedWork.Services
             }
         }
 
-        private static Type FindType(string fullName)
+        private static Type? FindType(string fullName)
         {
-            Type type = Type.GetType(fullName + ", VSE");
+            Type? type = Type.GetType(fullName + ", VSE");
             if (type != null)
             {
                 return type;
