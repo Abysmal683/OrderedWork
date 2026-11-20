@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.272)
+# Ordered Work — Current Checklist (0.3.0-alpha.273)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -161,9 +161,16 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Paint, erase, load, save and apply preserve their behavior.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of paint, erase, load, save and apply.
+## Work tab column reorder (alpha.273)
+
+- [x] Reorder `PawnTableDefOf.Work.columns` work-column slots from the active profile.
+- [x] Preserve non-work column positions.
+- [x] Refresh WorkTab `allColumns` cache when present.
+- [ ] Runtime check that the vanilla Work tab follows the profile after restart.
+- [ ] Runtime check with WorkTab mod and without it.
 ## Work tab order and passion layout (alpha.272)
 
-- [x] Vanilla Work tab uses active profile order via Harmony.
+- [x] Work tab order first attempt (superseded by .273 column reorder).
 - [x] Passion weights render all rows without internal cap or scrollbar.
 - [x] Rules sections default collapsed and remember expanded state.
 - [x] Hidden/always-active WorkType design note saved.

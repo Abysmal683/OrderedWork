@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.273] - 2026-11-19
+
+### Fixed — Work tab column order
+- Replaced the ineffective `WorkTypeDefsUtility` postfix with an ordered rebuild of `PawnTableDefOf.Work.columns` and the WorkTab controller cache.
+- Work-type column slots are reordered from the active profile; non-work columns keep their positions.
+- The reconciliation and passion-layout changes from `.272` remain in place.
+
 ## [0.3.0-alpha.272] - 2026-11-19
 
 ### Fixed — Work tab order and passion layout

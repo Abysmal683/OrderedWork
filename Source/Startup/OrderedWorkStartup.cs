@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Reflection;
+using HarmonyLib;
 using OrderedWork.Config;
 using OrderedWork.Startup;
 using RimWorld;
@@ -129,6 +130,68 @@ namespace OrderedWork
 
 
 
+
+        private static void ReorderWorkTabColumns(WorkConfigProfile profile)
+        {
+            if (profile == null || PawnTableDefOf.Work == null || PawnTableDefOf.Work.columns == null)
+            {
+                return;
+            }
+
+            Dictionary<string, int> order = new Dictionary<string, int>(StringComparer.Ordinal);
+            foreach (KeyValuePair<string, WorkTypeConfig> entry in profile.WorkTypes
+                .Where(entry => entry.Value != null)
+                .OrderBy(entry => entry.Value.Order))
+            {
+                if (!order.ContainsKey(entry.Key))
+                {
+                    order[entry.Key] = order.Count;
+                }
+            }
+
+            List<int> slots = new List<int>();
+            List<PawnColumnDef> workColumns = new List<PawnColumnDef>();
+            for (int i = 0; i < PawnTableDefOf.Work.columns.Count; i++)
+            {
+                PawnColumnDef column = PawnTableDefOf.Work.columns[i];
+                if (column != null && column.workType != null)
+                {
+                    slots.Add(i);
+                    workColumns.Add(column);
+                }
+            }
+            workColumns.Sort((left, right) =>
+            {
+                int leftOrder;
+                int rightOrder;
+                bool hasLeft = order.TryGetValue(left.workType.defName, out leftOrder);
+                bool hasRight = order.TryGetValue(right.workType.defName, out rightOrder);
+                if (hasLeft != hasRight)
+                {
+                    return hasLeft ? -1 : 1;
+                }
+                if (hasLeft && leftOrder != rightOrder)
+                {
+                    return leftOrder.CompareTo(rightOrder);
+                }
+                return right.workType.naturalPriority.CompareTo(left.workType.naturalPriority);
+            });
+            for (int i = 0; i < slots.Count; i++)
+            {
+                PawnTableDefOf.Work.columns[slots[i]] = workColumns[i];
+            }
+
+            Type controller = AccessTools.TypeByName("WorkTab.Controller");
+            if (controller != null)
+            {
+                FieldInfo allColumns = controller.GetField("allColumns",
+                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+                if (allColumns != null)
+                {
+                    allColumns.SetValue(null, new List<PawnColumnDef>(PawnTableDefOf.Work.columns));
+                }
+            }
+        }
 
         private static void RebuildCaches()
         {
