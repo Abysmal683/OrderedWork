@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.334] - 2026-11-19
+
+### Added — Clothing editor grid and visual metadata
+- Added a slot grid to the clothing editor; clicking a slot selects or creates its rule.
+- Added `ClothingIconResolver` (`ThingDef.uiIcon`) and `ClothingInfoService` (label, layers, body parts, description).
+- Apparel/tool picker and grid now show icons and essential tooltips.
+- No multi-select, drag-and-drop, layer painting or equip jobs yet.
+
 ## [0.3.0-alpha.333] - 2026-11-19
 
 ### Added — Clothing candidate picker

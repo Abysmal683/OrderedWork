@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using OrderedWork.Core;
+using OrderedWork.Services;
 using OrderedWork.UI.Layout;
 using RimWorld;
 using UnityEngine;
@@ -57,13 +58,19 @@ namespace OrderedWork.UI
                     ThingDef def = cached[i];
                     Rect row = new Rect(0f, i * 28f, view.width, 25f);
                     UiZebra.Draw(row, i);
+                    Texture2D? icon = ClothingIconResolver.IconOf(def.defName);
+                    if (icon != null)
+                    {
+                        GUI.DrawTexture(new Rect(row.x + 4f, row.y + 3f, 19f, 19f), icon);
+                    }
                     string label = def.LabelCap + " · " + def.defName;
-                    if (Widgets.ButtonText(row, label))
+                    if (Widgets.ButtonText(new Rect(row.x + (icon != null ? 26f : 0f), row.y, row.width - (icon != null ? 26f : 0f), 25f), label))
                     {
                         onPick?.Invoke(def.defName);
                         Close();
                         return;
                     }
+                    TooltipHandler.TipRegion(row, ClothingInfoService.TooltipOf(def.defName));
                 }
             });
         }

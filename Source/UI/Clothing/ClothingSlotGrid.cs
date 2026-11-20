@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System;
 using OrderedWork.Core;
+using OrderedWork.Services;
 using OrderedWork.UI;
 using OrderedWork.UI.Layout;
 using UnityEngine;
@@ -21,7 +23,7 @@ namespace OrderedWork.UI.Clothing
             return rows * (CellHeight + Gap);
         }
 
-        public static void Draw(Rect rect, IReadOnlyList<ClothingSlot> slots, ClothingResolution resolution)
+        public static void Draw(Rect rect, IReadOnlyList<ClothingSlot> slots, ClothingResolution resolution, Action<ClothingSlot>? onSelect = null, ClothingSlot? selectedSlot = null)
         {
             if (slots == null || slots.Count == 0)
             {
@@ -52,10 +54,27 @@ namespace OrderedWork.UI.Clothing
 
                 Color color = selection == null ? UiColors.EmptyColumn : ColorFor(selection.Phase);
                 Widgets.DrawBoxSolid(cell, color);
-                Widgets.LabelEllipses(new Rect(cell.x + 4f, cell.y + 3f, cell.width - 8f, 17f),
+                if (selectedSlot.HasValue && selectedSlot.Value.Equals(slot))
+                {
+                    Widgets.DrawBox(cell, 2);
+                }
+                Texture2D? icon = selection != null ? ClothingIconResolver.IconOf(selection.DefName) : null;
+                if (icon != null)
+                {
+                    GUI.DrawTexture(new Rect(cell.x + 4f, cell.y + 18f, 18f, 18f), icon);
+                }
+                Widgets.LabelEllipses(new Rect(cell.x + (icon != null ? 26f : 4f), cell.y + 3f, cell.width - (icon != null ? 30f : 8f), 17f),
                     SlotLabel(slot));
-                Widgets.LabelEllipses(new Rect(cell.x + 4f, cell.y + 20f, cell.width - 8f, 18f),
+                Widgets.LabelEllipses(new Rect(cell.x + (icon != null ? 26f : 4f), cell.y + 20f, cell.width - (icon != null ? 30f : 8f), 18f),
                     selection == null ? "free" : selection.DefName);
+                if (selection != null)
+                {
+                    TooltipHandler.TipRegion(cell, ClothingInfoService.TooltipOf(selection.DefName));
+                }
+                if (onSelect != null && Widgets.ButtonInvisible(cell))
+                {
+                    onSelect(slot);
+                }
             }
         }
 

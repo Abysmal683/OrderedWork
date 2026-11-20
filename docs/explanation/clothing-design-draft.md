@@ -1080,3 +1080,14 @@ Still basic:
 - Tool target lists non-apparel `CompEquippable` defs.
 - One candidate is appended per pick; comma-separated text remains editable.
 - No visual body grid or multi-select yet.
+## 33. Visual editor pass
+
+Implemented:
+
+- Editor slot grid built from live apparel body parts/layers.
+- Clicking a slot selects an existing matching rule or creates one.
+- Rule list and grid share the same selected rule.
+- `ClothingIconResolver` reads `ThingDef.uiIcon`.
+- `ClothingInfoService` exposes label, defName, body layers, body parts and description.
+- Picker and grid show icons plus essential tooltips.
+- No multi-select, drag-and-drop, layer painting or equip jobs yet.

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using OrderedWork.Config;
 using OrderedWork.Core;
+using OrderedWork.Services;
+using OrderedWork.UI.Clothing;
 using OrderedWork.UI.Layout;
 using RimWorld;
 using UnityEngine;
@@ -54,6 +56,7 @@ namespace OrderedWork.UI
             }
 
             DrawTop(profile, inRect);
+            DrawGrid(inRect);
             DrawRuleList(inRect);
             DrawRuleEditor();
             DrawFooter(profile, inRect);
@@ -121,6 +124,25 @@ namespace OrderedWork.UI
             }
         }
 
+        private void DrawGrid(Rect inRect)
+        {
+            if (preset == null)
+            {
+                return;
+            }
+            ClothingContext context = ClothingContextBuilder.Build(null, preset);
+            ClothingResolution resolution = ClothingResolver.Resolve(preset, context);
+            Rect gridRect = new Rect(0f, deletePending ? 104f : 76f, inRect.width * 0.46f, ClothingSlotGrid.Height(context.KnownSlots.Count));
+            Widgets.Label(new Rect(gridRect.x, gridRect.y - 20f, gridRect.width, 18f), "Slots · click to select/create a rule");
+            ClothingSlot? selectedSlot = null;
+            if (preset.Rules != null && selectedRule >= 0 && selectedRule < preset.Rules.Count)
+            {
+                ClothingRule selectedRuleData = preset.Rules[selectedRule];
+                selectedSlot = new ClothingSlot(selectedRuleData.Slot, selectedRuleData.BodyLayer ?? "", selectedRuleData.Target);
+            }
+            ClothingSlotGrid.Draw(gridRect, context.KnownSlots, resolution, SelectOrCreateRule, selectedSlot);
+        }
+
         private void DrawRuleList(Rect inRect)
         {
             if (preset == null)
@@ -129,7 +151,7 @@ namespace OrderedWork.UI
                 return;
             }
 
-            Rect listRect = new Rect(0f, deletePending ? 104f : 76f, inRect.width * 0.48f, 220f);
+            Rect listRect = new Rect(inRect.width * 0.48f, deletePending ? 104f : 76f, inRect.width * 0.52f, 220f);
             Widgets.Label(new Rect(listRect.x, listRect.y - 20f, listRect.width, 18f), "Rules");
             int count = preset.Rules?.Count ?? 0;
             UiScrollPane.Draw(listRect, ref scroll, Mathf.Max(listRect.height, count * 30f + 4f), this, delegate(Rect view)
@@ -149,7 +171,7 @@ namespace OrderedWork.UI
                 }
             });
 
-            Rect buttons = new Rect(0f, listRect.yMax + 4f, inRect.width * 0.48f, 26f);
+            Rect buttons = new Rect(listRect.x, listRect.yMax + 4f, listRect.width, 26f);
             Rect[] cells = UiFlex.Columns(buttons, 4f, 1f, 1f, 1f);
             if (Widgets.ButtonText(cells[0], "Add"))
             {
@@ -171,6 +193,30 @@ namespace OrderedWork.UI
             {
                 MoveRule(-1);
             }
+        }
+
+        private void SelectOrCreateRule(ClothingSlot slot)
+        {
+            if (preset == null)
+            {
+                return;
+            }
+            preset.Rules = preset.Rules ?? new List<ClothingRule>();
+            int index = preset.Rules.FindIndex(rule => rule != null
+                && rule.Target == slot.Target
+                && rule.Slot == slot.Slot
+                && (rule.BodyLayer ?? "") == (slot.BodyLayer ?? ""));
+            if (index < 0)
+            {
+                ClothingRule created = DefaultRule();
+                created.Target = slot.Target;
+                created.Slot = slot.Slot;
+                created.BodyLayer = slot.BodyLayer;
+                preset.Rules.Add(created);
+                index = preset.Rules.Count - 1;
+            }
+            selectedRule = index;
+            SyncCandidateText();
         }
 
         private void DrawRuleEditor()

@@ -1,7 +1,14 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.333)
+# Ordered Work — Current Checklist (0.3.0-alpha.334)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
+## Clothing visual editor (alpha.334)
+
+- [x] Editor slot grid.
+- [x] Slot click selects/creates a rule.
+- [x] ThingDef icons and essential tooltips.
+- [ ] Multi-select, drag/drop and layer painting.
+- [ ] Per-pawn overrides and equip jobs.
 ## Clothing candidate picker (alpha.333)
 
 - [x] Searchable ThingDef picker.
