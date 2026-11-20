@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,8 +14,8 @@ namespace OrderedWork
     {
         private void DrawOrderCandidates(Listing_Standard list)
         {
-            WorkConfigProfile profile = host.LoadEditingProfile();
-            WorkConfigProfile reference = WorkConfigStore.LoadReference();
+            WorkConfigProfile? profile = host.LoadEditingProfile();
+            WorkConfigProfile? reference = WorkConfigStore.LoadReference();
             if (profile == null || reference == null)
             {
                 return;
@@ -25,8 +24,8 @@ namespace OrderedWork
             List<KeyValuePair<string, WorkTypeConfig>> candidates = new List<KeyValuePair<string, WorkTypeConfig>>();
             foreach (KeyValuePair<string, WorkTypeConfig> pair in profile.WorkTypes)
             {
-                WorkTypeConfig current = pair.Value;
-                WorkTypeConfig baseline;
+                WorkTypeConfig? current = pair.Value;
+                WorkTypeConfig? baseline;
                 if (current == null || current.Givers == null
                     || !reference.WorkTypes.TryGetValue(pair.Key, out baseline)
                     || baseline == null || baseline.Givers == null)
@@ -58,7 +57,7 @@ namespace OrderedWork
             DrawScrollableList(list, candidates.Count, ref orderListScroll, "order-list", delegate(Rect row, int i)
             {
                 KeyValuePair<string, WorkTypeConfig> pair = candidates[i];
-                WorkTypeConfig current = pair.Value;
+                WorkTypeConfig? current = pair.Value;
                 List<string> currentOrder = current.Givers
                     .Where(g => g != null).OrderBy(g => g.Order).Select(g => g.DefName).ToList();
                 UiZebra.Draw(row, i);
@@ -92,8 +91,8 @@ namespace OrderedWork
         }
         private void DrawMergeCandidates(Listing_Standard list)
         {
-            WorkConfigProfile profile = host.LoadEditingProfile();
-            WorkConfigProfile reference = WorkConfigStore.LoadReference();
+            WorkConfigProfile? profile = host.LoadEditingProfile();
+            WorkConfigProfile? reference = WorkConfigStore.LoadReference();
             if (profile == null || reference == null)
             {
                 return;
@@ -102,12 +101,12 @@ namespace OrderedWork
             List<KeyValuePair<string, WorkTypeConfig>> candidates = new List<KeyValuePair<string, WorkTypeConfig>>();
             foreach (KeyValuePair<string, WorkTypeConfig> pair in profile.WorkTypes)
             {
-                WorkTypeConfig current = pair.Value;
+                WorkTypeConfig? current = pair.Value;
                 if (current == null || current.Givers == null || !string.IsNullOrEmpty(current.Base))
                 {
                     continue;
                 }
-                WorkTypeConfig baseline;
+                WorkTypeConfig? baseline;
                 reference.WorkTypes.TryGetValue(pair.Key, out baseline);
                 HashSet<string> currentNames = new HashSet<string>(
                     current.Givers.Where(g => g != null).Select(g => g.DefName), StringComparer.Ordinal);
@@ -134,8 +133,8 @@ namespace OrderedWork
             DrawScrollableList(list, candidates.Count, ref mergeListScroll, "merge-list", delegate(Rect row, int i)
             {
                 KeyValuePair<string, WorkTypeConfig> pair = candidates[i];
-                WorkTypeConfig current = pair.Value;
-                WorkTypeConfig baseline;
+                WorkTypeConfig? current = pair.Value;
+                WorkTypeConfig? baseline;
                 reference.WorkTypes.TryGetValue(pair.Key, out baseline);
                 HashSet<string> currentNames = new HashSet<string>(
                     current.Givers.Where(g => g != null).Select(g => g.DefName), StringComparer.Ordinal);
