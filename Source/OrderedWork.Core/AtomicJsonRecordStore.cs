@@ -24,7 +24,7 @@ namespace OrderedWork.Core
         private readonly int maximumSchema;
         private readonly Action<T> normalize;
         private readonly Action<T> beforeSave;
-        private readonly Action<T, string> afterLoad;
+        private readonly Action<T, string>? afterLoad;
         private readonly Func<T, string> id;
         private readonly Func<string, string> normalizeId;
         private readonly Func<T, string> sortKey;
@@ -39,7 +39,7 @@ namespace OrderedWork.Core
             int maximumSchema,
             Action<T> normalize,
             Action<T> beforeSave,
-            Action<T, string> afterLoad,
+            Action<T, string>? afterLoad,
             Func<T, string> id,
             Func<string, string> normalizeId,
             Func<T, string> sortKey,

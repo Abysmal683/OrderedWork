@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -62,7 +61,7 @@ namespace OrderedWork.Config
             return Store.LoadAll();
         }
 
-        public static WorkPreset TryLoad(string path)
+        public static WorkPreset? TryLoad(string path)
         {
             return Store.TryLoad(path);
         }

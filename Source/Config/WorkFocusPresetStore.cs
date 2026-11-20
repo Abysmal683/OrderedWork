@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -54,12 +53,12 @@ namespace OrderedWork.Config
             return Store.LoadAll();
         }
 
-        public static WorkFocusPreset TryLoadById(string id)
+        public static WorkFocusPreset? TryLoadById(string id)
         {
             return Store.TryLoadById(id);
         }
 
-        public static WorkFocusPreset TryLoad(string path)
+        public static WorkFocusPreset? TryLoad(string path)
         {
             return Store.TryLoad(path);
         }

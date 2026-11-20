@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +21,7 @@ namespace OrderedWork.Config
             HashSet<string> mods = new HashSet<string>(StringComparer.Ordinal);
             List<WorkTypeDef> workTypes = WorkConfigStore.GetOrderedVisibleWorkTypes(
                 WorkConfigStore.LoadEditingProfile(WorkConfigStore.LoadSelectedProfileName()));
-            WorkConfigProfile existingProfile = WorkConfigStore.LoadPending(profile.Profile)
+            WorkConfigProfile? existingProfile = WorkConfigStore.LoadPending(profile.Profile)
                 ?? (WorkConfigStore.LoadActiveWithFallback(profile.Profile)?.Profile);
             if (existingProfile != null)
             {
@@ -40,7 +39,7 @@ namespace OrderedWork.Config
             int order = 0;
             foreach (WorkTypeDef workType in workTypes)
             {
-                WorkTypeConfig existingType = null;
+                WorkTypeConfig? existingType = null;
                 if (existingProfile != null)
                 {
                     existingProfile.WorkTypes.TryGetValue(workType.defName, out existingType);
@@ -49,12 +48,12 @@ namespace OrderedWork.Config
                 WorkTypeConfig wt = new WorkTypeConfig
                 {
                     Vanilla = !isSplit && !workType.defName.StartsWith("OrderedWork_", StringComparison.Ordinal),
-                    Base = isSplit ? existingType.Base : null,
+                    Base = isSplit ? existingType?.Base : null,
                     Label = workType.labelShort,
                     ActionWord = workType.gerundLabel,
                     Description = workType.description,
-                    Visible = existingProfile != null && existingProfile.WorkTypes.TryGetValue(workType.defName, out WorkTypeConfig existing) ? existing.Visible : workType.visible,
-                    Hidden = existingProfile != null && existingProfile.WorkTypes.TryGetValue(workType.defName, out WorkTypeConfig existingHidden) && existingHidden.Hidden,
+                    Visible = existingProfile != null && existingProfile.WorkTypes.TryGetValue(workType.defName, out WorkTypeConfig? existing) && existing != null ? existing.Visible : workType.visible,
+                    Hidden = existingProfile != null && existingProfile.WorkTypes.TryGetValue(workType.defName, out WorkTypeConfig? existingHidden) && existingHidden != null && existingHidden.Hidden,
                     Order = order++,
                     Mod = workType.modContentPack != null ? workType.modContentPack.PackageId : "unknown"
                 };

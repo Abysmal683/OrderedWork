@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.302] - 2026-11-19
+
+### Changed — Nullable Config completion
+- Migrated the remaining seven Config files, including settings, preset stores and the profile builder.
+- All Config and Services files are now nullable-enabled; build remains warning-free.
+- 92 legacy UI/Mod/Harmony/Game/Startup files still opt out.
+- Tests remain at 28 cases.
+
 ## [0.3.0-alpha.301] - 2026-11-19
 
 ### Changed — Nullable Config batch

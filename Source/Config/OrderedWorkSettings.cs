@@ -1,4 +1,3 @@
-#nullable disable
 using System.Collections.Generic;
 using Verse;
 
@@ -57,17 +56,17 @@ namespace OrderedWork
 
     public class PassionWeightEntry : IExposable
     {
-        public string defName;
+        public string defName = "";
         public int level0Score;
         public int perLevelBonus;
         public int minLevel;
-        public string level0Buffer;
-        public string perLevelBuffer;
-        public string minLevelBuffer;
+        public string level0Buffer = "";
+        public string perLevelBuffer = "";
+        public string minLevelBuffer = "";
 
         public void ExposeData()
         {
-            Scribe_Values.Look(ref defName, "defName");
+            Scribe_Values.Look(ref defName, "defName", "");
             Scribe_Values.Look(ref level0Score, "level0Score", 0);
             Scribe_Values.Look(ref perLevelBonus, "perLevelBonus", 0);
             Scribe_Values.Look(ref minLevel, "minLevel", 0);
@@ -76,14 +75,14 @@ namespace OrderedWork
 
     public class WorkTypeColorEntry : IExposable
     {
-        public string defName;
+        public string defName = "";
         public float r;
         public float g;
         public float b;
 
         public void ExposeData()
         {
-            Scribe_Values.Look(ref defName, "defName");
+            Scribe_Values.Look(ref defName, "defName", "");
             Scribe_Values.Look(ref r, "r");
             Scribe_Values.Look(ref g, "g");
             Scribe_Values.Look(ref b, "b");
