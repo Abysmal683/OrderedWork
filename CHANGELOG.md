@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.264] - 2026-11-19
+
+### Added — Merge candidate list
+- Merge tab lists WorkTypes whose Givers differ from the vanilla reference.
+- Shows missing and extra Giver counts.
+- Selecting a row loads the existing Merge editor.
+- Revert Merge clears the merge draft and selection.
+
 ## [0.3.0-alpha.263] - 2026-11-19
 
 ### Added — split list and metadata editing

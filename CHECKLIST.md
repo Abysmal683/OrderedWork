@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.263)
+# Ordered Work — Current Checklist (0.3.0-alpha.264)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -161,6 +161,13 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Paint, erase, load, save and apply preserve their behavior.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of paint, erase, load, save and apply.
+## Merge candidates (alpha.264)
+
+- [x] Merge tab lists WorkTypes with missing/extra Givers against `reference.json`.
+- [x] Selecting a row loads the existing Merge editor.
+- [x] Revert Merge clears the merge draft/selection.
+- [x] Build 0/0 and tests pass.
+- [ ] Runtime check of merge selection and revert.
 ## WorkControl extraction (alpha.241)
 
 - [x] Metrics, row renderer, grid and interaction separated.

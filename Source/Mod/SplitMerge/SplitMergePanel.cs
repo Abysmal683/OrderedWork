@@ -471,6 +471,93 @@ namespace OrderedWork
         }
 
 
+        private void DrawMergeCandidates(Listing_Standard list)
+        {
+            WorkConfigProfile profile = host.LoadEditingProfile();
+            WorkConfigProfile reference = WorkConfigStore.LoadReference();
+            if (profile == null || reference == null)
+            {
+                return;
+            }
+
+            List<KeyValuePair<string, WorkTypeConfig>> candidates = new List<KeyValuePair<string, WorkTypeConfig>>();
+            foreach (KeyValuePair<string, WorkTypeConfig> pair in profile.WorkTypes)
+            {
+                WorkTypeConfig current = pair.Value;
+                if (current == null || current.Givers == null)
+                {
+                    continue;
+                }
+                WorkTypeConfig baseline;
+                reference.WorkTypes.TryGetValue(pair.Key, out baseline);
+                HashSet<string> currentNames = new HashSet<string>(
+                    current.Givers.Where(g => g != null).Select(g => g.DefName), StringComparer.Ordinal);
+                HashSet<string> referenceNames = new HashSet<string>(
+                    (baseline != null && baseline.Givers != null ? baseline.Givers : new List<GiverConfig>())
+                        .Where(g => g != null).Select(g => g.DefName), StringComparer.Ordinal);
+                int missing = referenceNames.Count(name => !currentNames.Contains(name));
+                int extra = currentNames.Count(name => !referenceNames.Contains(name));
+                if (missing > 0 || extra > 0)
+                {
+                    candidates.Add(pair);
+                }
+            }
+
+            if (candidates.Count == 0)
+            {
+                list.Label(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.MergeNone",
+                    "No WorkTypes with giver differences."));
+                return;
+            }
+
+            list.Label(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.MergeCandidates",
+                "Giver reconciliation against the vanilla reference"));
+            for (int i = 0; i < candidates.Count; i++)
+            {
+                KeyValuePair<string, WorkTypeConfig> pair = candidates[i];
+                WorkTypeConfig current = pair.Value;
+                WorkTypeConfig baseline;
+                reference.WorkTypes.TryGetValue(pair.Key, out baseline);
+                HashSet<string> currentNames = new HashSet<string>(
+                    current.Givers.Where(g => g != null).Select(g => g.DefName), StringComparer.Ordinal);
+                HashSet<string> referenceNames = new HashSet<string>(
+                    (baseline != null && baseline.Givers != null ? baseline.Givers : new List<GiverConfig>())
+                        .Where(g => g != null).Select(g => g.DefName), StringComparer.Ordinal);
+                int missing = referenceNames.Count(name => !currentNames.Contains(name));
+                int extra = currentNames.Count(name => !referenceNames.Contains(name));
+                Rect row = list.GetRect(24f);
+                UiZebra.Draw(row, i);
+                string label = (current.Label ?? DefDatabase<WorkTypeDef>.GetNamedSilentFail(pair.Key)?.labelShort ?? pair.Key)
+                    + " · " + string.Format(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.MergeMissing", "missing: {0}"), missing)
+                    + " · " + string.Format(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.MergeExtra", "extra: {0}"), extra);
+                Widgets.LabelEllipses(new Rect(row.x + 4f, row.y, row.width - 92f, 22f), label);
+                if (Widgets.ButtonText(new Rect(row.xMax - 84f, row.y, 80f, 22f),
+                    OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.Select", "Select")))
+                {
+                    MergeOrigin = pair.Key;
+                    MergeDraft.Clear();
+                    MergeOriginScroll = 0f;
+                    MergeTargetScroll = 0f;
+                    MergeDropIndex = -1;
+                    if (MergeTarget == MergeOrigin)
+                    {
+                        MergeTarget = "";
+                    }
+                }
+            }
+
+            if (UiButtonBar.Button(list.GetRect(26f),
+                OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.RevertMerge", "Revert Merge"), true))
+            {
+                MergeOrigin = "";
+                MergeTarget = "";
+                MergeDraft.Clear();
+                MergeOriginScroll = 0f;
+                MergeTargetScroll = 0f;
+                MergeDropIndex = -1;
+                MergeDirty = false;
+            }
+        }
         internal void DrawMergeEditor(Listing_Standard list)
         {
             host.EnsureSplitMergeDefaults();

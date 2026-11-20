@@ -183,4 +183,9 @@
   <OrderedWork.Config.SplitMerge.SaveMetadata>Save metadata</OrderedWork.Config.SplitMerge.SaveMetadata>
   <OrderedWork.Config.SplitMerge.MetadataSaved>Split metadata saved: {0}</OrderedWork.Config.SplitMerge.MetadataSaved>
   <OrderedWork.Config.SplitMerge.BaseMissing>Cannot delete this split: its base WorkType is missing.</OrderedWork.Config.SplitMerge.BaseMissing>
-  <OrderedWork.Config.SplitMerge.Deleted>Split deleted and Givers returned: {0}</OrderedWork.Config.SplitMerge.Deleted></LanguageData>
+  <OrderedWork.Config.SplitMerge.Deleted>Split deleted and Givers returned: {0}</OrderedWork.Config.SplitMerge.Deleted>  <OrderedWork.Config.SplitMerge.MergeNone>No WorkTypes with giver differences.</OrderedWork.Config.SplitMerge.MergeNone>
+  <OrderedWork.Config.SplitMerge.MergeCandidates>Giver reconciliation against the vanilla reference</OrderedWork.Config.SplitMerge.MergeCandidates>
+  <OrderedWork.Config.SplitMerge.MergeMissing>missing: {0}</OrderedWork.Config.SplitMerge.MergeMissing>
+  <OrderedWork.Config.SplitMerge.MergeExtra>extra: {0}</OrderedWork.Config.SplitMerge.MergeExtra>
+  <OrderedWork.Config.SplitMerge.Select>Select</OrderedWork.Config.SplitMerge.Select>
+  <OrderedWork.Config.SplitMerge.RevertMerge>Revert Merge</OrderedWork.Config.SplitMerge.RevertMerge></LanguageData>

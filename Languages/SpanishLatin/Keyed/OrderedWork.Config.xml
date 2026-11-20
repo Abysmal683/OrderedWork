@@ -183,4 +183,9 @@
   <OrderedWork.Config.SplitMerge.SaveMetadata>Guardar metadatos</OrderedWork.Config.SplitMerge.SaveMetadata>
   <OrderedWork.Config.SplitMerge.MetadataSaved>Metadatos de la división guardados: {0}</OrderedWork.Config.SplitMerge.MetadataSaved>
   <OrderedWork.Config.SplitMerge.BaseMissing>No se puede eliminar esta división: falta su tipo de trabajo base.</OrderedWork.Config.SplitMerge.BaseMissing>
-  <OrderedWork.Config.SplitMerge.Deleted>División eliminada y WorkGivers devueltos: {0}</OrderedWork.Config.SplitMerge.Deleted></LanguageData>
+  <OrderedWork.Config.SplitMerge.Deleted>División eliminada y WorkGivers devueltos: {0}</OrderedWork.Config.SplitMerge.Deleted>  <OrderedWork.Config.SplitMerge.MergeNone>No hay tipos de trabajo con diferencias de WorkGivers.</OrderedWork.Config.SplitMerge.MergeNone>
+  <OrderedWork.Config.SplitMerge.MergeCandidates>Conciliación de WorkGivers contra la referencia vanilla</OrderedWork.Config.SplitMerge.MergeCandidates>
+  <OrderedWork.Config.SplitMerge.MergeMissing>faltan: {0}</OrderedWork.Config.SplitMerge.MergeMissing>
+  <OrderedWork.Config.SplitMerge.MergeExtra>sobran: {0}</OrderedWork.Config.SplitMerge.MergeExtra>
+  <OrderedWork.Config.SplitMerge.Select>Seleccionar</OrderedWork.Config.SplitMerge.Select>
+  <OrderedWork.Config.SplitMerge.RevertMerge>Revertir fusión</OrderedWork.Config.SplitMerge.RevertMerge></LanguageData>
