@@ -27,18 +27,18 @@ namespace OrderedWork
             return wantsOrigin == originSide && row.Contains(Event.current.mousePosition);
         }
 
-        internal void DrawSplitMergeActions(Listing_Standard list, string actionLabel, string warning, Action onSave, Action onCancel, bool canCancel)
+        internal void DrawSplitMergeActions(Listing_Standard list, string actionLabel, string warning, Action onSave, Action onCancel, bool canCancel, string actionTooltip = null)
         {
             Rect actionsRect = list.GetRect(30f);
             float buttonWidth = Mathf.Min(150f, (actionsRect.width - 12f) / 3f);
             Rect actionRect = new Rect(actionsRect.x, actionsRect.y, buttonWidth, 28f);
             Rect cancelRect = new Rect(actionRect.xMax + 6f, actionsRect.y, buttonWidth, 28f);
 
-            if (UiButtonBar.Button(actionRect, actionLabel, string.IsNullOrEmpty(warning)))
+            if (UiButtonBar.Button(actionRect, actionLabel, string.IsNullOrEmpty(warning), actionTooltip))
             {
                 SafeSplitMergeAction(onSave);
             }
-            if (UiButtonBar.Button(cancelRect, ConfigText("OrderedWork.Config.SplitMerge.CancelDraft", "Cancel draft"), canCancel))
+            if (UiButtonBar.Button(cancelRect, ConfigText("OrderedWork.Config.SplitMerge.CancelDraft", "Cancel draft"), canCancel, ConfigText("OrderedWork.Config.SplitMerge.CancelDraftTip", "Clear the unsaved draft only.")))
             {
                 onCancel();
             }

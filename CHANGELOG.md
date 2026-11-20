@@ -3,6 +3,17 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.269] - 2026-11-19
+
+### Fixed — Tooltips and disabled action labels
+- Passion tooltips now use the row hit test and a pointer-sized tooltip rect; hovering outside the table no longer opens a passion tooltip.
+- Split/Merge action buttons now expose tooltips for Add split, Merge selected, Merge all and Cancel draft.
+- Disabled action labels use the native centered button text instead of a separately drawn label.
+
+### Documentation — Current Split/Merge/Order model
+- Updated the Split/Merge/Order explanation, Mod Settings reference, work-rules how-to, features/limitations, save/config schema and Work Control version reference.
+- Documented profile-backed state, Action word, Revert with confirmation, 10-row caps and Ctrl+wheel behavior.
+
 ## [0.3.0-alpha.268] - 2026-11-19
 
 ### Fixed — Passion-weight tooltip hit test

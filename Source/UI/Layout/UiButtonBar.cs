@@ -6,8 +6,7 @@ namespace OrderedWork.UI.Layout
     /// <summary>
     /// Single action-button implementation.
     /// Enabled: vanilla atlas and label.
-    /// Disabled: vanilla atlas tinted dark; the native label is left empty and a
-    /// normal-colour label is drawn on top so the body changes, not the letters.
+    /// Disabled: the native button is tinted dark and keeps its native centered label.
     /// </summary>
     public static class UiButtonBar
     {
@@ -34,13 +33,8 @@ namespace OrderedWork.UI.Layout
 
             Color previousColor = GUI.color;
             GUI.color = new Color(0.55f, 0.55f, 0.55f, 0.70f);
-            Widgets.ButtonText(rect, "", true, true, false);
+            Widgets.ButtonText(rect, label, true, true, true);
             GUI.color = previousColor;
-
-            TextAnchor previousAnchor = Text.Anchor;
-            Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(new Rect(rect.x, rect.y + 2f, rect.width, rect.height), label);
-            Text.Anchor = previousAnchor;
             return false;
         }
     }

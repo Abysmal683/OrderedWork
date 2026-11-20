@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.268)
+# Ordered Work — Current Checklist (0.3.0-alpha.269)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -93,7 +93,7 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Failure logs and shows a reject message.
 - [x] User is told to save and restart when apply fails.
 - [x] Build 0/0 and tests pass.
-- [ ] SplitMergePanel component extraction remains pending.
+- [x] SplitMergePanel component extraction completed.
 ## SplitMergePanel state (alpha.257)
 
 - [x] Split/merge drafts, scrolls, drag state and metadata moved to `SplitMergePanel`.
@@ -107,7 +107,7 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] `OrderEditorPanel` owns its giver-order draft.
 - [x] Existing drag helpers remain shared temporarily.
 - [x] Build 0/0 and tests pass.
-- [ ] `SplitMergePanel` extraction.
+- [x] `SplitMergePanel` extraction.
 - [ ] Runtime panel checks.
 ## Active work indicator (alpha.254)
 
@@ -161,6 +161,13 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Paint, erase, load, save and apply preserve their behavior.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of paint, erase, load, save and apply.
+## Tooltip and button polish (alpha.269)
+
+- [x] Passion tooltip hit test uses the hovered row and pointer-sized tooltip rect.
+- [x] Split/Merge action buttons expose tooltips.
+- [x] Disabled action labels use native centered text.
+- [x] User documentation updated for the profile-backed editor, Action word, Revert and 10-row caps.
+- [ ] Runtime check of passion and Split/Merge tooltips.
 ## Controls polish (alpha.267)
 
 - [x] Merge/Order rows support Revert with confirmation.
@@ -185,14 +192,14 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 
 - [x] Order tab lists WorkTypes whose Giver order differs from `reference.json`.
 - [x] Selecting a row loads the existing Order editor.
-- [x] Revert Order clears the Order selection/draft.
+- [x] Revert Order clears the Order selection/draft (superseded by alpha.267 candidate-row Revert).
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of order selection/revert.
 ## Merge candidates (alpha.264)
 
 - [x] Merge tab lists WorkTypes with missing/extra Givers against `reference.json`.
 - [x] Selecting a row loads the existing Merge editor.
-- [x] Revert Merge clears the merge draft/selection.
+- [x] Revert Merge clears the merge draft/selection (superseded by alpha.267 candidate-row Revert).
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of merge selection and revert.
 ## WorkControl extraction (alpha.241)

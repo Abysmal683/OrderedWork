@@ -661,7 +661,7 @@ namespace OrderedWork
                     SplitDraft.Clear();
                     SplitDraftScroll = 0f;
                     SplitDirty = false;
-                }, SplitDirty);
+                }, SplitDirty, OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.AddTip", "Create a new WorkType from the selected origin Givers."));
 
             host.HandleSplitMergeDrag();
             list.Gap(8f);
@@ -901,15 +901,15 @@ namespace OrderedWork
 
             string selectedWarning = MergeValidationWarning(false);
             string allWarning = MergeValidationWarning(true);
-            if (UiButtonBar.Button(selectedRect, OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.MergeSelected", "Merge selected"), string.IsNullOrEmpty(selectedWarning)))
+            if (UiButtonBar.Button(selectedRect, OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.MergeSelected", "Merge selected"), string.IsNullOrEmpty(selectedWarning), OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.MergeSelectedTip", "Move the selected origin Givers into the target.")))
             {
                 host.SafeSplitMergeAction(delegate { SaveMerge(MergeDraft); });
             }
-            if (UiButtonBar.Button(allRect, OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.MergeAll", "Merge all"), string.IsNullOrEmpty(allWarning)))
+            if (UiButtonBar.Button(allRect, OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.MergeAll", "Merge all"), string.IsNullOrEmpty(allWarning), OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.MergeAllTip", "Move every origin Giver into the target.")))
             {
                 host.SafeSplitMergeAction(delegate { SaveMerge(originNames); });
             }
-            if (UiButtonBar.Button(cancelRect, OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.CancelDraft", "Cancel draft"), MergeDirty))
+            if (UiButtonBar.Button(cancelRect, OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.CancelDraft", "Cancel draft"), MergeDirty, OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMerge.CancelDraftTip", "Clear the unsaved draft only.")))
             {
                 MergeDraft.Clear();
                 MergeTargetScroll = 0f;

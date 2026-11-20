@@ -77,7 +77,7 @@ namespace OrderedWork.UI
             }
 
             Rect row = new Rect(0f, index * PassionRowHeight - scroll, viewport.width, 24f);
-            Rect screenRow = new Rect(viewport.x, viewport.y + row.y, viewport.width, 24f);
+
             UiZebra.Draw(row, index);
             WorkTypePaletteView.PassionVisual visual = WorkTypePaletteView.ResolvePassionVisual(info.Passion);
             if (visual.Texture != null)
@@ -98,10 +98,11 @@ namespace OrderedWork.UI
                     ? rateLine
                     : description + "\n\n" + rateLine;
             }
-            if (!string.IsNullOrEmpty(description) && Mouse.IsOver(screenRow))
+            if (!string.IsNullOrEmpty(description) && Mouse.IsOver(row))
             {
+                Vector2 mouse = Event.current.mousePosition;
                 pendingTooltip = description;
-                pendingTooltipRect = screenRow;
+                pendingTooltipRect = new Rect(mouse.x - 1f, mouse.y - 1f, 2f, 2f);
             }
 
             float fieldWidth = Mathf.Max(54f, (row.width - 170f - 24f) / 3f);

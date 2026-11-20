@@ -202,4 +202,7 @@
   <OrderedWork.Config.SplitMerge.ConfirmRevert>Confirmar</OrderedWork.Config.SplitMerge.ConfirmRevert>
   <OrderedWork.Config.SplitMerge.MergeReverted>Fusión revertida para {0}.</OrderedWork.Config.SplitMerge.MergeReverted>
   <OrderedWork.Config.SplitMerge.OrderReverted>Orden de Givers restaurado para {0}.</OrderedWork.Config.SplitMerge.OrderReverted>
-  <OrderedWork.Config.SplitMeta.ActionWord>Palabra de acción</OrderedWork.Config.SplitMeta.ActionWord></LanguageData>
+  <OrderedWork.Config.SplitMeta.ActionWord>Palabra de acción</OrderedWork.Config.SplitMeta.ActionWord>  <OrderedWork.Config.SplitMerge.AddTip>Crea un nuevo tipo de trabajo con los Givers de origen seleccionados.</OrderedWork.Config.SplitMerge.AddTip>
+  <OrderedWork.Config.SplitMerge.MergeSelectedTip>Mueve los Givers de origen seleccionados al destino.</OrderedWork.Config.SplitMerge.MergeSelectedTip>
+  <OrderedWork.Config.SplitMerge.MergeAllTip>Mueve todos los Givers de origen al destino.</OrderedWork.Config.SplitMerge.MergeAllTip>
+  <OrderedWork.Config.SplitMerge.CancelDraftTip>Borra solo el borrador no guardado.</OrderedWork.Config.SplitMerge.CancelDraftTip></LanguageData>

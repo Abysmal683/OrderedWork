@@ -62,7 +62,7 @@ PawnWorkOrder
 ## 2. Files
 
 ### active profile
-Full current state. Editing targets this profile; changes are written to its `pending` file, not applied to live defs.
+Full current state. Editing writes this profile and its `pending` file. Split/Merge/Order actions also run the startup application pipeline immediately for UI feedback; restart remains the safe boundary for generated definitions and DefDatabase changes.
 
 ### pending file
 Full candidate state for the active profile. It is written atomically. On RimWorld startup:
@@ -81,7 +81,7 @@ Immutable-ish snapshot of the original vanilla/modded state used by reset and di
 - Captured once.
 - New givers/types added by mods are appended, never inserted, and reported.
 - Missing mods are reported; entries are not silently deleted from the profile.
-- Reset uses `reference` to restore vanilla WorkTypes and to decide whether a type is a split.
+- Revert/Delete use `reference` to restore vanilla WorkTypes, return Givers to their reference owner and decide whether a type is a split.
 
 ## 3. JSON schema
 
@@ -99,6 +99,7 @@ Immutable-ish snapshot of the original vanilla/modded state used by reset and di
       "vanilla": true,
       "base": null,
       "label": "paciente",
+      "actionWord": "patient care",
       "description": null,
       "visible": true,
       "order": 1,
@@ -111,6 +112,7 @@ Immutable-ish snapshot of the original vanilla/modded state used by reset and di
       "vanilla": false,
       "base": "Patient",
       "label": "Paciente emergencia",
+      "actionWord": "emergency care",
       "description": "Prioriza emergencias",
       "visible": true,
       "order": 24,
@@ -126,6 +128,7 @@ Immutable-ish snapshot of the original vanilla/modded state used by reset and di
 Rules:
 
 - `workTypes` is a map keyed by `defName`; no split/merge history lists.
+- `actionWord` maps to the WorkType `gerundLabel`; a blank value falls back to the display name. `label` and `description` are also UI metadata.
 - A giver appears exactly once in the whole profile.
 - `order` is the final display order; gaps are normalized on load.
 - `originals` are not embedded per profile; `reference.json` is separate.
@@ -166,13 +169,14 @@ Do not persist a `modified` boolean. It goes stale after merges, mod changes, pr
 
 `PawnWorkOrder` uses the `Pawn` reference as identity. Cleanup removes entries whose pawn is destroyed by default. A General setting `Keep orders for destroyed pawns` can preserve them for mods that return fully deleted pawns. Dead-but-not-destroyed pawns always keep their order.
 
-## 5. Reset model
+## 5. Revert and delete model
 
-Order tab lists only changed WorkTypes, computed by diffing the active profile against `reference.json`.
+Changed state is computed by diffing the active profile against `reference.json`. There is no persisted split/merge/order history.
 
-- Vanilla changed: button `Restore` returns the reference givers, order and visibility.
-- Split: button `Delete` removes it and returns its givers to its base.
-- No separate historical split/merge entry to reset.
+- Merge candidate rows: `Revert` with two-step confirmation restores the selected WorkType from the reference, returns extra Givers to their reference owner and removes missing Givers from their current profile owner.
+- Order candidate rows: `Revert` with two-step confirmation restores the reference Giver sequence without adding or removing Givers.
+- Split rows: `Delete` with two-step confirmation removes the split profile entry and returns its Givers to `Base`. Delete is blocked when `Base` is missing.
+- There are no persistent `Reset split`, `Reset merge` or `Reset order` buttons.
 - `Allow empty origin` stays as an explicit checkbox in the Split/Merge sheet, not General.
 
 ## 6. Profile manager

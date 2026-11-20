@@ -1,11 +1,15 @@
 # How to configure work rules
 
 ## Use
+
 1. Open `Options -> Mod Settings -> Ordered Work`.
-2. Pick the **Rules** tab. Reorder work types by dragging the vertical rows (the `≡` handle).
-3. Split mode: pick the origin work type, type a new name (the `defName` preview appears below it), drag origin givers into `Split destination`, and click `Add split`. Origin rows already in the draft are drawn gray in their original position; dragging a destination row back to the origin removes it.
-4. Merge mode: pick the origin and a different target (the origin is excluded from the target list). The destination shows the target's existing givers fixed at the top; drag origin givers in, reorder them, and click `Merge selected`. `Merge all` moves every origin giver. Each row shows its final position.
-5. Order mode: pick a work type and drag its giver list to the desired order. `Reset order` removes the saved override; the original def order returns after a restart.
-6. `Cancel draft` clears only the unsaved draft. Every saved row has its own reset (`Reset split`, `Reset merge`, `Reset order`), each with two-step confirmation.
-7. The **General** tab holds `Auto recommend new colony`, `Auto-hide scrollbars`, `Palette stress test (debug)`, the dense-rank spike, and `Reset config mod all` (two-step confirmation; pawn 1..N priorities are untouched).
-8. Restart RimWorld. Changes are applied at load time.
+2. Pick the **Rules** tab. Reorder WorkTypes by dragging the vertical rows (the `≡` handle).
+3. Split mode: pick the origin WorkType, enter a name, the optional `Action word` and an optional description. The `defName` preview appears below the fields. Drag origin Givers into `Split destination` and click `Add split`.
+4. Split rows show `Edit` and two-step `Delete`. `Delete` returns the split's Givers to its `Base`; it is blocked when `Base` is missing.
+5. Merge mode: pick the origin and a different target. The destination shows the target's existing Givers fixed at the top. Drag origin Givers in, reorder them, and click `Merge selected`; `Merge all` moves every origin Giver.
+6. Merge candidates are listed below the editor. Select a row to load it, or use `Revert` with confirmation to return its Givers to the reference layout.
+7. Order mode: pick a WorkType and drag its Giver list. `Apply giver order` saves the sequence; `Cancel giver order` restores the editor draft.
+8. Order candidates are listed below the editor. Select a row to review it, or use `Revert` with confirmation to restore the reference order.
+9. Candidate lists and Order columns show 10 rows at a time. Use the scrollbar or `Ctrl+wheel` over that area; a plain wheel scrolls the settings page.
+10. The **General** tab holds `Auto recommend new colony`, `Auto-hide scrollbars`, `Palette stress test (debug)`, the dense-rank spike, and `Reset config mod all` (two-step confirmation; pawn priorities are untouched).
+11. Restart RimWorld as a safe boundary. Saved actions also apply through the startup pipeline immediately where possible.

@@ -41,7 +41,7 @@ With **Verbose diagnostics in Player.log** enabled, startup emits one line:
 ```
 
 Use it when testing with VSE/Alpha Skills enabled, disabled or removed. Without verbose diagnostics, only failures emit warnings.
-## Limitations (0.3.0-alpha.234)
+## Limitations (0.3.0-alpha.269)
 - Profiles and basic schedule presets exist; Details has Overview, schedule, zone, override and read-only clothing status sections. Clothing application, equipment, bulk zone and multi-pawn are not implemented yet.
 - Pawn order follows the colonist bar; if the bar is unavailable or returns no visible free colonists, the map's `FreeColonists` order is used. Dead pawns are filtered out.
 - Scrollbars are custom and 12 px thick; when auto-hidden they still reserve their gutters. The horizontal bar is above the matrix; the vertical is in the right gutter; they use separate drag state and show flags.
@@ -58,9 +58,11 @@ Use it when testing with VSE/Alpha Skills enabled, disabled or removed. Without 
 - If another mod also prefixes `WidgetsWork.DrawWorkBoxFor`, Harmony ordering may let that mod win, leaving the cell vanilla; the rest of the mod keeps working.
 - The dynamic max falls back to 99 when the count fails; the fallback is logged.
 - Pawn/Work filters are UI-only and not persisted.
-- Mod Settings tab selection and Split/Merge/Order drafts are UI-only and not persisted; saved split/merge entries are still scribed and applied on restart.
-- Saved resets (`Reset split`, `Reset merge`, `Reset order`) only remove the saved entry/override. They do not undo WorkType creation, giver moves or `priorityInType` writes during the current session; the effect appears after a restart.
-- In Order mode the exact original `priorityInType` values are not stored, so `Reset order` cannot restore them immediately. It removes the saved override, and fresh defs produce the original order on the next restart.
+- Mod Settings tab selection and Split/Merge/Order drafts are UI-only and not persisted. Saved changes live in the active profile JSON and its pending file.
+- Split rows use `Edit` and two-step `Delete`; delete returns Givers to `Base` and is blocked when `Base` is missing. Merge and Order candidate rows use `Revert` with two-step confirmation.
+- Merge Revert returns extra Givers to their reference owner and restores the selected WorkType from `reference.json`. Order Revert restores the reference Giver sequence without adding or removing Givers.
+- Saved actions run the startup application pipeline immediately where possible. A restart remains the safe boundary for generated WorkType definitions and DefDatabase changes.
+- Split metadata edits `Label`, `Action word` and `Description`; `defName` and `Base` remain immutable.
 - Initialization only scans the current map's free colonists; a colony initialized on one map does not backfill colonists on another map until they spawn.
 - The vanilla capture hook covers `SetPriority`; a mod that changes priorities by writing the private map directly will not be captured.
 - The "Sort by WorkType" header button is not implemented yet.

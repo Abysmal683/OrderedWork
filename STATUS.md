@@ -1,7 +1,13 @@
 # Ordered Work — Current Status
 
-Version: `0.3.0-alpha.268` (documentation checkpoint). Build 0/0; tests pass.
+Version: `0.3.0-alpha.269` (documentation checkpoint). Build 0/0; tests pass.
 
+## Latest checkpoint (.269)
+
+- Passion tooltips use the hovered row and a pointer-sized tooltip rect; phantom tooltips outside the table are removed.
+- Split/Merge action buttons expose tooltips; disabled action labels use native centered text.
+- Split/Merge/Order documentation now matches the profile-backed model, Action word, two-step Revert/Delete and 10-row caps.
+- Pending: visual runtime check of passion tooltips, Split/Merge action tooltips and the disabled Merge label.
 ## Completed architecture
 
 - JSON profiles are the global source of truth: `WorkTypes` map keyed by `defName`, one owner per giver, `WorkTypeConfig.Order`.
