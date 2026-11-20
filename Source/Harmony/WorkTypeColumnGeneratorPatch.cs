@@ -1,3 +1,4 @@
+#nullable disable
 using HarmonyLib;
 using OrderedWork.Config;
 using RimWorld;

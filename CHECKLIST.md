@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.291)
+# Ordered Work — Current Checklist (0.3.0-alpha.292)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -161,6 +161,13 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Paint, erase, load, save and apply preserve their behavior.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of paint, erase, load, save and apply.
+## Nullable staged rollout (alpha.292)
+
+- [x] Main project `Nullable` enabled; legacy files opt out.
+- [x] Core remains nullable-enabled and warning-free.
+- [x] Added nullable migration guide.
+- [ ] Migrate the first UI/service file and remove its `#nullable disable`.
+- [ ] Remove the remaining opt-outs in batches.
 ## Global reset semantics (alpha.291)
 
 - [x] Reset clears passion weights, filters, colors and drafts.

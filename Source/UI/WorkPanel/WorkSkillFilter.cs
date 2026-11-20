@@ -1,3 +1,4 @@
+#nullable disable
 namespace OrderedWork.UI
 {
     /// <summary>Persistent skill-list ordering flags shared by the panel and filter dialog.</summary>

@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.292] - 2026-11-19
+
+### Changed — Nullable rollout
+- Enabled `Nullable` on the main project in staged mode: existing files opt out with `#nullable disable`; new files default to enabled.
+- Added `docs/explanation/nullable-migration.md` with the 876-warning breakdown and the file-by-file migration procedure.
+- Kept `OrderedWork.Core` nullable-enabled and warning-free.
+
 ## [0.3.0-alpha.291] - 2026-11-19
 
 ### Changed — Global reset semantics

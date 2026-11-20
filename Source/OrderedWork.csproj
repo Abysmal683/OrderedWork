@@ -6,7 +6,7 @@
     <OutputPath>..\Assemblies</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <GenerateDependencyFile>false</GenerateDependencyFile>
-    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <RimWorldDir Condition="'$(RimWorldDir)' == ''">D:\SteamLibrary\steamapps\common\RimWorld</RimWorldDir>
     <HarmonyDir Condition="'$(HarmonyDir)' == ''">D:\SteamLibrary\steamapps\workshop\content\294100\2009463077\1.7\Assemblies</HarmonyDir>

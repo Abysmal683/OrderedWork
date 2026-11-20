@@ -1,3 +1,4 @@
+#nullable disable
 using OrderedWork.Core;
 using RimWorld;
 using Verse;
