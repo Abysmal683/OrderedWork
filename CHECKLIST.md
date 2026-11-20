@@ -1,11 +1,11 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.336)
+# Ordered Work — Current Checklist (0.3.0-alpha.337)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
 ## Clothing touch cards (alpha.336)
 
 - [x] Candidate cards instead of button rows.
-- [x] Tap toggle + Add selected.
+- [x] Tap adds immediately; multiple taps accumulate.
 - [x] Right-click grid cell removes rule.
 - [ ] Layer painting and richer card actions.
 - [ ] Per-pawn overrides and equip jobs.

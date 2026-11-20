@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.337] - 2026-11-19
+
+### Changed — Touch cards add immediately
+- Card tap now appends the candidate immediately; no `Add selected` button.
+- Multiple taps accumulate candidates in the current rule.
+- Right-click on a grid cell still removes the matching rule.
+- Build warning-free; 39 tests pass.
+
 ## [0.3.0-alpha.336] - 2026-11-19
 
 ### Changed — Touch card clothing picker

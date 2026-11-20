@@ -1101,7 +1101,7 @@ Implemented:
 ## 35. Touch cards and grid removal
 
 - Candidate rows are now information cards, not button rows.
-- Tapping a card toggles its selection; `Add selected` applies the set.
+- Tapping a card adds it immediately; tapping multiple cards accumulates the set.
 - Cards show icon, label/defName, layers and body parts.
 - Right-clicking a grid cell removes the matching rule.
 - Drag/drop is intentionally not used.
