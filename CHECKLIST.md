@@ -1,4 +1,4 @@
-# Ordered Work — Current Checklist (0.3.0-alpha.288)
+# Ordered Work — Current Checklist (0.3.0-alpha.289)
 
 Status: build 0/0; tests pass. Runtime checks remain for schedule focus and detail input.
 
@@ -161,6 +161,13 @@ Status: build 0/0; tests pass. Runtime checks remain for schedule focus and deta
 - [x] Paint, erase, load, save and apply preserve their behavior.
 - [x] Build 0/0 and tests pass.
 - [ ] Runtime check of paint, erase, load, save and apply.
+## Reset and preset hardening (alpha.289)
+
+- [x] Reset config all is guarded and never deletes profile/pending/reference files.
+- [x] Preset deletions are guarded by `SafeUiAction`.
+- [x] Reset confirmation text matches actual behavior.
+- [ ] Runtime check of reset with a global profile selected.
+- [ ] Runtime check of preset deletion failure path.
 ## UI hardening (alpha.288)
 
 - [x] Remove the static texture asset warning from WorkTypePaletteView.

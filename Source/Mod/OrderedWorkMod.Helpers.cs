@@ -151,6 +151,22 @@ namespace OrderedWork
                     MessageTypeDefOf.RejectInput, false);
             }
         }
+        internal static bool SafeUiAction(Action action, string context)
+        {
+            try
+            {
+                action?.Invoke();
+                return true;
+            }
+            catch (Exception exception)
+            {
+                Log.Error("[Ordered Work] " + context + " failed: " + exception);
+                Messages.Message(ConfigText("OrderedWork.Config.Common.ActionFailed",
+                    "The action could not be completed. Check Player.log."), MessageTypeDefOf.RejectInput, false);
+                return false;
+            }
+        }
+
         private void MoveWorkTypeProfile(List<WorkTypeDef> ordered, int from, int to)
         {
             if (ordered == null || from < 0 || from >= ordered.Count || to < 0 || to >= ordered.Count || from == to)

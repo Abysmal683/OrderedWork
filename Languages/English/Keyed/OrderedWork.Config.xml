@@ -21,7 +21,7 @@
   <OrderedWork.Config.General.ResetInfo>Reset the mod configuration without touching pawn 1..N priorities.</OrderedWork.Config.General.ResetInfo>
   <OrderedWork.Config.General.ResetButton>Reset config mod all</OrderedWork.Config.General.ResetButton>
   <OrderedWork.Config.General.ResetTip>Reset all Ordered Work configuration.</OrderedWork.Config.General.ResetTip>
-  <OrderedWork.Config.General.ResetConfirmInfo>This clears orders, splits, merges, colors, stress test and panel height, plus any unsaved drafts. Pawn work priorities are not touched.</OrderedWork.Config.General.ResetConfirmInfo>
+  <OrderedWork.Config.General.ResetConfirmInfo>This clears Ordered Work UI settings, colors, toggles, panel height and unsaved drafts. Profile, pending and reference JSON files are not deleted. Pawn work priorities are not touched.</OrderedWork.Config.General.ResetConfirmInfo>
   <OrderedWork.Config.General.ResetConfirm>Confirm reset config mod all</OrderedWork.Config.General.ResetConfirm>
   <OrderedWork.Config.General.ResetConfirmTip>Confirm the full configuration reset.</OrderedWork.Config.General.ResetConfirmTip>
   <OrderedWork.Config.General.CancelReset>Cancel reset</OrderedWork.Config.General.CancelReset>
@@ -207,4 +207,6 @@
   <OrderedWork.Config.Rules.ConfirmRestoreWorkOrderTip>Click again to restore the order from reference.json.</OrderedWork.Config.Rules.ConfirmRestoreWorkOrderTip>
   <OrderedWork.Config.Rules.RestoreWorkOrderNoChanges>The current order already matches reference.json.</OrderedWork.Config.Rules.RestoreWorkOrderNoChanges>
   <OrderedWork.Config.Common.ProfileSaveFailed>The profile could not be saved. Your current game state was not changed.</OrderedWork.Config.Common.ProfileSaveFailed>
-  <OrderedWork.Config.Common.ProfileApplyFailed>The profile was not applied. Check Player.log and restart RimWorld.</OrderedWork.Config.Common.ProfileApplyFailed></LanguageData>
+  <OrderedWork.Config.Common.ProfileApplyFailed>The profile was not applied. Check Player.log and restart RimWorld.</OrderedWork.Config.Common.ProfileApplyFailed>
+  <OrderedWork.Config.Common.ResetFailed>Configuration reset failed. Profiles and reference files were not deleted.</OrderedWork.Config.Common.ResetFailed>
+  <OrderedWork.Config.Common.ActionFailed>The action could not be completed. Check Player.log.</OrderedWork.Config.Common.ActionFailed></LanguageData>

@@ -1,8 +1,8 @@
 # Ordered Work — Current Status
 
-Version: `0.3.0-alpha.288` (runtime checkpoint). Build 0/0; tests pass.
+Version: `0.3.0-alpha.289` (runtime checkpoint). Build 0/0; tests pass.
 
-## Latest checkpoint (.288)
+## Latest checkpoint (.289)
 
 - Profiles append visible live WorkTypes and missing Givers on load; Hospitality `Diplomat` can be selected in Order, Split and Merge.
 - The Work tab reorders the list returned by `PawnTable.get_Columns`, which rebuilds from the table def on every call.
@@ -13,6 +13,7 @@ Version: `0.3.0-alpha.288` (runtime checkpoint). Build 0/0; tests pass.
 - Restore order has two-step confirmation, reference-alignment blocking and red danger tint; all confirmation buttons use the same tint.
 - Removed the debug WorkGiver spike and added `scripts/verify.ps1`; docs corrected for per-pawn WorkGiver order.
 - Hardened UI/profile commit paths and removed the WorkTypePaletteView static-asset warning.
+- `Reset config mod all` and preset deletes are guarded; reset never deletes profile/pending/reference files.
 - WorkType order has `Restore reference order` beside Apply/Cancel; right-click toggles hidden with a visible hint.
 - Passion weights render in full and Rules sections start collapsed.
 - Hidden mod WorkTypes are not added and stale visible flags are cleared during reconciliation.

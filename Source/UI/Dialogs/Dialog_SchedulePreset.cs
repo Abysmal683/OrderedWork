@@ -160,9 +160,11 @@ namespace OrderedWork.UI
             Rect[] cells = UiFlex.Columns(buttons, 6f, 1f, 1f);
             if (UiButtonBar.Button(cells[0], OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.ConfirmDelete", "Confirm delete"), true, null, UiColors.ConfirmDanger))
             {
-                SchedulePresetStore.Delete(pendingDelete.Id);
-                pendingDelete = null;
-                presets = SchedulePresetStore.LoadAll();
+                if (OrderedWorkMod.SafeUiAction(delegate { SchedulePresetStore.Delete(pendingDelete.Id); }, "Delete schedule preset"))
+                {
+                    pendingDelete = null;
+                    presets = SchedulePresetStore.LoadAll();
+                }
             }
             if (UiButtonBar.Button(cells[1], OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.Cancel", "Cancel")))
             {

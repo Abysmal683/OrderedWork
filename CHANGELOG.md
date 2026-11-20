@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.289] - 2026-11-19
+
+### Hardened — Reset and preset actions
+- `Reset config mod all` is wrapped in error handling and explicitly clears UI settings/drafts only; it never deletes profile, pending or reference JSON files.
+- Added `SafeUiAction` for preset deletion with logged errors and a rejection message.
+- Corrected reset confirmation text in EN/ES/ES-LatAm.
+
 ## [0.3.0-alpha.288] - 2026-11-19
 
 ### Fixed — UI hardening

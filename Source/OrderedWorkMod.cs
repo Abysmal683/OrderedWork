@@ -167,19 +167,30 @@ namespace OrderedWork
 
         private void ResetAllSettings()
         {
-            Settings.workTypeColors.Clear();
-            Settings.autoRecommendNewColony = true;
-            Settings.autoHideScrollbars = true;
-            Settings.paletteStressTest = false;
-            Settings.workControlHeight = 0f;
-            selectedGiverType = WorkConfigStore.GetOrderedVisibleWorkTypes(
-                WorkConfigStore.LoadEditingProfile(activeProfileName)).FirstOrDefault()?.defName ?? "";
-            splitMerge.ResetDrafts();
-            ResetEditorUiState();
-            dragKind = 0;
-            dragIndex = -1;
-            EnsureSplitMergeDefaults();
-            Messages.Message(ConfigText("OrderedWork.Config.Reset.ConfigReset", "Ordered Work config reset."), MessageTypeDefOf.TaskCompletion, false);
+            // Session/UI reset only. Never delete or overwrite profile, pending or reference JSON.
+            try
+            {
+                Settings.workTypeColors.Clear();
+                Settings.autoRecommendNewColony = true;
+                Settings.autoHideScrollbars = true;
+                Settings.paletteStressTest = false;
+                Settings.workControlHeight = 0f;
+                selectedGiverType = WorkConfigStore.GetOrderedVisibleWorkTypes(
+                    WorkConfigStore.LoadEditingProfile(activeProfileName)).FirstOrDefault()?.defName ?? "";
+                splitMerge.ResetDrafts();
+                ResetEditorUiState();
+                dragKind = 0;
+                dragIndex = -1;
+                EnsureSplitMergeDefaults();
+                Messages.Message(ConfigText("OrderedWork.Config.Reset.ConfigReset", "Ordered Work config reset."), MessageTypeDefOf.TaskCompletion, false);
+            }
+            catch (Exception exception)
+            {
+                Log.Error("[Ordered Work] Configuration reset failed: " + exception);
+                Messages.Message(ConfigText("OrderedWork.Config.Common.ResetFailed",
+                    "Configuration reset failed. Profiles and reference files were not deleted."),
+                    MessageTypeDefOf.RejectInput, false);
+            }
         }
 
 

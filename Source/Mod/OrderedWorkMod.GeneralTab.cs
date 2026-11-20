@@ -110,7 +110,7 @@ namespace OrderedWork
                 }
                 else
                 {
-                    list.Label(ConfigText("OrderedWork.Config.General.ResetConfirmInfo", "This clears orders, splits, merges, colors, stress test and panel height, plus any unsaved drafts. Pawn work priorities are not touched."));
+                    list.Label(ConfigText("OrderedWork.Config.General.ResetConfirmInfo", "This clears Ordered Work UI settings, colors, toggles, panel height and unsaved drafts. Profile, pending and reference JSON files are not deleted. Pawn work priorities are not touched."));
                     if (UiButtonBar.Button(list.GetRect(28f),
                         ConfigText("OrderedWork.Config.General.ResetConfirm", "Confirm reset config mod all"), true,
                         ConfigText("OrderedWork.Config.General.ResetConfirmTip", "Confirm the full configuration reset."), UiColors.ConfirmDanger))
