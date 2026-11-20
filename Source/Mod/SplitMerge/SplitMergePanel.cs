@@ -658,54 +658,6 @@ namespace OrderedWork
             host.DrawColumnScrollbar(track, area.height, maxScroll, scroll, columnId);
         }
 
-        internal void DrawSplitMetadata(Listing_Standard list, OrderedWorkMod host)
-        {
-            WorkConfigProfile profile = host.LoadEditingProfile();
-            if (profile == null || string.IsNullOrEmpty(host.SelectedGiverType)
-                || !profile.WorkTypes.TryGetValue(host.SelectedGiverType, out WorkTypeConfig split)
-                || split == null || split.Vanilla || string.IsNullOrEmpty(split.Base))
-            {
-                return;
-            }
-
-            if (MetaDefName != host.SelectedGiverType)
-            {
-                MetaDefName = host.SelectedGiverType;
-                MetaLabel = split.Label ?? "";
-                MetaDescription = split.Description ?? "";
-            }
-
-            list.Gap(10f);
-            list.Label(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMeta.Info", "Split metadata (defName is stable):"));
-            list.Label(string.Format(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMeta.DefName", "defName: {0}"), host.SelectedGiverType));
-            Rect labelRow = list.GetRect(26f);
-            Widgets.Label(new Rect(labelRow.x, labelRow.y, 110f, 24f), OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMeta.Label", "Label"));
-            MetaLabel = Widgets.TextField(
-                new Rect(labelRow.x + 114f, labelRow.y, labelRow.width - 114f, 24f), MetaLabel ?? "");
-            Rect descRow = list.GetRect(26f);
-            Widgets.Label(new Rect(descRow.x, descRow.y, 110f, 24f), OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMeta.Description", "Description"));
-            MetaDescription = Widgets.TextField(
-                new Rect(descRow.x + 114f, descRow.y, descRow.width - 114f, 24f), MetaDescription ?? "");
-
-            bool changed = MetaLabel != (split.Label ?? "")
-                || MetaDescription != (split.Description ?? "");
-            if (UiButtonBar.Button(list.GetRect(26f), OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMeta.Save", "Save split metadata"), changed))
-            {
-                WorkConfigProfile editing = host.LoadEditingProfile();
-                if (editing != null && editing.WorkTypes.TryGetValue(host.SelectedGiverType, out WorkTypeConfig target)
-                    && target != null)
-                {
-                    target.Label = MetaLabel.Trim();
-                    target.Description = MetaDescription.Trim();
-                    WorkConfigStore.SaveProfile(editing, true);
-                    WorkConfigStore.SavePending(editing);
-                    OrderedWorkStartup.ApplyProfileNow(editing, OrderedWorkMod.Settings, host);
-                    Messages.Message(string.Format(OrderedWorkMod.ConfigText("OrderedWork.Config.SplitMeta.Saved", "Split metadata saved for {0}."), host.SelectedGiverType),
-                        MessageTypeDefOf.TaskCompletion, false);
-                }
-            }
-        }
-
         internal void ResetDrafts()
         {
             SplitOrigin = "";

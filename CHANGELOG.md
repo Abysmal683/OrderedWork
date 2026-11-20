@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.262] - 2026-11-19
+
+### Refactor — finish SplitMergePanel and group mod panels
+- Moved Split/Merge persistence and metadata into `SplitMergePanel`.
+- Removed the dead SplitMetadata partial and unused metadata drawing.
+- Grouped config panels under `Source/Mod/Panels`; SplitMergePanel now lives with SplitMerge helpers.
+- Build 0/0 and tests pass.
+
 ## [0.3.0-alpha.261] - 2026-11-19
 
 ### Refactor — finish SplitMerge persistence and metadata

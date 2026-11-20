@@ -1,6 +1,6 @@
 # Ordered Work — Current Status
 
-Version: `0.3.0-alpha.261` (documentation checkpoint). Build 0/0; tests pass.
+Version: `0.3.0-alpha.262` (documentation checkpoint). Build 0/0; tests pass.
 
 ## Completed architecture
 
