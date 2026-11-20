@@ -16,8 +16,8 @@ namespace OrderedWork.UI
     public sealed class Dialog_FocusPreset : Window
     {
         private readonly bool loadMode;
-        private readonly Func<WorkFocusPreset> capture;
-        private readonly Func<WorkFocusPreset, bool> onLoad;
+        private readonly Func<WorkFocusPreset>? capture;
+        private readonly Func<WorkFocusPreset, bool>? onLoad;
         private List<WorkFocusPreset> presets;
         private string presetName = "";
         private WorkFocusPreset? pendingDelete;
@@ -25,8 +25,8 @@ namespace OrderedWork.UI
         private bool closeAfterSave;
         private Vector2 scroll;
 
-        public Dialog_FocusPreset(bool loadMode, Func<WorkFocusPreset> capture,
-            Func<WorkFocusPreset, bool> onLoad, string? initialName = null)
+        public Dialog_FocusPreset(bool loadMode, Func<WorkFocusPreset>? capture,
+            Func<WorkFocusPreset, bool>? onLoad, string? initialName = null)
         {
             this.loadMode = loadMode;
             this.capture = capture;

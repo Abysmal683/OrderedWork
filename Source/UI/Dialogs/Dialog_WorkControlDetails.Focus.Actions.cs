@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +35,7 @@ namespace OrderedWork.UI
 
         private void ClearAllFocus()
         {
-            PawnWorkOrder entry = DetailEntry();
+            PawnWorkOrder? entry = DetailEntry();
             if (entry == null || entry.hourFocusOverrides.Count == 0)
             {
                 Messages.Message(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.NothingToClear",
@@ -191,7 +190,7 @@ namespace OrderedWork.UI
 
         private List<string> GetFocus(int hour)
         {
-            PawnWorkOrder entry = DetailEntry();
+            PawnWorkOrder? entry = DetailEntry();
             if (entry == null || entry.hourFocusOverrides == null)
             {
                 return new List<string>();
@@ -202,7 +201,7 @@ namespace OrderedWork.UI
 
         private void SetFocus(int hour, List<string> focus)
         {
-            PawnWorkOrder entry = DetailEntry();
+            PawnWorkOrder? entry = DetailEntry();
             if (entry == null)
             {
                 return;
@@ -226,7 +225,7 @@ namespace OrderedWork.UI
             entry.NormalizePolicy();
         }
 
-        private PawnWorkOrder DetailEntry()
+        private PawnWorkOrder? DetailEntry()
         {
             if (detailFocusEntry == null || detailFocusEntry.pawn != pawn)
             {

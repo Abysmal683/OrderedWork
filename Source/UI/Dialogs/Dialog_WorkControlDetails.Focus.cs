@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +20,7 @@ namespace OrderedWork.UI
         private Vector2 detailFocusVisibleScroll;
         private List<string> detailFocusClipboard = new List<string>();
         private readonly UiDragList detailFocusRows = new UiDragList();
-        private PawnWorkOrder detailFocusEntry;
+        private PawnWorkOrder? detailFocusEntry;
 
         private void ResetFocusEditor()
         {
@@ -39,7 +38,7 @@ namespace OrderedWork.UI
                 return;
             }
             detailFocusInitialized = true;
-            Map map = pawn != null ? pawn.Map : null;
+            Map? map = pawn != null ? pawn.Map : null;
             detailFocusHour = map != null ? GenLocalDate.HourOfDay(map) : 0;
             detailFocusSelected = -1;
         }
@@ -185,7 +184,7 @@ namespace OrderedWork.UI
             {
                 Find.WindowStack.Add(new Dialog_FocusPreset(true, null, ApplyFocusPreset));
             }
-            PawnWorkOrder focusEntry = DetailEntry();
+            PawnWorkOrder? focusEntry = DetailEntry();
             bool canClearAll = focusEntry != null && focusEntry.hourFocusOverrides.Count > 0;
             if (UiButtonBar.Button(new Rect(276f, y, 132f, 24f),
                 OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.ClearAll", "Clear all"), canClearAll))
@@ -213,7 +212,7 @@ namespace OrderedWork.UI
 
             WorkTypeDef type = DefDatabase<WorkTypeDef>.GetNamedSilentFail(defName);
             Passion passion;
-            SkillRecord skill = WorkTypePaletteView.SafeBestSkill(pawn, type, out passion);
+            SkillRecord? skill = WorkTypePaletteView.SafeBestSkill(pawn, type, out passion);
             Color color = WorkTypeColorRegistry.GetColor(type);
             Widgets.DrawBoxSolid(new Rect(row.x, row.y, 4f, row.height), color);
 

@@ -3,6 +3,14 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.315] - 2026-11-19
+
+### Changed — Nullable Focus dialogs
+- Migrated `Focus`, `Focus.Actions` and `Focus.Presets`.
+- All UI Dialogs and WorkPanel files are now nullable-enabled.
+- Build warning-free; 30 files still opt out.
+- Tests remain at 28 cases.
+
 ## [0.3.0-alpha.314] - 2026-11-19
 
 ### Changed — Nullable WorkPreset and ScheduleEditorView

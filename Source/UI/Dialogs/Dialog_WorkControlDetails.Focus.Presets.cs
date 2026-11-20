@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +27,7 @@ namespace OrderedWork.UI
 
         private bool ApplyFocusPreset(WorkFocusPreset preset)
         {
-            PawnWorkOrder entry = DetailEntry();
+            PawnWorkOrder? entry = DetailEntry();
             if (entry == null || preset == null)
             {
                 return false;
