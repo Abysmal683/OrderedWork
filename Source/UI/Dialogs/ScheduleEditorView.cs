@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -132,13 +131,13 @@ namespace OrderedWork.UI
             for (int hour = 0; hour < SchedulePreset.SlotCount; hour++)
             {
                 Rect cell = new Rect(76f + hour * hourWidth, y, hourWidth - 1f, 30f);
-                TimeAssignmentDef def = origin
+                TimeAssignmentDef? def = origin
                     ? (pawn != null && pawn.timetable != null ? pawn.timetable.GetAssignment(hour) : null)
                     : (editable ? state.ResolveDraft(hour) : null);
                 if (editable && Mouse.IsOver(cell)
                     && (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag))
                 {
-                    brush.Paint(state.Draft, hour, Event.current.button == 1);
+                    brush.Paint(state.Draft!, hour, Event.current.button == 1);
                     if (Event.current.button == 1 || Event.current.button == 0)
                     {
                         Event.current.Use();

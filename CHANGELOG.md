@@ -3,6 +3,13 @@
 All notable changes to Ordered Work are documented here.
 This format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.0-alpha.314] - 2026-11-19
+
+### Changed — Nullable WorkPreset and ScheduleEditorView
+- Migrated `Dialog_WorkPreset` and `ScheduleEditorView`.
+- Build warning-free; 33 files still opt out.
+- Tests remain at 28 cases.
+
 ## [0.3.0-alpha.313] - 2026-11-19
 
 ### Changed — Nullable WorkPanel Givers

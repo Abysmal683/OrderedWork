@@ -1,4 +1,3 @@
-#nullable disable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,17 +16,17 @@ namespace OrderedWork.UI
     public sealed class Dialog_WorkPreset : Window
     {
         private readonly bool loadMode;
-        private readonly Func<WorkPreset> capture;
-        private readonly Action<WorkPreset> apply;
+        private readonly Func<WorkPreset>? capture;
+        private readonly Action<WorkPreset>? apply;
         private List<WorkPreset> presets;
         private string presetName = "";
-        private WorkPreset pendingDelete;
-        private WorkPreset pendingLoad;
+        private WorkPreset? pendingDelete;
+        private WorkPreset? pendingLoad;
         private bool closeAfterSave;
         private Vector2 scroll;
 
-        public Dialog_WorkPreset(bool loadMode, Func<WorkPreset> capture, Action<WorkPreset> apply,
-            string initialName = null)
+        public Dialog_WorkPreset(bool loadMode, Func<WorkPreset>? capture, Action<WorkPreset>? apply,
+            string? initialName = null)
         {
             this.loadMode = loadMode;
             this.capture = capture;
@@ -165,12 +164,12 @@ namespace OrderedWork.UI
             Rect footer = new Rect(0f, inRect.yMax - 60f, inRect.width, 60f);
             Widgets.DrawBoxSolid(footer, new Color(0.12f, 0.12f, 0.14f, 1f));
             UiRows rows = new UiRows(UiInset.All(footer, 6f), 18f, 4f);
-            Widgets.Label(rows.Next(), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Presets.DeleteConfirm", "Delete '") + pendingDelete.Name + "'?");
+            Widgets.Label(rows.Next(), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Presets.DeleteConfirm", "Delete '") + pendingDelete!.Name + "'?");
             Rect buttons = rows.Next(26f);
             Rect[] cells = UiFlex.Columns(buttons, 6f, 1f, 1f);
             if (UiButtonBar.Button(cells[0], OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.ConfirmDelete", "Confirm delete"), true, null, UiColors.ConfirmDanger))
             {
-                if (OrderedWorkMod.SafeUiAction(delegate { WorkPresetStore.Delete(pendingDelete.Name); }, "Delete work preset"))
+                if (OrderedWorkMod.SafeUiAction(delegate { WorkPresetStore.Delete(pendingDelete!.Name); }, "Delete work preset"))
                 {
                     pendingDelete = null;
                     presets = WorkPresetStore.List();
