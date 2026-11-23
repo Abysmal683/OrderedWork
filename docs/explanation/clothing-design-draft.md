@@ -1,8 +1,10 @@
-# Clothing policy — design draft
+# Clothing policy — historical design log
 
-Status: Phase 1.5 and read-only Details preview implemented; editing/application/jobs pending.
+> Historical design log. Several sections predate the current implementation and are not the source of truth. Canonical v1: `clothing-equipment-design.md`. Detailed appendices: `clothing-editor-layout.md`, `clothing-reequip-priority.md`, `clothing-metadata.md`, `pawn-equipment-tab.md`.
 
-This file collects the current clothing data, implemented UI, prior design decisions, constraints, and open questions so the next pass starts from a single source.
+Status: historical notes plus current implementation history; editing/application/jobs still pending.
+
+This file collects prior clothing data, UI decisions, constraints, and open questions. See `docs/explanation/clothing-editor-layout.md` for the dedicated editor layout spec, `docs/explanation/clothing-reequip-priority.md` for re-equip order and priority resolution, `docs/explanation/clothing-metadata.md` for the metadata/comparison panel, and `docs/explanation/pawn-equipment-tab.md` for the pawn-facing Equipment tab.
 
 ## 1. Current implementation
 
@@ -25,11 +27,11 @@ source                 Preset | Manual | Schedule | Emergency | Legacy
 
 It is serialized in the save through `Scribe`, normalized, and included in policy validation.
 
-There is **no** `ClothingPreset` model, store, resolver, or application layer yet.
+At the time of this draft there was no `ClothingPreset` model, store, resolver, or application layer. The current code now has `ClothingPreset`, `ClothingRule`, `ClothingPresetStore`, `ClothingResolver`, and the clothing editor; see the current specs above.
 
-### Current UI
+### Current UI at that time
 
-`Dialog_WorkControlDetails.Clothing` is read-only. It shows:
+`Dialog_WorkControlDetails.Clothing` was read-only. It showed:
 
 - vanilla `Pawn.outfits.CurrentApparelPolicy`;
 - currently worn apparel;
