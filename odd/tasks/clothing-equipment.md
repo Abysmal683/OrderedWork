@@ -29,10 +29,10 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
   - Kept existing Clothing keys; documented the Equipment namespace.
   - Acceptance verified with a temporary missing-key fixture: exit 1 with `Missing 'Test.Key' in Spanish`.
 
-- T2: Domain models.
-  - `SlotKey`, `Footprint`, `SlotCatalog`, `CellRule`, `Alternative`, `SetRole`, inventory entry and overrides.
-  - Pure/core tests for identity, multi-cell footprints and catalog deduplication.
-  - Acceptance: no UI/RimWorld dependency required for model tests.
+- T2: Domain models. Done.
+  - `ApparelSlotKey`, `ApparelFootprint`, `ApparelSlotCatalog`, `CellRule`, `CellAlternative`, `EquipmentSetRole`, `InventoryTarget`, `EquipmentOverrides`.
+  - Pure/core tests for identity, footprint deduplication, catalog mapping, local priorities, set normalization and merging.
+  - Result: 5 new core tests; 44 total passing; no UI/RimWorld dependency.
 
 - T3: Resolver.
   - Priority order, complementary sets, coverage, mandatory check, emergency fallback, equipment overflow, inventory union.
@@ -99,3 +99,5 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
 - L3: First batch will be localization guardrails, then domain models and resolver before UI.
 
 - L4: T1 complete: build 0/0, 39 tests pass; localization guardrail 0 errors / 68 hardcoded-UI warnings; missing-key fixture correctly fails.
+
+- L5: T2 complete: pure equipment domain models added with 5 tests; 44 total passing; duplicate cell rules merge alternatives by local priority.

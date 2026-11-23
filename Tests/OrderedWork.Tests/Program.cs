@@ -52,6 +52,11 @@ namespace OrderedWork.Tests
             Run("Clothing resolver tolerates null inputs", TestClothingNullInputs);
             Run("Clothing preset normalize cleans rules and candidates", TestClothingPresetNormalize);
             Run("Clothing preset normalize restores schema and id", TestClothingPresetIdentity);
+            Run("Apparel slot key includes body, group and layer", TestApparelSlotKeyIdentity);
+            Run("Apparel footprint normalizes and deduplicates cells", TestApparelFootprintNormalize);
+            Run("Apparel catalog maps cells to possible defs", TestApparelCatalog);
+            Run("Cell rule normalizes alternatives by local priority", TestCellRuleNormalize);
+            Run("Equipment set normalizes cells and inventory", TestEquipmentSetNormalize);
 
             Console.WriteLine(failures == 0 ? "All tests passed." : failures + " test(s) failed.");
             return failures == 0 ? 0 : 1;
@@ -558,6 +563,127 @@ namespace OrderedWork.Tests
             AssertEqual(ClothingPreset.CurrentSchemaVersion, preset.SchemaVersion);
             Assert(preset.Rules != null && preset.Rules.Count == 0, "empty rule list");
         }
+        private static void TestApparelSlotKeyIdentity()
+        {
+            ApparelSlotKey torsoShell = new ApparelSlotKey("Human", "Torso", "Shell");
+            ApparelSlotKey same = new ApparelSlotKey("Human", "Torso", "Shell");
+            ApparelSlotKey otherLayer = new ApparelSlotKey("Human", "Torso", "Middle");
+            ApparelSlotKey otherBody = new ApparelSlotKey("Mech", "Torso", "Shell");
+
+            Assert(torsoShell == same, "slot key equality");
+            Assert(torsoShell != otherLayer, "slot key layer differs");
+            Assert(torsoShell != otherBody, "slot key body differs");
+            Assert(torsoShell.IsValid, "valid slot key");
+            Assert(!new ApparelSlotKey("", "Torso", "Shell").IsValid, "invalid slot key");
+        }
+
+        private static void TestApparelFootprintNormalize()
+        {
+            ApparelFootprint footprint = new ApparelFootprint
+            {
+                DefName = " Robe ",
+                Cells = new List<ApparelSlotKey>
+                {
+                    new ApparelSlotKey("Human", "Torso", "Shell"),
+                    new ApparelSlotKey("Human", "Torso", "Shell"),
+                    new ApparelSlotKey("", "Torso", "Shell")
+                }
+            };
+
+            footprint.Normalize();
+
+            Assert(footprint.DefName == "Robe", "footprint def trimmed");
+            AssertEqual(1, footprint.Cells.Count);
+            Assert(footprint.Cells[0] == new ApparelSlotKey("Human", "Torso", "Shell"), "footprint cell retained");
+        }
+
+        private static void TestApparelCatalog()
+        {
+            ApparelSlotCatalog catalog = new ApparelSlotCatalog();
+            catalog.Add(new ApparelFootprint
+            {
+                DefName = "Robe",
+                Cells = new List<ApparelSlotKey>
+                {
+                    new ApparelSlotKey("Human", "Torso", "Shell"),
+                    new ApparelSlotKey("Human", "Legs", "Shell")
+                }
+            });
+            catalog.Add(new ApparelFootprint
+            {
+                DefName = "Duster",
+                Cells = new List<ApparelSlotKey>
+                {
+                    new ApparelSlotKey("Human", "Torso", "Shell")
+                }
+            });
+
+            IReadOnlyCollection<string> torso = catalog.DefsFor(new ApparelSlotKey("Human", "Torso", "Shell"));
+            IReadOnlyCollection<string> legs = catalog.DefsFor(new ApparelSlotKey("Human", "Legs", "Shell"));
+
+            AssertSequence(new[] { "Duster", "Robe" }, torso);
+            AssertSequence(new[] { "Robe" }, legs);
+            AssertEqual(2, catalog.Cells.Count);
+        }
+
+        private static void TestCellRuleNormalize()
+        {
+            CellRule rule = new CellRule
+            {
+                Cell = new ApparelSlotKey("Human", "Torso", "Shell"),
+                Alternatives = new List<CellAlternative>
+                {
+                    null,
+                    new CellAlternative { DefName = "Robe", Priority = 2 },
+                    new CellAlternative { DefName = "Duster", Priority = 1 },
+                    new CellAlternative { DefName = " Robe ", Priority = 0 },
+                    new CellAlternative { DefName = "", Priority = 3 }
+                }
+            };
+
+            rule.Normalize();
+
+            AssertEqual(2, rule.Alternatives.Count);
+            AssertSequence(new[] { "Robe", "Duster" }, rule.Alternatives.Select(alternative => alternative.DefName));
+            AssertEqual(0, rule.Alternatives[0].Priority);
+            AssertEqual(1, rule.Alternatives[1].Priority);
+        }
+
+        private static void TestEquipmentSetNormalize()
+        {
+            ApparelSlotKey torsoShell = new ApparelSlotKey("Human", "Torso", "Shell");
+            EquipmentSet set = new EquipmentSet
+            {
+                Id = "",
+                Name = " ",
+                Role = EquipmentSetRole.Mandatory,
+                Cells = new List<CellRule>
+                {
+                    null,
+                    new CellRule { Cell = torsoShell, Alternatives = new List<CellAlternative> { new CellAlternative { DefName = "Robe" } } },
+                    new CellRule { Cell = torsoShell, Alternatives = new List<CellAlternative> { new CellAlternative { DefName = "Duster" } } },
+                    new CellRule { Cell = default, Alternatives = new List<CellAlternative>() }
+                },
+                Inventory = new List<InventoryTarget>
+                {
+                    new InventoryTarget { DefName = " Food ", Expected = 5 },
+                    new InventoryTarget { DefName = "Food", Expected = 8 },
+                    new InventoryTarget { DefName = "", Expected = 1 }
+                }
+            };
+
+            set.Normalize();
+
+            Assert(!string.IsNullOrEmpty(set.Id), "set id generated");
+            Assert(set.Name == "new set", "set default name");
+            AssertEqual(1, set.Cells.Count);
+            AssertEqual(2, set.Cells[0].Alternatives.Count);
+            AssertSequence(new[] { "Robe", "Duster" }, set.Cells[0].Alternatives.Select(alternative => alternative.DefName));
+            AssertEqual(1, set.Inventory.Count);
+            Assert(set.Inventory[0].DefName == "Food", "inventory trimmed");
+            AssertEqual(8, set.Inventory[0].Expected);
+        }
+
         private static void AssertSequence(IEnumerable<string> expected, IEnumerable<string> actual)
         {
             string[] expectedArray = expected.ToArray();
