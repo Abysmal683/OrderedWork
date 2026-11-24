@@ -252,3 +252,99 @@ Do not put a gizmo on every storage.
 ```
 
 No keyword matching. No per-storage gizmos. A dedicated beacon remains a later optional feature only if the outfit-stand path is not enough.
+## Short jobs and duration
+
+Vanilla does not expose a reliable duration for a `Job` before it starts. A `JobDef` has no `expectedTicks`; distance, skill, target and interruptions all change duration.
+
+Possible approaches:
+
+### A. Historical job-duration tracker
+
+Hook `StartJob`/`EndCurrentJob`, record successful elapsed ticks by `JobDef` or `WorkGiverDef`, and keep an EWMA.
+
+Pros:
+
+- adapts to the colony;
+- no hardcoded duration table;
+- lets a threshold skip short jobs.
+
+Cons:
+
+- first run is unknown;
+- modded jobs need samples;
+- interruptions pollute samples;
+- extra hooks and state.
+
+### B. WorkGiver/JobDef allowlist
+
+Only trigger pre-work dressing for configured long jobs/WorkTypes.
+
+Examples to skip by default:
+
+- CleanFilth;
+- HaulToCell / HaulToContainer;
+- Flick;
+- Refuel;
+- Open/use door;
+- urgent tending/medical;
+- forced jobs.
+
+Examples to consider:
+
+- DoBill;
+- Research;
+- Mining/constructing;
+- hunting/fishing;
+- jobs with a worktable target.
+
+This is the simplest v1 filter.
+
+### C. Hybrid
+
+- Use the allowlist when no duration sample exists.
+- After enough successful samples, use an EWMA threshold.
+- Keep a per-WorkType override.
+
+Recommendation: ship allowlist first, add measured duration later only if players need it.
+
+## StartJob conflict and queue accumulation
+
+Common Sense only adds when:
+
+- `jobQueue.Count == 0`;
+- `fromQueue == false`;
+- `playerForced == false`.
+
+A clothing prefix should use the same guard. Then at most one opportunistic batch is added per job cycle:
+
+```text
+original job
+  + N Wear jobs
+```
+
+There is no unbounded accumulation from our side because:
+
+- `fromQueue` is true when the queued `Wear` jobs start;
+- after the queue exists, other work jobs do not trigger a new batch;
+- no per-tick check.
+
+If another mod also respects the empty-queue guard, whoever runs first wins and the other skips. If another mod ignores the guard, no patch can guarantee it will not append.
+
+Harmony priority choice:
+
+- `Priority.Last`: minimum disruption to other mods; if Common Sense already queued, clothing skips that cycle.
+- `Priority.First`: clothing wins; other opportunistic mods see a non-empty queue and skip.
+
+Do not use `TryTakeOrderedJob` for this.
+
+## Forced/direct jobs
+
+Never delay:
+
+- `newJob.playerForced`;
+- direct player orders;
+- drafted/urgent jobs;
+- tend/fire/medical emergencies;
+- jobs already coming from the queue.
+
+Forced jobs must start immediately. The clothing plan waits for a later autonomous job.
