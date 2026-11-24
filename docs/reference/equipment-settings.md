@@ -29,14 +29,9 @@ The editor catalog is not radius-filtered.
 
 ## Pre-work dressing
 
-Automatic dressing before a work job is not implemented yet. `Equip now` is manual.
+Automatic dressing runs through a `StartJob` prefix for the v1 allowlist only. It preserves existing queued jobs and prepends `[dress]` before them and before the original work.
 
-Before a work job exists there is no current worktable target, so the search center would be the pawn. A true pre-work worktable area needs an explicit WorkType/workstation anchor; vanilla has no reliable WorkType-to-worktable mapping.
-
-Options:
-
-1. Search around the pawn before work; switch to the worktable anchor when a worktable job exists.
-2. Add an explicit configurable workstation anchor per WorkType.
+Before a work job exists there is no current worktable target, so the search center is the pawn. A true pre-work worktable area needs an explicit WorkType/workstation anchor; vanilla has no reliable WorkType-to-worktable mapping.
 3. Trigger dressing only after a worktable job is assigned.
 
 Do not invent a worktable mapping.

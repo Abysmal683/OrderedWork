@@ -71,3 +71,40 @@ Inventory targets are queued after apparel and primary equipment.
 - The item must be spawned, unforbidden, reachable, reservable, inside the search area and accepted by `Pawn_InventoryTracker`.
 - Vanilla `JobDefOf.TakeInventory` is used; no custom hold capacity or reservation model.
 - Missing items are skipped; inventory failure does not stop the earlier apparel/equipment jobs.
+
+## Pre-work hook
+
+Harmony prefix on `Pawn_JobTracker.StartJob`, priority Last.
+
+It only inspects the start of a new job; there is no tick scan or per-frame work.
+
+Eligible work givers:
+
+`DoBill`, `Research`, `Mine`, `ConstructFinishFrames`, `Deconstruct`, `Repair`, `SmoothFloor`, `SmoothWall`, `Hunt`, `Fish`, `FishAnimal`, `Train`, `Tame`.
+
+Never intercepted:
+
+- `fromQueue` jobs;
+- player-forced jobs;
+- a queue containing a player-forced job;
+- hauling, cleaning, flicking, refueling, ingestion, rescue, patient/feeding/tending, prisoner bloodfeed;
+- pawns that are downed, drafted, in a mental state, or not player-controlled colonists;
+- the equipment layer's own `Wear`, `Equip` and `TakeInventory` jobs.
+
+Queue order:
+
+```text
+[dress jobs] [existing queued jobs] [original work]
+```
+
+The first dress job starts through the normal queue path. The original work is never discarded; if the dress process is interrupted, the remaining dress jobs are removed and the original work stays queued.
+
+## Dress cancellation
+
+`Pawn_JobTracker.EndCurrentJob` is observed only when the current job is a tracked dress job and the condition is `InterruptForced` or `InterruptOptional`.
+
+- Remaining queued dress jobs are removed.
+- The original work queue is preserved.
+- No replacement job is forced.
+- The plan is not marked complete; a later normal trigger can retry.
+- Tracking uses a weak pawn table, not a static pawn or Thing cache.

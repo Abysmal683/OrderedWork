@@ -190,3 +190,6 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
 - L33: Added bounded coverage repair through execution availability: unavailable alternatives fall through to the next local candidate; forced cells and policy remain authoritative; uncovered mandatory cells are logged. No active set keeps vanilla behavior.
 
 - L34: Inventory execution queued after apparel/primary using vanilla `TakeInventory`; counts existing carried items, respects reachability/reservation/search area, and skips missing items without blocking earlier jobs.
+
+- L35: Implemented pre-work `StartJob` hook with Last priority and pure allowlist; queue order is dress, existing pre-work, original work. No tick scan.
+- L36: Implemented dress cancellation on forced/optional interruption using a weak pawn/job tracker; queued dress jobs are removed and original work is preserved.

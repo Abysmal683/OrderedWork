@@ -15,6 +15,9 @@ namespace OrderedWork.Config
             message => Log.Warning(message),
             message => Log.Error(message));
 
+        private static List<EquipmentSet>? cached;
+        private static int cachedTick = -1;
+
         public static string DirectoryPath
         {
             get { return Store.DirectoryPath; }
@@ -30,6 +33,25 @@ namespace OrderedWork.Config
             return Store.LoadAll();
         }
 
+        public static List<EquipmentSet> LoadCached()
+        {
+            int tick = Find.TickManager != null ? Find.TickManager.TicksGame : 0;
+            if (cached != null && cachedTick >= 0 && tick - cachedTick < 250)
+            {
+                return cached;
+            }
+
+            cached = Store.LoadAll();
+            cachedTick = tick;
+            return cached;
+        }
+
+        public static void InvalidateCache()
+        {
+            cached = null;
+            cachedTick = -1;
+        }
+
         public static EquipmentSet? TryLoadById(string id)
         {
             return Store.TryLoadById(id);
@@ -42,12 +64,22 @@ namespace OrderedWork.Config
 
         public static bool Save(EquipmentSet? set)
         {
-            return Store.Save(set);
+            bool saved = Store.Save(set);
+            if (saved)
+            {
+                InvalidateCache();
+            }
+            return saved;
         }
 
         public static bool Delete(string id)
         {
-            return Store.Delete(id);
+            bool deleted = Store.Delete(id);
+            if (deleted)
+            {
+                InvalidateCache();
+            }
+            return deleted;
         }
     }
 }

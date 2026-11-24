@@ -20,64 +20,36 @@ namespace OrderedWork.Services
             int? searchRadiusOverride = null,
             bool wholeMap = false)
         {
-            if (pawn == null || entry == null || pawn.Map == null || pawn.jobs == null
-                || OrderedWorkMod.Settings == null || !OrderedWorkMod.Settings.equipmentEnabled)
+            if (!CanExecute(pawn, entry))
             {
                 return;
             }
 
             try
             {
-                Func<string, bool> available = defName =>
-                    FindAvailableApparel(pawn, defName, searchRadiusOverride, wholeMap) != null;
-                EquipmentPlan plan = BuildPlan(pawn, entry, catalog, sets, available);
-                if (plan.Selections.Count == 0 && string.IsNullOrWhiteSpace(plan.PrimaryEquipmentDefName)
-                    && plan.Inventory.Count == 0)
+                EquipmentPlan plan;
+                List<Job> jobs = BuildDressJobs(
+                    pawn,
+                    entry,
+                    catalog,
+                    sets,
+                    null,
+                    searchRadiusOverride,
+                    wholeMap,
+                    out plan);
+                if (jobs.Count == 0)
                 {
                     OrderedWorkMod.DebugLog("No active equipment plan for " + pawn.LabelShort
                         + "; vanilla behavior remains in control.", OrderedWorkLogCategory.Equipment);
                     return;
                 }
 
-                int queued = 0;
                 bool first = true;
-                foreach (EquipmentSelection selection in plan.Selections)
+                foreach (Job job in jobs)
                 {
-                    if (selection.Source == EquipmentSelectionSource.Forced ||
-                        selection.Source == EquipmentSelectionSource.Principal ||
-                        selection.Source == EquipmentSelectionSource.WorkType ||
-                        selection.Source == EquipmentSelectionSource.Mandatory ||
-                        selection.Source == EquipmentSelectionSource.Emergency)
-                    {
-                        if (pawn.apparel.WornApparel.Any(value => value.def.defName == selection.DefName))
-                        {
-                            continue;
-                        }
-                        Apparel? apparel = FindAvailableApparel(pawn, selection.DefName, searchRadiusOverride, wholeMap);
-                        if (apparel == null)
-                        {
-                            continue;
-                        }
-                        Job job = JobMaker.MakeJob(JobDefOf.Wear, apparel);
-                        Queue(pawn, job, ref first);
-                        queued++;
-                    }
+                    Queue(pawn, job, ref first);
                 }
-
-                if (!string.IsNullOrWhiteSpace(plan.PrimaryEquipmentDefName)
-                    && (pawn.equipment?.Primary == null
-                        || pawn.equipment.Primary.def.defName != plan.PrimaryEquipmentDefName))
-                {
-                    ThingWithComps? equipment = FindAvailableEquipment(pawn, plan.PrimaryEquipmentDefName, searchRadiusOverride, wholeMap);
-                    if (equipment != null)
-                    {
-                        Job job = JobMaker.MakeJob(JobDefOf.Equip, equipment);
-                        Queue(pawn, job, ref first);
-                        queued++;
-                    }
-                }
-
-                queued += QueueInventory(pawn, plan, searchRadiusOverride, wholeMap, ref first);
+                EquipmentDressTracker.Register(pawn, jobs);
 
                 if (plan.MandatoryUncovered.Count > 0)
                 {
@@ -86,7 +58,7 @@ namespace OrderedWork.Services
                         + ".", OrderedWorkLogCategory.Equipment);
                 }
 
-                OrderedWorkMod.DebugLog("Equip now for " + pawn.LabelShort + ": queued " + queued
+                OrderedWorkMod.DebugLog("Equip now for " + pawn.LabelShort + ": queued " + jobs.Count
                     + " job(s), conflicts " + plan.Conflicts.Count + ".", OrderedWorkLogCategory.Equipment);
             }
             catch (Exception exception)
@@ -95,12 +67,72 @@ namespace OrderedWork.Services
             }
         }
 
+        public static List<Job> BuildDressJobs(
+            Pawn pawn,
+            PawnWorkOrder? entry,
+            EquipmentCatalogSnapshot catalog,
+            List<EquipmentSet> sets,
+            WorkTypeDef? activeWorkOverride,
+            int? searchRadiusOverride,
+            bool wholeMap,
+            out EquipmentPlan plan)
+        {
+            List<Job> jobs = new List<Job>();
+            plan = new EquipmentPlan();
+            if (!CanExecute(pawn, entry))
+            {
+                return jobs;
+            }
+
+            Func<string, bool> available = defName =>
+                FindAvailableApparel(pawn, defName, searchRadiusOverride, wholeMap) != null;
+            plan = BuildPlan(pawn, entry!, catalog, sets, available, activeWorkOverride);
+            if (plan.Selections.Count == 0 && string.IsNullOrWhiteSpace(plan.PrimaryEquipmentDefName)
+                && plan.Inventory.Count == 0)
+            {
+                return jobs;
+            }
+
+            foreach (EquipmentSelection selection in plan.Selections)
+            {
+                if (pawn.apparel.WornApparel.Any(value => value.def.defName == selection.DefName))
+                {
+                    continue;
+                }
+
+                Apparel? apparel = FindAvailableApparel(pawn, selection.DefName, searchRadiusOverride, wholeMap);
+                if (apparel != null)
+                {
+                    jobs.Add(JobMaker.MakeJob(JobDefOf.Wear, apparel));
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(plan.PrimaryEquipmentDefName)
+                && (pawn.equipment?.Primary == null
+                    || pawn.equipment.Primary.def.defName != plan.PrimaryEquipmentDefName))
+            {
+                ThingWithComps? equipment = FindAvailableEquipment(
+                    pawn,
+                    plan.PrimaryEquipmentDefName,
+                    searchRadiusOverride,
+                    wholeMap);
+                if (equipment != null)
+                {
+                    jobs.Add(JobMaker.MakeJob(JobDefOf.Equip, equipment));
+                }
+            }
+
+            AddInventoryJobs(pawn, plan, searchRadiusOverride, wholeMap, jobs);
+            return jobs;
+        }
+
         public static EquipmentPlan BuildPlan(
             Pawn pawn,
             PawnWorkOrder entry,
             EquipmentCatalogSnapshot catalog,
             List<EquipmentSet> sets,
-            Func<string, bool>? isApparelAvailable = null)
+            Func<string, bool>? isApparelAvailable = null,
+            WorkTypeDef? activeWorkOverride = null)
         {
             Dictionary<string, EquipmentSet> byId = sets.ToDictionary(value => value.Id, StringComparer.Ordinal);
             List<EquipmentSet> active = new List<EquipmentSet>();
@@ -108,7 +140,7 @@ namespace OrderedWork.Services
             AddAssigned(entry, EquipmentSetRole.Emergency, byId, active);
             AddAssigned(entry, EquipmentSetRole.Principal, byId, active);
 
-            WorkTypeDef? activeWork = ActiveWorkService.GetActiveWorkType(pawn);
+            WorkTypeDef? activeWork = activeWorkOverride ?? ActiveWorkService.GetActiveWorkType(pawn);
             string? workTypeDefName = activeWork?.defName;
             WorkConfigProfile? profile = WorkConfigStore.LoadCachedActive().Profile;
             if (workTypeDefName != null && profile != null
@@ -129,6 +161,12 @@ namespace OrderedWork.Services
                 overrides,
                 isApparelAvailable);
             return EquipmentResolver.Resolve(context);
+        }
+
+        private static bool CanExecute(Pawn? pawn, PawnWorkOrder? entry)
+        {
+            return pawn != null && entry != null && pawn.Map != null && pawn.jobs != null
+                && OrderedWorkMod.Settings != null && OrderedWorkMod.Settings.equipmentEnabled;
         }
 
         private static void AddAssigned(
@@ -176,47 +214,18 @@ namespace OrderedWork.Services
             return result;
         }
 
-        private static Apparel? FindAvailableApparel(Pawn pawn, string defName, int? searchRadiusOverride, bool wholeMap)
-        {
-            ThingDef? def = DefDatabase<ThingDef>.GetNamedSilentFail(defName);
-            if (def == null || pawn.Map == null) return null;
-            return pawn.Map.listerThings.ThingsOfDef(def)
-                .OfType<Apparel>()
-                .Where(value => value.Spawned && !value.IsForbidden(pawn))
-                .Where(value => pawn.CanReserve(value))
-                .Where(value => pawn.CanReach(value, PathEndMode.ClosestTouch, Danger.Deadly))
-                .Where(value => InSearchArea(pawn, value, searchRadiusOverride, wholeMap))
-                .OrderBy(value => value.Position.DistanceToSquared(pawn.Position))
-                .FirstOrDefault();
-        }
-
-        private static ThingWithComps? FindAvailableEquipment(Pawn pawn, string defName, int? searchRadiusOverride, bool wholeMap)
-        {
-            ThingDef? def = DefDatabase<ThingDef>.GetNamedSilentFail(defName);
-            if (def == null || pawn.Map == null) return null;
-            return pawn.Map.listerThings.ThingsOfDef(def)
-                .OfType<ThingWithComps>()
-                .Where(value => value.Spawned && !value.IsForbidden(pawn))
-                .Where(value => pawn.CanReserve(value))
-                .Where(value => pawn.CanReach(value, PathEndMode.ClosestTouch, Danger.Deadly))
-                .Where(value => InSearchArea(pawn, value, searchRadiusOverride, wholeMap))
-                .OrderBy(value => value.Position.DistanceToSquared(pawn.Position))
-                .FirstOrDefault();
-        }
-
-        private static int QueueInventory(
+        private static void AddInventoryJobs(
             Pawn pawn,
             EquipmentPlan plan,
             int? searchRadiusOverride,
             bool wholeMap,
-            ref bool first)
+            List<Job> jobs)
         {
             if (pawn.inventory?.innerContainer == null || plan.Inventory.Count == 0)
             {
-                return 0;
+                return;
             }
 
-            int queued = 0;
             foreach (KeyValuePair<string, int> entry in plan.Inventory.OrderBy(value => value.Key, StringComparer.Ordinal))
             {
                 if (entry.Value <= 0)
@@ -251,11 +260,36 @@ namespace OrderedWork.Services
 
                 Job job = JobMaker.MakeJob(JobDefOf.TakeInventory, thing);
                 job.count = count;
-                Queue(pawn, job, ref first);
-                queued++;
+                jobs.Add(job);
             }
+        }
 
-            return queued;
+        private static Apparel? FindAvailableApparel(Pawn pawn, string defName, int? searchRadiusOverride, bool wholeMap)
+        {
+            ThingDef? def = DefDatabase<ThingDef>.GetNamedSilentFail(defName);
+            if (def == null || pawn.Map == null) return null;
+            return pawn.Map.listerThings.ThingsOfDef(def)
+                .OfType<Apparel>()
+                .Where(value => value.Spawned && !value.IsForbidden(pawn))
+                .Where(value => pawn.CanReserve(value))
+                .Where(value => pawn.CanReach(value, PathEndMode.ClosestTouch, Danger.Deadly))
+                .Where(value => InSearchArea(pawn, value, searchRadiusOverride, wholeMap))
+                .OrderBy(value => value.Position.DistanceToSquared(pawn.Position))
+                .FirstOrDefault();
+        }
+
+        private static ThingWithComps? FindAvailableEquipment(Pawn pawn, string defName, int? searchRadiusOverride, bool wholeMap)
+        {
+            ThingDef? def = DefDatabase<ThingDef>.GetNamedSilentFail(defName);
+            if (def == null || pawn.Map == null) return null;
+            return pawn.Map.listerThings.ThingsOfDef(def)
+                .OfType<ThingWithComps>()
+                .Where(value => value.Spawned && !value.IsForbidden(pawn))
+                .Where(value => pawn.CanReserve(value))
+                .Where(value => pawn.CanReach(value, PathEndMode.ClosestTouch, Danger.Deadly))
+                .Where(value => InSearchArea(pawn, value, searchRadiusOverride, wholeMap))
+                .OrderBy(value => value.Position.DistanceToSquared(pawn.Position))
+                .FirstOrDefault();
         }
 
         private static Thing? FindAvailableInventoryThing(
@@ -297,6 +331,7 @@ namespace OrderedWork.Services
             Thing? target = pawn.CurJob?.targetA.Thing ?? pawn.CurJob?.targetB.Thing;
             return target is Building_WorkTable ? target.Position : pawn.Position;
         }
+
         private static void Queue(Pawn pawn, Job job, ref bool first)
         {
             if (first)

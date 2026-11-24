@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -18,11 +19,12 @@ namespace OrderedWork.Services
             public int Tick;
         }
 
-        private static readonly Dictionary<Pawn, CacheEntry> cache = new Dictionary<Pawn, CacheEntry>();
+        private static ConditionalWeakTable<Pawn, CacheEntry> cache =
+            new ConditionalWeakTable<Pawn, CacheEntry>();
 
         public static void Reset()
         {
-            cache.Clear();
+            cache = new ConditionalWeakTable<Pawn, CacheEntry>();
         }
 
         public static WorkTypeDef? GetActiveWorkType(Pawn? pawn)
@@ -34,8 +36,7 @@ namespace OrderedWork.Services
             }
 
             int tick = Find.TickManager != null ? Find.TickManager.TicksGame : 0;
-            CacheEntry? entry;
-            if (cache.TryGetValue(pawn, out entry)
+            if (cache.TryGetValue(pawn, out CacheEntry? entry)
                 && ReferenceEquals(entry.Job, job)
                 && tick - entry.Tick < 5)
             {
@@ -43,7 +44,8 @@ namespace OrderedWork.Services
             }
 
             WorkTypeDef? workType = job.workGiverDef != null ? job.workGiverDef.workType : null;
-            cache[pawn] = new CacheEntry { Job = job, WorkType = workType, Tick = tick };
+            cache.Remove(pawn);
+            cache.Add(pawn, new CacheEntry { Job = job, WorkType = workType, Tick = tick });
             return workType;
         }
 

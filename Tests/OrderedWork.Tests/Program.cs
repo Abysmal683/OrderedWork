@@ -69,6 +69,7 @@ namespace OrderedWork.Tests
             Run("Equipment set JSON store roundtrips and deletes", TestEquipmentSetJsonStoreRoundtrip);
             Run("Equipment view layout keeps slot identity through rename and reorder", TestEquipmentViewLayout);
             Run("Equipment assignment rules normalize ids and override keys", TestEquipmentAssignmentRules);
+            Run("Equipment pre-work allowlist excludes forced and utility jobs", TestEquipmentPreWorkRules);
 
             Console.WriteLine(failures == 0 ? "All tests passed." : failures + " test(s) failed.");
             return failures == 0 ? 0 : 1;
@@ -1042,6 +1043,17 @@ namespace OrderedWork.Tests
             Assert(EquipmentAssignmentRules.IsValidOverride("forced_apparel", "Human", "Torso", "Shell", "Robe"), "forced valid");
             Assert(EquipmentAssignmentRules.OverrideKey("inventory", "", "", "", "Food") == "inventory||||Food", "override key");
         }
+        private static void TestEquipmentPreWorkRules()
+        {
+            Assert(EquipmentPreWorkRules.ShouldPrepare("DoBill", "DoBill", false, false), "bill is dressable");
+            Assert(EquipmentPreWorkRules.ShouldPrepare("Mine", "Mine", false, false), "mine is dressable");
+            Assert(!EquipmentPreWorkRules.ShouldPrepare("Haul", "Haul", false, false), "haul is excluded");
+            Assert(!EquipmentPreWorkRules.ShouldPrepare("Mine", "Mine", true, false), "player forced is excluded");
+            Assert(!EquipmentPreWorkRules.ShouldPrepare("Mine", "Mine", false, true), "queue replay is excluded");
+            Assert(!EquipmentPreWorkRules.ShouldPrepare("Mine", "Wear", false, false), "dress job is excluded");
+            Assert(!EquipmentPreWorkRules.ShouldPrepare("", "Mine", false, false), "missing work giver is excluded");
+        }
+
         private static void AssertSequence(IEnumerable<string> expected, IEnumerable<string> actual)
         {
             string[] expectedArray = expected.ToArray();
