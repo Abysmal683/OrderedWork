@@ -12,6 +12,7 @@ namespace OrderedWork
         Passion = 8,
         Config = 16,
         Harmony = 32,
-        All = WorkControl | Schedule | Stores | Passion | Config | Harmony
+        Equipment = 64,
+        All = WorkControl | Schedule | Stores | Passion | Config | Harmony | Equipment
     }
 }

@@ -29,14 +29,15 @@ namespace OrderedWork.UI
             Rect rect,
             EquipmentSet? set,
             EquipmentCatalogSnapshot catalog,
-            EquipmentMetadataState state)
+            EquipmentMetadataState state,
+            Pawn? pawn = null)
         {
             try
             {
                 Widgets.DrawBoxSolid(rect, UiColors.ColumnBackground);
                 Rect[] cols = UiFlex.Columns(UiInset.All(rect, 6f), 8f, 1f, 1f);
-                DrawSummary(cols[0], set, catalog);
-                DrawDetail(cols[1], state, catalog);
+                DrawSummary(cols[0], set, catalog, pawn);
+                DrawDetail(cols[1], state, catalog, pawn);
             }
             catch (Exception exception)
             {
@@ -45,7 +46,7 @@ namespace OrderedWork.UI
             }
         }
 
-        private static void DrawSummary(Rect area, EquipmentSet? set, EquipmentCatalogSnapshot catalog)
+        private static void DrawSummary(Rect area, EquipmentSet? set, EquipmentCatalogSnapshot catalog, Pawn? pawn)
         {
             UiRows rows = new UiRows(area, 24f, 6f);
             Widgets.Label(rows.Next(), OrderedWorkText.T("OrderedWork.Equipment.Metadata.Summary", "Summary"));
@@ -56,20 +57,20 @@ namespace OrderedWork.UI
                 return;
             }
 
-            List<SummaryRow> summary = BuildSummary(set, catalog);
+            List<SummaryRow> summary = BuildSummary(set, catalog, pawn);
             UiScrollPane.Draw(list, ref summaryScroll, Mathf.Max(list.height, summary.Count * 32f + 4f), typeof(EquipmentMetadataPanel), delegate(Rect view)
             {
                 UiRows listRows = new UiRows(view, 28f, 4f);
                 foreach (SummaryRow item in summary)
                 {
                     Rect row = listRows.Next();
-                    string sub = item.DefName + " · " + ArmorLine(item.DefName);
+                    string sub = item.DefName + " · " + ArmorLine(item.DefName, pawn);
                     UiCard.Draw(row, item.Label, sub, false, null, item.Tooltip);
                 }
             });
         }
 
-        private static void DrawDetail(Rect area, EquipmentMetadataState state, EquipmentCatalogSnapshot catalog)
+        private static void DrawDetail(Rect area, EquipmentMetadataState state, EquipmentCatalogSnapshot catalog, Pawn? pawn)
         {
             UiRows rows = new UiRows(area, 24f, 6f);
             Rect header = rows.Next(28f);
@@ -100,16 +101,16 @@ namespace OrderedWork.UI
             if (state.Compare)
             {
                 Rect[] panes = UiFlex.Columns(body, 8f, 1f, 1f);
-                DrawItemPane(panes[0], state.SelectedDefName);
-                DrawItemPane(panes[1], state.CompareDefName);
+                DrawItemPane(panes[0], state.SelectedDefName, pawn);
+                DrawItemPane(panes[1], state.CompareDefName, pawn);
             }
             else
             {
-                DrawItemPane(body, state.SelectedDefName);
+                DrawItemPane(body, state.SelectedDefName, pawn);
             }
         }
 
-        private static void DrawItemPane(Rect area, string? selectedDefName)
+        private static void DrawItemPane(Rect area, string? selectedDefName, Pawn? pawn)
         {
             if (string.IsNullOrWhiteSpace(selectedDefName))
             {
@@ -124,7 +125,7 @@ namespace OrderedWork.UI
                 return;
             }
 
-            Thing? thing = GetThing(def);
+            Thing? thing = GetThing(def, pawn);
             UiRows rows = new UiRows(area, 24f, 6f);
             Rect header = rows.Next(28f);
             Rect[] headerCols = UiFlex.Columns(header, 6f, 3f, 1f);
@@ -147,16 +148,16 @@ namespace OrderedWork.UI
                 ? (thing.Stuff?.LabelCap.ToString() ?? OrderedWorkText.T("OrderedWork.Equipment.Metadata.NoMaterial", "none"))
                 : OrderedWorkText.T("OrderedWork.Equipment.Metadata.NoMaterial", "none");
             Widgets.Label(rows.Next(20f), OrderedWorkText.T("OrderedWork.Equipment.Metadata.Material", "Material") + ": " + material);
-            if (def.HasComp(typeof(CompQuality)))
+            if (QualityUtility.TryGetQuality(thing, out QualityCategory quality))
             {
                 Widgets.Label(rows.Next(20f), OrderedWorkText.T("OrderedWork.Equipment.Metadata.Quality", "Quality") + ": "
-                    + OrderedWorkText.T("OrderedWork.Equipment.Metadata.DefaultQuality", "Normal"));
+                    + QualityUtility.GetLabel(quality));
             }
 
             Rect statsRect = rows.Remaining;
             StatsReportUtility.DrawStatsReport(statsRect, thing);
         }
-        private static List<SummaryRow> BuildSummary(EquipmentSet set, EquipmentCatalogSnapshot catalog)
+        private static List<SummaryRow> BuildSummary(EquipmentSet set, EquipmentCatalogSnapshot catalog, Pawn? pawn)
         {
             List<SummaryRow> result = new List<SummaryRow>();
             foreach (CellRule rule in set.Cells)
@@ -179,7 +180,7 @@ namespace OrderedWork.UI
                         Label = (group == null ? cell.BodyPartGroupDefName : group.LabelCap.ToString())
                             + " · " + (layer == null ? cell.ApparelLayerDefName : layer.LabelCap.ToString()),
                         DefName = defName,
-                        Tooltip = ArmorLine(defName)
+                        Tooltip = ArmorLine(defName, pawn)
                     });
                 }
             }
@@ -189,7 +190,7 @@ namespace OrderedWork.UI
             foreach (string defName in activeDefs)
             {
                 ThingDef? def = DefDatabase<ThingDef>.GetNamedSilentFail(defName);
-                Thing? thing = def == null ? null : GetThing(def);
+                Thing? thing = def == null ? null : GetThing(def, pawn);
                 if (thing == null)
                 {
                     continue;
@@ -207,16 +208,22 @@ namespace OrderedWork.UI
             return result;
         }
 
-        private static Thing? GetThing(ThingDef def)
+        private static Thing? GetThing(ThingDef def, Pawn? pawn)
         {
+            Apparel? worn = pawn?.apparel?.WornApparel?.FirstOrDefault(value =>
+                value != null && string.Equals(value.def.defName, def.defName, StringComparison.Ordinal));
+            if (worn != null)
+            {
+                return worn;
+            }
             ThingDef? stuff = def.MadeFromStuff ? GenStuff.DefaultStuffFor(def) : null;
             return ThingMaker.MakeThing(def, stuff);
         }
 
-        private static string ArmorLine(string defName)
+        private static string ArmorLine(string defName, Pawn? pawn)
         {
             ThingDef? def = DefDatabase<ThingDef>.GetNamedSilentFail(defName);
-            Thing? thing = def == null ? null : GetThing(def);
+            Thing? thing = def == null ? null : GetThing(def, pawn);
             if (thing == null)
             {
                 return "-";

@@ -63,26 +63,26 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
   - Pawn source badges remain for T8 Equipment tab.
   - Old `Dialog_ClothingEditor` and `Dialog_ThingDefPicker` removed; overview opens the new editor.
 
-- T7: Metadata. In progress — second metadata slice implemented.
+- T7: Metadata. In progress — core panel implemented.
   - 40 body/layer and per-item global insulation summary.
   - 60 detail with compare mode, Pick, StatsReportUtility and Info card per pane.
-  - Default material/quality shown.
-  - Pending: equipment/inventory summary sections and actual pawn values (depends T8a), source icon overflow.
+  - Editor uses default material/quality; pawn tab uses actual worn material/quality.
+  - Pending: equipment/inventory summary sections and source icon overflow.
 
 - T8a: Equipment assignment/overrides persistence. Done.
   - Added pawn Mandatory/Emergency/Principal set id lists and `PawnEquipmentOverride`.
   - Added `WorkTypeConfig.EquipmentSetId`.
   - Added additive Scribe fields and normalization; pure assignment rules with one test.
   - 54 tests passing; no UI yet.
-- T8b: Pawn Equipment tab. Functional slice complete.
+- T8b: Pawn Equipment tab. Done.
   - Replaced old Clothing tab with Equipment.
-  - Current Gear left: apparel with badges M/E/W/P/U, primary, inventory, carrying, weight.
+  - Current Gear left: apparel with resolver-derived badges F/M/E/W/P/U, primary, inventory, carrying, weight.
   - Sets right: grouped roles, assigned/available labels, select, open editor.
   - Right-click toggles pawn assignment for Mandatory/Emergency/Principal.
   - Drag assigned sets within a role to reorder.
   - Equipment Overrides view: list, right-click remove, clear all.
-  - Metadata mounted from selected set.
-  - Badges are assignment-based; resolver-driven actual metadata remains T7.
+  - Metadata mounted from selected set and uses actual worn material/quality.
+  - Catalog cached per panel; sets reloaded on a 250-tick TTL.
   - Old clothing overview/preview/grid/list removed; localization warnings 0.
 
 - T9: Equip now and execution.
@@ -149,3 +149,5 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
 - L17: T8b second slice: pawn assignment toggle on set right-click, Equipment Overrides view with remove/clear all; warnings now 0.
 
 - L18: T8b functional slice complete: set assignment toggle, drag reorder within role, overrides view, source badges; localization warnings 0.
+
+- L19: T8b done: resolver-derived badges, actual worn material/quality, catalog cache, set TTL; Equipment debug category; 54 tests, 0 warnings.

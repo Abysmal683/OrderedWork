@@ -22,6 +22,9 @@ namespace OrderedWork.UI
         private string? dragEquipmentSetId;
         private EquipmentSetRole? dragEquipmentRole;
         private EquipmentMetadataState equipmentMetadata = new EquipmentMetadataState();
+        private EquipmentCatalogSnapshot? equipmentCatalogCache;
+        private List<EquipmentSet>? equipmentSetsCache;
+        private int equipmentSetsLoadedTick = -1;
         private bool equipmentOverridesView;
 
         private void DrawEquipmentTab(Rect content)
@@ -29,8 +32,8 @@ namespace OrderedWork.UI
             try
             {
                 PawnWorkOrder? entry = OrderedWorkGameComponent.GetOrCreate()?.GetEntry(pawn);
-                EquipmentCatalogSnapshot catalog = EquipmentCatalogBuilder.Build(pawn);
-                List<EquipmentSet> sets = EquipmentSetStore.LoadAll();
+                EquipmentCatalogSnapshot catalog = GetEquipmentCatalog();
+                List<EquipmentSet> sets = GetEquipmentSets();
                 EquipmentSet? selectedSet = selectedEquipmentSetId == null
                     ? null
                     : sets.FirstOrDefault(value => value.Id == selectedEquipmentSetId);
@@ -49,6 +52,25 @@ namespace OrderedWork.UI
             }
         }
 
+        private EquipmentCatalogSnapshot GetEquipmentCatalog()
+        {
+            if (equipmentCatalogCache == null)
+            {
+                equipmentCatalogCache = EquipmentCatalogBuilder.Build(pawn);
+            }
+            return equipmentCatalogCache;
+        }
+
+        private List<EquipmentSet> GetEquipmentSets()
+        {
+            int tick = Find.TickManager != null ? Find.TickManager.TicksGame : 0;
+            if (equipmentSetsCache == null || tick - equipmentSetsLoadedTick > 250)
+            {
+                equipmentSetsCache = EquipmentSetStore.LoadAll();
+                equipmentSetsLoadedTick = tick;
+            }
+            return equipmentSetsCache;
+        }
         private void DrawCurrentGear(Rect area, PawnWorkOrder? entry, EquipmentCatalogSnapshot catalog, List<EquipmentSet> sets)
         {
             float capacity = pawn.GetStatValue(StatDefOf.CarryingCapacity);
@@ -60,6 +82,7 @@ namespace OrderedWork.UI
             Widgets.Label(new Rect(area.x, area.y + 22f, area.width, 20f),
                 OrderedWorkText.T("OrderedWork.Equipment.Weight", "Weight") + ": " + weight);
 
+            Dictionary<string, EquipmentSelectionSource> badges = BuildBadgeMap(entry, catalog, sets);
             Rect list = new Rect(area.x, area.y + 46f, area.width, area.height - 46f);
             UiScrollPane.Draw(list, ref equipmentLeftScroll, Mathf.Max(list.height, 260f), this, delegate(Rect view)
             {
@@ -69,7 +92,7 @@ namespace OrderedWork.UI
                 {
                     if (apparel == null) continue;
                     Rect row = rows.Next();
-                    UiCard.Draw(row, apparel.LabelCap, SourceBadge(entry, sets, apparel.def.defName), false, null, apparel.def.defName);
+                    UiCard.Draw(row, apparel.LabelCap, BadgeForDef(badges, apparel.def.defName), false, null, apparel.def.defName);
                 }
 
                 Widgets.Label(rows.Next(22f), OrderedWorkText.T("OrderedWork.Equipment.Primary", "Primary"));
@@ -103,45 +126,123 @@ namespace OrderedWork.UI
             });
         }
 
-        private static string SourceBadge(PawnWorkOrder? entry, List<EquipmentSet> sets, string defName)
+        private static string BadgeForDef(IReadOnlyDictionary<string, EquipmentSelectionSource> badges, string defName)
         {
-            if (entry == null)
+            if (!badges.TryGetValue(defName, out EquipmentSelectionSource source))
             {
                 return "U";
             }
-            foreach (EquipmentSetRole role in new[]
+            return source switch
             {
-                EquipmentSetRole.Mandatory,
-                EquipmentSetRole.Emergency,
-                EquipmentSetRole.WorkType,
-                EquipmentSetRole.Principal
-            })
+                EquipmentSelectionSource.Forced => "F",
+                EquipmentSelectionSource.Mandatory => "M",
+                EquipmentSelectionSource.Emergency => "E",
+                EquipmentSelectionSource.WorkType => "W",
+                EquipmentSelectionSource.Principal => "P",
+                _ => "U"
+            };
+        }
+        private Dictionary<string, EquipmentSelectionSource> BuildBadgeMap(
+            PawnWorkOrder? entry,
+            EquipmentCatalogSnapshot catalog,
+            List<EquipmentSet> sets)
+        {
+            Dictionary<string, EquipmentSelectionSource> result = new Dictionary<string, EquipmentSelectionSource>(StringComparer.Ordinal);
+            if (entry == null)
             {
-                List<string>? ids = GetAssignedIds(entry, role);
-                if (ids == null)
+                return result;
+            }
+
+            try
+            {
+                Dictionary<string, EquipmentSet> byId = sets.ToDictionary(value => value.Id, StringComparer.Ordinal);
+                List<EquipmentSet> active = new List<EquipmentSet>();
+                AddAssignedSets(entry, EquipmentSetRole.Mandatory, byId, active);
+                AddAssignedSets(entry, EquipmentSetRole.Emergency, byId, active);
+                AddAssignedSets(entry, EquipmentSetRole.Principal, byId, active);
+
+                WorkTypeDef? activeWork = ActiveWorkService.GetActiveWorkType(pawn);
+                if (activeWork != null)
+                {
+                    WorkConfigProfile? profile = WorkConfigStore.LoadCachedActive().Profile;
+                    if (profile != null && profile.WorkTypes.TryGetValue(activeWork.defName, out WorkTypeConfig? config)
+                        && config != null && !string.IsNullOrWhiteSpace(config.EquipmentSetId)
+                        && byId.TryGetValue(config.EquipmentSetId, out EquipmentSet? workSet))
+                    {
+                        active.Add(workSet);
+                    }
+                }
+
+                EquipmentOverrides overrides = BuildOverrides(entry);
+                EquipmentResolutionContext context = new EquipmentResolutionContext(
+                    catalog.Footprints,
+                    catalog.AllowedApparel,
+                    active,
+                    ActiveWorkService.GetActiveWorkType(pawn)?.defName,
+                    pawn.Drafted,
+                    overrides);
+                EquipmentPlan plan = EquipmentResolver.Resolve(context);
+                foreach (EquipmentSelection selection in plan.Selections)
+                {
+                    if (!result.ContainsKey(selection.DefName))
+                    {
+                        result[selection.DefName] = selection.Source;
+                    }
+                }
+                OrderedWorkMod.DebugLog("Equipment plan for " + pawn.LabelShort + ": " + plan.Selections.Count
+                    + " selections, " + plan.Conflicts.Count + " conflicts.", OrderedWorkLogCategory.Equipment);
+            }
+            catch (Exception exception)
+            {
+                Log.ErrorOnce("[Ordered Work] Equipment badge plan failed: " + exception, 817236);
+            }
+            return result;
+        }
+
+        private static void AddAssignedSets(
+            PawnWorkOrder entry,
+            EquipmentSetRole role,
+            Dictionary<string, EquipmentSet> byId,
+            List<EquipmentSet> active)
+        {
+            List<string>? ids = GetAssignedIds(entry, role);
+            if (ids == null)
+            {
+                return;
+            }
+            foreach (string id in ids)
+            {
+                if (byId.TryGetValue(id, out EquipmentSet? set) && set != null)
+                {
+                    active.Add(set);
+                }
+            }
+        }
+
+        private static EquipmentOverrides BuildOverrides(PawnWorkOrder entry)
+        {
+            EquipmentOverrides result = new EquipmentOverrides();
+            foreach (PawnEquipmentOverride value in entry.equipmentOverrides)
+            {
+                if (value == null)
                 {
                     continue;
                 }
-                foreach (string id in ids)
+                switch (value.kind)
                 {
-                    EquipmentSet? set = sets.FirstOrDefault(value => value.Id == id);
-                    if (set == null)
-                    {
-                        continue;
-                    }
-                    if (set.Cells.Any(rule => rule.Alternatives.Any(alt => string.Equals(alt.DefName, defName, StringComparison.Ordinal))))
-                    {
-                        return role switch
-                        {
-                            EquipmentSetRole.Mandatory => "M",
-                            EquipmentSetRole.Emergency => "E",
-                            EquipmentSetRole.WorkType => "W",
-                            _ => "P"
-                        };
-                    }
+                    case "forced_apparel":
+                        result.ForcedApparel[new ApparelSlotKey(
+                            value.bodyDefName, value.bodyPartGroupDefName, value.apparelLayerDefName)] = value.defName;
+                        break;
+                    case "primary_equipment":
+                        result.PrimaryEquipmentDefName = value.defName;
+                        break;
+                    case "inventory":
+                        result.Inventory[value.defName] = value.forbidden ? -1 : value.count;
+                        break;
                 }
             }
-            return "U";
+            return result;
         }
         private void DrawEquipmentSets(Rect area, PawnWorkOrder? entry, List<EquipmentSet> sets)
         {
@@ -243,7 +344,7 @@ namespace OrderedWork.UI
                 Widgets.Label(area, OrderedWorkText.T("OrderedWork.Equipment.SelectSet", "Select a set."));
                 return;
             }
-            EquipmentMetadataPanel.Draw(area, selectedSet, catalog, equipmentMetadata);
+            EquipmentMetadataPanel.Draw(area, selectedSet, catalog, equipmentMetadata, pawn);
         }
 
         private void DrawEquipmentOverrides(Rect area, PawnWorkOrder? entry)
@@ -260,6 +361,7 @@ namespace OrderedWork.UI
             {
                 entry.equipmentOverrides.Clear();
                 entry.NormalizePolicy();
+                OrderedWorkMod.DebugLog("Cleared all equipment overrides for " + pawn.LabelShort, OrderedWorkLogCategory.Equipment);
             }
 
             Rect list = new Rect(area.x, area.y + 30f, area.width, area.height - 30f);

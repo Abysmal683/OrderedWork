@@ -4,15 +4,15 @@
 2. Open `Details`.
 3. Open the `Equipment` tab.
 
-Current Gear is on the left:
+Current Gear:
 
-- Apparel with source badge `M/E/W/P/U`
+- Apparel with resolver-derived badges `F/M/E/W/P/U`
 - Primary
 - Inventory
 - Carrying
 - Weight
 
-Sets are on the right, grouped by role:
+Sets:
 
 - Mandatory
 - Emergency
@@ -21,18 +21,14 @@ Sets are on the right, grouped by role:
 
 Actions:
 
-- Click a set to highlight/select it.
-- `Open editor` opens the selected set.
-- Right-click a Mandatory/Emergency/Principal set to assign or remove it.
-- Drag assigned sets in the same role to reorder them.
+- Click a set to select it.
+- `Open editor` opens it.
+- Right-click a Mandatory/Emergency/Principal set to assign/remove.
+- Drag assigned sets in the same role to reorder.
 - `Overrides` opens the equipment override list.
 - Right-click an override to remove it.
-- `Clear all overrides` clears the list.
+- `Clear all overrides`.
 
-Badges currently match the assigned set containing the worn def; they are an assignment view, not a completed equip plan.
+Metadata now uses the real worn item for material and quality when available. The neutral editor still uses defaults.
 
-Pending:
-
-- actual pawn material/quality in metadata;
-- finished resolver-driven source badges;
-- T7 equipment/inventory summary.
+Debug category: `Equipment` in the logging bitmask. It logs resolver summaries and assignment changes, never per-frame.
