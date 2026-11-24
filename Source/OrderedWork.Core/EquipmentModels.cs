@@ -135,6 +135,7 @@ namespace OrderedWork.Core
         public string Id { get; set; } = Guid.NewGuid().ToString("N");
         public string Name { get; set; } = "new set";
         public EquipmentSetRole Role { get; set; }
+        public int Order { get; set; }
         public string? WorkTypeDefName { get; set; }
         public string? PrimaryEquipmentDefName { get; set; }
         public List<CellRule> Cells { get; set; } = new List<CellRule>();

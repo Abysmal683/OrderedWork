@@ -34,11 +34,11 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
   - Pure/core tests for identity, footprint deduplication, catalog mapping, local priorities, set normalization and merging.
   - Result: 5 new core tests; 44 total passing; no UI/RimWorld dependency.
 
-- T3: Resolver.
+- T3: Resolver. Done.
   - Priority order, complementary sets, coverage, mandatory check, emergency fallback, equipment overflow, inventory union.
-  - Forced/locked preservation and coverage repair.
-  - Pure tests for conflict order, no loops and overflow.
-  - Acceptance: deterministic results with no repeated passes beyond bound.
+  - Forced/locked preservation and mandatory coverage reporting.
+  - Pure tests for priority, WorkType replacement, multi-cell claims, inventory union, forced cells and fallback.
+  - Coverage repair remains T9 execution work; no loop.
 
 - T4: Persistence and migration.
   - Save schema for sets/alternatives/equipment/inventory/overrides.
@@ -101,3 +101,5 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
 - L4: T1 complete: build 0/0, 39 tests pass; localization guardrail 0 errors / 68 hardcoded-UI warnings; missing-key fixture correctly fails.
 
 - L5: T2 complete: pure equipment domain models added with 5 tests; 44 total passing; duplicate cell rules merge alternatives by local priority.
+
+- L6: T3 complete: pure equipment resolver added; 7 resolver tests; 51 total passing; build 0 warnings.

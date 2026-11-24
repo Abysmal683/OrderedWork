@@ -57,6 +57,13 @@ namespace OrderedWork.Tests
             Run("Apparel catalog maps cells to possible defs", TestApparelCatalog);
             Run("Cell rule normalizes alternatives by local priority", TestCellRuleNormalize);
             Run("Equipment set normalizes cells and inventory", TestEquipmentSetNormalize);
+            Run("Equipment resolver keeps mandatory over lower sets", TestEquipmentResolverMandatoryWins);
+            Run("Equipment resolver lets WorkType replace Principal", TestEquipmentResolverWorkTypeWins);
+            Run("Equipment resolver claims multi-cell footprints", TestEquipmentResolverMultiCell);
+            Run("Equipment resolver unions inventory and overflows primary", TestEquipmentResolverInventory);
+            Run("Equipment resolver preserves forced cells", TestEquipmentResolverForced);
+            Run("Equipment resolver reports mandatory coverage", TestEquipmentResolverMandatoryCoverage);
+            Run("Equipment resolver falls back to Principal", TestEquipmentResolverPrincipalFallback);
 
             Console.WriteLine(failures == 0 ? "All tests passed." : failures + " test(s) failed.");
             return failures == 0 ? 0 : 1;
@@ -562,6 +569,229 @@ namespace OrderedWork.Tests
             Assert(preset.Name == "new clothing", "default name");
             AssertEqual(ClothingPreset.CurrentSchemaVersion, preset.SchemaVersion);
             Assert(preset.Rules != null && preset.Rules.Count == 0, "empty rule list");
+        }
+        private static ApparelSlotKey TorsoShell()
+        {
+            return new ApparelSlotKey("Human", "Torso", "Shell");
+        }
+
+        private static ApparelSlotKey LegsShell()
+        {
+            return new ApparelSlotKey("Human", "Legs", "Shell");
+        }
+
+        private static CellRule Rule(ApparelSlotKey cell, params string[] alternatives)
+        {
+            return new CellRule
+            {
+                Cell = cell,
+                Alternatives = alternatives
+                    .Select((defName, index) => new CellAlternative { DefName = defName, Priority = index })
+                    .ToList()
+            };
+        }
+
+        private static ApparelFootprint Footprint(string defName, params ApparelSlotKey[] cells)
+        {
+            return new ApparelFootprint { DefName = defName, Cells = cells.ToList() };
+        }
+
+        private static Dictionary<string, ApparelFootprint> Footprints(params ApparelFootprint[] footprints)
+        {
+            return footprints.ToDictionary(footprint => footprint.DefName, StringComparer.Ordinal);
+        }
+
+        private static EquipmentResolutionContext Context(
+            IEnumerable<EquipmentSet> sets,
+            IEnumerable<string> allowed,
+            Dictionary<string, ApparelFootprint> footprints,
+            string activeWorkType = null,
+            bool emergencyActive = false,
+            EquipmentOverrides overrides = null)
+        {
+            return new EquipmentResolutionContext(
+                footprints,
+                allowed,
+                sets,
+                activeWorkType,
+                emergencyActive,
+                overrides);
+        }
+
+        private static void TestEquipmentResolverMandatoryWins()
+        {
+            ApparelSlotKey torso = TorsoShell();
+            EquipmentSet mandatory = new EquipmentSet
+            {
+                Id = "mandatory",
+                Role = EquipmentSetRole.Mandatory,
+                Cells = new List<CellRule> { Rule(torso, "MandatoryArmor") }
+            };
+            EquipmentSet principal = new EquipmentSet
+            {
+                Id = "principal",
+                Role = EquipmentSetRole.Principal,
+                Cells = new List<CellRule> { Rule(torso, "CasualCoat") }
+            };
+            EquipmentResolutionContext context = Context(
+                new[] { mandatory, principal },
+                new[] { "MandatoryArmor", "CasualCoat" },
+                Footprints(Footprint("MandatoryArmor", torso), Footprint("CasualCoat", torso)));
+
+            EquipmentPlan plan = EquipmentResolver.Resolve(context);
+
+            Assert(plan.ByCell.ContainsKey(torso), "mandatory cell selected");
+            Assert(plan.ByCell[torso].DefName == "MandatoryArmor", "mandatory wins");
+            AssertEqual(0, plan.MandatoryUncovered.Count);
+        }
+
+        private static void TestEquipmentResolverWorkTypeWins()
+        {
+            ApparelSlotKey torso = TorsoShell();
+            EquipmentSet work = new EquipmentSet
+            {
+                Id = "work",
+                Role = EquipmentSetRole.WorkType,
+                WorkTypeDefName = "Cook",
+                Cells = new List<CellRule> { Rule(torso, "CookApron") }
+            };
+            EquipmentSet principal = new EquipmentSet
+            {
+                Id = "principal",
+                Role = EquipmentSetRole.Principal,
+                Cells = new List<CellRule> { Rule(torso, "CasualCoat") }
+            };
+            EquipmentResolutionContext context = Context(
+                new[] { principal, work },
+                new[] { "CookApron", "CasualCoat" },
+                Footprints(Footprint("CookApron", torso), Footprint("CasualCoat", torso)),
+                activeWorkType: "Cook");
+
+            EquipmentPlan plan = EquipmentResolver.Resolve(context);
+
+            Assert(plan.ByCell[torso].DefName == "CookApron", "work type replaces principal");
+            Assert(plan.ByCell[torso].Source == EquipmentSelectionSource.WorkType, "work source");
+        }
+
+        private static void TestEquipmentResolverMultiCell()
+        {
+            ApparelSlotKey torso = TorsoShell();
+            ApparelSlotKey legs = LegsShell();
+            EquipmentSet principal = new EquipmentSet
+            {
+                Id = "principal",
+                Role = EquipmentSetRole.Principal,
+                Cells = new List<CellRule>
+                {
+                    Rule(torso, "Robe"),
+                    Rule(legs, "Pants")
+                }
+            };
+            EquipmentResolutionContext context = Context(
+                new[] { principal },
+                new[] { "Robe", "Pants" },
+                Footprints(Footprint("Robe", torso, legs), Footprint("Pants", legs)));
+
+            EquipmentPlan plan = EquipmentResolver.Resolve(context);
+
+            AssertEqual(1, plan.Selections.Count);
+            Assert(plan.ByCell[torso].DefName == "Robe", "robe claims torso");
+            Assert(plan.ByCell[legs].DefName == "Robe", "robe claims legs");
+        }
+
+        private static void TestEquipmentResolverInventory()
+        {
+            EquipmentSet mandatory = new EquipmentSet
+            {
+                Id = "mandatory",
+                Role = EquipmentSetRole.Mandatory,
+                Order = 1,
+                PrimaryEquipmentDefName = "Rifle",
+                Inventory = new List<InventoryTarget> { new InventoryTarget { DefName = "Food", Expected = 2 } }
+            };
+            EquipmentSet principal = new EquipmentSet
+            {
+                Id = "principal",
+                Role = EquipmentSetRole.Principal,
+                Order = 2,
+                PrimaryEquipmentDefName = "Pistol",
+                Inventory = new List<InventoryTarget> { new InventoryTarget { DefName = "Food", Expected = 3 } }
+            };
+            EquipmentResolutionContext context = Context(
+                new[] { principal, mandatory },
+                Array.Empty<string>(),
+                new Dictionary<string, ApparelFootprint>(StringComparer.Ordinal));
+
+            EquipmentPlan plan = EquipmentResolver.Resolve(context);
+
+            AssertEqual(5, plan.Inventory["Food"]);
+            Assert(plan.PrimaryEquipmentDefName == "Rifle", "first primary wins");
+            AssertEqual(1, plan.Inventory["Pistol"]);
+        }
+
+        private static void TestEquipmentResolverForced()
+        {
+            ApparelSlotKey torso = TorsoShell();
+            EquipmentSet mandatory = new EquipmentSet
+            {
+                Id = "mandatory",
+                Role = EquipmentSetRole.Mandatory,
+                Cells = new List<CellRule> { Rule(torso, "MandatoryArmor") }
+            };
+            EquipmentOverrides overrides = new EquipmentOverrides();
+            overrides.ForcedApparel[torso] = "ForcedCoat";
+            EquipmentResolutionContext context = Context(
+                new[] { mandatory },
+                new[] { "MandatoryArmor", "ForcedCoat" },
+                Footprints(Footprint("MandatoryArmor", torso), Footprint("ForcedCoat", torso)),
+                overrides: overrides);
+
+            EquipmentPlan plan = EquipmentResolver.Resolve(context);
+
+            Assert(plan.ByCell[torso].DefName == "ForcedCoat", "forced wins");
+            Assert(plan.ByCell[torso].Source == EquipmentSelectionSource.Forced, "forced source");
+            AssertEqual(0, plan.MandatoryUncovered.Count);
+        }
+
+        private static void TestEquipmentResolverMandatoryCoverage()
+        {
+            ApparelSlotKey torso = TorsoShell();
+            EquipmentSet mandatory = new EquipmentSet
+            {
+                Id = "mandatory",
+                Role = EquipmentSetRole.Mandatory,
+                Cells = new List<CellRule> { Rule(torso, "MissingArmor") }
+            };
+            EquipmentResolutionContext context = Context(
+                new[] { mandatory },
+                new[] { "MissingArmor" },
+                new Dictionary<string, ApparelFootprint>(StringComparer.Ordinal));
+
+            EquipmentPlan plan = EquipmentResolver.Resolve(context);
+
+            AssertEqual(1, plan.MandatoryUncovered.Count);
+            Assert(plan.MandatoryUncovered[0] == torso, "mandatory cell uncovered");
+        }
+
+        private static void TestEquipmentResolverPrincipalFallback()
+        {
+            ApparelSlotKey torso = TorsoShell();
+            EquipmentSet principal = new EquipmentSet
+            {
+                Id = "principal",
+                Role = EquipmentSetRole.Principal,
+                Cells = new List<CellRule> { Rule(torso, "CasualCoat") }
+            };
+            EquipmentResolutionContext context = Context(
+                new[] { principal },
+                new[] { "CasualCoat" },
+                Footprints(Footprint("CasualCoat", torso)),
+                emergencyActive: true);
+
+            EquipmentPlan plan = EquipmentResolver.Resolve(context);
+
+            Assert(plan.ByCell[torso].DefName == "CasualCoat", "principal fallback");
+            Assert(plan.ByCell[torso].Source == EquipmentSelectionSource.Principal, "principal source");
         }
         private static void TestApparelSlotKeyIdentity()
         {
