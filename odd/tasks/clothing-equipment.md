@@ -176,3 +176,5 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
 - L27: Pre-work queue design refined: Common Sense cleaning is optional; dress jobs prepend to existing queue so dress -> other pre-work -> original; non-work/eating/forced jobs skipped; future provider registry sketched.
 
 - L28: Approved pre-work v1: Priority.Last + prepend, ingest/needs excluded, urgent/medical tending excluded; doctor uses manual Equip now until non-urgent Doctor allowlist exists.
+
+- L29: V1 allowlist, doctor safety threshold proposal, confirmed anchor order, direct-to-item Wear, and pre-work debug fields documented.

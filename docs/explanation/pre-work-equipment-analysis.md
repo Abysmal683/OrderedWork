@@ -425,3 +425,81 @@ Consequences:
 - The doctor can still use `Equip now`.
 - Routine/non-urgent doctor dressing can be added later via an explicit Doctor allowlist plus urgency checks.
 - Patient bed rest is non-work and is already excluded.
+## Doctor dress threshold
+
+Proposal:
+
+- estimate dressing time: 0.5 hour;
+- require at least 1.5 hours of patient life remaining;
+- otherwise treat as emergency and skip.
+
+Safety-first v1:
+
+- still skip `TendPatient` and all medical/urgent jobs;
+- use `HealthAIUtility.ShouldBeTendedNowByPlayer` and vanilla medical urgency checks;
+- only later add the 1.5-hour bleeding estimate after verifying the exact bleed-rate units.
+
+Do not guess the bleeding formula. A wrong estimate is worse than a conservative skip.
+
+## V1 long-job allowlist
+
+Include:
+
+- `DoBill` (crafting, cooking, smithing, tailoring, art, refining, stonecutting);
+- `Research`;
+- `Mine`;
+- `ConstructFinishFrames`, `Deconstruct`, `Repair`, `SmoothFloor`, `SmoothWall`;
+- `Hunt`, `Fish`, `FishAnimal`;
+- `Train`, `Tame`;
+- optionally `Sow`, `Harvest`, `CutPlant` with a per-WorkType cooldown.
+
+Exclude:
+
+- `HaulToCell`, `HaulToContainer`;
+- `CleanFilth`;
+- `Flick`;
+- `Refuel`;
+- `Ingest`;
+- `Rescue`;
+- `FeedPatient`;
+- `TendPatient`;
+- `TendEntity`;
+- `PrisonerBloodfeed`;
+- patient bed rest;
+- fire/urgent/forced jobs.
+
+## Search anchor
+
+Confirmed order:
+
+```text
+worktable
+medical bed
+outfit stand
+zone/storage/home
+```
+
+If none exists, do not delay the work. `Equip now` remains manual.
+
+## Direct item versus waiting at the anchor
+
+`Wear` is a direct-to-item job: the pawn walks to the apparel and equips it.
+
+The anchor is only a search/source center. It does not require the pawn to wait at the outfit stand.
+
+Direct-to-item remains v1. A later outfit-stand choreography can use a dedicated job if needed.
+
+## Debug
+
+Every pre-work decision should log under `OrderedWorkLogCategory.Equipment`:
+
+- job def and WorkType;
+- target table/bed/outfit/storage;
+- anchor cell;
+- allowlist result;
+- missing apparel count;
+- queue size before/after;
+- skip reason;
+- doctor/patient emergency check.
+
+Log once per decision, never per frame.
