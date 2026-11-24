@@ -77,6 +77,8 @@ namespace OrderedWork.Services
                     }
                 }
 
+                queued += QueueInventory(pawn, plan, searchRadiusOverride, wholeMap, ref first);
+
                 if (plan.MandatoryUncovered.Count > 0)
                 {
                     OrderedWorkMod.DebugLog("Equip now for " + pawn.LabelShort + ": mandatory coverage uncovered: "
@@ -200,6 +202,83 @@ namespace OrderedWork.Services
                 .Where(value => InSearchArea(pawn, value, searchRadiusOverride, wholeMap))
                 .OrderBy(value => value.Position.DistanceToSquared(pawn.Position))
                 .FirstOrDefault();
+        }
+
+        private static int QueueInventory(
+            Pawn pawn,
+            EquipmentPlan plan,
+            int? searchRadiusOverride,
+            bool wholeMap,
+            ref bool first)
+        {
+            if (pawn.inventory?.innerContainer == null || plan.Inventory.Count == 0)
+            {
+                return 0;
+            }
+
+            int queued = 0;
+            foreach (KeyValuePair<string, int> entry in plan.Inventory.OrderBy(value => value.Key, StringComparer.Ordinal))
+            {
+                if (entry.Value <= 0)
+                {
+                    continue;
+                }
+
+                ThingDef? def = DefDatabase<ThingDef>.GetNamedSilentFail(entry.Key);
+                if (def == null)
+                {
+                    continue;
+                }
+
+                int current = pawn.inventory.innerContainer.TotalStackCountOfDef(def);
+                int remaining = entry.Value - current;
+                if (remaining <= 0)
+                {
+                    continue;
+                }
+
+                Thing? thing = FindAvailableInventoryThing(pawn, def, remaining, searchRadiusOverride, wholeMap);
+                if (thing == null)
+                {
+                    continue;
+                }
+
+                int count = Math.Min(remaining, thing.stackCount);
+                if (count <= 0 || !pawn.inventory.innerContainer.CanAcceptAnyOf(thing, true))
+                {
+                    continue;
+                }
+
+                Job job = JobMaker.MakeJob(JobDefOf.TakeInventory, thing);
+                job.count = count;
+                Queue(pawn, job, ref first);
+                queued++;
+            }
+
+            return queued;
+        }
+
+        private static Thing? FindAvailableInventoryThing(
+            Pawn pawn,
+            ThingDef def,
+            int remaining,
+            int? searchRadiusOverride,
+            bool wholeMap)
+        {
+            if (pawn.Map == null)
+            {
+                return null;
+            }
+
+            return pawn.Map.listerThings.ThingsOfDef(def)
+                .Where(value => value.Spawned && !value.IsForbidden(pawn))
+                .Where(value => value.stackCount > 0)
+                .Where(value => pawn.CanReserve(value))
+                .Where(value => pawn.CanReach(value, PathEndMode.ClosestTouch, Danger.Deadly))
+                .Where(value => InSearchArea(pawn, value, searchRadiusOverride, wholeMap))
+                .OrderBy(value => value.Position.DistanceToSquared(pawn.Position))
+                .FirstOrDefault(value => pawn.inventory.innerContainer.CanAcceptAnyOf(value, true)
+                    && value.stackCount >= Math.Min(remaining, value.stackCount));
         }
 
         private static bool InSearchArea(Pawn pawn, Thing thing, int? searchRadiusOverride, bool wholeMap)

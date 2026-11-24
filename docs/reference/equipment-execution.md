@@ -61,3 +61,13 @@ One compact Equipment gizmo is added to the first selected colonist. It applies 
 - Apparel policy still filters candidates before availability.
 - If no alternative is available, the cell stays uncovered and `MandatoryUncovered` is reported; the execution log names the uncovered cells.
 - If the pawn has no active set, no equipment job is created and vanilla behavior remains in control.
+
+## Inventory execution
+
+Inventory targets are queued after apparel and primary equipment.
+
+- Existing carried count is subtracted from the expected count.
+- Only the remaining amount is taken.
+- The item must be spawned, unforbidden, reachable, reservable, inside the search area and accepted by `Pawn_InventoryTracker`.
+- Vanilla `JobDefOf.TakeInventory` is used; no custom hold capacity or reservation model.
+- Missing items are skipped; inventory failure does not stop the earlier apparel/equipment jobs.
