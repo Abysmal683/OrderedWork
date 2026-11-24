@@ -221,7 +221,9 @@ namespace OrderedWork.UI
                 type != null ? WorkTypePaletteView.DisplayName(type) : defName);
             Rect metaRect = new Rect(row.x + row.width - 162f, row.y, 86f, row.height);
             WorkTypePaletteView.DrawPassionIcon(new Rect(metaRect.x, row.y + 6f, 12f, 12f), passion);
-            Widgets.Label(new Rect(metaRect.x + 15f, row.y, 44f, row.height), "N" + (skill != null ? skill.Level.ToString() : "—"));
+            Widgets.Label(new Rect(metaRect.x + 15f, row.y, 44f, row.height),
+                string.Format(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.LevelShort", "N{0}"),
+                    skill != null ? skill.Level.ToString() : "—"));
             TooltipHandler.TipRegion(metaRect,
                 OrderedWork.Localization.OrderedWorkText.T("OrderedWork.ScheduleFocus.Passion", "Passion")
                 + ": " + WorkTypePaletteView.PassionText(passion) + "\n"

@@ -19,7 +19,7 @@ namespace OrderedWork
         {
             WorkTypeDef? selected = DefDatabase<WorkTypeDef>.GetNamedSilentFail(selectedDefName);
             string label = selected != null ? WorkTypePaletteView.DisplayName(selected) : ConfigText("OrderedWork.Config.SplitMerge.SelectMarker", "(select)");
-            if (!Widgets.ButtonText(rect, prefix + label + "  ▼"))
+            if (!Widgets.ButtonText(rect, prefix + label + OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Common.DropdownArrow", "  ▼")))
             {
                 return;
             }

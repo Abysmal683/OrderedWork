@@ -281,4 +281,7 @@
   <OrderedWork.Equipment.Role.WorkType>Trabajo</OrderedWork.Equipment.Role.WorkType>
   <OrderedWork.Equipment.Role.Principal>Principal</OrderedWork.Equipment.Role.Principal>
   <OrderedWork.Equipment.TabFailed>Pestaña de equipo no disponible.</OrderedWork.Equipment.TabFailed>
-  <OrderedWork.Tab.Equipment>Equipo</OrderedWork.Tab.Equipment></LanguageData>
+  <OrderedWork.Tab.Equipment>Equipo</OrderedWork.Tab.Equipment>  <OrderedWork.Common.DropdownArrow>  ▼</OrderedWork.Common.DropdownArrow>
+  <OrderedWork.WorkControl.Any>Cualquiera</OrderedWork.WorkControl.Any>
+  <OrderedWork.ScheduleFocus.LevelShort>N{0}</OrderedWork.ScheduleFocus.LevelShort>
+  <OrderedWork.Stats.PercentLine>{0}: {1}%</OrderedWork.Stats.PercentLine></LanguageData>

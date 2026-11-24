@@ -18,7 +18,7 @@ namespace OrderedWork.UI.Layout
             }
 
             Text.Anchor = TextAnchor.MiddleLeft;
-            Widgets.Label(new Rect(row.x, row.y, 22f, row.height), expanded ? "−" : "+");
+            Widgets.Label(new Rect(row.x, row.y, 22f, row.height), expanded ? UiGlyphs.Collapse : UiGlyphs.Expand);
             Widgets.Label(new Rect(row.x + 24f, row.y, row.width - 24f, row.height), title);
             Widgets.DrawBoxSolid(
                 new Rect(row.x, row.yMax - 1f, row.width, 1f),

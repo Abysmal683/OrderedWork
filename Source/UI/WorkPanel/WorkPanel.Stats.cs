@@ -92,7 +92,8 @@ namespace OrderedWork.UI
             Rect row = new Rect(0f, y, width, 20f);
             UiZebra.Draw(row, index);
             string label = capacity != null ? capacity.LabelCap.ToString() : OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Stats.Capacity", "Capacity");
-            Widgets.Label(row, label + ": " + (value * 100f).ToString("0") + "%");
+            Widgets.Label(row, string.Format(OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Stats.PercentLine", "{0}: {1}%"),
+                label, (value * 100f).ToString("0")));
             if (Mouse.IsOver(row))
             {
                 TooltipHandler.TipRegion(row, CapacityTooltip(capacity));

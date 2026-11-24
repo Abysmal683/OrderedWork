@@ -193,7 +193,7 @@ namespace OrderedWork.UI
                     if (showAny)
                     {
                         Rect anyRect = new Rect(0f, 0f, viewport.width, RowHeight - 2f);
-                        if (Widgets.ButtonText(anyRect, "Any"))
+                        if (Widgets.ButtonText(anyRect, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Any", "Any")))
                         {
                             owner.workFilterText = "";
                             owner.workFilter = null;
