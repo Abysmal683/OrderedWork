@@ -74,15 +74,16 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
   - Added `WorkTypeConfig.EquipmentSetId`.
   - Added additive Scribe fields and normalization; pure assignment rules with one test.
   - 54 tests passing; no UI yet.
-- T8b: Pawn Equipment tab. In progress — second functional slice.
+- T8b: Pawn Equipment tab. Functional slice complete.
   - Replaced old Clothing tab with Equipment.
-  - Current Gear left: apparel, primary, inventory, carrying, weight.
+  - Current Gear left: apparel with badges M/E/W/P/U, primary, inventory, carrying, weight.
   - Sets right: grouped roles, assigned/available labels, select, open editor.
   - Right-click toggles pawn assignment for Mandatory/Emergency/Principal.
+  - Drag assigned sets within a role to reorder.
   - Equipment Overrides view: list, right-click remove, clear all.
   - Metadata mounted from selected set.
+  - Badges are assignment-based; resolver-driven actual metadata remains T7.
   - Old clothing overview/preview/grid/list removed; localization warnings 0.
-  - Pending: drag/reorder assignment, source badges, actual pawn metadata.
 
 - T9: Equip now and execution.
   - Active-set job, forced/locked preservation, vanilla fallback when no set, compact multi-pawn gizmo, interruptible behavior.
@@ -146,3 +147,5 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
 - L16: T8b first slice: Equipment tab replaces Clothing; current gear, grouped sets, open editor, metadata; old clothing overview/preview removed; warnings 13→5; assignment interactions and overrides pending.
 
 - L17: T8b second slice: pawn assignment toggle on set right-click, Equipment Overrides view with remove/clear all; warnings now 0.
+
+- L18: T8b functional slice complete: set assignment toggle, drag reorder within role, overrides view, source badges; localization warnings 0.

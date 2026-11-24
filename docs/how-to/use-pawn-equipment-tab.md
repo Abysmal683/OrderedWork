@@ -6,7 +6,7 @@
 
 Current Gear is on the left:
 
-- Apparel
+- Apparel with source badge `M/E/W/P/U`
 - Primary
 - Inventory
 - Carrying
@@ -19,11 +19,20 @@ Sets are on the right, grouped by role:
 - WorkType
 - Principal
 
-Click a set to highlight it. `Open editor` opens that set in the equipment editor. Metadata for the selected set is shown below.
+Actions:
 
-Current limitations:
+- Click a set to highlight/select it.
+- `Open editor` opens the selected set.
+- Right-click a Mandatory/Emergency/Principal set to assign or remove it.
+- Drag assigned sets in the same role to reorder them.
+- `Overrides` opens the equipment override list.
+- Right-click an override to remove it.
+- `Clear all overrides` clears the list.
 
-- assignment drag/reorder/remove is not wired yet;
-- equipment overrides sub-tab is pending;
-- pawn source badges are pending;
-- actual pawn material/quality in metadata is pending.
+Badges currently match the assigned set containing the worn def; they are an assignment view, not a completed equip plan.
+
+Pending:
+
+- actual pawn material/quality in metadata;
+- finished resolver-driven source badges;
+- T7 equipment/inventory summary.

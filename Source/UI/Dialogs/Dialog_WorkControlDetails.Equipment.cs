@@ -19,6 +19,8 @@ namespace OrderedWork.UI
         private Vector2 equipmentLeftScroll;
         private Vector2 equipmentRightScroll;
         private Vector2 equipmentOverrideScroll;
+        private string? dragEquipmentSetId;
+        private EquipmentSetRole? dragEquipmentRole;
         private EquipmentMetadataState equipmentMetadata = new EquipmentMetadataState();
         private bool equipmentOverridesView;
 
@@ -36,7 +38,7 @@ namespace OrderedWork.UI
                 UiRows root = new UiRows(content, 20f, 8f);
                 Rect top = root.Next(Mathf.Max(280f, content.height - 300f));
                 Rect[] cols = UiFlex.Columns(top, 8f, 1.25f, 1f);
-                DrawCurrentGear(cols[0], entry, catalog);
+                DrawCurrentGear(cols[0], entry, catalog, sets);
                 DrawEquipmentSets(cols[1], entry, sets);
                 DrawEquipmentMetadata(root.Remaining, selectedSet, catalog);
             }
@@ -47,7 +49,7 @@ namespace OrderedWork.UI
             }
         }
 
-        private void DrawCurrentGear(Rect area, PawnWorkOrder? entry, EquipmentCatalogSnapshot catalog)
+        private void DrawCurrentGear(Rect area, PawnWorkOrder? entry, EquipmentCatalogSnapshot catalog, List<EquipmentSet> sets)
         {
             float capacity = pawn.GetStatValue(StatDefOf.CarryingCapacity);
             float gearMass = MassUtility.GearAndInventoryMass(pawn);
@@ -67,7 +69,7 @@ namespace OrderedWork.UI
                 {
                     if (apparel == null) continue;
                     Rect row = rows.Next();
-                    UiCard.Draw(row, apparel.LabelCap, null, false, null, apparel.def.defName);
+                    UiCard.Draw(row, apparel.LabelCap, SourceBadge(entry, sets, apparel.def.defName), false, null, apparel.def.defName);
                 }
 
                 Widgets.Label(rows.Next(22f), OrderedWorkText.T("OrderedWork.Equipment.Primary", "Primary"));
@@ -101,6 +103,46 @@ namespace OrderedWork.UI
             });
         }
 
+        private static string SourceBadge(PawnWorkOrder? entry, List<EquipmentSet> sets, string defName)
+        {
+            if (entry == null)
+            {
+                return "U";
+            }
+            foreach (EquipmentSetRole role in new[]
+            {
+                EquipmentSetRole.Mandatory,
+                EquipmentSetRole.Emergency,
+                EquipmentSetRole.WorkType,
+                EquipmentSetRole.Principal
+            })
+            {
+                List<string>? ids = GetAssignedIds(entry, role);
+                if (ids == null)
+                {
+                    continue;
+                }
+                foreach (string id in ids)
+                {
+                    EquipmentSet? set = sets.FirstOrDefault(value => value.Id == id);
+                    if (set == null)
+                    {
+                        continue;
+                    }
+                    if (set.Cells.Any(rule => rule.Alternatives.Any(alt => string.Equals(alt.DefName, defName, StringComparison.Ordinal))))
+                    {
+                        return role switch
+                        {
+                            EquipmentSetRole.Mandatory => "M",
+                            EquipmentSetRole.Emergency => "E",
+                            EquipmentSetRole.WorkType => "W",
+                            _ => "P"
+                        };
+                    }
+                }
+            }
+            return "U";
+        }
         private void DrawEquipmentSets(Rect area, PawnWorkOrder? entry, List<EquipmentSet> sets)
         {
             Widgets.Label(new Rect(area.x, area.y, area.width, 22f), OrderedWorkText.T("OrderedWork.Equipment.Sets", "Sets"));
@@ -134,12 +176,26 @@ namespace OrderedWork.UI
                 {
                     Widgets.Label(rows.Next(22f), RoleLabel(role));
                     List<EquipmentSet> roleSets = sets.Where(value => value.Role == role).ToList();
-                    if (roleSets.Count == 0)
+                    List<string>? assignedIds = GetAssignedIds(entry, role);
+                    List<EquipmentSet> ordered = new List<EquipmentSet>();
+                    if (assignedIds != null)
+                    {
+                        foreach (string assignedId in assignedIds)
+                        {
+                            EquipmentSet? assignedSet = roleSets.FirstOrDefault(value => value.Id == assignedId);
+                            if (assignedSet != null)
+                            {
+                                ordered.Add(assignedSet);
+                            }
+                        }
+                    }
+                    ordered.AddRange(roleSets.Where(value => assignedIds == null || !assignedIds.Contains(value.Id)));
+                    if (ordered.Count == 0)
                     {
                         Widgets.Label(rows.Next(), "—");
                         continue;
                     }
-                    foreach (EquipmentSet item in roleSets)
+                    foreach (EquipmentSet item in ordered)
                     {
                         Rect row = rows.Next();
                         bool assigned = IsAssigned(entry, role, item.Id);
@@ -158,6 +214,22 @@ namespace OrderedWork.UI
                         {
                             ToggleAssignment(entry, role, item.Id);
                             Event.current.Use();
+                        }
+                        if (assigned && role != EquipmentSetRole.WorkType)
+                        {
+                            if (Event.current.type == EventType.MouseDown && Event.current.button == 0 && Mouse.IsOver(row))
+                            {
+                                dragEquipmentSetId = item.Id;
+                                dragEquipmentRole = role;
+                            }
+                            if (dragEquipmentSetId != null && dragEquipmentRole == role
+                                && Event.current.type == EventType.MouseDrag
+                                && Mouse.IsOver(row) && !string.Equals(dragEquipmentSetId, item.Id, StringComparison.Ordinal))
+                            {
+                                MoveAssignedSet(entry, role, dragEquipmentSetId, item.Id);
+                                dragEquipmentSetId = item.Id;
+                                Event.current.Use();
+                            }
                         }
                     }
                 }
@@ -216,6 +288,43 @@ namespace OrderedWork.UI
                     }
                 }
             });
+        }
+        private static List<string>? GetAssignedIds(PawnWorkOrder? entry, EquipmentSetRole role)
+        {
+            if (entry == null)
+            {
+                return null;
+            }
+            return role switch
+            {
+                EquipmentSetRole.Mandatory => entry.mandatoryEquipmentSetIds,
+                EquipmentSetRole.Emergency => entry.emergencyEquipmentSetIds,
+                EquipmentSetRole.Principal => entry.principalEquipmentSetIds,
+                _ => null
+            };
+        }
+
+        private static void MoveAssignedSet(PawnWorkOrder? entry, EquipmentSetRole role, string? fromId, string toId)
+        {
+            if (entry == null)
+            {
+                return;
+            }
+            List<string>? list = GetAssignedIds(entry, role);
+            if (list == null || string.IsNullOrWhiteSpace(fromId))
+            {
+                return;
+            }
+            int from = list.IndexOf(fromId);
+            int to = list.IndexOf(toId);
+            if (from < 0 || to < 0 || from == to)
+            {
+                return;
+            }
+            string moved = list[from];
+            list.RemoveAt(from);
+            list.Insert(to, moved);
+            entry.NormalizePolicy();
         }
         private static void ToggleAssignment(PawnWorkOrder? entry, EquipmentSetRole role, string setId)
         {
