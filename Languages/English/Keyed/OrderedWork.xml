@@ -258,4 +258,8 @@
   <OrderedWork.Equipment.Metadata.InfoCard>Info card</OrderedWork.Equipment.Metadata.InfoCard>
   <OrderedWork.Equipment.Metadata.Material>Material</OrderedWork.Equipment.Metadata.Material>
   <OrderedWork.Equipment.Metadata.NoMaterial>none</OrderedWork.Equipment.Metadata.NoMaterial>  <OrderedWork.Equipment.Metadata.Quality>Quality</OrderedWork.Equipment.Metadata.Quality>
-  <OrderedWork.Equipment.Metadata.DefaultQuality>Normal</OrderedWork.Equipment.Metadata.DefaultQuality></LanguageData>
+  <OrderedWork.Equipment.Metadata.DefaultQuality>Normal</OrderedWork.Equipment.Metadata.DefaultQuality>  <OrderedWork.Equipment.Metadata.Compare>Compare</OrderedWork.Equipment.Metadata.Compare>
+  <OrderedWork.Equipment.Metadata.Pick>Pick</OrderedWork.Equipment.Metadata.Pick>
+  <OrderedWork.Equipment.Metadata.Insulation>Insulation</OrderedWork.Equipment.Metadata.Insulation>
+  <OrderedWork.Equipment.Metadata.Cold>Cold</OrderedWork.Equipment.Metadata.Cold>
+  <OrderedWork.Equipment.Metadata.Heat>Heat</OrderedWork.Equipment.Metadata.Heat></LanguageData>

@@ -11,9 +11,15 @@ using Verse;
 
 namespace OrderedWork.UI
 {
+    internal sealed class EquipmentMetadataState
+    {
+        public string? SelectedDefName;
+        public string? CompareDefName;
+        public bool Compare;
+    }
+
     /// <summary>
-    /// Reusable 40/60 metadata panel. First slice: body summary and selected-item
-    /// stats. Comparison is mounted after the pawn Equipment tab exists.
+    /// Reusable 40/60 metadata panel. Summary, detail and two-item comparison.
     /// </summary>
     internal static class EquipmentMetadataPanel
     {
@@ -25,12 +31,12 @@ namespace OrderedWork.UI
             Rect rect,
             EquipmentSet? set,
             EquipmentCatalogSnapshot catalog,
-            string? selectedDefName)
+            EquipmentMetadataState state)
         {
             Widgets.DrawBoxSolid(rect, UiColors.ColumnBackground);
             Rect[] cols = UiFlex.Columns(UiInset.All(rect, 6f), 8f, 1f, 1f);
             DrawSummary(cols[0], set, catalog);
-            DrawDetail(cols[1], selectedDefName);
+            DrawDetail(cols[1], state, catalog);
         }
 
         private static void DrawSummary(Rect area, EquipmentSet? set, EquipmentCatalogSnapshot catalog)
@@ -57,24 +63,63 @@ namespace OrderedWork.UI
             });
         }
 
-        private static void DrawDetail(Rect area, string? selectedDefName)
+        private static void DrawDetail(Rect area, EquipmentMetadataState state, EquipmentCatalogSnapshot catalog)
         {
             UiRows rows = new UiRows(area, 24f, 6f);
-            Widgets.Label(rows.Next(), OrderedWorkText.T("OrderedWork.Equipment.Metadata.Detail", "Detail"));
+            Rect header = rows.Next(28f);
+            Rect[] headerCols = UiFlex.Columns(header, 6f, 2f, 1f, 1f);
+            Widgets.Label(headerCols[0], OrderedWorkText.T("OrderedWork.Equipment.Metadata.Detail", "Detail"));
+            if (UiButtonBar.Button(headerCols[1], OrderedWorkText.T("OrderedWork.Equipment.Metadata.Compare", "Compare"), true, null, state.Compare ? UiColors.WarningText : null))
+            {
+                state.Compare = !state.Compare;
+                if (state.Compare && string.IsNullOrWhiteSpace(state.CompareDefName))
+                {
+                    state.CompareDefName = state.SelectedDefName;
+                }
+            }
+            if (state.Compare && UiButtonBar.Button(headerCols[2], OrderedWorkText.T("OrderedWork.Equipment.Metadata.Pick", "Pick")))
+            {
+                List<FloatMenuOption> options = catalog.Footprints.Keys
+                    .OrderBy(value => value, StringComparer.Ordinal)
+                    .Take(200)
+                    .Select(defName => new FloatMenuOption(defName, delegate { state.CompareDefName = defName; }))
+                    .ToList();
+                if (options.Count > 0)
+                {
+                    Find.WindowStack.Add(new FloatMenu(options));
+                }
+            }
+
+            Rect body = rows.Remaining;
+            if (state.Compare)
+            {
+                Rect[] panes = UiFlex.Columns(body, 8f, 1f, 1f);
+                DrawItemPane(panes[0], state.SelectedDefName);
+                DrawItemPane(panes[1], state.CompareDefName);
+            }
+            else
+            {
+                DrawItemPane(body, state.SelectedDefName);
+            }
+        }
+
+        private static void DrawItemPane(Rect area, string? selectedDefName)
+        {
             if (string.IsNullOrWhiteSpace(selectedDefName))
             {
-                Widgets.Label(rows.Remaining, OrderedWorkText.T("OrderedWork.Equipment.Metadata.Select", "Select an item."));
+                Widgets.Label(area, OrderedWorkText.T("OrderedWork.Equipment.Metadata.Select", "Select an item."));
                 return;
             }
 
             ThingDef? def = DefDatabase<ThingDef>.GetNamedSilentFail(selectedDefName);
             if (def == null)
             {
-                Widgets.Label(rows.Remaining, selectedDefName);
+                Widgets.Label(area, selectedDefName);
                 return;
             }
 
             Thing? thing = GetThing(def);
+            UiRows rows = new UiRows(area, 24f, 6f);
             Rect header = rows.Next(28f);
             Rect[] headerCols = UiFlex.Columns(header, 6f, 3f, 1f);
             Widgets.Label(headerCols[0], def.LabelCap.ToString());
@@ -95,19 +140,16 @@ namespace OrderedWork.UI
             string material = def.MadeFromStuff
                 ? (thing.Stuff?.LabelCap.ToString() ?? OrderedWorkText.T("OrderedWork.Equipment.Metadata.NoMaterial", "none"))
                 : OrderedWorkText.T("OrderedWork.Equipment.Metadata.NoMaterial", "none");
-            Widgets.Label(rows.Next(20f),
-                OrderedWorkText.T("OrderedWork.Equipment.Metadata.Material", "Material") + ": " + material);
+            Widgets.Label(rows.Next(20f), OrderedWorkText.T("OrderedWork.Equipment.Metadata.Material", "Material") + ": " + material);
             if (def.HasComp(typeof(CompQuality)))
             {
-                Widgets.Label(rows.Next(20f),
-                    OrderedWorkText.T("OrderedWork.Equipment.Metadata.Quality", "Quality") + ": "
+                Widgets.Label(rows.Next(20f), OrderedWorkText.T("OrderedWork.Equipment.Metadata.Quality", "Quality") + ": "
                     + OrderedWorkText.T("OrderedWork.Equipment.Metadata.DefaultQuality", "Normal"));
             }
 
             Rect statsRect = rows.Remaining;
             StatsReportUtility.DrawStatsReport(statsRect, thing);
         }
-
         private static List<SummaryRow> BuildSummary(EquipmentSet set, EquipmentCatalogSnapshot catalog)
         {
             List<SummaryRow> result = new List<SummaryRow>();
@@ -134,6 +176,27 @@ namespace OrderedWork.UI
                         Tooltip = ArmorLine(defName)
                     });
                 }
+            }
+
+            HashSet<string> activeDefs = new HashSet<string>(
+                result.Select(row => row.DefName), StringComparer.Ordinal);
+            foreach (string defName in activeDefs)
+            {
+                ThingDef? def = DefDatabase<ThingDef>.GetNamedSilentFail(defName);
+                Thing? thing = def == null ? null : GetThing(def);
+                if (thing == null)
+                {
+                    continue;
+                }
+                result.Add(new SummaryRow
+                {
+                    Label = OrderedWorkText.T("OrderedWork.Equipment.Metadata.Insulation", "Insulation") + " · " + (def?.LabelCap.ToString() ?? defName),
+                    DefName = defName,
+                    Tooltip = OrderedWorkText.T("OrderedWork.Equipment.Metadata.Cold", "Cold") + " "
+                        + thing.GetStatValue(StatDefOf.Insulation_Cold).ToStringTemperature()
+                        + " · " + OrderedWorkText.T("OrderedWork.Equipment.Metadata.Heat", "Heat") + " "
+                        + thing.GetStatValue(StatDefOf.Insulation_Heat).ToStringTemperature()
+                });
             }
             return result;
         }

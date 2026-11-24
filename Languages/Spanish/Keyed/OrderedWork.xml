@@ -258,4 +258,8 @@
   <OrderedWork.Equipment.Metadata.InfoCard>Ficha de información</OrderedWork.Equipment.Metadata.InfoCard>
   <OrderedWork.Equipment.Metadata.Material>Material</OrderedWork.Equipment.Metadata.Material>
   <OrderedWork.Equipment.Metadata.NoMaterial>ninguno</OrderedWork.Equipment.Metadata.NoMaterial>  <OrderedWork.Equipment.Metadata.Quality>Calidad</OrderedWork.Equipment.Metadata.Quality>
-  <OrderedWork.Equipment.Metadata.DefaultQuality>Normal</OrderedWork.Equipment.Metadata.DefaultQuality></LanguageData>
+  <OrderedWork.Equipment.Metadata.DefaultQuality>Normal</OrderedWork.Equipment.Metadata.DefaultQuality>  <OrderedWork.Equipment.Metadata.Compare>Comparar</OrderedWork.Equipment.Metadata.Compare>
+  <OrderedWork.Equipment.Metadata.Pick>Elegir</OrderedWork.Equipment.Metadata.Pick>
+  <OrderedWork.Equipment.Metadata.Insulation>Aislamiento</OrderedWork.Equipment.Metadata.Insulation>
+  <OrderedWork.Equipment.Metadata.Cold>Frío</OrderedWork.Equipment.Metadata.Cold>
+  <OrderedWork.Equipment.Metadata.Heat>Calor</OrderedWork.Equipment.Metadata.Heat></LanguageData>

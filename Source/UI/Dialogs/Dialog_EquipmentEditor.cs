@@ -29,7 +29,7 @@ namespace OrderedWork.UI
         private Vector2 availableScroll;
         private bool dirty;
         private Action? pendingAction;
-        private string? selectedDefName;
+        private readonly EquipmentMetadataState metadataState = new EquipmentMetadataState();
         private string? previewDefName;
         private HashSet<ApparelSlotKey>? previewCells;
 
@@ -126,7 +126,7 @@ namespace OrderedWork.UI
             {
                 selectedTab = index;
                 selectedCell = null;
-                selectedDefName = null;
+                metadataState.SelectedDefName = null;
             });
         }
 
@@ -173,7 +173,7 @@ namespace OrderedWork.UI
                 T("OrderedWork.Equipment.Editor.CellTooltip", "Select this cell.")))
             {
                 selectedCell = cell;
-                selectedDefName = null;
+                metadataState.SelectedDefName = null;
                 search = "";
             }
 
@@ -217,7 +217,7 @@ namespace OrderedWork.UI
         private void DrawMetadata(Rect inRect)
         {
             Rect area = new Rect(0f, 604f, inRect.width, Mathf.Max(120f, inRect.height - 614f));
-            EquipmentMetadataPanel.Draw(area, set, catalog, selectedDefName);
+            EquipmentMetadataPanel.Draw(area, set, catalog, metadataState);
         }
         private void DrawAdded(Rect area)
         {
@@ -256,7 +256,7 @@ namespace OrderedWork.UI
                     if (UiCard.Draw(row, sub, null, false, null,
                         T("OrderedWork.Equipment.Editor.RemoveHint", "Right-click to remove.")))
                     {
-                        selectedDefName = alternative.DefName;
+                        metadataState.SelectedDefName = alternative.DefName;
                     }
                     if (Event.current.type == EventType.MouseDown && Event.current.button == 1 && row.Contains(Event.current.mousePosition))
                     {
