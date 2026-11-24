@@ -65,6 +65,7 @@ namespace OrderedWork.Tests
             Run("Equipment resolver reports mandatory coverage", TestEquipmentResolverMandatoryCoverage);
             Run("Equipment resolver falls back to Principal", TestEquipmentResolverPrincipalFallback);
             Run("Equipment set JSON store roundtrips and deletes", TestEquipmentSetJsonStoreRoundtrip);
+            Run("Equipment view layout keeps slot identity through rename and reorder", TestEquipmentViewLayout);
 
             Console.WriteLine(failures == 0 ? "All tests passed." : failures + " test(s) failed.");
             return failures == 0 ? 0 : 1;
@@ -951,6 +952,33 @@ namespace OrderedWork.Tests
                     Directory.Delete(directory, true);
                 }
             }
+        }
+        private static void TestEquipmentViewLayout()
+        {
+            ApparelSlotKey torso = TorsoShell();
+            ApparelSlotKey legs = LegsShell();
+            ApparelSlotKey head = new ApparelSlotKey("Human", "UpperHead", "Overhead");
+            EquipmentViewLayout layout = EquipmentViewLayout.Build(
+                new[] { torso, legs, head, torso },
+                cell => cell.ApparelLayerDefName == "Overhead" ? "Head" : "Outer",
+                cell => cell.BodyPartGroupDefName);
+
+            AssertEqual(2, layout.Tabs.Count);
+            AssertEqual(3, layout.Cells.Count);
+            Assert(layout.TryGetCell(torso, out EquipmentViewCell torsoCell) && torsoCell != null, "torso cell exists");
+            Assert(torsoCell.TabId == "Outer", "torso tab");
+            Assert(torsoCell.RowId == "Torso", "torso row");
+
+            Assert(layout.RenameTab("Outer", "Cuerpo"), "rename tab");
+            Assert(layout.RenameRow("Outer", "Torso", "Torso principal"), "rename row");
+            Assert(layout.MoveTab("Head", 0), "move tab");
+            Assert(layout.MoveRow("Outer", "Legs", 0), "move row");
+
+            Assert(layout.TryGetCell(torso, out EquipmentViewCell after) && after != null, "cell survives rename/reorder");
+            Assert(after.Key == torso, "slot identity stable");
+            Assert(after.TabId == "Outer" && after.RowId == "Torso", "placement identity stable");
+            Assert(layout.Tabs[0].Id == "Head", "tab order applied");
+            Assert(layout.Tabs.First(tab => tab.Id == "Outer").Rows[0].Id == "Legs", "row order applied");
         }
         private static void AssertSequence(IEnumerable<string> expected, IEnumerable<string> actual)
         {

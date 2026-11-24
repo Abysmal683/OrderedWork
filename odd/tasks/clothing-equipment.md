@@ -46,10 +46,11 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
   - Round-trip and delete tests.
   - Result: 52 total tests passing; build 0 warnings.
 
-- T5: View layout model.
-  - Auto tabs/rows from cell catalog; layer config shared.
+- T5: View layout model. Done.
+  - Auto tabs/rows from cells with injected tab/row selectors.
   - Basic rename/reorder only; no advanced layout editor.
-  - Acceptance: reorder/rename never changes `SlotKey`, occupancy or candidates.
+  - Slot identity remains `ApparelSlotKey`; placement is view-only.
+  - Acceptance: 1 layout test; reorder/rename leaves cell identity stable.
 
 - T6: Editor UI.
   - Dynamic cells/onion, General/Cell modes, Added/Available columns, candidate filtering, footprint hover/50% preview, badges and `equip`.
@@ -105,3 +106,5 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
 - L6: T3 complete: pure equipment resolver added; 7 resolver tests; 51 total passing; build 0 warnings.
 
 - L7: T4 complete: new EquipmentSets JSON store; legacy ClothingPresets intentionally ignored; alpha data-loss accepted; 52 tests; build 0 warnings.
+
+- L8: T5 complete: pure view layout with tabs/rows, rename/reorder; 53 tests; build 0 warnings.
