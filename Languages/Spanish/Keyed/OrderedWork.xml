@@ -263,4 +263,22 @@
   <OrderedWork.Equipment.Metadata.Insulation>Aislamiento</OrderedWork.Equipment.Metadata.Insulation>
   <OrderedWork.Equipment.Metadata.Cold>Frío</OrderedWork.Equipment.Metadata.Cold>
   <OrderedWork.Equipment.Metadata.Heat>Calor</OrderedWork.Equipment.Metadata.Heat>  <OrderedWork.Equipment.Metadata.Failed>Metadata no disponible.</OrderedWork.Equipment.Metadata.Failed>
-</LanguageData>
+  <OrderedWork.Equipment.Open>Equipo</OrderedWork.Equipment.Open>
+  <OrderedWork.Equipment.OpenTip>Conjuntos y editor de equipo</OrderedWork.Equipment.OpenTip>
+  <OrderedWork.Equipment.CurrentGear>Equipo actual</OrderedWork.Equipment.CurrentGear>
+  <OrderedWork.Equipment.Weight>Peso</OrderedWork.Equipment.Weight>
+  <OrderedWork.Equipment.Apparel>Ropa</OrderedWork.Equipment.Apparel>
+  <OrderedWork.Equipment.Primary>Principal</OrderedWork.Equipment.Primary>
+  <OrderedWork.Equipment.Inventory>Inventario</OrderedWork.Equipment.Inventory>
+  <OrderedWork.Equipment.Carrying>Cargando</OrderedWork.Equipment.Carrying>
+  <OrderedWork.Equipment.Sets>Conjuntos</OrderedWork.Equipment.Sets>
+  <OrderedWork.Equipment.OpenEditor>Abrir editor</OrderedWork.Equipment.OpenEditor>
+  <OrderedWork.Equipment.SelectSet>Selecciona un conjunto.</OrderedWork.Equipment.SelectSet>
+  <OrderedWork.Equipment.Assigned>asignado</OrderedWork.Equipment.Assigned>
+  <OrderedWork.Equipment.Available>disponible</OrderedWork.Equipment.Available>
+  <OrderedWork.Equipment.Role.Mandatory>Obligatorio</OrderedWork.Equipment.Role.Mandatory>
+  <OrderedWork.Equipment.Role.Emergency>Emergencia</OrderedWork.Equipment.Role.Emergency>
+  <OrderedWork.Equipment.Role.WorkType>Trabajo</OrderedWork.Equipment.Role.WorkType>
+  <OrderedWork.Equipment.Role.Principal>Principal</OrderedWork.Equipment.Role.Principal>
+  <OrderedWork.Equipment.TabFailed>Pestaña de equipo no disponible.</OrderedWork.Equipment.TabFailed>
+  <OrderedWork.Tab.Equipment>Equipo</OrderedWork.Tab.Equipment></LanguageData>

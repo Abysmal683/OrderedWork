@@ -17,13 +17,13 @@ namespace OrderedWork.UI
             List<Pawn> selected = WorkControlInteraction.GetSelectedColonists();
             bool hasSelection = selected.Count > 0;
 
-            if (UiButtonBar.Button(clothesRect, "Clothes"))
+            if (UiButtonBar.Button(clothesRect, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Equipment.Open", "Equipment")))
             {
-                Find.WindowStack.Add(new Dialog_ClothingOverview(LoadedModManager.GetMod<OrderedWorkMod>()));
+                Find.WindowStack.Add(new Dialog_EquipmentEditor(LoadedModManager.GetMod<OrderedWorkMod>()));
             }
             if (Mouse.IsOver(clothesRect))
             {
-                TooltipHandler.TipRegion(clothesRect, "WorkType clothing presets");
+                TooltipHandler.TipRegion(clothesRect, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Equipment.OpenTip", "Equipment sets and editor"));
             }
 
             if (UiButtonBar.Button(recommendRect, OrderedWork.Localization.OrderedWorkText.T("OrderedWork.WorkControl.Recommend", "Recommend"), hasSelection))

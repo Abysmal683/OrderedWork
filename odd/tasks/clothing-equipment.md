@@ -74,10 +74,13 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
   - Added `WorkTypeConfig.EquipmentSetId`.
   - Added additive Scribe fields and normalization; pure assignment rules with one test.
   - 54 tests passing; no UI yet.
-- T8b: Pawn Equipment tab.
-  - Current Gear left (Apparel -> Primary -> Inventory with Carrying tag), Sets right, click-highlight and Open editor, drag/reorder/remove, Overrides sub-tab, metadata.
-  - Acceptance: set identity survives reorder/move; delete clears references.
-  - Depends on T8a.
+- T8b: Pawn Equipment tab. In progress — first functional slice.
+  - Replaced old Clothing tab with Equipment.
+  - Current Gear left: apparel, primary, inventory, carrying, weight.
+  - Sets right: grouped roles, assigned/available labels, select, open editor.
+  - Metadata mounted from the selected set.
+  - Old Dialog_ClothingOverview/preview/grid/list files removed; warnings 13→5.
+  - Pending: assignment drag/reorder/remove, Overrides sub-tab, source badges, actual pawn metadata.
 
 - T9: Equip now and execution.
   - Active-set job, forced/locked preservation, vanilla fallback when no set, compact multi-pawn gizmo, interruptible behavior.
@@ -137,3 +140,5 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
 - L14: Priority correction: assignment/overrides persistence must precede Equipment-tab UI; removed static metadata Thing cache; metadata panel guarded with Log.ErrorOnce fallback; nullable suppressions removed from new UI.
 
 - L15: T8a complete: pawn equipment set ids, WorkType EquipmentSetId, PawnEquipmentOverride, additive Scribe/normalization, pure rules test; 54 tests.
+
+- L16: T8b first slice: Equipment tab replaces Clothing; current gear, grouped sets, open editor, metadata; old clothing overview/preview removed; warnings 13→5; assignment interactions and overrides pending.

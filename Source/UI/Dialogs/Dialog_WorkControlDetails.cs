@@ -23,7 +23,7 @@ namespace OrderedWork.UI
             Schedule,
             Zone,
             Overrides,
-            Clothing
+            Equipment
         }
 
         private Pawn pawn;
@@ -119,7 +119,7 @@ namespace OrderedWork.UI
             Text.Font = GameFont.Small;
 
             Rect tabRow = new Rect(0f, 64f, inRect.width, 28f);
-            OrderedTabStrip.Draw(tabRow, new[] { OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Tab.Work", "Work"), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Tab.Overview", "Overview"), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.Title", "Schedule"), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Zone.Title", "Zone"), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Tab.Overrides", "Overrides"), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Tab.Clothing", "Clothing") }, (int)detailTab,
+            OrderedTabStrip.Draw(tabRow, new[] { OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Tab.Work", "Work"), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Tab.Overview", "Overview"), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.Title", "Schedule"), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Zone.Title", "Zone"), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Tab.Overrides", "Overrides"), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Tab.Equipment", "Equipment") }, (int)detailTab,
                 delegate(int index)
                 {
                     detailTab = (DetailTab)index;
@@ -142,8 +142,8 @@ namespace OrderedWork.UI
                 case DetailTab.Overrides:
                     DrawOverridesTab(content);
                     break;
-                case DetailTab.Clothing:
-                    DrawClothingTab(content);
+                case DetailTab.Equipment:
+                    DrawEquipmentTab(content);
                     break;
                 default:
                     DrawOverview(content);
