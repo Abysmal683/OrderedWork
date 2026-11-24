@@ -92,7 +92,9 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
   - Skips already worn and unavailable items; no loop.
   - Search area setting: default radius 30, centered on current worktable job or pawn; whole-map when disabled. Requires master equipment toggle.
   - Feature toggle `equipmentEnabled`: hides UI/tab and skips jobs when off; WorkType equipment is inert. Master guards search-area UI.
-  - Pending: coverage repair, vanilla fallback with no set, automatic pre-work dressing, workstation anchor model, compact gizmo, broader execution tests.
+  - Pending: coverage repair, vanilla fallback with no set, automatic pre-work dressing, workstation/home anchor model, compact gizmo, broader execution tests.
+  - Common Sense precedent reviewed: narrow `Pawn_JobTracker.StartJob` prefix, enqueue original before dress jobs, return false; no `TryTakeOrderedJob`.
+  - No-worktable cases: use home/outfit-stand anchor for fishing/hunting/far cleaning, not pawn.
 
 - T10: WorkType palette integration.
   - Right-click drawn palette row; Assign/Create/View/Edit.
@@ -164,3 +166,5 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
 - L22: Integrated equipment enable/disable toggle and workbench search area/radius settings; execution filters by current worktable/job or pawn, whole map when disabled.
 
 - L23: Gated search-area settings behind equipment master toggle; documented whole-map fallback, WorkType inertness, and pre-work workstation-anchor gap.
+
+- L24: Common Sense analyzed; StartJob prefix with original queued first and dress jobs at head is the recommended no-loss delay. No-worktable cases need home/stockpile anchors.
