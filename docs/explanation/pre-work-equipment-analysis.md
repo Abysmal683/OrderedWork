@@ -348,3 +348,52 @@ Never delay:
 - jobs already coming from the queue.
 
 Forced jobs must start immediately. The clothing plan waits for a later autonomous job.
+## Common Sense cleaning is optional
+
+Common Sense exposes `clean_before_work` as a setting (and related cleaning toggles). It is not mandatory.
+
+We should not reimplement cleaning. Keep our pre-work task separate and provide a small extension point for future pre-work tasks.
+
+## Dress before cleaning or work
+
+The compatible queue shape is:
+
+```text
+[dress jobs..., other pre-work jobs..., original work job]
+```
+
+If Common Sense queued `[cleaning, original]`, insert dress jobs at the head instead of appending after cleaning.
+
+At `StartJob`:
+
+1. Ignore forced, queued, urgent and non-work jobs.
+2. If the queue is empty, enqueue the original and then the dress jobs.
+3. If the queue already contains the original job, prepend the dress jobs.
+4. Return false so the original does not start yet.
+
+This preserves every queued job and puts dressing first.
+
+## Eating, rest and needs
+
+Do not intercept non-work jobs:
+
+- ingest/eating;
+- sleep/rest;
+- joy;
+- urinal/toilet or similar needs;
+- tending/fire/urgent rescue.
+
+Only intercept jobs with a work giver/WorkType that passed the allowlist. Adding clothing must never strip clothing; it only adds `Wear` jobs.
+
+## Future API
+
+A small registry is enough:
+
+```text
+PreWorkTaskProvider
+  CanRun(pawn, workJob, context) -> bool
+  BuildJobs(pawn, workJob, context) -> List<Job>
+  Priority -> int
+```
+
+Our dress provider is the first implementation. Other mods can register additional pre-work tasks without patching `StartJob` themselves. Do not expose internal queue mutation as public API unless necessary.

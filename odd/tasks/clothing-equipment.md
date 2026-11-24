@@ -172,3 +172,5 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
 - L25: Anchor evaluation: prefer target workbench/bed, then outfit stand, then storage/home, then pawn; reject keyword matching and per-storage gizmos; optional dedicated beacon remains future.
 
 - L26: Short-job and StartJob contention analysis documented: no vanilla duration; use allowlist then EWMA; queue guard bounds accumulation; forced jobs skip; Harmony First/Last tradeoff needs product decision.
+
+- L27: Pre-work queue design refined: Common Sense cleaning is optional; dress jobs prepend to existing queue so dress -> other pre-work -> original; non-work/eating/forced jobs skipped; future provider registry sketched.
