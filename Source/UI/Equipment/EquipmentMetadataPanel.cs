@@ -23,8 +23,6 @@ namespace OrderedWork.UI
     /// </summary>
     internal static class EquipmentMetadataPanel
     {
-        private static readonly Dictionary<string, Thing> thingsByDef =
-            new Dictionary<string, Thing>(StringComparer.Ordinal);
         private static Vector2 summaryScroll;
 
         public static void Draw(
@@ -33,10 +31,18 @@ namespace OrderedWork.UI
             EquipmentCatalogSnapshot catalog,
             EquipmentMetadataState state)
         {
-            Widgets.DrawBoxSolid(rect, UiColors.ColumnBackground);
-            Rect[] cols = UiFlex.Columns(UiInset.All(rect, 6f), 8f, 1f, 1f);
-            DrawSummary(cols[0], set, catalog);
-            DrawDetail(cols[1], state, catalog);
+            try
+            {
+                Widgets.DrawBoxSolid(rect, UiColors.ColumnBackground);
+                Rect[] cols = UiFlex.Columns(UiInset.All(rect, 6f), 8f, 1f, 1f);
+                DrawSummary(cols[0], set, catalog);
+                DrawDetail(cols[1], state, catalog);
+            }
+            catch (Exception exception)
+            {
+                Log.ErrorOnce("[Ordered Work] Equipment metadata failed: " + exception, 817234);
+                Widgets.Label(rect, OrderedWorkText.T("OrderedWork.Equipment.Metadata.Failed", "Metadata unavailable."));
+            }
         }
 
         private static void DrawSummary(Rect area, EquipmentSet? set, EquipmentCatalogSnapshot catalog)
@@ -203,14 +209,8 @@ namespace OrderedWork.UI
 
         private static Thing? GetThing(ThingDef def)
         {
-            if (thingsByDef.TryGetValue(def.defName, out Thing? cached))
-            {
-                return cached;
-            }
             ThingDef? stuff = def.MadeFromStuff ? GenStuff.DefaultStuffFor(def) : null;
-            Thing thing = ThingMaker.MakeThing(def, stuff);
-            thingsByDef[def.defName] = thing;
-            return thing;
+            return ThingMaker.MakeThing(def, stuff);
         }
 
         private static string ArmorLine(string defName)

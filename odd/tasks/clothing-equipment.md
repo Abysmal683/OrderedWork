@@ -67,11 +67,16 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
   - 40 body/layer and per-item global insulation summary.
   - 60 detail with compare mode, Pick, StatsReportUtility and Info card per pane.
   - Default material/quality shown.
-  - Pending: equipment/inventory summary sections, actual pawn values, source icon overflow.
+  - Pending: equipment/inventory summary sections and actual pawn values (depends T8a), source icon overflow.
 
-- T8: Pawn Equipment tab.
+- T8a: Equipment assignment/overrides persistence. BLOCKING T8b and T7 pawn values.
+  - Add pawn assignment profile: Mandatory/Emergency/Principal set ids, WorkType set id, forced cells, primary/inventory overrides.
+  - Save/load normalization and tests.
+  - No UI yet.
+- T8b: Pawn Equipment tab.
   - Current Gear left (Apparel -> Primary -> Inventory with Carrying tag), Sets right, click-highlight and Open editor, drag/reorder/remove, Overrides sub-tab, metadata.
   - Acceptance: set identity survives reorder/move; delete clears references.
+  - Depends on T8a.
 
 - T9: Equip now and execution.
   - Active-set job, forced/locked preservation, vanilla fallback when no set, compact multi-pawn gizmo, interruptible behavior.
@@ -127,3 +132,5 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
 - L12: T7 first slice: reusable EquipmentMetadataPanel mounted below candidates; 40 body/layer summary, 60 detail, default material/quality, StatsReportUtility, Info card; comparison/global sections pending.
 
 - L13: T7 second slice: global insulation rows, 30/30 compare mode with Pick and per-pane Info card; 53 tests; build 0 warnings.
+
+- L14: Priority correction: assignment/overrides persistence must precede Equipment-tab UI; removed static metadata Thing cache; metadata panel guarded with Log.ErrorOnce fallback; nullable suppressions removed from new UI.

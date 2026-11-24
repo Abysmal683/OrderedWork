@@ -53,3 +53,10 @@ search = UiSearchField.Draw(rect, search, tooltip);
 - New repeated visual behavior must become a documented gadget instead of being copied.
 
 Related: `ui-layout-rules.md`.
+
+## Safety and memory
+
+- Do not keep static caches of `Thing`, `Pawn` or def instances across screens. Build them per draw/screen and let them be collected.
+- Do not use null-forgiving operators to bypass nullable analysis. Prefer explicit checks and locals.
+- Guard a panel's draw path with a bounded `try/catch` and `Log.ErrorOnce`; render a small fallback instead of crashing the window.
+- Do not retry an action in a loop after an exception.

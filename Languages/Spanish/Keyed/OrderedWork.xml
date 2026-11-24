@@ -262,4 +262,5 @@
   <OrderedWork.Equipment.Metadata.Pick>Elegir</OrderedWork.Equipment.Metadata.Pick>
   <OrderedWork.Equipment.Metadata.Insulation>Aislamiento</OrderedWork.Equipment.Metadata.Insulation>
   <OrderedWork.Equipment.Metadata.Cold>Frío</OrderedWork.Equipment.Metadata.Cold>
-  <OrderedWork.Equipment.Metadata.Heat>Calor</OrderedWork.Equipment.Metadata.Heat></LanguageData>
+  <OrderedWork.Equipment.Metadata.Heat>Calor</OrderedWork.Equipment.Metadata.Heat>  <OrderedWork.Equipment.Metadata.Failed>Metadata no disponible.</OrderedWork.Equipment.Metadata.Failed>
+</LanguageData>
