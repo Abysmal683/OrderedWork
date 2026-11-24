@@ -174,3 +174,5 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
 - L26: Short-job and StartJob contention analysis documented: no vanilla duration; use allowlist then EWMA; queue guard bounds accumulation; forced jobs skip; Harmony First/Last tradeoff needs product decision.
 
 - L27: Pre-work queue design refined: Common Sense cleaning is optional; dress jobs prepend to existing queue so dress -> other pre-work -> original; non-work/eating/forced jobs skipped; future provider registry sketched.
+
+- L28: Approved pre-work v1: Priority.Last + prepend, ingest/needs excluded, urgent/medical tending excluded; doctor uses manual Equip now until non-urgent Doctor allowlist exists.

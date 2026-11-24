@@ -397,3 +397,31 @@ PreWorkTaskProvider
 ```
 
 Our dress provider is the first implementation. Other mods can register additional pre-work tasks without patching `StartJob` themselves. Do not expose internal queue mutation as public API unless necessary.
+## Approved v1 behavior
+
+- StartJob prefix at `Priority.Last`.
+- Preserve the original queue.
+- Prepend dress jobs so order is `dress -> other pre-work -> original`.
+- Exclude ingest, sleep/rest, joy and other need jobs.
+- Never delay forced/direct jobs.
+- Use the short-job allowlist.
+
+## Tending and medical work
+
+Tending is a WorkGiver job, but v1 excludes medical/urgent jobs:
+
+- `TendPatient` (including self-tend targets);
+- `Rescue`;
+- `FeedPatient`;
+- `TendEntity`;
+- `PrisonerBloodfeed`;
+- any medical `DoBill` with an urgent patient.
+
+Reason: tending can be life-saving, its target is a patient/bed rather than a normal bench, and a dressing detour can be harmful.
+
+Consequences:
+
+- A doctor does **not** automatically dress before tending in v1.
+- The doctor can still use `Equip now`.
+- Routine/non-urgent doctor dressing can be added later via an explicit Doctor allowlist plus urgency checks.
+- Patient bed rest is non-work and is already excluded.
