@@ -503,3 +503,27 @@ Every pre-work decision should log under `OrderedWorkLogCategory.Equipment`:
 - doctor/patient emergency check.
 
 Log once per decision, never per frame.
+## Medical urgency: use vanilla
+
+Do not invent a bleeding formula.
+
+Use the game's existing medical signals:
+
+- `HealthAIUtility.ShouldBeTendedNowByPlayerUrgent(patient)`;
+- `HealthAIUtility.ShouldBeTendedNowByPlayer(patient)`;
+- `HealthAIUtility.ShouldSeekMedicalRestUrgent(patient)`;
+- `HealthAIUtility.ShouldHaveSurgeryDoneNow(patient)`;
+- `Alert_NeedDoctor`.
+
+V1:
+
+- skip all tending/urgent medical pre-work;
+- doctor uses `Equip now`;
+- no custom bleeding math;
+- no medicine-mod-specific logic.
+
+Future compatibility:
+
+- read vanilla urgency first;
+- allow a later non-urgent Doctor threshold only through a documented adapter;
+- never override a medicine mod's urgency decision.

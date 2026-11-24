@@ -178,3 +178,5 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
 - L28: Approved pre-work v1: Priority.Last + prepend, ingest/needs excluded, urgent/medical tending excluded; doctor uses manual Equip now until non-urgent Doctor allowlist exists.
 
 - L29: V1 allowlist, doctor safety threshold proposal, confirmed anchor order, direct-to-item Wear, and pre-work debug fields documented.
+
+- L30: Medical urgency will use vanilla HealthAIUtility/Alert_NeedDoctor only; no custom bleeding formula. Pre-work hook is deferred while T9/T10 continue.
