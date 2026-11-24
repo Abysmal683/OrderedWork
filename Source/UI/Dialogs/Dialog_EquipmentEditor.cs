@@ -29,6 +29,8 @@ namespace OrderedWork.UI
         private Vector2 availableScroll;
         private bool dirty;
         private Action? pendingAction;
+        private string? previewDefName;
+        private HashSet<ApparelSlotKey>? previewCells;
 
         public Dialog_EquipmentEditor(OrderedWorkMod host, string? initialSetId = null)
         {
@@ -75,10 +77,12 @@ namespace OrderedWork.UI
                 return;
             }
 
+            previewDefName = null;
+            previewCells = null;
             DrawHeader(inRect);
             DrawTabs(inRect);
-            DrawGrid(inRect);
             DrawCandidates(inRect);
+            DrawGrid(inRect);
         }
 
         private void DrawHeader(Rect inRect)
@@ -161,12 +165,41 @@ namespace OrderedWork.UI
             int count = rule?.Alternatives.Count ?? 0;
             string label = LayerLabel(cell.ApparelLayerDefName);
             string subLabel = count == 0 ? "—" : count.ToString();
+            bool preview = previewCells != null && previewCells.Contains(cell);
             if (UiCard.Draw(rect, label, subLabel, selected, null,
                 T("OrderedWork.Equipment.Editor.CellTooltip", "Select this cell.")))
             {
                 selectedCell = cell;
                 search = "";
             }
+
+            if (!preview)
+            {
+                return;
+            }
+
+            Widgets.DrawBox(rect, 2);
+            if (count > 0 || string.IsNullOrWhiteSpace(previewDefName))
+            {
+                return;
+            }
+
+            string previewDef = previewDefName ?? "";
+            if (string.IsNullOrWhiteSpace(previewDef))
+            {
+                return;
+            }
+            Texture2D? icon = ClothingIconResolver.IconOf(previewDef);
+            if (icon == null)
+            {
+                return;
+            }
+
+            Rect iconRect = UiInset.All(rect, 14f);
+            Color previous = GUI.color;
+            GUI.color = new Color(1f, 1f, 1f, 0.5f);
+            GUI.DrawTexture(iconRect, icon, ScaleMode.ScaleToFit);
+            GUI.color = previous;
         }
 
         private void DrawCandidates(Rect inRect)
@@ -202,11 +235,17 @@ namespace OrderedWork.UI
                 {
                     CellAlternative alternative = alternatives[i];
                     Rect row = rows.Next();
-                    string sub = alternative.Priority + " · " + DefLabel(alternative.DefName);
-                    if (UiCard.Draw(row, sub, null, false, null,
-                        T("OrderedWork.Equipment.Editor.RemoveHint", "Right-click to remove.")))
+                    string sub = T("OrderedWork.Equipment.Editor.Equip", "equip") + " · " + alternative.Priority + " · " + DefLabel(alternative.DefName);
+                    if (Mouse.IsOver(row))
                     {
+                        previewDefName = alternative.DefName;
+                        if (catalog.Footprints.TryGetValue(alternative.DefName, out ApparelFootprint? footprint))
+                        {
+                            previewCells = new HashSet<ApparelSlotKey>(footprint.Cells);
+                        }
                     }
+                    UiCard.Draw(row, sub, null, false, null,
+                        T("OrderedWork.Equipment.Editor.RemoveHint", "Right-click to remove."));
                     if (Event.current.type == EventType.MouseDown && Event.current.button == 1 && row.Contains(Event.current.mousePosition))
                     {
                         rule.Alternatives.Remove(alternative);
@@ -226,19 +265,14 @@ namespace OrderedWork.UI
             search = UiSearchField.Draw(searchRect, search, T("OrderedWork.Equipment.Editor.SearchTip", "Search apparel."));
             Rect list = new Rect(area.x, area.y + 50f, area.width, area.height - 50f);
 
-            if (!selectedCell.HasValue)
-            {
-                Widgets.Label(list, T("OrderedWork.Equipment.Editor.SelectCell", "Select a cell."));
-                return;
-            }
-
-            CellRule? rule = set?.Cells.FirstOrDefault(value => value.Cell == selectedCell.Value);
+            bool hasCell = selectedCell.HasValue;
+            CellRule? rule = hasCell ? set?.Cells.FirstOrDefault(value => value.Cell == selectedCell!.Value) : null;
             HashSet<string> added = new HashSet<string>(
                 (rule?.Alternatives ?? new List<CellAlternative>()).Select(value => value.DefName),
                 StringComparer.Ordinal);
             string term = (search ?? "").Trim();
             List<ThingDef> candidates = catalog.Footprints.Values
-                .Where(footprint => footprint.Cells.Contains(selectedCell.Value))
+                .Where(footprint => !hasCell || footprint.Cells.Contains(selectedCell!.Value))
                 .Where(footprint => catalog.AllowedApparel.Contains(footprint.DefName))
                 .Where(footprint => !added.Contains(footprint.DefName))
                 .Select(footprint => DefDatabase<ThingDef>.GetNamedSilentFail(footprint.DefName))
@@ -257,11 +291,24 @@ namespace OrderedWork.UI
                 foreach (ThingDef def in candidates)
                 {
                     Rect row = rows.Next();
-                    if (UiCard.Draw(row, def.LabelCap, null, false, ClothingIconResolver.IconOf(def.defName),
-                        T("OrderedWork.Equipment.Editor.AddHint", "Click to add.")))
+                    if (Mouse.IsOver(row))
                     {
-                        AddAlternative(def.defName);
-                        break;
+                        previewDefName = def.defName;
+                        if (catalog.Footprints.TryGetValue(def.defName, out ApparelFootprint? footprint))
+                        {
+                            previewCells = new HashSet<ApparelSlotKey>(footprint.Cells);
+                        }
+                    }
+                    if (UiCard.Draw(row, def.LabelCap, null, false, ClothingIconResolver.IconOf(def.defName),
+                        hasCell
+                            ? T("OrderedWork.Equipment.Editor.AddHint", "Click to add.")
+                            : T("OrderedWork.Equipment.Editor.SelectCell", "Select a cell.")))
+                    {
+                        if (hasCell)
+                        {
+                            AddAlternative(def.defName);
+                            break;
+                        }
                     }
                 }
             });

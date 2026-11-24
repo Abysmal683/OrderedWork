@@ -18,3 +18,10 @@
 Names are edited only in `New` or `Save As...`. The current set name is read-only.
 
 Equipment sets are stored under `Config/OrderedWork/EquipmentSets`. Legacy `ClothingPresets` are ignored.
+
+## General and cell modes
+
+- With no cell selected, `Available` shows all allowed apparel.
+- Select a cell to filter candidates to that exact cell.
+- Hovering a candidate outlines its footprint.
+- Empty target cells show the candidate icon at 50%; occupied cells only get the outline.

@@ -250,4 +250,5 @@
   <OrderedWork.Equipment.Tabs.Cape>Capa</OrderedWork.Equipment.Tabs.Cape>
   <OrderedWork.Equipment.Tabs.Exosuit>Exotraje</OrderedWork.Equipment.Tabs.Exosuit>  <OrderedWork.Equipment.Editor.SelectSetHint>Seleccionar este conjunto.</OrderedWork.Equipment.Editor.SelectSetHint>
   <OrderedWork.Equipment.Editor.NameLabel>Nombre</OrderedWork.Equipment.Editor.NameLabel>
-  <OrderedWork.Equipment.Editor.SearchTip>Buscar ropa.</OrderedWork.Equipment.Editor.SearchTip></LanguageData>
+  <OrderedWork.Equipment.Editor.SearchTip>Buscar ropa.</OrderedWork.Equipment.Editor.SearchTip>  <OrderedWork.Equipment.Editor.Equip>equipar</OrderedWork.Equipment.Editor.Equip>
+</LanguageData>

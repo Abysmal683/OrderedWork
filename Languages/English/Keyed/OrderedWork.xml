@@ -250,4 +250,5 @@
   <OrderedWork.Equipment.Tabs.Cape>Cape</OrderedWork.Equipment.Tabs.Cape>
   <OrderedWork.Equipment.Tabs.Exosuit>Exosuit</OrderedWork.Equipment.Tabs.Exosuit>  <OrderedWork.Equipment.Editor.SelectSetHint>Select this set.</OrderedWork.Equipment.Editor.SelectSetHint>
   <OrderedWork.Equipment.Editor.NameLabel>Name</OrderedWork.Equipment.Editor.NameLabel>
-  <OrderedWork.Equipment.Editor.SearchTip>Search apparel.</OrderedWork.Equipment.Editor.SearchTip></LanguageData>
+  <OrderedWork.Equipment.Editor.SearchTip>Search apparel.</OrderedWork.Equipment.Editor.SearchTip>  <OrderedWork.Equipment.Editor.Equip>equip</OrderedWork.Equipment.Editor.Equip>
+</LanguageData>
