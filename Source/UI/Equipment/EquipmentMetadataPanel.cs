@@ -61,11 +61,18 @@ namespace OrderedWork.UI
             UiScrollPane.Draw(list, ref summaryScroll, Mathf.Max(list.height, summary.Count * 32f + 4f), typeof(EquipmentMetadataPanel), delegate(Rect view)
             {
                 UiRows listRows = new UiRows(view, 28f, 4f);
+                string section = "";
                 foreach (SummaryRow item in summary)
                 {
+                    if (!string.Equals(section, item.Section, StringComparison.Ordinal))
+                    {
+                        section = item.Section;
+                        Widgets.Label(listRows.Next(20f), SectionLabel(section));
+                    }
                     Rect row = listRows.Next();
-                    string sub = item.DefName + " · " + ArmorLine(item.DefName, pawn);
+                    string sub = item.SubLabel;
                     UiCard.Draw(row, item.Label, sub, false, null, item.Tooltip);
+                    UiSourceIcons.Draw(new Rect(row.xMax - 78f, row.y, 72f, row.height), item.Sources);
                 }
             });
         }
@@ -175,12 +182,16 @@ namespace OrderedWork.UI
                 {
                     BodyPartGroupDef? group = DefDatabase<BodyPartGroupDef>.GetNamedSilentFail(cell.BodyPartGroupDefName);
                     ApparelLayerDef? layer = DefDatabase<ApparelLayerDef>.GetNamedSilentFail(cell.ApparelLayerDefName);
+                    string armor = ArmorLine(defName, pawn);
                     result.Add(new SummaryRow
                     {
+                        Section = "Body",
                         Label = (group == null ? cell.BodyPartGroupDefName : group.LabelCap.ToString())
                             + " · " + (layer == null ? cell.ApparelLayerDefName : layer.LabelCap.ToString()),
+                        SubLabel = DefLabel(defName) + " · " + armor,
                         DefName = defName,
-                        Tooltip = ArmorLine(defName, pawn)
+                        Tooltip = armor,
+                        Sources = new List<string> { defName }
                     });
                 }
             }
@@ -197,17 +208,68 @@ namespace OrderedWork.UI
                 }
                 result.Add(new SummaryRow
                 {
-                    Label = OrderedWorkText.T("OrderedWork.Equipment.Metadata.Insulation", "Insulation") + " · " + (def?.LabelCap.ToString() ?? defName),
-                    DefName = defName,
-                    Tooltip = OrderedWorkText.T("OrderedWork.Equipment.Metadata.Cold", "Cold") + " "
+                    Section = "Global",
+                    Label = OrderedWorkText.T("OrderedWork.Equipment.Metadata.Insulation", "Insulation"),
+                    SubLabel = (def?.LabelCap.ToString() ?? defName) + " · "
+                        + OrderedWorkText.T("OrderedWork.Equipment.Metadata.Cold", "Cold") + " "
                         + thing.GetStatValue(StatDefOf.Insulation_Cold).ToStringTemperature()
                         + " · " + OrderedWorkText.T("OrderedWork.Equipment.Metadata.Heat", "Heat") + " "
-                        + thing.GetStatValue(StatDefOf.Insulation_Heat).ToStringTemperature()
+                        + thing.GetStatValue(StatDefOf.Insulation_Heat).ToStringTemperature(),
+                    DefName = defName,
+                    Tooltip = defName,
+                    Sources = new List<string> { defName }
                 });
             }
+
+            string? primary = pawn?.equipment?.Primary?.def.defName ?? set.PrimaryEquipmentDefName;
+            if (!string.IsNullOrWhiteSpace(primary))
+            {
+                result.Add(new SummaryRow
+                {
+                    Section = "Equipment",
+                    Label = OrderedWorkText.T("OrderedWork.Equipment.Metadata.Primary", "Primary"),
+                    SubLabel = DefLabel(primary),
+                    DefName = primary,
+                    Tooltip = primary,
+                    Sources = new List<string> { primary }
+                });
+            }
+
+            if (pawn?.inventory?.innerContainer != null)
+            {
+                foreach (IGrouping<string, Thing> group in pawn.inventory.innerContainer
+                    .Where(value => value != null)
+                    .GroupBy(value => value.def.defName, StringComparer.Ordinal))
+                {
+                    result.Add(new SummaryRow
+                    {
+                        Section = "Inventory",
+                        Label = OrderedWorkText.T("OrderedWork.Equipment.Metadata.Inventory", "Inventory"),
+                        SubLabel = DefLabel(group.Key) + " x" + group.Sum(value => value.stackCount),
+                        DefName = group.Key,
+                        Tooltip = group.Key,
+                        Sources = new List<string> { group.Key }
+                    });
+                }
+            }
+            else
+            {
+                foreach (InventoryTarget target in set.Inventory)
+                {
+                    result.Add(new SummaryRow
+                    {
+                        Section = "Inventory",
+                        Label = OrderedWorkText.T("OrderedWork.Equipment.Metadata.Inventory", "Inventory"),
+                        SubLabel = DefLabel(target.DefName) + " x" + target.Expected,
+                        DefName = target.DefName,
+                        Tooltip = target.DefName,
+                        Sources = new List<string> { target.DefName }
+                    });
+                }
+            }
+
             return result;
         }
-
         private static Thing? GetThing(ThingDef def, Pawn? pawn)
         {
             Apparel? worn = pawn?.apparel?.WornApparel?.FirstOrDefault(value =>
@@ -233,11 +295,31 @@ namespace OrderedWork.UI
                 + " · H " + thing.GetStatValue(StatDefOf.ArmorRating_Heat).ToStringPercent();
         }
 
+        private static string SectionLabel(string section)
+        {
+            return section switch
+            {
+                "Body" => OrderedWorkText.T("OrderedWork.Equipment.Metadata.Section.Body", "Body"),
+                "Global" => OrderedWorkText.T("OrderedWork.Equipment.Metadata.Section.Global", "Global"),
+                "Equipment" => OrderedWorkText.T("OrderedWork.Equipment.Metadata.Section.Equipment", "Equipment"),
+                "Inventory" => OrderedWorkText.T("OrderedWork.Equipment.Metadata.Section.Inventory", "Inventory"),
+                _ => section
+            };
+        }
+
+        private static string DefLabel(string defName)
+        {
+            ThingDef? def = DefDatabase<ThingDef>.GetNamedSilentFail(defName);
+            return def == null ? defName : def.LabelCap.ToString();
+        }
         private sealed class SummaryRow
         {
+            public string Section = "";
             public string Label = "";
+            public string SubLabel = "";
             public string DefName = "";
             public string Tooltip = "";
+            public List<string> Sources = new List<string>();
         }
     }
 }

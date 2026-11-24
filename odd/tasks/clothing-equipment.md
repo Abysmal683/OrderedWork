@@ -63,11 +63,11 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
   - Pawn source badges remain for T8 Equipment tab.
   - Old `Dialog_ClothingEditor` and `Dialog_ThingDefPicker` removed; overview opens the new editor.
 
-- T7: Metadata. In progress — core panel implemented.
-  - 40 body/layer and per-item global insulation summary.
+- T7: Metadata. Done.
+  - 40 body/layer, global insulation, equipment and inventory sections.
+  - Source icons with fixed limit and `+N` tooltip.
   - 60 detail with compare mode, Pick, StatsReportUtility and Info card per pane.
   - Editor uses default material/quality; pawn tab uses actual worn material/quality.
-  - Pending: equipment/inventory summary sections and source icon overflow.
 
 - T8a: Equipment assignment/overrides persistence. Done.
   - Added pawn Mandatory/Emergency/Principal set id lists and `PawnEquipmentOverride`.
@@ -151,3 +151,5 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
 - L18: T8b functional slice complete: set assignment toggle, drag reorder within role, overrides view, source badges; localization warnings 0.
 
 - L19: T8b done: resolver-derived badges, actual worn material/quality, catalog cache, set TTL; Equipment debug category; 54 tests, 0 warnings.
+
+- L20: T7 complete: equipment/inventory summary, source icon overflow, actual pawn material/quality; 54 tests, 0 warnings.

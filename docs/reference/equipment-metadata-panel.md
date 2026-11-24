@@ -2,31 +2,19 @@
 
 Mounted in the neutral equipment editor and the pawn Equipment tab.
 
-## Slots
+## Sections
 
-```text
-40 Summary                    | 60 Detail / Compare
-body group · layer          | selected item
-armor S/B/H                 | material / quality
-global insulation rows      | StatsReportUtility
-active set alternatives     | Info card
-```
+- Body: body group · layer, armor S/B/H.
+- Global: insulation per active item.
+- Equipment: actual primary when pawn context exists, otherwise set primary.
+- Inventory: actual carried stacks when pawn context exists, otherwise set targets.
+- Detail / Compare: selected item stats, material and quality.
+- Source icons: right-aligned with `+N` overflow.
 
 ## Behavior
 
-- Summary uses the first local alternative of each cell as the active item.
-- Armor and insulation are read from the item Thing.
-- In the pawn tab, the matching worn item is used when available, so material and quality are real.
-- In the neutral editor, default material and `Normal` quality are used.
-- Detail uses `StatsReportUtility.DrawStatsReport`.
-- `Compare` splits the 60 pane into two item panes; `Pick` chooses the second.
-- `Info card` opens `Dialog_InfoCard` per pane.
-- Static game-object caches are forbidden; the panel builds Things on demand.
-- Draw failures are caught with `Log.ErrorOnce` and a fallback label.
-
-## Pending
-
-- equipment/inventory summary sections;
-- source-item icon overflow.
-
-Related: `../how-to/use-pawn-equipment-tab.md`, `../explanation/clothing-equipment-design.md`.
+- Neutral editor uses default material and Normal quality.
+- Pawn tab uses the real worn item when available.
+- `Info card` opens `Dialog_InfoCard`.
+- No static game-object caches.
+- Draw failures are bounded by `Log.ErrorOnce`.

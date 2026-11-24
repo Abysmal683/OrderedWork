@@ -60,3 +60,18 @@ Related: `ui-layout-rules.md`.
 - Do not use null-forgiving operators to bypass nullable analysis. Prefer explicit checks and locals.
 - Guard a panel's draw path with a bounded `try/catch` and `Log.ErrorOnce`; render a small fallback instead of crashing the window.
 - Do not retry an action in a loop after an exception.
+## UiSourceIcons
+
+```csharp
+UiSourceIcons.Draw(rect, sources, maxVisible: 3, iconSize: 16f);
+```
+
+- Right-aligns source item icons.
+- Shows `+N` when more than the visible limit.
+- Tooltip lists every source def.
+- Use beside summary/stat rows; do not put source icons inside the label text.
+
+Safety rules:
+- no static `Thing` caches;
+- no per-frame disk reads;
+- no per-frame debug logging.

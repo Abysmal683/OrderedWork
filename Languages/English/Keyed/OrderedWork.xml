@@ -290,4 +290,9 @@
   <OrderedWork.Equipment.Overrides>Overrides</OrderedWork.Equipment.Overrides>
   <OrderedWork.Equipment.OverrideLine>{0} · {1}</OrderedWork.Equipment.OverrideLine>
   <OrderedWork.Equipment.Forbidden>forbidden</OrderedWork.Equipment.Forbidden>
-  <OrderedWork.Equipment.OverrideCell>{0} · {1}</OrderedWork.Equipment.OverrideCell></LanguageData>
+  <OrderedWork.Equipment.OverrideCell>{0} · {1}</OrderedWork.Equipment.OverrideCell>  <OrderedWork.Equipment.Metadata.Section.Body>Body</OrderedWork.Equipment.Metadata.Section.Body>
+  <OrderedWork.Equipment.Metadata.Section.Global>Global</OrderedWork.Equipment.Metadata.Section.Global>
+  <OrderedWork.Equipment.Metadata.Section.Equipment>Equipment</OrderedWork.Equipment.Metadata.Section.Equipment>
+  <OrderedWork.Equipment.Metadata.Section.Inventory>Inventory</OrderedWork.Equipment.Metadata.Section.Inventory>
+  <OrderedWork.Equipment.Metadata.Primary>Primary</OrderedWork.Equipment.Metadata.Primary>
+  <OrderedWork.Equipment.Metadata.Inventory>Inventory</OrderedWork.Equipment.Metadata.Inventory></LanguageData>
