@@ -69,10 +69,11 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
   - Default material/quality shown.
   - Pending: equipment/inventory summary sections and actual pawn values (depends T8a), source icon overflow.
 
-- T8a: Equipment assignment/overrides persistence. BLOCKING T8b and T7 pawn values.
-  - Add pawn assignment profile: Mandatory/Emergency/Principal set ids, WorkType set id, forced cells, primary/inventory overrides.
-  - Save/load normalization and tests.
-  - No UI yet.
+- T8a: Equipment assignment/overrides persistence. Done.
+  - Added pawn Mandatory/Emergency/Principal set id lists and `PawnEquipmentOverride`.
+  - Added `WorkTypeConfig.EquipmentSetId`.
+  - Added additive Scribe fields and normalization; pure assignment rules with one test.
+  - 54 tests passing; no UI yet.
 - T8b: Pawn Equipment tab.
   - Current Gear left (Apparel -> Primary -> Inventory with Carrying tag), Sets right, click-highlight and Open editor, drag/reorder/remove, Overrides sub-tab, metadata.
   - Acceptance: set identity survives reorder/move; delete clears references.
@@ -134,3 +135,5 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
 - L13: T7 second slice: global insulation rows, 30/30 compare mode with Pick and per-pane Info card; 53 tests; build 0 warnings.
 
 - L14: Priority correction: assignment/overrides persistence must precede Equipment-tab UI; removed static metadata Thing cache; metadata panel guarded with Log.ErrorOnce fallback; nullable suppressions removed from new UI.
+
+- L15: T8a complete: pawn equipment set ids, WorkType EquipmentSetId, PawnEquipmentOverride, additive Scribe/normalization, pure rules test; 54 tests.

@@ -34,6 +34,12 @@ namespace OrderedWork.Data
         public string clothingPresetId = "";
         public List<PawnClothingOverride> clothingOverrides = new List<PawnClothingOverride>();
 
+        // Equipment assignments are pawn-scoped; WorkType assignment lives in WorkTypeConfig.
+        public List<string> mandatoryEquipmentSetIds = new List<string>();
+        public List<string> emergencyEquipmentSetIds = new List<string>();
+        public List<string> principalEquipmentSetIds = new List<string>();
+        public List<PawnEquipmentOverride> equipmentOverrides = new List<PawnEquipmentOverride>();
+
         /// <summary>
         /// Runtime-only: while the current tick is below this value, vanilla SetPriority
         /// capture is ignored for this pawn (post-spawn / post-resurrection settling).
@@ -57,6 +63,10 @@ namespace OrderedWork.Data
             Scribe_Collections.Look(ref zones, "zones", LookMode.Deep);
             Scribe_Values.Look(ref clothingPresetId, "clothingPresetId", "");
             Scribe_Collections.Look(ref clothingOverrides, "clothingOverrides", LookMode.Deep);
+            Scribe_Collections.Look(ref mandatoryEquipmentSetIds, "mandatoryEquipmentSetIds", LookMode.Value);
+            Scribe_Collections.Look(ref emergencyEquipmentSetIds, "emergencyEquipmentSetIds", LookMode.Value);
+            Scribe_Collections.Look(ref principalEquipmentSetIds, "principalEquipmentSetIds", LookMode.Value);
+            Scribe_Collections.Look(ref equipmentOverrides, "equipmentOverrides", LookMode.Deep);
 
             if (Scribe.mode == LoadSaveMode.LoadingVars)
             {
@@ -67,6 +77,10 @@ namespace OrderedWork.Data
                 if (scheduleWorkOverrides == null) scheduleWorkOverrides = new List<PawnScheduleWorkOverride>();
                 if (hourFocusOverrides == null) hourFocusOverrides = new List<PawnHourFocusOverride>();
                 if (clothingOverrides == null) clothingOverrides = new List<PawnClothingOverride>();
+                if (mandatoryEquipmentSetIds == null) mandatoryEquipmentSetIds = new List<string>();
+                if (emergencyEquipmentSetIds == null) emergencyEquipmentSetIds = new List<string>();
+                if (principalEquipmentSetIds == null) principalEquipmentSetIds = new List<string>();
+                if (equipmentOverrides == null) equipmentOverrides = new List<PawnEquipmentOverride>();
             }
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
@@ -92,6 +106,10 @@ namespace OrderedWork.Data
             if (hourFocusOverrides == null) hourFocusOverrides = new List<PawnHourFocusOverride>();
             if (zones == null) zones = new List<PawnZoneBinding>();
             if (clothingOverrides == null) clothingOverrides = new List<PawnClothingOverride>();
+            if (mandatoryEquipmentSetIds == null) mandatoryEquipmentSetIds = new List<string>();
+            if (emergencyEquipmentSetIds == null) emergencyEquipmentSetIds = new List<string>();
+            if (principalEquipmentSetIds == null) principalEquipmentSetIds = new List<string>();
+            if (equipmentOverrides == null) equipmentOverrides = new List<PawnEquipmentOverride>();
 
             PolicyValidation.Normalize(workOverrides);
             PolicyValidation.NormalizeWorkGivers(workGiverOrders);
@@ -119,6 +137,10 @@ namespace OrderedWork.Data
             PolicyValidation.NormalizeHourFocus(hourFocusOverrides);
             PolicyValidation.Normalize(zones);
             PolicyValidation.Normalize(clothingOverrides);
+            PolicyValidation.NormalizeEquipmentSetIds(mandatoryEquipmentSetIds);
+            PolicyValidation.NormalizeEquipmentSetIds(emergencyEquipmentSetIds);
+            PolicyValidation.NormalizeEquipmentSetIds(principalEquipmentSetIds);
+            PolicyValidation.NormalizeEquipmentOverrides(equipmentOverrides);
         }
     }
 }

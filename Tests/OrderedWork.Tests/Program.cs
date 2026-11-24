@@ -66,6 +66,7 @@ namespace OrderedWork.Tests
             Run("Equipment resolver falls back to Principal", TestEquipmentResolverPrincipalFallback);
             Run("Equipment set JSON store roundtrips and deletes", TestEquipmentSetJsonStoreRoundtrip);
             Run("Equipment view layout keeps slot identity through rename and reorder", TestEquipmentViewLayout);
+            Run("Equipment assignment rules normalize ids and override keys", TestEquipmentAssignmentRules);
 
             Console.WriteLine(failures == 0 ? "All tests passed." : failures + " test(s) failed.");
             return failures == 0 ? 0 : 1;
@@ -979,6 +980,17 @@ namespace OrderedWork.Tests
             Assert(after.TabId == "Outer" && after.RowId == "Torso", "placement identity stable");
             Assert(layout.Tabs[0].Id == "Head", "tab order applied");
             Assert(layout.Tabs.First(tab => tab.Id == "Outer").Rows[0].Id == "Legs", "row order applied");
+        }
+        private static void TestEquipmentAssignmentRules()
+        {
+            List<string> ids = EquipmentAssignmentRules.NormalizeSetIds(
+                new[] { "B", " A ", "A", "", null });
+            AssertSequence(new[] { "B", "A" }, ids);
+
+            Assert(EquipmentAssignmentRules.IsValidOverride("inventory", "", "", "", "Food"), "inventory override valid");
+            Assert(!EquipmentAssignmentRules.IsValidOverride("forced_apparel", "Human", "Torso", "", "Robe"), "forced needs layer");
+            Assert(EquipmentAssignmentRules.IsValidOverride("forced_apparel", "Human", "Torso", "Shell", "Robe"), "forced valid");
+            Assert(EquipmentAssignmentRules.OverrideKey("inventory", "", "", "", "Food") == "inventory||||Food", "override key");
         }
         private static void AssertSequence(IEnumerable<string> expected, IEnumerable<string> actual)
         {

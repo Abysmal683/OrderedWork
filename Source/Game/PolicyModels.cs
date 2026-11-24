@@ -117,6 +117,27 @@ namespace OrderedWork.Data
         }
     }
 
+    public class PawnEquipmentOverride : IExposable
+    {
+        public string kind = "";
+        public string bodyDefName = "";
+        public string bodyPartGroupDefName = "";
+        public string apparelLayerDefName = "";
+        public string defName = "";
+        public int count;
+        public bool forbidden;
+
+        public void ExposeData()
+        {
+            Scribe_Values.Look(ref kind, "kind", "");
+            Scribe_Values.Look(ref bodyDefName, "bodyDefName", "");
+            Scribe_Values.Look(ref bodyPartGroupDefName, "bodyPartGroupDefName", "");
+            Scribe_Values.Look(ref apparelLayerDefName, "apparelLayerDefName", "");
+            Scribe_Values.Look(ref defName, "defName", "");
+            Scribe_Values.Look(ref count, "count", 0);
+            Scribe_Values.Look(ref forbidden, "forbidden", false);
+        }
+    }
     public class PawnClothingOverride : IExposable
     {
         public string workTypeDefName = "";
@@ -258,6 +279,56 @@ namespace OrderedWork.Data
                     continue;
                 }
                 unique[value.hour] = value;
+            }
+            values.Clear();
+            values.AddRange(unique.Values);
+        }
+        public static void NormalizeEquipmentSetIds(List<string> values)
+        {
+            if (values == null)
+            {
+                return;
+            }
+            List<string> normalized = EquipmentAssignmentRules.NormalizeSetIds(values);
+            values.Clear();
+            values.AddRange(normalized);
+        }
+
+        public static void NormalizeEquipmentOverrides(List<PawnEquipmentOverride> values)
+        {
+            if (values == null)
+            {
+                return;
+            }
+            Dictionary<string, PawnEquipmentOverride> unique =
+                new Dictionary<string, PawnEquipmentOverride>(StringComparer.Ordinal);
+            foreach (PawnEquipmentOverride value in values)
+            {
+                if (value == null)
+                {
+                    continue;
+                }
+                value.kind = (value.kind ?? "").Trim();
+                value.bodyDefName = (value.bodyDefName ?? "").Trim();
+                value.bodyPartGroupDefName = (value.bodyPartGroupDefName ?? "").Trim();
+                value.apparelLayerDefName = (value.apparelLayerDefName ?? "").Trim();
+                value.defName = (value.defName ?? "").Trim();
+                if (!EquipmentAssignmentRules.IsValidOverride(
+                    value.kind,
+                    value.bodyDefName,
+                    value.bodyPartGroupDefName,
+                    value.apparelLayerDefName,
+                    value.defName))
+                {
+                    continue;
+                }
+                string key = EquipmentAssignmentRules.OverrideKey(
+                    value.kind,
+                    value.bodyDefName,
+                    value.bodyPartGroupDefName,
+                    value.apparelLayerDefName,
+                    value.defName);
+                unique[key] = value;
             }
             values.Clear();
             values.AddRange(unique.Values);

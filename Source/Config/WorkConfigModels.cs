@@ -27,6 +27,7 @@ namespace OrderedWork.Config
         public bool Visible { get; set; } = true;
         public bool Hidden { get; set; }
         public string ClothingPresetId { get; set; } = "";
+        public string EquipmentSetId { get; set; } = "";
         public int Order { get; set; }
         public string Mod { get; set; } = "";
         public List<GiverConfig> Givers { get; set; } = new List<GiverConfig>();
