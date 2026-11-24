@@ -25,3 +25,12 @@ Equipment sets are stored under `Config/OrderedWork/EquipmentSets`. Legacy `Clot
 - Select a cell to filter candidates to that exact cell.
 - Hovering a candidate outlines its footprint.
 - Empty target cells show the candidate icon at 50%; occupied cells only get the outline.
+
+## Metadata
+
+- Clear the cell selection to see all allowed apparel in `Available`.
+- Select an added alternative to show its detail.
+- `Summary` lists the active set's body-part/layer coverage and armor values.
+- `Detail` shows material, default quality, and the vanilla stats report.
+- `Info card` opens `Dialog_InfoCard` for the selected item.
+- The editor uses default material/quality; the pawn Equipment tab will use actual values.

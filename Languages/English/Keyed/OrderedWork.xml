@@ -251,4 +251,11 @@
   <OrderedWork.Equipment.Tabs.Exosuit>Exosuit</OrderedWork.Equipment.Tabs.Exosuit>  <OrderedWork.Equipment.Editor.SelectSetHint>Select this set.</OrderedWork.Equipment.Editor.SelectSetHint>
   <OrderedWork.Equipment.Editor.NameLabel>Name</OrderedWork.Equipment.Editor.NameLabel>
   <OrderedWork.Equipment.Editor.SearchTip>Search apparel.</OrderedWork.Equipment.Editor.SearchTip>  <OrderedWork.Equipment.Editor.Equip>equip</OrderedWork.Equipment.Editor.Equip>
-</LanguageData>
+  <OrderedWork.Equipment.Metadata.Summary>Summary</OrderedWork.Equipment.Metadata.Summary>
+  <OrderedWork.Equipment.Metadata.Detail>Detail</OrderedWork.Equipment.Metadata.Detail>
+  <OrderedWork.Equipment.Metadata.NoSet>No set.</OrderedWork.Equipment.Metadata.NoSet>
+  <OrderedWork.Equipment.Metadata.Select>Select an item.</OrderedWork.Equipment.Metadata.Select>
+  <OrderedWork.Equipment.Metadata.InfoCard>Info card</OrderedWork.Equipment.Metadata.InfoCard>
+  <OrderedWork.Equipment.Metadata.Material>Material</OrderedWork.Equipment.Metadata.Material>
+  <OrderedWork.Equipment.Metadata.NoMaterial>none</OrderedWork.Equipment.Metadata.NoMaterial>  <OrderedWork.Equipment.Metadata.Quality>Quality</OrderedWork.Equipment.Metadata.Quality>
+  <OrderedWork.Equipment.Metadata.DefaultQuality>Normal</OrderedWork.Equipment.Metadata.DefaultQuality></LanguageData>

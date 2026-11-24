@@ -63,9 +63,10 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
   - Pawn source badges remain for T8 Equipment tab.
   - Old `Dialog_ClothingEditor` and `Dialog_ThingDefPicker` removed; overview opens the new editor.
 
-- T7: Metadata.
-  - 40 summary tree, 60 detail, actual/default material+quality, shared 30/30 comparison, info card.
-  - Acceptance: non-additive stats never show an invented total.
+- T7: Metadata. In progress — first metadata slice implemented.
+  - 40 body/layer summary and 60 selected-item detail mounted below candidates.
+  - Default material/quality shown; StatsReportUtility and Dialog_InfoCard used.
+  - Pending: global equipment/inventory sections, shared 30/30 comparison, actual pawn values, source icon overflow.
 
 - T8: Pawn Equipment tab.
   - Current Gear left (Apparel -> Primary -> Inventory with Carrying tag), Sets right, click-highlight and Open editor, drag/reorder/remove, Overrides sub-tab, metadata.
@@ -121,3 +122,5 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
 - L10: T6 second slice: square cells, grouped tabs, save/load manager, Save As, dirty guard, UI gadgets (`UiCard`, `UiGrid`, `UiSearchField`); Diátaxis docs added.
 
 - L11: T6 neutral editor complete: General/Cell behavior, hover footprint and 50% empty preview, equip label, save/load contract, UI gadgets. Pawn source badges deferred to T8.
+
+- L12: T7 first slice: reusable EquipmentMetadataPanel mounted below candidates; 40 body/layer summary, 60 detail, default material/quality, StatsReportUtility, Info card; comparison/global sections pending.

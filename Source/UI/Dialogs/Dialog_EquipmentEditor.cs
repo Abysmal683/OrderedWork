@@ -29,6 +29,7 @@ namespace OrderedWork.UI
         private Vector2 availableScroll;
         private bool dirty;
         private Action? pendingAction;
+        private string? selectedDefName;
         private string? previewDefName;
         private HashSet<ApparelSlotKey>? previewCells;
 
@@ -44,7 +45,7 @@ namespace OrderedWork.UI
             LoadSet(initialSetId);
         }
 
-        public override Vector2 InitialSize => new Vector2(1080f, 780f);
+        public override Vector2 InitialSize => new Vector2(1080f, 980f);
 
         public override bool OnCloseRequest()
         {
@@ -83,6 +84,7 @@ namespace OrderedWork.UI
             DrawTabs(inRect);
             DrawCandidates(inRect);
             DrawGrid(inRect);
+            DrawMetadata(inRect);
         }
 
         private void DrawHeader(Rect inRect)
@@ -124,6 +126,7 @@ namespace OrderedWork.UI
             {
                 selectedTab = index;
                 selectedCell = null;
+                selectedDefName = null;
             });
         }
 
@@ -170,6 +173,7 @@ namespace OrderedWork.UI
                 T("OrderedWork.Equipment.Editor.CellTooltip", "Select this cell.")))
             {
                 selectedCell = cell;
+                selectedDefName = null;
                 search = "";
             }
 
@@ -204,12 +208,17 @@ namespace OrderedWork.UI
 
         private void DrawCandidates(Rect inRect)
         {
-            Rect area = new Rect(0f, 366f, inRect.width, inRect.height - 406f);
+            Rect area = new Rect(0f, 366f, inRect.width, 230f);
             Rect[] columns = UiFlex.Columns(area, 8f, 1f, 1f);
             DrawAdded(columns[0]);
             DrawAvailable(columns[1]);
         }
 
+        private void DrawMetadata(Rect inRect)
+        {
+            Rect area = new Rect(0f, 604f, inRect.width, Mathf.Max(120f, inRect.height - 614f));
+            EquipmentMetadataPanel.Draw(area, set, catalog, selectedDefName);
+        }
         private void DrawAdded(Rect area)
         {
             Widgets.Label(new Rect(area.x, area.y, area.width, 20f), T("OrderedWork.Equipment.Editor.Added", "Added"));
@@ -244,8 +253,11 @@ namespace OrderedWork.UI
                             previewCells = new HashSet<ApparelSlotKey>(footprint.Cells);
                         }
                     }
-                    UiCard.Draw(row, sub, null, false, null,
-                        T("OrderedWork.Equipment.Editor.RemoveHint", "Right-click to remove."));
+                    if (UiCard.Draw(row, sub, null, false, null,
+                        T("OrderedWork.Equipment.Editor.RemoveHint", "Right-click to remove.")))
+                    {
+                        selectedDefName = alternative.DefName;
+                    }
                     if (Event.current.type == EventType.MouseDown && Event.current.button == 1 && row.Contains(Event.current.mousePosition))
                     {
                         rule.Alternatives.Remove(alternative);
