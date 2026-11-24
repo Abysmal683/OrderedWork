@@ -186,3 +186,5 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
 - L31: Approved T9 execution details: auto bounded repair, vanilla fallback, compact search-widening gizmo, authorized cancellation, apparel->primary->inventory order.
 
 - L32: Added compact Equipment gizmo with current/100/200/whole-map quick search and multi-selected colonist execution; setting slider now 25..200.
+
+- L33: Added bounded coverage repair through execution availability: unavailable alternatives fall through to the next local candidate; forced cells and policy remain authoritative; uncovered mandatory cells are logged. No active set keeps vanilla behavior.

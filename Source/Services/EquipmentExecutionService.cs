@@ -28,7 +28,17 @@ namespace OrderedWork.Services
 
             try
             {
-                EquipmentPlan plan = BuildPlan(pawn, entry, catalog, sets);
+                Func<string, bool> available = defName =>
+                    FindAvailableApparel(pawn, defName, searchRadiusOverride, wholeMap) != null;
+                EquipmentPlan plan = BuildPlan(pawn, entry, catalog, sets, available);
+                if (plan.Selections.Count == 0 && string.IsNullOrWhiteSpace(plan.PrimaryEquipmentDefName)
+                    && plan.Inventory.Count == 0)
+                {
+                    OrderedWorkMod.DebugLog("No active equipment plan for " + pawn.LabelShort
+                        + "; vanilla behavior remains in control.", OrderedWorkLogCategory.Equipment);
+                    return;
+                }
+
                 int queued = 0;
                 bool first = true;
                 foreach (EquipmentSelection selection in plan.Selections)
@@ -67,6 +77,13 @@ namespace OrderedWork.Services
                     }
                 }
 
+                if (plan.MandatoryUncovered.Count > 0)
+                {
+                    OrderedWorkMod.DebugLog("Equip now for " + pawn.LabelShort + ": mandatory coverage uncovered: "
+                        + string.Join(", ", plan.MandatoryUncovered.Select(cell => cell.ToString()))
+                        + ".", OrderedWorkLogCategory.Equipment);
+                }
+
                 OrderedWorkMod.DebugLog("Equip now for " + pawn.LabelShort + ": queued " + queued
                     + " job(s), conflicts " + plan.Conflicts.Count + ".", OrderedWorkLogCategory.Equipment);
             }
@@ -81,8 +98,7 @@ namespace OrderedWork.Services
             PawnWorkOrder entry,
             EquipmentCatalogSnapshot catalog,
             List<EquipmentSet> sets,
-            int? searchRadiusOverride = null,
-            bool wholeMap = false)
+            Func<string, bool>? isApparelAvailable = null)
         {
             Dictionary<string, EquipmentSet> byId = sets.ToDictionary(value => value.Id, StringComparer.Ordinal);
             List<EquipmentSet> active = new List<EquipmentSet>();
@@ -108,7 +124,8 @@ namespace OrderedWork.Services
                 active,
                 workTypeDefName,
                 pawn.Drafted,
-                overrides);
+                overrides,
+                isApparelAvailable);
             return EquipmentResolver.Resolve(context);
         }
 

@@ -51,3 +51,13 @@
 ## Gizmo
 
 One compact Equipment gizmo is added to the first selected colonist. It applies the action to all selected colonists and offers current radius, 100, 200, whole map, and Open Equipment.
+
+## Coverage repair and no-set fallback
+
+`Equip now` builds the plan with an availability callback. For each cell it tries the local alternatives in priority order and skips an alternative whose item is not available, reserving the first available one.
+
+- One bounded pass only; no retry loop.
+- Forced/locked cells are never replaced by the repair pass.
+- Apparel policy still filters candidates before availability.
+- If no alternative is available, the cell stays uncovered and `MandatoryUncovered` is reported; the execution log names the uncovered cells.
+- If the pawn has no active set, no equipment job is created and vanilla behavior remains in control.

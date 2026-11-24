@@ -63,6 +63,8 @@ namespace OrderedWork.Tests
             Run("Equipment resolver unions inventory and overflows primary", TestEquipmentResolverInventory);
             Run("Equipment resolver preserves forced cells", TestEquipmentResolverForced);
             Run("Equipment resolver reports mandatory coverage", TestEquipmentResolverMandatoryCoverage);
+            Run("Equipment resolver repairs unavailable apparel with the next alternative", TestEquipmentResolverCoverageRepair);
+            Run("Equipment resolver reports unavailable mandatory coverage", TestEquipmentResolverCoverageUnavailable);
             Run("Equipment resolver falls back to Principal", TestEquipmentResolverPrincipalFallback);
             Run("Equipment set JSON store roundtrips and deletes", TestEquipmentSetJsonStoreRoundtrip);
             Run("Equipment view layout keeps slot identity through rename and reorder", TestEquipmentViewLayout);
@@ -610,7 +612,8 @@ namespace OrderedWork.Tests
             Dictionary<string, ApparelFootprint> footprints,
             string activeWorkType = null,
             bool emergencyActive = false,
-            EquipmentOverrides overrides = null)
+            EquipmentOverrides overrides = null,
+            Func<string, bool> isApparelAvailable = null)
         {
             return new EquipmentResolutionContext(
                 footprints,
@@ -618,7 +621,8 @@ namespace OrderedWork.Tests
                 sets,
                 activeWorkType,
                 emergencyActive,
-                overrides);
+                overrides,
+                isApparelAvailable);
         }
 
         private static void TestEquipmentResolverMandatoryWins()
@@ -774,6 +778,52 @@ namespace OrderedWork.Tests
 
             AssertEqual(1, plan.MandatoryUncovered.Count);
             Assert(plan.MandatoryUncovered[0] == torso, "mandatory cell uncovered");
+        }
+
+        private static void TestEquipmentResolverCoverageRepair()
+        {
+            ApparelSlotKey torso = TorsoShell();
+            EquipmentSet mandatory = new EquipmentSet
+            {
+                Id = "mandatory",
+                Role = EquipmentSetRole.Mandatory,
+                Cells = new List<CellRule> { Rule(torso, "UnavailableArmor", "FallbackArmor") }
+            };
+            EquipmentResolutionContext context = Context(
+                new[] { mandatory },
+                new[] { "UnavailableArmor", "FallbackArmor" },
+                Footprints(Footprint("UnavailableArmor", torso), Footprint("FallbackArmor", torso)),
+                isApparelAvailable: defName => defName != "UnavailableArmor");
+
+            EquipmentPlan plan = EquipmentResolver.Resolve(context);
+
+            Assert(plan.ByCell[torso].DefName == "FallbackArmor", "next alternative repairs coverage");
+            AssertEqual(0, plan.MandatoryUncovered.Count);
+            Assert(plan.Conflicts.Any(conflict => conflict.Reason == EquipmentConflictReason.Unavailable
+                && conflict.DefName == "UnavailableArmor"), "unavailable alternative reported");
+        }
+
+        private static void TestEquipmentResolverCoverageUnavailable()
+        {
+            ApparelSlotKey torso = TorsoShell();
+            EquipmentSet mandatory = new EquipmentSet
+            {
+                Id = "mandatory",
+                Role = EquipmentSetRole.Mandatory,
+                Cells = new List<CellRule> { Rule(torso, "UnavailableArmor") }
+            };
+            EquipmentResolutionContext context = Context(
+                new[] { mandatory },
+                new[] { "UnavailableArmor" },
+                Footprints(Footprint("UnavailableArmor", torso)),
+                isApparelAvailable: _ => false);
+
+            EquipmentPlan plan = EquipmentResolver.Resolve(context);
+
+            AssertEqual(0, plan.Selections.Count);
+            AssertEqual(1, plan.MandatoryUncovered.Count);
+            Assert(plan.Conflicts.Any(conflict => conflict.Reason == EquipmentConflictReason.Unavailable), "unavailable conflict");
+            Assert(plan.Conflicts.Any(conflict => conflict.Reason == EquipmentConflictReason.MandatoryUncovered), "uncovered conflict");
         }
 
         private static void TestEquipmentResolverPrincipalFallback()

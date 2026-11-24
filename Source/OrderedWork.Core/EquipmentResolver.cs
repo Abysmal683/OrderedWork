@@ -18,7 +18,8 @@ namespace OrderedWork.Core
         MissingFootprint,
         PolicyDenied,
         CellOccupied,
-        MandatoryUncovered
+        MandatoryUncovered,
+        Unavailable
     }
 
     public sealed class EquipmentSelection
@@ -58,6 +59,7 @@ namespace OrderedWork.Core
         public string? ActiveWorkTypeDefName { get; }
         public bool EmergencyActive { get; }
         public EquipmentOverrides Overrides { get; }
+        public Func<string, bool>? IsApparelAvailable { get; }
 
         public EquipmentResolutionContext(
             IReadOnlyDictionary<string, ApparelFootprint>? footprints = null,
@@ -65,7 +67,8 @@ namespace OrderedWork.Core
             IEnumerable<EquipmentSet>? sets = null,
             string? activeWorkTypeDefName = null,
             bool emergencyActive = false,
-            EquipmentOverrides? overrides = null)
+            EquipmentOverrides? overrides = null,
+            Func<string, bool>? isApparelAvailable = null)
         {
             Footprints = footprints ?? new Dictionary<string, ApparelFootprint>(StringComparer.Ordinal);
             AllowedApparel = new HashSet<string>(
@@ -78,6 +81,7 @@ namespace OrderedWork.Core
             ActiveWorkTypeDefName = activeWorkTypeDefName;
             EmergencyActive = emergencyActive;
             Overrides = overrides ?? new EquipmentOverrides();
+            IsApparelAvailable = isApparelAvailable;
         }
     }
 
@@ -145,6 +149,19 @@ namespace OrderedWork.Core
                             plan.Conflicts.Add(new EquipmentConflict
                             {
                                 Reason = EquipmentConflictReason.MissingFootprint,
+                                Source = source,
+                                SetId = set.Id,
+                                Cell = rule.Cell,
+                                DefName = alternative.DefName
+                            });
+                            continue;
+                        }
+
+                        if (context.IsApparelAvailable != null && !context.IsApparelAvailable(alternative.DefName))
+                        {
+                            plan.Conflicts.Add(new EquipmentConflict
+                            {
+                                Reason = EquipmentConflictReason.Unavailable,
                                 Source = source,
                                 SetId = set.Id,
                                 Cell = rule.Cell,
