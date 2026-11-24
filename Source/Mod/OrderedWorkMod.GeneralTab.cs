@@ -62,18 +62,26 @@ namespace OrderedWork
                     ConfigText("OrderedWork.Config.General.EquipmentEnabled", "Enable equipment system"),
                     ref Settings.equipmentEnabled,
                     ConfigText("OrderedWork.Config.General.EquipmentEnabledTip", "Off: hides the equipment UI and skips equipment jobs. Use this to avoid conflicts with other clothing/loadout mods."));
-                list.CheckboxLabeled(
-                    ConfigText("OrderedWork.Config.General.EquipmentSearchArea", "Limit search to workbench area"),
-                    ref Settings.equipmentSearchAreaEnabled,
-                    ConfigText("OrderedWork.Config.General.EquipmentSearchAreaTip", "When enabled, searches around the active workbench/job area. When disabled, searches the map."));
-                Rect radiusRect = list.GetRect(24f);
-                Settings.equipmentSearchRadius = Mathf.RoundToInt(Widgets.HorizontalSlider(
-                    radiusRect,
-                    Settings.equipmentSearchRadius,
-                    5f,
-                    80f,
-                    true,
-                    string.Format(ConfigText("OrderedWork.Config.General.EquipmentRadius", "Search radius: {0}"), Settings.equipmentSearchRadius)));
+                if (Settings.equipmentEnabled)
+                {
+                    list.CheckboxLabeled(
+                        ConfigText("OrderedWork.Config.General.EquipmentSearchArea", "Limit search to workbench area"),
+                        ref Settings.equipmentSearchAreaEnabled,
+                        ConfigText("OrderedWork.Config.General.EquipmentSearchAreaTip", "When enabled, searches around the active workbench/job area. When disabled, searches the map."));
+                    Rect radiusRect = list.GetRect(24f);
+                    Settings.equipmentSearchRadius = Mathf.RoundToInt(Widgets.HorizontalSlider(
+                        radiusRect,
+                        Settings.equipmentSearchRadius,
+                        5f,
+                        80f,
+                        true,
+                        string.Format(ConfigText("OrderedWork.Config.General.EquipmentRadius", "Search radius: {0}"), Settings.equipmentSearchRadius)));
+                }
+                else
+                {
+                    list.Label(ConfigText("OrderedWork.Config.General.EquipmentSearchDisabled",
+                        "Search area is inactive while the equipment system is disabled."));
+                }
             }
 
             if (DrawCollapsibleSection(list, "general-profiles",
