@@ -64,6 +64,7 @@ namespace OrderedWork.Tests
             Run("Equipment resolver preserves forced cells", TestEquipmentResolverForced);
             Run("Equipment resolver reports mandatory coverage", TestEquipmentResolverMandatoryCoverage);
             Run("Equipment resolver falls back to Principal", TestEquipmentResolverPrincipalFallback);
+            Run("Equipment set JSON store roundtrips and deletes", TestEquipmentSetJsonStoreRoundtrip);
 
             Console.WriteLine(failures == 0 ? "All tests passed." : failures + " test(s) failed.");
             return failures == 0 ? 0 : 1;
@@ -914,6 +915,43 @@ namespace OrderedWork.Tests
             AssertEqual(8, set.Inventory[0].Expected);
         }
 
+        private static void TestEquipmentSetJsonStoreRoundtrip()
+        {
+            string directory = Path.Combine(Path.GetTempPath(), "OrderedWork-EquipmentSetTests", Guid.NewGuid().ToString("N"));
+            try
+            {
+                EquipmentSetJsonStore store = new EquipmentSetJsonStore(directory);
+                ApparelSlotKey torso = TorsoShell();
+                EquipmentSet set = new EquipmentSet
+                {
+                    Name = "Royal",
+                    Role = EquipmentSetRole.Mandatory,
+                    Order = 1,
+                    PrimaryEquipmentDefName = "Rifle",
+                    Cells = new List<CellRule> { Rule(torso, "RoyalArmor") },
+                    Inventory = new List<InventoryTarget> { new InventoryTarget { DefName = "Food", Expected = 4 } }
+                };
+
+                Assert(store.Save(set), "set saved");
+                EquipmentSet loaded = store.TryLoadById(set.Id);
+                Assert(loaded != null, "set loaded");
+                Assert(loaded.Name == "Royal", "set name roundtrip");
+                AssertEqual((int)EquipmentSet.CurrentSchemaVersion, loaded.SchemaVersion);
+                Assert(loaded.PrimaryEquipmentDefName == "Rifle", "set primary roundtrip");
+                AssertEqual(1, loaded.Cells.Count);
+                AssertEqual(1, loaded.Inventory.Count);
+
+                Assert(store.Delete(set.Id), "set deleted");
+                AssertEqual(0, store.LoadAll().Count);
+            }
+            finally
+            {
+                if (Directory.Exists(directory))
+                {
+                    Directory.Delete(directory, true);
+                }
+            }
+        }
         private static void AssertSequence(IEnumerable<string> expected, IEnumerable<string> actual)
         {
             string[] expectedArray = expected.ToArray();

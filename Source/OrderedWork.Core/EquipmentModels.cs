@@ -132,8 +132,11 @@ namespace OrderedWork.Core
     /// </summary>
     public sealed class EquipmentSet
     {
+        public const int CurrentSchemaVersion = 1;
         public string Id { get; set; } = Guid.NewGuid().ToString("N");
         public string Name { get; set; } = "new set";
+        public string ModifiedUtc { get; set; } = "";
+        public int SchemaVersion { get; set; } = CurrentSchemaVersion;
         public EquipmentSetRole Role { get; set; }
         public int Order { get; set; }
         public string? WorkTypeDefName { get; set; }
@@ -143,6 +146,10 @@ namespace OrderedWork.Core
 
         public void Normalize()
         {
+            if (SchemaVersion <= 0)
+            {
+                SchemaVersion = CurrentSchemaVersion;
+            }
             if (string.IsNullOrWhiteSpace(Id))
             {
                 Id = Guid.NewGuid().ToString("N");

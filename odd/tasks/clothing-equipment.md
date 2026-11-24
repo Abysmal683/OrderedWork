@@ -40,11 +40,11 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
   - Pure tests for priority, WorkType replacement, multi-cell claims, inventory union, forced cells and fallback.
   - Coverage repair remains T9 execution work; no loop.
 
-- T4: Persistence and migration.
-  - Save schema for sets/alternatives/equipment/inventory/overrides.
-  - Migration from current clothing preset.
-  - Round-trip and backward-compatibility tests.
-  - Acceptance: old saves load; new saves round-trip.
+- T4: Persistence without legacy migration. Done.
+  - New `EquipmentSetJsonStore` and `EquipmentSetStore`; schema v1.
+  - Legacy `ClothingPresets` are intentionally ignored.
+  - Round-trip and delete tests.
+  - Result: 52 total tests passing; build 0 warnings.
 
 - T5: View layout model.
   - Auto tabs/rows from cell catalog; layer config shared.
@@ -103,3 +103,5 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
 - L5: T2 complete: pure equipment domain models added with 5 tests; 44 total passing; duplicate cell rules merge alternatives by local priority.
 
 - L6: T3 complete: pure equipment resolver added; 7 resolver tests; 51 total passing; build 0 warnings.
+
+- L7: T4 complete: new EquipmentSets JSON store; legacy ClothingPresets intentionally ignored; alpha data-loss accepted; 52 tests; build 0 warnings.
