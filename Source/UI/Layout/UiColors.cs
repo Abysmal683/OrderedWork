@@ -18,5 +18,8 @@ namespace OrderedWork.UI.Layout
         public static readonly Color ConfirmDanger = new Color(0.86f, 0.30f, 0.26f, 1f);
         public static readonly Color EmptyColumn = new Color(0.18f, 0.18f, 0.20f, 1f);
         public static readonly Color SectionSeparator = new Color(0.60f, 0.63f, 0.68f, 0.95f);
+        public static readonly Color Card = new Color(0.14f, 0.15f, 0.18f, 0.95f);
+        public static readonly Color CardSelected = new Color(0.18f, 0.34f, 0.48f, 0.95f);
+        public static readonly Color CardMuted = new Color(0.10f, 0.11f, 0.13f, 0.55f);
     }
 }

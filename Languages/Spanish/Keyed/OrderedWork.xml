@@ -233,4 +233,21 @@
   <OrderedWork.Equipment.Tabs.Utility>Utilidad</OrderedWork.Equipment.Tabs.Utility>
   <OrderedWork.Equipment.Tabs.Head>Cabeza</OrderedWork.Equipment.Tabs.Head>
   <OrderedWork.Equipment.Tabs.Accessory>Accesorio</OrderedWork.Equipment.Tabs.Accessory>
-  <OrderedWork.Equipment.Tabs.Other>Otros</OrderedWork.Equipment.Tabs.Other></LanguageData>
+  <OrderedWork.Equipment.Tabs.Other>Otros</OrderedWork.Equipment.Tabs.Other>
+  <OrderedWork.Equipment.Editor.Load>Cargar...</OrderedWork.Equipment.Editor.Load>
+  <OrderedWork.Equipment.Editor.SaveAs>Guardar como...</OrderedWork.Equipment.Editor.SaveAs>
+  <OrderedWork.Equipment.Editor.SaveAsTitle>Guardar equipo como</OrderedWork.Equipment.Editor.SaveAsTitle>
+  <OrderedWork.Equipment.Editor.CellTooltip>Seleccionar esta celda.</OrderedWork.Equipment.Editor.CellTooltip>
+  <OrderedWork.Equipment.Editor.RemoveHint>Clic derecho para quitar.</OrderedWork.Equipment.Editor.RemoveHint>
+  <OrderedWork.Equipment.Editor.AddHint>Clic para agregar.</OrderedWork.Equipment.Editor.AddHint>
+  <OrderedWork.Equipment.Editor.Unsaved>Cambios sin guardar.</OrderedWork.Equipment.Editor.Unsaved>
+  <OrderedWork.Equipment.Editor.Discard>Descartar</OrderedWork.Equipment.Editor.Discard>
+  <OrderedWork.Equipment.Editor.LoadTitle>Conjuntos de equipo</OrderedWork.Equipment.Editor.LoadTitle>
+  <OrderedWork.Equipment.Editor.DeleteConfirm>¿Borrar este conjunto?</OrderedWork.Equipment.Editor.DeleteConfirm>
+  <OrderedWork.Equipment.Editor.NameExists>Ese nombre ya existe.</OrderedWork.Equipment.Editor.NameExists>
+  <OrderedWork.Equipment.Editor.NewTitle>Nuevo conjunto de equipo</OrderedWork.Equipment.Editor.NewTitle>
+  <OrderedWork.Equipment.Tabs.Body>Cuerpo</OrderedWork.Equipment.Tabs.Body>
+  <OrderedWork.Equipment.Tabs.Cape>Capa</OrderedWork.Equipment.Tabs.Cape>
+  <OrderedWork.Equipment.Tabs.Exosuit>Exotraje</OrderedWork.Equipment.Tabs.Exosuit>  <OrderedWork.Equipment.Editor.SelectSetHint>Seleccionar este conjunto.</OrderedWork.Equipment.Editor.SelectSetHint>
+  <OrderedWork.Equipment.Editor.NameLabel>Nombre</OrderedWork.Equipment.Editor.NameLabel>
+  <OrderedWork.Equipment.Editor.SearchTip>Buscar ropa.</OrderedWork.Equipment.Editor.SearchTip></LanguageData>

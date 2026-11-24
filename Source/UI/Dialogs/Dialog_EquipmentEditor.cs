@@ -14,7 +14,7 @@ namespace OrderedWork.UI
 {
     /// <summary>
     /// First functional Equipment editor slice: dynamic cells, tabs, rows and
-    /// local alternatives. Metadata and the pawn Equipment tab follow in later batches.
+    /// local alternatives. Metadata and the pawn Equipment tab follow later.
     /// </summary>
     public sealed class Dialog_EquipmentEditor : Window
     {
@@ -27,6 +27,8 @@ namespace OrderedWork.UI
         private Vector2 gridScroll;
         private Vector2 addedScroll;
         private Vector2 availableScroll;
+        private bool dirty;
+        private Action? pendingAction;
 
         public Dialog_EquipmentEditor(OrderedWorkMod host, string? initialSetId = null)
         {
@@ -42,6 +44,19 @@ namespace OrderedWork.UI
 
         public override Vector2 InitialSize => new Vector2(1080f, 780f);
 
+        public override bool OnCloseRequest()
+        {
+            if (!dirty)
+            {
+                return true;
+            }
+            if (pendingAction == null)
+            {
+                pendingAction = delegate { dirty = false; Close(); };
+            }
+            return false;
+        }
+
         public override void DoWindowContents(Rect inRect)
         {
             Text.Font = GameFont.Medium;
@@ -51,6 +66,12 @@ namespace OrderedWork.UI
             if (set == null)
             {
                 Widgets.Label(new Rect(0f, 38f, inRect.width, 24f), T("OrderedWork.Equipment.Editor.NoSet", "No equipment set."));
+                return;
+            }
+
+            if (pendingAction != null)
+            {
+                DrawDirtyPrompt(inRect);
                 return;
             }
 
@@ -66,32 +87,24 @@ namespace OrderedWork.UI
             {
                 return;
             }
+
             Rect row = new Rect(0f, 34f, inRect.width, 26f);
             Rect[] cells = UiFlex.Columns(row, 6f, 2.4f, 1f, 1f, 1f);
-            if (Widgets.ButtonText(cells[0], (set?.Name ?? "")))
+            if (UiButtonBar.Button(cells[0], set.Name ?? ""))
             {
-                List<FloatMenuOption> options = new List<FloatMenuOption>();
-                foreach (EquipmentSet item in EquipmentSetStore.LoadAll())
-                {
-                    EquipmentSet local = item;
-                    options.Add(new FloatMenuOption(item.Name, delegate { LoadSet(local.Id); }));
-                }
-                if (options.Count > 0)
-                {
-                    Find.WindowStack.Add(new FloatMenu(options));
-                }
+                OpenLoad();
             }
-            if (Widgets.ButtonText(cells[1], T("OrderedWork.Equipment.Editor.New", "New")))
+            if (UiButtonBar.Button(cells[1], T("OrderedWork.Equipment.Editor.Load", "Load...")))
             {
-                CreateSet();
+                OpenLoad();
             }
-            if (set != null)
-            {
-                set.Name = Widgets.TextField(cells[2], set.Name ?? "");
-            }
-            if (Widgets.ButtonText(cells[3], T("OrderedWork.Equipment.Editor.Save", "Save")))
+            if (UiButtonBar.Button(cells[2], T("OrderedWork.Equipment.Editor.Save", "Save")))
             {
                 SaveSet();
+            }
+            if (UiButtonBar.Button(cells[3], T("OrderedWork.Equipment.Editor.SaveAs", "Save As...")))
+            {
+                OpenSaveAs();
             }
         }
 
@@ -102,20 +115,12 @@ namespace OrderedWork.UI
                 return;
             }
 
-            float x = 0f;
-            for (int i = 0; i < layout.Tabs.Count; i++)
+            string[] labels = layout.Tabs.Select(tab => TabLabel(tab.Id)).ToArray();
+            UiTabBar.Draw(new Rect(0f, 68f, inRect.width, 30f), labels, selectedTab, delegate(int index)
             {
-                EquipmentViewTab tab = layout.Tabs[i];
-                string label = TabLabel(tab.Id);
-                float width = Mathf.Max(84f, Text.CalcSize(label).x + 18f);
-                Rect button = new Rect(x, 68f, width, 26f);
-                if (Widgets.ButtonText(button, label, true, true, selectedTab == i))
-                {
-                    selectedTab = i;
-                    selectedCell = null;
-                }
-                x += width + 4f;
-            }
+                selectedTab = index;
+                selectedCell = null;
+            });
         }
 
         private void DrawGrid(Rect inRect)
@@ -126,19 +131,24 @@ namespace OrderedWork.UI
             }
 
             EquipmentViewTab tab = layout.Tabs[Mathf.Clamp(selectedTab, 0, layout.Tabs.Count - 1)];
-            Rect area = new Rect(0f, 102f, inRect.width, 270f);
-            Widgets.DrawBoxSolid(area, new Color(0.10f, 0.11f, 0.13f, 0.55f));
-            float contentHeight = Mathf.Max(area.height, tab.Rows.Count * 58f + 6f);
+            Rect area = new Rect(0f, 108f, inRect.width, 250f);
+            Widgets.DrawBoxSolid(area, UiColors.ColumnBackground);
+            const float cellSize = 54f;
+            float contentHeight = Mathf.Max(area.height, tab.Rows.Count * (cellSize + 12f) + 6f);
             UiScrollPane.Draw(area, ref gridScroll, contentHeight, this, delegate(Rect view)
             {
-                for (int rowIndex = 0; rowIndex < tab.Rows.Count; rowIndex++)
+                UiRows rows = new UiRows(new Rect(0f, 4f, view.width, view.height - 4f), cellSize, 12f);
+                foreach (EquipmentViewRow row in tab.Rows)
                 {
-                    EquipmentViewRow row = tab.Rows[rowIndex];
-                    float y = rowIndex * 58f + 4f;
-                    Widgets.Label(new Rect(6f, y + 10f, 96f, 24f), RowLabel(row.Id));
-                    for (int cellIndex = 0; cellIndex < row.Cells.Count; cellIndex++)
+                    Rect rowRect = rows.Next();
+                    Rect labelRect = new Rect(rowRect.x + 6f, rowRect.y + 14f, 96f, 24f);
+                    Widgets.Label(labelRect, RowLabel(row.Id));
+                    Rect cellsArea = new Rect(rowRect.x + 106f, rowRect.y, Mathf.Max(0f, rowRect.width - 110f), cellSize);
+                    for (int i = 0; i < row.Cells.Count; i++)
                     {
-                        DrawCell(new Rect(106f + cellIndex * 104f, y, 98f, 48f), row.Cells[cellIndex]);
+                        ApparelSlotKey cell = row.Cells[i];
+                        Rect cellRect = UiGrid.Cell(cellsArea, i, cellSize, 6f);
+                        DrawCell(cellRect, cell);
                     }
                 }
             });
@@ -149,14 +159,10 @@ namespace OrderedWork.UI
             bool selected = selectedCell.HasValue && selectedCell.Value == cell;
             CellRule? rule = set?.Cells.FirstOrDefault(value => value.Cell == cell);
             int count = rule?.Alternatives.Count ?? 0;
-            Widgets.DrawBoxSolid(rect, selected
-                ? new Color(0.18f, 0.34f, 0.48f, 0.95f)
-                : new Color(0.14f, 0.15f, 0.18f, 0.95f));
-            Widgets.DrawBox(rect, selected ? 2 : 1);
-            Widgets.Label(new Rect(rect.x + 4f, rect.y + 4f, rect.width - 8f, 20f), LayerLabel(cell.ApparelLayerDefName));
-            Widgets.Label(new Rect(rect.x + 4f, rect.y + 24f, rect.width - 8f, 18f),
-                count == 0 ? "—" : count.ToString());
-            if (Widgets.ButtonInvisible(rect))
+            string label = LayerLabel(cell.ApparelLayerDefName);
+            string subLabel = count == 0 ? "—" : count.ToString();
+            if (UiCard.Draw(rect, label, subLabel, selected, null,
+                T("OrderedWork.Equipment.Editor.CellTooltip", "Select this cell.")))
             {
                 selectedCell = cell;
                 search = "";
@@ -165,7 +171,7 @@ namespace OrderedWork.UI
 
         private void DrawCandidates(Rect inRect)
         {
-            Rect area = new Rect(0f, 380f, inRect.width, inRect.height - 420f);
+            Rect area = new Rect(0f, 366f, inRect.width, inRect.height - 406f);
             Rect[] columns = UiFlex.Columns(area, 8f, 1f, 1f);
             DrawAdded(columns[0]);
             DrawAvailable(columns[1]);
@@ -189,19 +195,23 @@ namespace OrderedWork.UI
             }
 
             List<CellAlternative> alternatives = rule.Alternatives.OrderBy(value => value.Priority).ToList();
-            UiScrollPane.Draw(list, ref addedScroll, Mathf.Max(list.height, alternatives.Count * 30f + 4f), this, delegate(Rect view)
+            UiScrollPane.Draw(list, ref addedScroll, Mathf.Max(list.height, alternatives.Count * 32f + 4f), this, delegate(Rect view)
             {
+                UiRows rows = new UiRows(view, 28f, 4f);
                 for (int i = 0; i < alternatives.Count; i++)
                 {
                     CellAlternative alternative = alternatives[i];
-                    Rect row = new Rect(0f, i * 30f, view.width, 27f);
-                    Widgets.DrawBoxSolid(row, new Color(0.14f, 0.20f, 0.17f, 0.95f));
-                    Widgets.Label(new Rect(row.x + 6f, row.y + 4f, row.width - 12f, 20f),
-                        alternative.Priority + " · " + DefLabel(alternative.DefName));
+                    Rect row = rows.Next();
+                    string sub = alternative.Priority + " · " + DefLabel(alternative.DefName);
+                    if (UiCard.Draw(row, sub, null, false, null,
+                        T("OrderedWork.Equipment.Editor.RemoveHint", "Right-click to remove.")))
+                    {
+                    }
                     if (Event.current.type == EventType.MouseDown && Event.current.button == 1 && row.Contains(Event.current.mousePosition))
                     {
                         rule.Alternatives.Remove(alternative);
                         NormalizePriorities(rule);
+                        dirty = true;
                         Event.current.Use();
                         break;
                     }
@@ -213,7 +223,7 @@ namespace OrderedWork.UI
         {
             Widgets.Label(new Rect(area.x, area.y, area.width, 20f), T("OrderedWork.Equipment.Editor.Available", "Available"));
             Rect searchRect = new Rect(area.x, area.y + 22f, area.width, 24f);
-            search = Widgets.TextField(searchRect, search ?? "");
+            search = UiSearchField.Draw(searchRect, search, T("OrderedWork.Equipment.Editor.SearchTip", "Search apparel."));
             Rect list = new Rect(area.x, area.y + 50f, area.width, area.height - 50f);
 
             if (!selectedCell.HasValue)
@@ -241,15 +251,14 @@ namespace OrderedWork.UI
                 .Take(200)
                 .ToList();
 
-            UiScrollPane.Draw(list, ref availableScroll, Mathf.Max(list.height, candidates.Count * 30f + 4f), this, delegate(Rect view)
+            UiScrollPane.Draw(list, ref availableScroll, Mathf.Max(list.height, candidates.Count * 32f + 4f), this, delegate(Rect view)
             {
-                for (int i = 0; i < candidates.Count; i++)
+                UiRows rows = new UiRows(view, 28f, 4f);
+                foreach (ThingDef def in candidates)
                 {
-                    ThingDef def = candidates[i];
-                    Rect row = new Rect(0f, i * 30f, view.width, 27f);
-                    Widgets.DrawBoxSolid(row, new Color(0.13f, 0.14f, 0.17f, 0.95f));
-                    Widgets.Label(new Rect(row.x + 6f, row.y + 4f, row.width - 12f, 20f), def.LabelCap);
-                    if (Widgets.ButtonInvisible(row))
+                    Rect row = rows.Next();
+                    if (UiCard.Draw(row, def.LabelCap, null, false, ClothingIconResolver.IconOf(def.defName),
+                        T("OrderedWork.Equipment.Editor.AddHint", "Click to add.")))
                     {
                         AddAlternative(def.defName);
                         break;
@@ -274,11 +283,8 @@ namespace OrderedWork.UI
             {
                 return;
             }
-            rule.Alternatives.Add(new CellAlternative
-            {
-                DefName = defName,
-                Priority = rule.Alternatives.Count
-            });
+            rule.Alternatives.Add(new CellAlternative { DefName = defName, Priority = rule.Alternatives.Count });
+            dirty = true;
         }
 
         private static void NormalizePriorities(CellRule rule)
@@ -310,15 +316,42 @@ namespace OrderedWork.UI
             }
             selectedCell = null;
             selectedTab = 0;
+            dirty = false;
         }
 
-        private void CreateSet()
+        private void OpenLoad()
         {
-            EquipmentSet created = new EquipmentSet { Name = "New equipment", Role = EquipmentSetRole.Principal };
-            EquipmentSetStore.Save(created);
-            set = created;
-            selectedCell = null;
-            selectedTab = 0;
+            if (dirty)
+            {
+                pendingAction = delegate { dirty = false; OpenLoad(); };
+                return;
+            }
+            Find.WindowStack.Add(new Dialog_EquipmentSetLoad(delegate(EquipmentSet loaded)
+            {
+                LoadSet(loaded.Id);
+            }));
+        }
+
+        private void OpenSaveAs()
+        {
+            if (set == null)
+            {
+                return;
+            }
+            Find.WindowStack.Add(new Dialog_EquipmentSetName(
+                T("OrderedWork.Equipment.Editor.SaveAsTitle", "Save equipment set as"),
+                set.Name + " copy",
+                delegate(string name)
+                {
+                    EquipmentSet copy = CopySet(set, name);
+                    if (EquipmentSetStore.Save(copy))
+                    {
+                        set = copy;
+                        dirty = false;
+                    }
+                },
+                name => !EquipmentSetStore.LoadAll().Any(item =>
+                    string.Equals(item.Name, name, StringComparison.OrdinalIgnoreCase))));
         }
 
         private void SaveSet()
@@ -330,8 +363,68 @@ namespace OrderedWork.UI
             set.Normalize();
             if (EquipmentSetStore.Save(set))
             {
+                dirty = false;
                 Messages.Message(T("OrderedWork.Equipment.Editor.Saved", "Equipment set saved."), MessageTypeDefOf.TaskCompletion, false);
             }
+        }
+
+        private void DrawDirtyPrompt(Rect inRect)
+        {
+            Widgets.DrawBoxSolid(inRect, UiColors.PanelBody);
+            Rect panel = UiInset.All(inRect, 24f);
+            UiRows rows = new UiRows(panel, 30f, 8f);
+            Widgets.Label(rows.Next(), T("OrderedWork.Equipment.Editor.Unsaved", "Unsaved changes."));
+            Rect buttons = rows.Next(30f);
+            Rect[] cells = UiFlex.Columns(buttons, 8f, 1f, 1f, 1f);
+            if (UiButtonBar.Button(cells[0], T("OrderedWork.Common.Save", "Save")))
+            {
+                SaveSet();
+                if (!dirty)
+                {
+                    Action? action = pendingAction;
+                    pendingAction = null;
+                    action?.Invoke();
+                }
+            }
+            if (UiButtonBar.Button(cells[1], T("OrderedWork.Equipment.Editor.Discard", "Discard")))
+            {
+                dirty = false;
+                Action? action = pendingAction;
+                pendingAction = null;
+                action?.Invoke();
+            }
+            if (UiButtonBar.Button(cells[2], T("OrderedWork.Common.Cancel", "Cancel")))
+            {
+                pendingAction = null;
+            }
+        }
+
+        private static EquipmentSet CopySet(EquipmentSet source, string name)
+        {
+            EquipmentSet copy = new EquipmentSet
+            {
+                Name = name,
+                Role = source.Role,
+                Order = source.Order,
+                WorkTypeDefName = source.WorkTypeDefName,
+                PrimaryEquipmentDefName = source.PrimaryEquipmentDefName,
+                Cells = source.Cells.Select(rule => new CellRule
+                {
+                    Cell = rule.Cell,
+                    Alternatives = rule.Alternatives.Select(alternative => new CellAlternative
+                    {
+                        DefName = alternative.DefName,
+                        Priority = alternative.Priority
+                    }).ToList()
+                }).ToList(),
+                Inventory = source.Inventory.Select(entry => new InventoryTarget
+                {
+                    DefName = entry.DefName,
+                    Expected = entry.Expected
+                }).ToList()
+            };
+            copy.Normalize();
+            return copy;
         }
 
         private static string TabFor(ApparelSlotKey cell)
@@ -342,19 +435,16 @@ namespace OrderedWork.UI
                 case "OnSkin_A":
                 case "Underwear":
                 case "UnderwearTop":
-                    return "Skin";
                 case "Middle":
                 case "Middle_A":
-                    return "Middle";
                 case "Shell":
                 case "Shell_A":
-                case "DankPyon_LegShell":
-                case "DankPyon_ShellAttachment":
-                    return "Outer";
                 case "Belt":
                 case "Belt_A":
                 case "AM_Pocket":
-                    return "Utility";
+                case "DankPyon_LegShell":
+                case "DankPyon_ShellAttachment":
+                    return "Body";
                 case "Overhead":
                 case "Overhead_A":
                 case "DankPyon_Hood":
@@ -365,8 +455,15 @@ namespace OrderedWork.UI
                 case "DankPyon_NecklaceLayer":
                 case "DankPyon_Ring1Layer":
                     return "Accessory";
+                case "Cape":
+                case "Armor_Cape":
+                case "VFEC_OuterShell":
+                    return "Cape";
                 default:
-                    return "Other";
+                    return cell.ApparelLayerDefName.IndexOf("Exosuit", StringComparison.Ordinal) >= 0 ||
+                        cell.ApparelLayerDefName.IndexOf("WalkerGear", StringComparison.Ordinal) >= 0
+                        ? "Exosuit"
+                        : "Other";
             }
         }
 

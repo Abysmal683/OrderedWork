@@ -233,4 +233,21 @@
   <OrderedWork.Equipment.Tabs.Utility>Utility</OrderedWork.Equipment.Tabs.Utility>
   <OrderedWork.Equipment.Tabs.Head>Head</OrderedWork.Equipment.Tabs.Head>
   <OrderedWork.Equipment.Tabs.Accessory>Accessory</OrderedWork.Equipment.Tabs.Accessory>
-  <OrderedWork.Equipment.Tabs.Other>Other</OrderedWork.Equipment.Tabs.Other></LanguageData>
+  <OrderedWork.Equipment.Tabs.Other>Other</OrderedWork.Equipment.Tabs.Other>
+  <OrderedWork.Equipment.Editor.Load>Load...</OrderedWork.Equipment.Editor.Load>
+  <OrderedWork.Equipment.Editor.SaveAs>Save As...</OrderedWork.Equipment.Editor.SaveAs>
+  <OrderedWork.Equipment.Editor.SaveAsTitle>Save equipment set as</OrderedWork.Equipment.Editor.SaveAsTitle>
+  <OrderedWork.Equipment.Editor.CellTooltip>Select this cell.</OrderedWork.Equipment.Editor.CellTooltip>
+  <OrderedWork.Equipment.Editor.RemoveHint>Right-click to remove.</OrderedWork.Equipment.Editor.RemoveHint>
+  <OrderedWork.Equipment.Editor.AddHint>Click to add.</OrderedWork.Equipment.Editor.AddHint>
+  <OrderedWork.Equipment.Editor.Unsaved>Unsaved changes.</OrderedWork.Equipment.Editor.Unsaved>
+  <OrderedWork.Equipment.Editor.Discard>Discard</OrderedWork.Equipment.Editor.Discard>
+  <OrderedWork.Equipment.Editor.LoadTitle>Equipment sets</OrderedWork.Equipment.Editor.LoadTitle>
+  <OrderedWork.Equipment.Editor.DeleteConfirm>Delete this set?</OrderedWork.Equipment.Editor.DeleteConfirm>
+  <OrderedWork.Equipment.Editor.NameExists>That name already exists.</OrderedWork.Equipment.Editor.NameExists>
+  <OrderedWork.Equipment.Editor.NewTitle>New equipment set</OrderedWork.Equipment.Editor.NewTitle>
+  <OrderedWork.Equipment.Tabs.Body>Body</OrderedWork.Equipment.Tabs.Body>
+  <OrderedWork.Equipment.Tabs.Cape>Cape</OrderedWork.Equipment.Tabs.Cape>
+  <OrderedWork.Equipment.Tabs.Exosuit>Exosuit</OrderedWork.Equipment.Tabs.Exosuit>  <OrderedWork.Equipment.Editor.SelectSetHint>Select this set.</OrderedWork.Equipment.Editor.SelectSetHint>
+  <OrderedWork.Equipment.Editor.NameLabel>Name</OrderedWork.Equipment.Editor.NameLabel>
+  <OrderedWork.Equipment.Editor.SearchTip>Search apparel.</OrderedWork.Equipment.Editor.SearchTip></LanguageData>

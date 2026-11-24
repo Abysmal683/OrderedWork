@@ -148,3 +148,6 @@ D abajo de todo, ancho completo.
 ```
 
 That is enough to reconstruct the layout without pixel coordinates.
+## Gadgets
+
+Reusable card, grid and search gadgets live in `ui-gadgets.md`. Add new repeated visual behavior there before copying it into another screen.
