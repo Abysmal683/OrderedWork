@@ -277,14 +277,20 @@ namespace OrderedWork.UI
             search = UiSearchField.Draw(searchRect, search, T("OrderedWork.Equipment.Editor.SearchTip", "Search apparel."));
             Rect list = new Rect(area.x, area.y + 50f, area.width, area.height - 50f);
 
-            bool hasCell = selectedCell.HasValue;
-            CellRule? rule = hasCell ? set?.Cells.FirstOrDefault(value => value.Cell == selectedCell!.Value) : null;
+            ApparelSlotKey? selected = selectedCell;
+            bool hasCell = selected.HasValue;
+            CellRule? rule = null;
+            if (set != null && selected.HasValue)
+            {
+                ApparelSlotKey cell = selected.Value;
+                rule = set.Cells.FirstOrDefault(value => value.Cell == cell);
+            }
             HashSet<string> added = new HashSet<string>(
                 (rule?.Alternatives ?? new List<CellAlternative>()).Select(value => value.DefName),
                 StringComparer.Ordinal);
             string term = (search ?? "").Trim();
             List<ThingDef> candidates = catalog.Footprints.Values
-                .Where(footprint => !hasCell || footprint.Cells.Contains(selectedCell!.Value))
+                .Where(footprint => !hasCell || (selected.HasValue && footprint.Cells.Contains(selected.Value)))
                 .Where(footprint => catalog.AllowedApparel.Contains(footprint.DefName))
                 .Where(footprint => !added.Contains(footprint.DefName))
                 .Select(footprint => DefDatabase<ThingDef>.GetNamedSilentFail(footprint.DefName))

@@ -62,12 +62,13 @@ namespace OrderedWork.UI
             }
 
             Rect listRect = rows.Remaining;
-            UiScrollPane.Draw(listRect, ref scroll, Mathf.Max(listRect.height, (sets?.Count ?? 0) * 38f + 4f), this, delegate(Rect view)
+            List<EquipmentSet> currentSets = sets ?? new List<EquipmentSet>();
+            UiScrollPane.Draw(listRect, ref scroll, Mathf.Max(listRect.height, currentSets.Count * 38f + 4f), this, delegate(Rect view)
             {
                 UiRows listRows = new UiRows(view, 34f, 4f);
-                for (int i = 0; i < (sets?.Count ?? 0); i++)
+                for (int i = 0; i < currentSets.Count; i++)
                 {
-                    EquipmentSet item = sets![i];
+                    EquipmentSet item = currentSets[i];
                     Rect row = listRows.Next();
                     UiTable columns = new UiTable(row, 6f);
                     columns.Flex().Add(78f).Add(88f);
@@ -122,7 +123,11 @@ namespace OrderedWork.UI
             Rect[] cells = UiFlex.Columns(buttons, 8f, 1f, 1f);
             if (UiButtonBar.Button(cells[0], OrderedWorkText.T("OrderedWork.Common.ConfirmDelete", "Confirm delete"), true, null, UiColors.ConfirmDanger))
             {
-                EquipmentSetStore.Delete(pendingDelete!.Id);
+                EquipmentSet? deleting = pendingDelete;
+                if (deleting != null)
+                {
+                    EquipmentSetStore.Delete(deleting.Id);
+                }
                 pendingDelete = null;
                 sets = EquipmentSetStore.LoadAll();
             }
