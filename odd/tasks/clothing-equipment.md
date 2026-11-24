@@ -92,7 +92,9 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
   - Skips already worn and unavailable items; no loop.
   - Search area setting: default radius 30, centered on current worktable job or pawn; whole-map when disabled. Requires master equipment toggle.
   - Feature toggle `equipmentEnabled`: hides UI/tab and skips jobs when off; WorkType equipment is inert. Master guards search-area UI.
-  - Pending: coverage repair, vanilla fallback with no set, automatic pre-work dressing, workstation/home anchor model, compact gizmo, broader execution tests.
+  - Approved: automatic bounded coverage repair; vanilla fallback when no set; compact gizmo with temporary search widening; authorized interruptions cancel dress; apparel -> primary -> inventory.
+  - Inventory execution is last and deferred until apparel/primary settles.
+  - Pending: implement coverage repair/fallback/gizmo/interruption, automatic pre-work hook, workstation/home anchor model.
   - Common Sense precedent reviewed: narrow `Pawn_JobTracker.StartJob` prefix, enqueue original before dress jobs, return false; no `TryTakeOrderedJob`.
   - No-worktable cases: use home/outfit-stand anchor for fishing/hunting/far cleaning, not pawn.
 
@@ -180,3 +182,5 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
 - L29: V1 allowlist, doctor safety threshold proposal, confirmed anchor order, direct-to-item Wear, and pre-work debug fields documented.
 
 - L30: Medical urgency will use vanilla HealthAIUtility/Alert_NeedDoctor only; no custom bleeding formula. Pre-work hook is deferred while T9/T10 continue.
+
+- L31: Approved T9 execution details: auto bounded repair, vanilla fallback, compact search-widening gizmo, authorized cancellation, apparel->primary->inventory order.
