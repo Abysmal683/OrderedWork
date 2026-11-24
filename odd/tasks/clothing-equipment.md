@@ -168,3 +168,5 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
 - L23: Gated search-area settings behind equipment master toggle; documented whole-map fallback, WorkType inertness, and pre-work workstation-anchor gap.
 
 - L24: Common Sense analyzed; StartJob prefix with original queued first and dress jobs at head is the recommended no-loss delay. No-worktable cases need home/stockpile anchors.
+
+- L25: Anchor evaluation: prefer target workbench/bed, then outfit stand, then storage/home, then pawn; reject keyword matching and per-storage gizmos; optional dedicated beacon remains future.

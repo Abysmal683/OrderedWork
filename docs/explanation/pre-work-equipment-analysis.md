@@ -167,3 +167,88 @@ Do not invent a `WorkType -> worktable` mapping.
 5. For fishing, hunting and far cleaning, prefer home/stockpile anchor over pawn.
 6. If no apparel is found, start the original job unchanged.
 7. Keep the equipment master toggle and search-area toggle gating all of it.
+## Anchor options without a worktable
+
+### Outfit stand
+
+Vanilla `Building_OutfitStand` already implements `IApparelSource` and has apparel storage.
+
+Pros:
+
+- already exists;
+- already familiar;
+- can store/equip apparel;
+- no new building, zone or UI;
+- works as a natural “dress before leaving” point.
+
+Cons:
+
+- not per WorkType unless an extra gizmo is added;
+- capacity/stock is limited by the stand.
+
+Recommendation: use the nearest outfit stand with a valid item before falling back to generic storage.
+
+### Dedicated beacon/building
+
+A new “Dress Point” building.
+
+Pros:
+
+- explicit;
+- can be assigned to a WorkType;
+- visible and easy to explain.
+
+Cons:
+
+- new def, texture, gizmo, persistence and UI;
+- redundant if an outfit stand already exists;
+- only worth it if the player needs per-WorkType anchors.
+
+Use only if outfit stands are insufficient.
+
+### Keyword/name match
+
+Search a stockpile whose name contains “fishing”, “hunting”, etc.
+
+Pros:
+
+- no new UI or building.
+
+Cons:
+
+- brittle and hidden;
+- localization-dependent;
+- name collisions;
+- players must know the convention;
+- no reliable data contract.
+
+Do not use this as the primary solution.
+
+### Gizmo on every storage
+
+Add a “dress anchor” gizmo to every storage building.
+
+Pros:
+
+- explicit;
+- uses existing storage.
+
+Cons:
+
+- gizmo clutter on every building;
+- stockpile zones are not buildings and have no equivalent gizmo;
+- more persistence and compatibility surface;
+- hard to explain which storage wins.
+
+Do not put a gizmo on every storage.
+
+## Recommended anchor ladder
+
+```text
+1. worktable / medical bed target
+2. nearest outfit stand with a valid item
+3. nearest storage/home/stockpile area
+4. pawn position
+```
+
+No keyword matching. No per-storage gizmos. A dedicated beacon remains a later optional feature only if the outfit-stand path is not enough.
