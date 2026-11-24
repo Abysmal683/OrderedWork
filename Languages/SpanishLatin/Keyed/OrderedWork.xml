@@ -218,4 +218,19 @@
   <OrderedWork.Common.NoneShort>Ninguno</OrderedWork.Common.NoneShort>
   <OrderedWork.Work.RightClickRemove>Clic derecho para quitar este tipo de trabajo.</OrderedWork.Work.RightClickRemove>
   <OrderedWork.Common.ActiveNow>Activo ahora</OrderedWork.Common.ActiveNow>
-</LanguageData>
+  <OrderedWork.Equipment.Editor.Title>Editor de equipo</OrderedWork.Equipment.Editor.Title>
+  <OrderedWork.Equipment.Editor.NoSet>No hay conjunto de equipo.</OrderedWork.Equipment.Editor.NoSet>
+  <OrderedWork.Equipment.Editor.New>Nuevo</OrderedWork.Equipment.Editor.New>
+  <OrderedWork.Equipment.Editor.Save>Guardar</OrderedWork.Equipment.Editor.Save>
+  <OrderedWork.Equipment.Editor.Added>Agregados</OrderedWork.Equipment.Editor.Added>
+  <OrderedWork.Equipment.Editor.Available>Disponibles</OrderedWork.Equipment.Editor.Available>
+  <OrderedWork.Equipment.Editor.SelectCell>Selecciona una celda.</OrderedWork.Equipment.Editor.SelectCell>
+  <OrderedWork.Equipment.Editor.NoAdded>No hay alternativas para esta celda.</OrderedWork.Equipment.Editor.NoAdded>
+  <OrderedWork.Equipment.Editor.Saved>Conjunto de equipo guardado.</OrderedWork.Equipment.Editor.Saved>
+  <OrderedWork.Equipment.Tabs.Skin>Piel</OrderedWork.Equipment.Tabs.Skin>
+  <OrderedWork.Equipment.Tabs.Middle>Medio</OrderedWork.Equipment.Tabs.Middle>
+  <OrderedWork.Equipment.Tabs.Outer>Exterior</OrderedWork.Equipment.Tabs.Outer>
+  <OrderedWork.Equipment.Tabs.Utility>Utilidad</OrderedWork.Equipment.Tabs.Utility>
+  <OrderedWork.Equipment.Tabs.Head>Cabeza</OrderedWork.Equipment.Tabs.Head>
+  <OrderedWork.Equipment.Tabs.Accessory>Accesorio</OrderedWork.Equipment.Tabs.Accessory>
+  <OrderedWork.Equipment.Tabs.Other>Otros</OrderedWork.Equipment.Tabs.Other></LanguageData>

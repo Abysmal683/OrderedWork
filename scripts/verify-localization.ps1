@@ -115,7 +115,7 @@ else {
                     }
 
                     if ($line -match '(Widgets\.Label|Widgets\.ButtonText|Widgets\.CheckboxLabeled|TooltipHandler\.TipRegion|Messages\.Message|new FloatMenuOption)\([^;]*"[^"]{3,}"' -and
-                        $line -notmatch 'OrderedWorkText\.T|ConfigText\(|\.Translate\(') {
+                        $line -notmatch 'OrderedWorkText\.T|ConfigText\(|\bT\(|\.Translate\(') {
                         Add-Warning "Possible hardcoded UI string at $($file.FullName):$($i + 1)"
                     }
                 }

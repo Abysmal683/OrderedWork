@@ -64,14 +64,14 @@ namespace OrderedWork.UI
                         WorkTypeLabel(workType) + " · " + (preset?.Name ?? "no preset"));
                     if (Widgets.ButtonText(new Rect(row.xMax - 86f, row.y, 80f, 24f), "Edit"))
                     {
-                        Find.WindowStack.Add(new Dialog_ClothingEditor(host, workType));
+                        Find.WindowStack.Add(new Dialog_EquipmentEditor(host));
                     }
                 }
             });
 
             if (Widgets.ButtonText(new Rect(0f, inRect.height - 34f, 180f, 28f), "Open editor"))
             {
-                Find.WindowStack.Add(new Dialog_ClothingEditor(host));
+                Find.WindowStack.Add(new Dialog_EquipmentEditor(host));
             }
         }
 

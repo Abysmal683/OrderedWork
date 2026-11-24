@@ -218,4 +218,19 @@
   <OrderedWork.Common.NoneShort>None</OrderedWork.Common.NoneShort>
   <OrderedWork.Work.RightClickRemove>Right-click to remove this WorkType.</OrderedWork.Work.RightClickRemove>
   <OrderedWork.Common.ActiveNow>Active now</OrderedWork.Common.ActiveNow>
-</LanguageData>
+  <OrderedWork.Equipment.Editor.Title>Equipment editor</OrderedWork.Equipment.Editor.Title>
+  <OrderedWork.Equipment.Editor.NoSet>No equipment set.</OrderedWork.Equipment.Editor.NoSet>
+  <OrderedWork.Equipment.Editor.New>New</OrderedWork.Equipment.Editor.New>
+  <OrderedWork.Equipment.Editor.Save>Save</OrderedWork.Equipment.Editor.Save>
+  <OrderedWork.Equipment.Editor.Added>Added</OrderedWork.Equipment.Editor.Added>
+  <OrderedWork.Equipment.Editor.Available>Available</OrderedWork.Equipment.Editor.Available>
+  <OrderedWork.Equipment.Editor.SelectCell>Select a cell.</OrderedWork.Equipment.Editor.SelectCell>
+  <OrderedWork.Equipment.Editor.NoAdded>No alternatives for this cell.</OrderedWork.Equipment.Editor.NoAdded>
+  <OrderedWork.Equipment.Editor.Saved>Equipment set saved.</OrderedWork.Equipment.Editor.Saved>
+  <OrderedWork.Equipment.Tabs.Skin>Skin</OrderedWork.Equipment.Tabs.Skin>
+  <OrderedWork.Equipment.Tabs.Middle>Middle</OrderedWork.Equipment.Tabs.Middle>
+  <OrderedWork.Equipment.Tabs.Outer>Outer</OrderedWork.Equipment.Tabs.Outer>
+  <OrderedWork.Equipment.Tabs.Utility>Utility</OrderedWork.Equipment.Tabs.Utility>
+  <OrderedWork.Equipment.Tabs.Head>Head</OrderedWork.Equipment.Tabs.Head>
+  <OrderedWork.Equipment.Tabs.Accessory>Accessory</OrderedWork.Equipment.Tabs.Accessory>
+  <OrderedWork.Equipment.Tabs.Other>Other</OrderedWork.Equipment.Tabs.Other></LanguageData>

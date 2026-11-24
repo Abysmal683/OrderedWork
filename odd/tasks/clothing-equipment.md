@@ -52,9 +52,11 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
   - Slot identity remains `ApparelSlotKey`; placement is view-only.
   - Acceptance: 1 layout test; reorder/rename leaves cell identity stable.
 
-- T6: Editor UI.
-  - Dynamic cells/onion, General/Cell modes, Added/Available columns, candidate filtering, footprint hover/50% preview, badges and `equip`.
-  - Acceptance: same candidate set for list/cell mode; no visual link rows.
+- T6: Editor UI. In progress — first visual slice implemented.
+  - Dynamic cells, tabs, rows, local alternatives, Added/Available columns, search, add/remove, save/new set.
+  - Old `Dialog_ClothingEditor` and `Dialog_ThingDefPicker` removed; overview opens the new Equipment editor.
+  - Still pending for T6: General/Cell parity polish, footprint hover/50% preview, badges/equip visuals, Ghost and full candidate behavior.
+  - Acceptance pending visual test.
 
 - T7: Metadata.
   - 40 summary tree, 60 detail, actual/default material+quality, shared 30/30 comparison, info card.
@@ -108,3 +110,5 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
 - L7: T4 complete: new EquipmentSets JSON store; legacy ClothingPresets intentionally ignored; alpha data-loss accepted; 52 tests; build 0 warnings.
 
 - L8: T5 complete: pure view layout with tabs/rows, rename/reorder; 53 tests; build 0 warnings.
+
+- L9: T6 first visual slice: new Dialog_EquipmentEditor with dynamic cells/tabs/rows, alternatives, search, save; old clothing editor/picker removed; localization warnings reduced 24→13; visual test pending.
