@@ -302,4 +302,9 @@
   <OrderedWork.Config.General.EquipmentSearchArea>Limitar búsqueda al área de mesa de trabajo</OrderedWork.Config.General.EquipmentSearchArea>
   <OrderedWork.Config.General.EquipmentSearchAreaTip>Activado: busca alrededor del área de trabajo actual. Desactivado: busca en todo el mapa.</OrderedWork.Config.General.EquipmentSearchAreaTip>
   <OrderedWork.Config.General.EquipmentRadius>Radio de búsqueda: {0}</OrderedWork.Config.General.EquipmentRadius>  <OrderedWork.Config.General.EquipmentSearchDisabled>El área de búsqueda está inactiva mientras el sistema de equipo está desactivado.</OrderedWork.Config.General.EquipmentSearchDisabled>
-</LanguageData>
+  <OrderedWork.Equipment.Gizmo>Equipo</OrderedWork.Equipment.Gizmo>
+  <OrderedWork.Equipment.GizmoTip>Equipar el conjunto activo o ampliar el área de búsqueda.</OrderedWork.Equipment.GizmoTip>
+  <OrderedWork.Equipment.GizmoCurrent>Equipar ahora · radio {0}</OrderedWork.Equipment.GizmoCurrent>
+  <OrderedWork.Equipment.GizmoRadius>Equipar ahora · radio {0}</OrderedWork.Equipment.GizmoRadius>
+  <OrderedWork.Equipment.GizmoWholeMap>Equipar ahora · mapa completo</OrderedWork.Equipment.GizmoWholeMap>
+  <OrderedWork.Equipment.GizmoOpen>Abrir equipo</OrderedWork.Equipment.GizmoOpen></LanguageData>

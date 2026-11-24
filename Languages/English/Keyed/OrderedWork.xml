@@ -302,4 +302,9 @@
   <OrderedWork.Config.General.EquipmentSearchArea>Limit search to workbench area</OrderedWork.Config.General.EquipmentSearchArea>
   <OrderedWork.Config.General.EquipmentSearchAreaTip>When enabled, searches around the active workbench/job area. When disabled, searches the map.</OrderedWork.Config.General.EquipmentSearchAreaTip>
   <OrderedWork.Config.General.EquipmentRadius>Search radius: {0}</OrderedWork.Config.General.EquipmentRadius>  <OrderedWork.Config.General.EquipmentSearchDisabled>Search area is inactive while the equipment system is disabled.</OrderedWork.Config.General.EquipmentSearchDisabled>
-</LanguageData>
+  <OrderedWork.Equipment.Gizmo>Equipment</OrderedWork.Equipment.Gizmo>
+  <OrderedWork.Equipment.GizmoTip>Equip the active set or widen the search area.</OrderedWork.Equipment.GizmoTip>
+  <OrderedWork.Equipment.GizmoCurrent>Equip now · radius {0}</OrderedWork.Equipment.GizmoCurrent>
+  <OrderedWork.Equipment.GizmoRadius>Equip now · radius {0}</OrderedWork.Equipment.GizmoRadius>
+  <OrderedWork.Equipment.GizmoWholeMap>Equip now · whole map</OrderedWork.Equipment.GizmoWholeMap>
+  <OrderedWork.Equipment.GizmoOpen>Open Equipment</OrderedWork.Equipment.GizmoOpen></LanguageData>

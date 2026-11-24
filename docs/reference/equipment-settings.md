@@ -44,3 +44,24 @@ Do not invent a worktable mapping.
 ## Debug
 
 `OrderedWorkLogCategory.Equipment` logs plan and assignment summaries.
+## Gizmo search widening
+
+Selected pawns get one compact Equipment gizmo on the first selected pawn.
+
+Float menu:
+
+- `Equip now · radius current`;
+- `Equip now · radius 100`;
+- `Equip now · radius 200`;
+- `Equip now · whole map`;
+- `Open Equipment`.
+
+Search radius setting:
+
+- min 25;
+- max 200;
+- default 30;
+- configurable range starts at 25 and allows up to 200.
+- The 100 and 200 values are quick gizmo overrides, not settings writes.
+
+The gizmo applies to all selected colonists; downed pawns are ignored.

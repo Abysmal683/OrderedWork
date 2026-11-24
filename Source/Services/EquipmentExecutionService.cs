@@ -16,7 +16,9 @@ namespace OrderedWork.Services
             Pawn pawn,
             PawnWorkOrder? entry,
             EquipmentCatalogSnapshot catalog,
-            List<EquipmentSet> sets)
+            List<EquipmentSet> sets,
+            int? searchRadiusOverride = null,
+            bool wholeMap = false)
         {
             if (pawn == null || entry == null || pawn.Map == null || pawn.jobs == null
                 || OrderedWorkMod.Settings == null || !OrderedWorkMod.Settings.equipmentEnabled)
@@ -41,7 +43,7 @@ namespace OrderedWork.Services
                         {
                             continue;
                         }
-                        Apparel? apparel = FindAvailableApparel(pawn, selection.DefName);
+                        Apparel? apparel = FindAvailableApparel(pawn, selection.DefName, searchRadiusOverride, wholeMap);
                         if (apparel == null)
                         {
                             continue;
@@ -56,7 +58,7 @@ namespace OrderedWork.Services
                     && (pawn.equipment?.Primary == null
                         || pawn.equipment.Primary.def.defName != plan.PrimaryEquipmentDefName))
                 {
-                    ThingWithComps? equipment = FindAvailableEquipment(pawn, plan.PrimaryEquipmentDefName);
+                    ThingWithComps? equipment = FindAvailableEquipment(pawn, plan.PrimaryEquipmentDefName, searchRadiusOverride, wholeMap);
                     if (equipment != null)
                     {
                         Job job = JobMaker.MakeJob(JobDefOf.Equip, equipment);
@@ -78,7 +80,9 @@ namespace OrderedWork.Services
             Pawn pawn,
             PawnWorkOrder entry,
             EquipmentCatalogSnapshot catalog,
-            List<EquipmentSet> sets)
+            List<EquipmentSet> sets,
+            int? searchRadiusOverride = null,
+            bool wholeMap = false)
         {
             Dictionary<string, EquipmentSet> byId = sets.ToDictionary(value => value.Id, StringComparer.Ordinal);
             List<EquipmentSet> active = new List<EquipmentSet>();
@@ -153,7 +157,7 @@ namespace OrderedWork.Services
             return result;
         }
 
-        private static Apparel? FindAvailableApparel(Pawn pawn, string defName)
+        private static Apparel? FindAvailableApparel(Pawn pawn, string defName, int? searchRadiusOverride, bool wholeMap)
         {
             ThingDef? def = DefDatabase<ThingDef>.GetNamedSilentFail(defName);
             if (def == null || pawn.Map == null) return null;
@@ -162,12 +166,12 @@ namespace OrderedWork.Services
                 .Where(value => value.Spawned && !value.IsForbidden(pawn))
                 .Where(value => pawn.CanReserve(value))
                 .Where(value => pawn.CanReach(value, PathEndMode.ClosestTouch, Danger.Deadly))
-                .Where(value => InSearchArea(pawn, value))
+                .Where(value => InSearchArea(pawn, value, searchRadiusOverride, wholeMap))
                 .OrderBy(value => value.Position.DistanceToSquared(pawn.Position))
                 .FirstOrDefault();
         }
 
-        private static ThingWithComps? FindAvailableEquipment(Pawn pawn, string defName)
+        private static ThingWithComps? FindAvailableEquipment(Pawn pawn, string defName, int? searchRadiusOverride, bool wholeMap)
         {
             ThingDef? def = DefDatabase<ThingDef>.GetNamedSilentFail(defName);
             if (def == null || pawn.Map == null) return null;
@@ -176,19 +180,20 @@ namespace OrderedWork.Services
                 .Where(value => value.Spawned && !value.IsForbidden(pawn))
                 .Where(value => pawn.CanReserve(value))
                 .Where(value => pawn.CanReach(value, PathEndMode.ClosestTouch, Danger.Deadly))
-                .Where(value => InSearchArea(pawn, value))
+                .Where(value => InSearchArea(pawn, value, searchRadiusOverride, wholeMap))
                 .OrderBy(value => value.Position.DistanceToSquared(pawn.Position))
                 .FirstOrDefault();
         }
 
-        private static bool InSearchArea(Pawn pawn, Thing thing)
+        private static bool InSearchArea(Pawn pawn, Thing thing, int? searchRadiusOverride, bool wholeMap)
         {
-            if (OrderedWorkMod.Settings == null || !OrderedWorkMod.Settings.equipmentSearchAreaEnabled)
+            if (wholeMap || OrderedWorkMod.Settings == null || !OrderedWorkMod.Settings.equipmentSearchAreaEnabled)
             {
                 return true;
             }
             IntVec3 center = SearchCenter(pawn);
-            return thing.Position.DistanceTo(center) <= OrderedWorkMod.Settings.equipmentSearchRadius;
+            int radius = searchRadiusOverride ?? OrderedWorkMod.Settings.equipmentSearchRadius;
+            return thing.Position.DistanceTo(center) <= radius;
         }
 
         private static IntVec3 SearchCenter(Pawn pawn)

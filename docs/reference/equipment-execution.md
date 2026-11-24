@@ -48,3 +48,6 @@
   2. primary equipment;
   3. inventory last.
 - Inventory is not part of the first execution slice; it waits for apparel/primary to settle.
+## Gizmo
+
+One compact Equipment gizmo is added to the first selected colonist. It applies the action to all selected colonists and offers current radius, 100, 200, whole map, and Open Equipment.

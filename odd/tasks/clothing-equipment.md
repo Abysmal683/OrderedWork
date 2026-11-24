@@ -184,3 +184,5 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
 - L30: Medical urgency will use vanilla HealthAIUtility/Alert_NeedDoctor only; no custom bleeding formula. Pre-work hook is deferred while T9/T10 continue.
 
 - L31: Approved T9 execution details: auto bounded repair, vanilla fallback, compact search-widening gizmo, authorized cancellation, apparel->primary->inventory order.
+
+- L32: Added compact Equipment gizmo with current/100/200/whole-map quick search and multi-selected colonist execution; setting slider now 25..200.
