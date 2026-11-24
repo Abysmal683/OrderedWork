@@ -13,6 +13,9 @@ namespace OrderedWork
         public float workControlHeight;
         public bool prioritizeLowSkillPassion = true;
         public bool verboseLogging;
+        public bool equipmentEnabled = true;
+        public bool equipmentSearchAreaEnabled = true;
+        public int equipmentSearchRadius = 30;
         public int logCategories;public bool skillFilterLevel = true;
         public bool skillFilterPassion = true;
         public bool skillFilterExpertise;
@@ -32,6 +35,9 @@ namespace OrderedWork
             Scribe_Values.Look(ref workControlHeight, "workControlHeight", 0f);
             Scribe_Values.Look(ref prioritizeLowSkillPassion, "prioritizeLowSkillPassion", true);
             Scribe_Values.Look(ref verboseLogging, "verboseLogging", false);
+            Scribe_Values.Look(ref equipmentEnabled, "equipmentEnabled", true);
+            Scribe_Values.Look(ref equipmentSearchAreaEnabled, "equipmentSearchAreaEnabled", true);
+            Scribe_Values.Look(ref equipmentSearchRadius, "equipmentSearchRadius", 30);
             Scribe_Values.Look(ref logCategories, "logCategories", 0);Scribe_Values.Look(ref skillFilterLevel, "skillFilterLevel", true);
             Scribe_Values.Look(ref skillFilterPassion, "skillFilterPassion", true);
             Scribe_Values.Look(ref skillFilterExpertise, "skillFilterExpertise", false);

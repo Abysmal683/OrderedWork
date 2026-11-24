@@ -296,4 +296,9 @@
   <OrderedWork.Equipment.Metadata.Section.Inventory>Inventario</OrderedWork.Equipment.Metadata.Section.Inventory>
   <OrderedWork.Equipment.Metadata.Primary>Principal</OrderedWork.Equipment.Metadata.Primary>
   <OrderedWork.Equipment.Metadata.Inventory>Inventario</OrderedWork.Equipment.Metadata.Inventory>  <OrderedWork.Equipment.EquipNow>Equipar ahora</OrderedWork.Equipment.EquipNow>
-</LanguageData>
+  <OrderedWork.Config.General.EquipmentSection>Sistema de equipo</OrderedWork.Config.General.EquipmentSection>
+  <OrderedWork.Config.General.EquipmentEnabled>Activar sistema de equipo</OrderedWork.Config.General.EquipmentEnabled>
+  <OrderedWork.Config.General.EquipmentEnabledTip>Apagado: oculta la UI de equipo y no crea jobs de equipo. Úsalo para evitar conflictos con otros mods de ropa/loadout.</OrderedWork.Config.General.EquipmentEnabledTip>
+  <OrderedWork.Config.General.EquipmentSearchArea>Limitar búsqueda al área de mesa de trabajo</OrderedWork.Config.General.EquipmentSearchArea>
+  <OrderedWork.Config.General.EquipmentSearchAreaTip>Activado: busca alrededor del área de trabajo actual. Desactivado: busca en todo el mapa.</OrderedWork.Config.General.EquipmentSearchAreaTip>
+  <OrderedWork.Config.General.EquipmentRadius>Radio de búsqueda: {0}</OrderedWork.Config.General.EquipmentRadius></LanguageData>

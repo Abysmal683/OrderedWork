@@ -44,3 +44,11 @@ Debug category: `Equipment` in the logging bitmask. It logs resolver summaries a
 ## Equip now
 
 `Equip now` resolves the assigned sets and queues vanilla `Wear`/`Equip` jobs for missing items. It does not force locked apparel, does not create a custom reservation ledger, and skips unavailable items.
+
+## Settings
+
+- `Enable equipment system`: off hides the equipment UI/tab and skips jobs.
+- `Limit search to workbench area`: on uses the current worktable/job area; off searches the map.
+- `Search radius`: default 30.
+
+The editor catalog is not radius-filtered; this only affects `Equip now` searches.

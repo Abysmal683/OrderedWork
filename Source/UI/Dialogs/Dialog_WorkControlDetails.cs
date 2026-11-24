@@ -119,10 +119,36 @@ namespace OrderedWork.UI
             Text.Font = GameFont.Small;
 
             Rect tabRow = new Rect(0f, 64f, inRect.width, 28f);
-            OrderedTabStrip.Draw(tabRow, new[] { OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Tab.Work", "Work"), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Tab.Overview", "Overview"), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.Title", "Schedule"), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Zone.Title", "Zone"), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Tab.Overrides", "Overrides"), OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Tab.Equipment", "Equipment") }, (int)detailTab,
+            List<DetailTab> tabs = new List<DetailTab>
+            {
+                DetailTab.Work,
+                DetailTab.Overview,
+                DetailTab.Schedule,
+                DetailTab.Zone,
+                DetailTab.Overrides
+            };
+            if (OrderedWorkMod.Settings == null || OrderedWorkMod.Settings.equipmentEnabled)
+            {
+                tabs.Add(DetailTab.Equipment);
+            }
+            if (!tabs.Contains(detailTab))
+            {
+                detailTab = DetailTab.Work;
+            }
+            string[] tabLabels = tabs.Select(tab => tab switch
+            {
+                DetailTab.Work => OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Tab.Work", "Work"),
+                DetailTab.Overview => OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Tab.Overview", "Overview"),
+                DetailTab.Schedule => OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Schedule.Title", "Schedule"),
+                DetailTab.Zone => OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Zone.Title", "Zone"),
+                DetailTab.Overrides => OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Tab.Overrides", "Overrides"),
+                _ => OrderedWork.Localization.OrderedWorkText.T("OrderedWork.Tab.Equipment", "Equipment")
+            }).ToArray();
+            int selectedTabIndex = Mathf.Max(0, tabs.IndexOf(detailTab));
+            OrderedTabStrip.Draw(tabRow, tabLabels, selectedTabIndex,
                 delegate(int index)
                 {
-                    detailTab = (DetailTab)index;
+                    detailTab = tabs[index];
                     detailTabScroll = Vector2.zero;
                 });
 

@@ -18,7 +18,8 @@ namespace OrderedWork.Services
             EquipmentCatalogSnapshot catalog,
             List<EquipmentSet> sets)
         {
-            if (pawn == null || entry == null || pawn.Map == null || pawn.jobs == null)
+            if (pawn == null || entry == null || pawn.Map == null || pawn.jobs == null
+                || OrderedWorkMod.Settings == null || !OrderedWorkMod.Settings.equipmentEnabled)
             {
                 return;
             }
@@ -161,6 +162,7 @@ namespace OrderedWork.Services
                 .Where(value => value.Spawned && !value.IsForbidden(pawn))
                 .Where(value => pawn.CanReserve(value))
                 .Where(value => pawn.CanReach(value, PathEndMode.ClosestTouch, Danger.Deadly))
+                .Where(value => InSearchArea(pawn, value))
                 .OrderBy(value => value.Position.DistanceToSquared(pawn.Position))
                 .FirstOrDefault();
         }
@@ -174,10 +176,26 @@ namespace OrderedWork.Services
                 .Where(value => value.Spawned && !value.IsForbidden(pawn))
                 .Where(value => pawn.CanReserve(value))
                 .Where(value => pawn.CanReach(value, PathEndMode.ClosestTouch, Danger.Deadly))
+                .Where(value => InSearchArea(pawn, value))
                 .OrderBy(value => value.Position.DistanceToSquared(pawn.Position))
                 .FirstOrDefault();
         }
 
+        private static bool InSearchArea(Pawn pawn, Thing thing)
+        {
+            if (OrderedWorkMod.Settings == null || !OrderedWorkMod.Settings.equipmentSearchAreaEnabled)
+            {
+                return true;
+            }
+            IntVec3 center = SearchCenter(pawn);
+            return thing.Position.DistanceTo(center) <= OrderedWorkMod.Settings.equipmentSearchRadius;
+        }
+
+        private static IntVec3 SearchCenter(Pawn pawn)
+        {
+            Thing? target = pawn.CurJob?.targetA.Thing ?? pawn.CurJob?.targetB.Thing;
+            return target is Building_WorkTable ? target.Position : pawn.Position;
+        }
         private static void Queue(Pawn pawn, Job job, ref bool first)
         {
             if (first)

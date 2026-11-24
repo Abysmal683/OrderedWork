@@ -296,4 +296,9 @@
   <OrderedWork.Equipment.Metadata.Section.Inventory>Inventory</OrderedWork.Equipment.Metadata.Section.Inventory>
   <OrderedWork.Equipment.Metadata.Primary>Primary</OrderedWork.Equipment.Metadata.Primary>
   <OrderedWork.Equipment.Metadata.Inventory>Inventory</OrderedWork.Equipment.Metadata.Inventory>  <OrderedWork.Equipment.EquipNow>Equip now</OrderedWork.Equipment.EquipNow>
-</LanguageData>
+  <OrderedWork.Config.General.EquipmentSection>Equipment system</OrderedWork.Config.General.EquipmentSection>
+  <OrderedWork.Config.General.EquipmentEnabled>Enable equipment system</OrderedWork.Config.General.EquipmentEnabled>
+  <OrderedWork.Config.General.EquipmentEnabledTip>Off: hides the equipment UI and skips equipment jobs. Use this to avoid conflicts with other clothing/loadout mods.</OrderedWork.Config.General.EquipmentEnabledTip>
+  <OrderedWork.Config.General.EquipmentSearchArea>Limit search to workbench area</OrderedWork.Config.General.EquipmentSearchArea>
+  <OrderedWork.Config.General.EquipmentSearchAreaTip>When enabled, searches around the active workbench/job area. When disabled, searches the map.</OrderedWork.Config.General.EquipmentSearchAreaTip>
+  <OrderedWork.Config.General.EquipmentRadius>Search radius: {0}</OrderedWork.Config.General.EquipmentRadius></LanguageData>
