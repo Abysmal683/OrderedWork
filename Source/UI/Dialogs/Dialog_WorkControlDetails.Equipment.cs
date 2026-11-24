@@ -42,7 +42,7 @@ namespace OrderedWork.UI
                 Rect top = root.Next(Mathf.Max(280f, content.height - 300f));
                 Rect[] cols = UiFlex.Columns(top, 8f, 1.25f, 1f);
                 DrawCurrentGear(cols[0], entry, catalog, sets);
-                DrawEquipmentSets(cols[1], entry, sets);
+                DrawEquipmentSets(cols[1], entry, sets, catalog);
                 DrawEquipmentMetadata(root.Remaining, selectedSet, catalog);
             }
             catch (Exception exception)
@@ -244,15 +244,19 @@ namespace OrderedWork.UI
             }
             return result;
         }
-        private void DrawEquipmentSets(Rect area, PawnWorkOrder? entry, List<EquipmentSet> sets)
+        private void DrawEquipmentSets(Rect area, PawnWorkOrder? entry, List<EquipmentSet> sets, EquipmentCatalogSnapshot catalog)
         {
             Widgets.Label(new Rect(area.x, area.y, area.width, 22f), OrderedWorkText.T("OrderedWork.Equipment.Sets", "Sets"));
-            Rect[] actions = UiFlex.Columns(new Rect(area.x + area.width - 236f, area.y - 2f, 236f, 24f), 4f, 1f, 1f);
-            if (UiButtonBar.Button(actions[0], OrderedWorkText.T("OrderedWork.Equipment.Overrides", "Overrides")))
+            Rect[] actions = UiFlex.Columns(new Rect(area.x + area.width - 350f, area.y - 2f, 350f, 24f), 4f, 1f, 1f, 1f);
+            if (UiButtonBar.Button(actions[0], OrderedWorkText.T("OrderedWork.Equipment.EquipNow", "Equip now"), entry != null))
+            {
+                EquipmentExecutionService.EquipNow(pawn, entry, catalog, sets);
+            }
+            if (UiButtonBar.Button(actions[1], OrderedWorkText.T("OrderedWork.Equipment.Overrides", "Overrides")))
             {
                 equipmentOverridesView = !equipmentOverridesView;
             }
-            if (UiButtonBar.Button(actions[1], OrderedWorkText.T("OrderedWork.Equipment.OpenEditor", "Open editor"), selectedEquipmentSetId != null))
+            if (UiButtonBar.Button(actions[2], OrderedWorkText.T("OrderedWork.Equipment.OpenEditor", "Open editor"), selectedEquipmentSetId != null))
             {
                 Find.WindowStack.Add(new Dialog_EquipmentEditor(
                     LoadedModManager.GetMod<OrderedWorkMod>(), selectedEquipmentSetId));

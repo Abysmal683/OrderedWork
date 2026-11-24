@@ -40,3 +40,7 @@ Debug category: `Equipment` in the logging bitmask. It logs resolver summaries a
 - Equipment: actual pawn primary, or set primary in the editor.
 - Inventory: actual pawn stacks, or set targets in the editor.
 - Source icons show contributors; `+N` overflows with a tooltip.
+
+## Equip now
+
+`Equip now` resolves the assigned sets and queues vanilla `Wear`/`Equip` jobs for missing items. It does not force locked apparel, does not create a custom reservation ledger, and skips unavailable items.

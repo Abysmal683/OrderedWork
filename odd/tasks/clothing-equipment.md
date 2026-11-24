@@ -85,9 +85,12 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
   - Catalog cached per panel; sets reloaded on a 250-tick TTL.
   - Old clothing overview/preview/grid/list removed; localization warnings 0.
 
-- T9: Equip now and execution.
-  - Active-set job, forced/locked preservation, vanilla fallback when no set, compact multi-pawn gizmo, interruptible behavior.
-  - Acceptance: no forced/mandatory override; no per-tick loop.
+- T9: Equip now and execution. In progress — first execution slice.
+  - Resolver plan feeds `Equip now`.
+  - Queues vanilla `JobDefOf.Wear` per missing apparel and `JobDefOf.Equip` for primary.
+  - Uses map availability, reachability, forbid and pawn reservation checks.
+  - Skips already worn and unavailable items; no loop.
+  - Pending: coverage repair, vanilla fallback with no set, compact gizmo, broader execution tests.
 
 - T10: WorkType palette integration.
   - Right-click drawn palette row; Assign/Create/View/Edit.
@@ -153,3 +156,5 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
 - L19: T8b done: resolver-derived badges, actual worn material/quality, catalog cache, set TTL; Equipment debug category; 54 tests, 0 warnings.
 
 - L20: T7 complete: equipment/inventory summary, source icon overflow, actual pawn material/quality; 54 tests, 0 warnings.
+
+- L21: T9 first slice: Equip now plan, Wear/Equip job queue, availability/reservation checks, debug logs; coverage repair/fallback/gizmo pending.

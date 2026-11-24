@@ -295,4 +295,5 @@
   <OrderedWork.Equipment.Metadata.Section.Equipment>Equipo</OrderedWork.Equipment.Metadata.Section.Equipment>
   <OrderedWork.Equipment.Metadata.Section.Inventory>Inventario</OrderedWork.Equipment.Metadata.Section.Inventory>
   <OrderedWork.Equipment.Metadata.Primary>Principal</OrderedWork.Equipment.Metadata.Primary>
-  <OrderedWork.Equipment.Metadata.Inventory>Inventario</OrderedWork.Equipment.Metadata.Inventory></LanguageData>
+  <OrderedWork.Equipment.Metadata.Inventory>Inventario</OrderedWork.Equipment.Metadata.Inventory>  <OrderedWork.Equipment.EquipNow>Equipar ahora</OrderedWork.Equipment.EquipNow>
+</LanguageData>
