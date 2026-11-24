@@ -74,13 +74,15 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
   - Added `WorkTypeConfig.EquipmentSetId`.
   - Added additive Scribe fields and normalization; pure assignment rules with one test.
   - 54 tests passing; no UI yet.
-- T8b: Pawn Equipment tab. In progress — first functional slice.
+- T8b: Pawn Equipment tab. In progress — second functional slice.
   - Replaced old Clothing tab with Equipment.
   - Current Gear left: apparel, primary, inventory, carrying, weight.
   - Sets right: grouped roles, assigned/available labels, select, open editor.
-  - Metadata mounted from the selected set.
-  - Old Dialog_ClothingOverview/preview/grid/list files removed; warnings 13→5.
-  - Pending: assignment drag/reorder/remove, Overrides sub-tab, source badges, actual pawn metadata.
+  - Right-click toggles pawn assignment for Mandatory/Emergency/Principal.
+  - Equipment Overrides view: list, right-click remove, clear all.
+  - Metadata mounted from selected set.
+  - Old clothing overview/preview/grid/list removed; localization warnings 0.
+  - Pending: drag/reorder assignment, source badges, actual pawn metadata.
 
 - T9: Equip now and execution.
   - Active-set job, forced/locked preservation, vanilla fallback when no set, compact multi-pawn gizmo, interruptible behavior.
@@ -142,3 +144,5 @@ Baseline: build 0/0; 39 tests passing; no code changes yet.
 - L15: T8a complete: pawn equipment set ids, WorkType EquipmentSetId, PawnEquipmentOverride, additive Scribe/normalization, pure rules test; 54 tests.
 
 - L16: T8b first slice: Equipment tab replaces Clothing; current gear, grouped sets, open editor, metadata; old clothing overview/preview removed; warnings 13→5; assignment interactions and overrides pending.
+
+- L17: T8b second slice: pawn assignment toggle on set right-click, Equipment Overrides view with remove/clear all; warnings now 0.

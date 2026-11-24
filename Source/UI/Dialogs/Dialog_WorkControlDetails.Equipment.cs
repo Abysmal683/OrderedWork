@@ -18,7 +18,9 @@ namespace OrderedWork.UI
         private string? selectedEquipmentSetId;
         private Vector2 equipmentLeftScroll;
         private Vector2 equipmentRightScroll;
+        private Vector2 equipmentOverrideScroll;
         private EquipmentMetadataState equipmentMetadata = new EquipmentMetadataState();
+        private bool equipmentOverridesView;
 
         private void DrawEquipmentTab(Rect content)
         {
@@ -102,14 +104,23 @@ namespace OrderedWork.UI
         private void DrawEquipmentSets(Rect area, PawnWorkOrder? entry, List<EquipmentSet> sets)
         {
             Widgets.Label(new Rect(area.x, area.y, area.width, 22f), OrderedWorkText.T("OrderedWork.Equipment.Sets", "Sets"));
-            if (UiButtonBar.Button(new Rect(area.x + area.width - 110f, area.y - 2f, 110f, 24f),
-                OrderedWorkText.T("OrderedWork.Equipment.OpenEditor", "Open editor"), selectedEquipmentSetId != null))
+            Rect[] actions = UiFlex.Columns(new Rect(area.x + area.width - 236f, area.y - 2f, 236f, 24f), 4f, 1f, 1f);
+            if (UiButtonBar.Button(actions[0], OrderedWorkText.T("OrderedWork.Equipment.Overrides", "Overrides")))
+            {
+                equipmentOverridesView = !equipmentOverridesView;
+            }
+            if (UiButtonBar.Button(actions[1], OrderedWorkText.T("OrderedWork.Equipment.OpenEditor", "Open editor"), selectedEquipmentSetId != null))
             {
                 Find.WindowStack.Add(new Dialog_EquipmentEditor(
                     LoadedModManager.GetMod<OrderedWorkMod>(), selectedEquipmentSetId));
             }
 
             Rect list = new Rect(area.x, area.y + 28f, area.width, area.height - 28f);
+            if (equipmentOverridesView)
+            {
+                DrawEquipmentOverrides(list, entry);
+                return;
+            }
             UiScrollPane.Draw(list, ref equipmentRightScroll, Mathf.Max(list.height, 300f), this, delegate(Rect view)
             {
                 UiRows rows = new UiRows(view, 28f, 4f);
@@ -136,9 +147,17 @@ namespace OrderedWork.UI
                         string sub = assigned
                             ? OrderedWorkText.T("OrderedWork.Equipment.Assigned", "assigned")
                             : OrderedWorkText.T("OrderedWork.Equipment.Available", "available");
-                        if (UiCard.Draw(row, item.Name, sub, selected, null, item.Id))
+                        if (UiCard.Draw(row, item.Name, sub, selected, null,
+                            role == EquipmentSetRole.WorkType
+                                ? OrderedWorkText.T("OrderedWork.Equipment.WorkTypeHint", "Global WorkType set.")
+                                : OrderedWorkText.T("OrderedWork.Equipment.AssignHint", "Right-click to assign or remove.")))
                         {
                             selectedEquipmentSetId = item.Id;
+                        }
+                        if (Event.current.type == EventType.MouseDown && Event.current.button == 1 && row.Contains(Event.current.mousePosition))
+                        {
+                            ToggleAssignment(entry, role, item.Id);
+                            Event.current.Use();
                         }
                     }
                 }
@@ -155,6 +174,77 @@ namespace OrderedWork.UI
             EquipmentMetadataPanel.Draw(area, selectedSet, catalog, equipmentMetadata);
         }
 
+        private void DrawEquipmentOverrides(Rect area, PawnWorkOrder? entry)
+        {
+            if (entry == null || entry.equipmentOverrides.Count == 0)
+            {
+                Widgets.Label(new Rect(area.x, area.y, area.width, 24f),
+                    OrderedWorkText.T("OrderedWork.Equipment.NoOverrides", "No equipment overrides."));
+                return;
+            }
+
+            if (UiButtonBar.Button(new Rect(area.x, area.y, 150f, 24f),
+                OrderedWorkText.T("OrderedWork.Equipment.ClearOverrides", "Clear all overrides")))
+            {
+                entry.equipmentOverrides.Clear();
+                entry.NormalizePolicy();
+            }
+
+            Rect list = new Rect(area.x, area.y + 30f, area.width, area.height - 30f);
+            UiScrollPane.Draw(list, ref equipmentOverrideScroll, Mathf.Max(list.height, entry.equipmentOverrides.Count * 32f + 4f), this, delegate(Rect view)
+            {
+                UiRows rows = new UiRows(view, 28f, 4f);
+                foreach (PawnEquipmentOverride value in entry.equipmentOverrides.ToList())
+                {
+                    string label = string.Format(
+                        OrderedWorkText.T("OrderedWork.Equipment.OverrideLine", "{0} · {1}"),
+                        value.kind, value.defName);
+                    string sub = value.forbidden
+                        ? OrderedWorkText.T("OrderedWork.Equipment.Forbidden", "forbidden")
+                        : value.count.ToString();
+                    Rect row = rows.Next();
+                    string tip = string.Format(
+                        OrderedWorkText.T("OrderedWork.Equipment.OverrideCell", "{0} · {1}"),
+                        value.bodyPartGroupDefName, value.apparelLayerDefName);
+                    UiCard.Draw(row, label, sub, false, null, tip);
+                    if (Event.current.type == EventType.MouseDown && Event.current.button == 1 && row.Contains(Event.current.mousePosition))
+                    {
+                        entry.equipmentOverrides.Remove(value);
+                        entry.NormalizePolicy();
+                        Event.current.Use();
+                        break;
+                    }
+                }
+            });
+        }
+        private static void ToggleAssignment(PawnWorkOrder? entry, EquipmentSetRole role, string setId)
+        {
+            if (entry == null || string.IsNullOrWhiteSpace(setId) || role == EquipmentSetRole.WorkType)
+            {
+                return;
+            }
+
+            List<string>? list = role switch
+            {
+                EquipmentSetRole.Mandatory => entry.mandatoryEquipmentSetIds,
+                EquipmentSetRole.Emergency => entry.emergencyEquipmentSetIds,
+                EquipmentSetRole.Principal => entry.principalEquipmentSetIds,
+                _ => null
+            };
+            if (list == null)
+            {
+                return;
+            }
+            if (list.Contains(setId))
+            {
+                list.RemoveAll(value => string.Equals(value, setId, StringComparison.Ordinal));
+            }
+            else
+            {
+                list.Add(setId);
+            }
+            entry.NormalizePolicy();
+        }
         private static bool IsAssigned(PawnWorkOrder? entry, EquipmentSetRole role, string setId)
         {
             if (entry == null) return false;
